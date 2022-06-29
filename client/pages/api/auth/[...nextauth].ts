@@ -13,7 +13,6 @@ const GOOGLE_AUTHORIZATION_URL =
     response_type: "code",
   })
 
-  console.log(process.env.GOOGLE_CLIENT_ID)
 async function findProvider(provider: string, user: any) {
   try {
       const dataProvider = {
@@ -133,13 +132,13 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/providers
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || 'googleId',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'googleSecret',
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       authorization: GOOGLE_AUTHORIZATION_URL
     }),
     FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID || 'facebookId',
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'facebookSecret'
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET
     }),
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,

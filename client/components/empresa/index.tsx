@@ -9,6 +9,7 @@ import AlertService from "../../services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useAppSelector } from "../../store/hooks";
+import styles from 'styles/Empresa.module.scss'
 
 const Empresa = ({ id }: any) => {
     const router = useRouter()
@@ -115,83 +116,83 @@ const Empresa = ({ id }: any) => {
                         <div className="px-4 py-5 bg-white sm:p-6">
                             <div className="grid grid-cols-6 gap-6">      
                                 <div className="col-span-6 sm:col-span-3">
-                                    <label htmlFor="razaoSocial" className="field-label">*Razão Social</label>
+                                    <label htmlFor="razaoSocial" className={styles.fieldLabel}>*Razão Social</label>
                                     <input
                                         {...register('razaoSocial')}
                                         // value={state.razaoSocial}
                                         // onChange={handleChange}
                                         required
                                         name="razaoSocial"
-                                        type="text" id="razacaoSocial" className="field-text" />
+                                        type="text" id="razacaoSocial" className={styles.fieldText} />
                                         <p className='text-sm text-red-500 mt-1'>{errors.razaoSocial?.message}</p>
                                 </div>
                                             
                                 <div className="col-span-6 sm:col-span-3">
-                                    <label htmlFor="nomeFantasia" className="field-label">Nome Fantasia</label>
+                                    <label htmlFor="nomeFantasia" className={styles.fieldLabel}>Nome Fantasia</label>
                                     <input
                                         {...register('nomeFantasia')}
                                         // value={state.nomeFantasia}
                                         // onChange={handleChange}
-                                        type="text" name="nomeFantasia" id="nomeFantasia" className="field-text" />
+                                        type="text" name="nomeFantasia" id="nomeFantasia" className={styles.fieldText} />
                                         <p className='text-sm text-red-500 mt-1'>{errors.nomeFantasia?.message}</p>
                                 </div>
                                 
-                                <div className="col-span-6 sm:col-span-3">
-                                    <label htmlFor="nomeFantasia" className="field-label">CNPJ</label>
+                                <div className="col-span-6 sm:col-span-3 w-48">
+                                    <label htmlFor="nomeFantasia" className={styles.fieldLabel}>CNPJ</label>
                                     <input
                                         {...register('cnpj')}
                                         // value={state.nomeFantasia}
                                         // onChange={handleChange}
-                                        type="text" name="cnpj" id="cnpj" className="field-text w-64" />
+                                        type="text" name="cnpj" id="cnpj" className={styles.fieldText}/>
                                         <p className='text-sm text-red-500 mt-1'>{errors.cnpj?.message}</p>
                                     </div>
                                     
                                     <div className="col-span-6 sm:col-span-3">
-                                    <label htmlFor="respTecnico" className="field-label">Registro Ambiental</label>
+                                    <label htmlFor="respTecnico" className={styles.fieldLabel}>Registro Ambiental</label>
                                     <input
                                         {...register('regAmbiental')}
                                         // value={state.respTecnico}
                                         // onChange={handleChange}
-                                        type="text" name="regAmbiental" id="regAmbiental" className="field-text" />
+                                        type="text" name="regAmbiental" id="regAmbiental" className={styles.fieldText} />
                                         <p className='text-sm text-red-500 mt-1'>{errors.regAmbiental?.message}</p>
                                 </div>
 
                                 <div className="col-span-6 sm:col-span-4">
-                                    <label htmlFor="respTecnico" className="field-label">Responsável Técnico</label>
+                                    <label htmlFor="respTecnico" className={styles.fieldLabel}>Responsável Técnico</label>
                                     <input
                                         {...register('respTecnico')}
                                         // value={state.respTecnico}
                                         // onChange={handleChange}
-                                        type="text" name="respTecnico" id="respTecnico" className="field-text" />
+                                        type="text" name="respTecnico" id="respTecnico" className={styles.fieldText} />
                                         <p className='text-sm text-red-500 mt-1'>{errors.respTecnico?.message}</p>
                                 </div>
                                 
                                 <div className="col-span-6 sm:col-span-2">
-                                    <label htmlFor="creaResp" className="field-label">CREA Responsável</label>
+                                    <label htmlFor="creaResp" className={styles.fieldLabel}>CREA Responsável</label>
                                     <input
                                         {...register('creaResp')}
                                         // value={state.respTecnico}
                                         // onChange={handleChange}
-                                        type="text" name="creaResp" id="creaResp" className="field-text" />
+                                        type="text" name="creaResp" id="creaResp" className={styles.fieldText} />
                                         <p className='text-sm text-red-500 mt-1'>{errors.creaResp?.message}</p>
                                 </div>
                                         
-                                <div className="col-span-6">
-                                    <label htmlFor="CEP" className="field-label">CEP</label>
+                                <div className="col-span-6 w-48 lg:w-48">
+                                    <label htmlFor="CEP" className={styles.fieldLabel}>CEP</label>
                                     <input
                                         {...register('cep')}
-                                        type="text" name="cep" id="cep" className="field-text w-48 lg:w-48" />
+                                        type="text" name="cep" id="cep" className={styles.fieldText} />
                                 </div>
 
                                 <div className="col-span-4">
-                                    <label htmlFor="street_address" className="field-label">Endereço</label>
+                                    <label htmlFor="street_address" className={styles.fieldLabel}>Endereço</label>
                                     <input
                                         {...register('endereco')}
-                                        type="text" name="endereco" id="endereco" className="field-text" />
+                                        type="text" name="endereco" id="endereco" className={styles.fieldText} />
                                 </div>
                                 
                                 <div className="col-span-2 sm:col-span-2">
-                                    <label htmlFor="country" className="field-label">Estado</label>
+                                    <label htmlFor="country" className={styles.fieldLabel}>Estado</label>
                                         <select 
                                             {...register('estado')}
                                             id="estado" name="estado" className="mt-1 relative flex w-24 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
@@ -204,17 +205,17 @@ const Empresa = ({ id }: any) => {
                                 </div>
 
                                 <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-                                    <label htmlFor="cidade" className="field-label">Cidade</label>
+                                    <label htmlFor="cidade" className={styles.fieldLabel}>Cidade</label>
                                     <input
                                         {...register('municipio')}
-                                        type="text" name="municipio" id="municipio" className="field-text" />
+                                        type="text" name="municipio" id="municipio" className={styles.fieldText} />
                                 </div>
 
                                 <div className="col-span-6 sm:col-span-3 lg:col-span-3">
-                                    <label htmlFor="complemento" className="field-label">Complemento</label>
+                                    <label htmlFor="complemento" className={styles.fieldLabel}>Complemento</label>
                                     <input
                                         {...register('complemento')}
-                                        type="text" name="complemento" id="complemento" className="field-text" />
+                                        type="text" name="complemento" id="complemento" className={styles.fieldText} />
                                 </div>
                             </div>
                         </div>
