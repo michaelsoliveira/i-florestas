@@ -1,5 +1,5 @@
-import { ChangePassword } from "../../components/user/ChangePassword"
-import withAuthentication from "../../components/withAuthentication"
+import { ChangePassword } from "components/user/ChangePassword"
+import withAuthentication from "components/withAuthentication"
 
 const ChangePasswordPage = () => {
     return (

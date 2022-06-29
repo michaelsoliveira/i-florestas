@@ -7,7 +7,7 @@ interface ModaType {
     buttonText: string,
     bodyText: string,
     styleButton: string,
-    parentFunction: (id?: string) => Promise<void>,
+    parentFunction: () => void,
     hideModal: () => void,
     open: boolean,
     data?: any,
@@ -28,17 +28,8 @@ export default function Modal(props: ModaType) {
         className
     } = props
 
-//   const [open, setOpen] = useState(true)
 
     const cancelButtonRef = useRef(null)
-
-    function callBackFunction(id?: string) {
-      if (id)   {
-        parentFunction(id)
-      } else {
-        parentFunction()
-      }
-    }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -97,7 +88,7 @@ export default function Modal(props: ModaType) {
                     className={classNames(
                         'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm',
                         styleButton)}
-                  onClick={() => callBackFunction(data.id)}
+                  onClick={parentFunction}
                 >
                   {buttonText}
                 </button>

@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "../../components/withAuthentication"
-import { Pagination } from "../../components/Pagination"
-import { UmfType } from "../../services/umf"
-import { AuthContext } from "../../contexts/AuthContext"
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { paginate, setCurrentPagePagination } from "../../store/paginationSlice"
+import withAuthentication from "components/withAuthentication"
+import { Pagination } from "components/Pagination"
+import { UmfType } from "services/umf"
+import { AuthContext } from "contexts/AuthContext"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
-import { RootState } from "../../store"
-import Index from "../../components/umf/Index"
+import { RootState } from "store"
+import Index from "components/umf/Index"
 
 const UmfIndex = () => {
     const { client } = useContext(AuthContext)
@@ -39,7 +39,7 @@ const UmfIndex = () => {
 
     useEffect(() => {  
         loadUmfs(itemsPerPage)
-    }, [itemsPerPage])
+    }, [itemsPerPage, loadUmfs])
 
     const onPageChanged = async (paginatedData: any) => {
         

@@ -48,12 +48,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var withAuthentication_1 = require("../../components/withAuthentication");
-var Pagination_1 = require("../../components/Pagination");
-var AuthContext_1 = require("../../contexts/AuthContext");
-var hooks_1 = require("../../store/hooks");
-var paginationSlice_1 = require("../../store/paginationSlice");
-var Categorias_1 = require("../../components/Categorias");
+var withAuthentication_1 = require("components/withAuthentication");
+var Pagination_1 = require("components/Pagination");
+var AuthContext_1 = require("contexts/AuthContext");
+var hooks_1 = require("store/hooks");
+var paginationSlice_1 = require("store/paginationSlice");
+var Categorias_1 = require("components/Categorias");
 var router_1 = require("next/router");
 var CategoriaIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
@@ -83,10 +83,10 @@ var CategoriaIndex = function () {
                     return [2 /*return*/];
             }
         });
-    }); }, []);
+    }); }, [client, pagination.currentPage, pagination.name]);
     react_1.useEffect(function () {
         loadCategorias(itemsPerPage);
-    }, []);
+    }, [itemsPerPage, loadCategorias]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
         var name, currentPage, perPage, totalPages, search, data, data;
         return __generator(this, function (_a) {

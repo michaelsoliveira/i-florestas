@@ -45,10 +45,11 @@ var Yup = require("yup");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var alert_1 = require("../../services/alert");
 var router_1 = require("next/router");
-exports.ChangePassword = function () {
+exports.ChangePassword = function ChangePassword() {
+    var _this = this;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var router = router_1.useRouter();
-    var onSubmit = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+    var onSubmit = function (data) { return __awaiter(_this, void 0, void 0, function () {
         var oldPassword, newPassword;
         return __generator(this, function (_a) {
             switch (_a.label) {

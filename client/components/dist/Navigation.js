@@ -11,6 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 exports.__esModule = true;
+/* eslint-disable @next/next/no-img-element */
 /* This example requires Tailwind CSS v2.0+ */
 var react_1 = require("react");
 var react_2 = require("@headlessui/react");
@@ -39,7 +40,7 @@ function Navigation(_a) {
     };
     react_1.useEffect(function () {
         addEventListener('scroll', handleScroll);
-    });
+    }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     var changeCurrentParent = function (key, href) {
         var changeCurrentNav = defaultNavigation.map(function (nav, index) {
@@ -74,7 +75,7 @@ function Navigation(_a) {
         if (session) {
             checkCurrentNavigation();
         }
-    }, [session]);
+    }, [checkCurrentNavigation, defaultNavigation, session]);
     return (React.createElement(react_2.Disclosure, { as: "nav", className: classnames_1["default"]("lg:absolute items-center w-full opacity-100 z-50") }, function (_a) {
         var _b, _c, _d, _e, _f, _g;
         var open = _a.open;

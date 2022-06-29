@@ -10,7 +10,7 @@ exports.__esModule = true;
 exports.Pagination = void 0;
 var classnames_1 = require("classnames");
 var router_1 = require("next/router");
-exports.Pagination = function (_a) {
+exports.Pagination = function Pagination(_a) {
     var perPage = _a.perPage, totalItems = _a.totalItems, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, onPageChanged = _a.onPageChanged, pageNeighbours = _a.pageNeighbours;
     // const [currentPage, setCurrentPage] = useState(1)
     var lastItem = currentPage * perPage;

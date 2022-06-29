@@ -48,12 +48,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var withAuthentication_1 = require("../../components/withAuthentication");
-var Especies_1 = require("../../components/Especies");
-var Pagination_1 = require("../../components/Pagination");
-var AuthContext_1 = require("../../contexts/AuthContext");
-var hooks_1 = require("../../store/hooks");
-var paginationSlice_1 = require("../../store/paginationSlice");
+var withAuthentication_1 = require("components/withAuthentication");
+var Especies_1 = require("components/Especies");
+var Pagination_1 = require("components/Pagination");
+var AuthContext_1 = require("contexts/AuthContext");
+var hooks_1 = require("store/hooks");
+var paginationSlice_1 = require("store/paginationSlice");
 var router_1 = require("next/router");
 var EspecieIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
@@ -70,14 +70,16 @@ var EspecieIndex = function () {
     var router = router_1.useRouter();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     var loadEspecies = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
-        var currentPagePagination, data;
+        var currentPagePagination, perPage, url, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     setLoading(true);
                     currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1;
+                    perPage = itemsPerPage ? itemsPerPage : pagination.perPage;
+                    url = "/especie?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order;
                     setCurrentPage(currentPagePagination);
-                    return [4 /*yield*/, client.get("/especie?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + itemsPerPage + "&orderBy=" + orderBy + "&order=" + order)];
+                    return [4 /*yield*/, client.get(url)];
                 case 1:
                     data = (_a.sent()).data;
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
@@ -86,10 +88,10 @@ var EspecieIndex = function () {
                     return [2 /*return*/];
             }
         });
-    }); }, [client, order, orderBy, pagination.currentPage, pagination.name, router.pathname]);
+    }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname]);
     react_1.useEffect(function () {
         loadEspecies(itemsPerPage);
-    }, [itemsPerPage]);
+    }, [itemsPerPage, loadEspecies]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
         var name, currentPage, perPage, totalPages, orderBy, order, search, data, data;
         return __generator(this, function (_a) {

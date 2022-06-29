@@ -7,7 +7,7 @@ exports.loginSchema = Yup.object().shape({
     email: Yup.string().email().required('Required'),
     password: Yup.string().required('Required').min(3, 'Too Short!')
 });
-exports.LoginForm = function (_a) {
+exports.LoginForm = function LoginForm(_a) {
     var styles = _a.styles, parentShowLogin = _a.parentShowLogin;
     return (React.createElement(formik_1.Formik, { initialValues: {
             email: '',

@@ -36,52 +36,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getServerSideProps = void 0;
-var router_1 = require("next/router");
-var Login_1 = require("../components/Login");
-var Logo_1 = require("../components/Logo");
-var react_1 = require("next-auth/react");
-var link_1 = require("next/link");
-var Pagelogin = function (_a) {
-    var csrfToken = _a.csrfToken;
-    var router = router_1.useRouter();
-    return (React.createElement("div", { className: "min-h-full flex items-center justify-center mt-28 mb-16 px-4 sm:px-6 lg:px-8" },
-        React.createElement("div", { className: "max-w-md flex flex-col justify-center items-center w-full space-y-4 px-8 py-4 border rounded-md shadow-2xl" },
-            React.createElement("div", { className: 'absolute top-24' },
-                React.createElement("div", { className: 'bg-gray-50 border border-green-700 rounded-full shadow-lg w-36 h-36' },
-                    React.createElement("div", { className: 'relative h-full flex flex-col items-center justify-center' },
-                        React.createElement(Logo_1["default"], { width: 'w-16', height: 'h-16' }),
-                        React.createElement("h1", { className: 'font-roboto text-xl font-semibold text-green-700' }, "iFlorestal")))),
-            React.createElement("div", { className: "pt-10" },
-                React.createElement(Login_1["default"], { csrfToken: csrfToken })),
-            React.createElement("p", { className: 'flex items-center py-4 text-center text-sm' },
-                "N\u00E3o tem conta?\u00A0",
-                React.createElement("span", { className: 'underline font-bold text-green-700' },
-                    " ",
-                    React.createElement(link_1["default"], { href: '/signup' }, "Cadastre-se"))))));
-};
-exports.getServerSideProps = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var session, _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0: return [4 /*yield*/, react_1.getSession(ctx)];
-            case 1:
-                session = _c.sent();
-                if (session) {
+exports.findByProvider = exports.sendEmail = exports.create = void 0;
+var axios_1 = require("./axios");
+function create(dataRequest) {
+    return __awaiter(this, void 0, Promise, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.apiClient().post('users/create', dataRequest)];
+                case 1:
+                    data = (_a.sent()).data;
                     return [2 /*return*/, {
-                            redirect: {
-                                destination: '/',
-                                permanent: false
-                            }
+                            data: data.user,
+                            errorMessage: data.errorMessage,
+                            error: data.error
                         }];
-                }
-                _a = {};
-                _b = {};
-                return [4 /*yield*/, react_1.getCsrfToken(ctx)];
-            case 2: return [2 /*return*/, (_a.props = (_b.csrfToken = _c.sent(),
-                    _b),
-                    _a)];
-        }
+            }
+        });
     });
-}); };
-exports["default"] = Pagelogin;
+}
+exports.create = create;
+function sendEmail(dataResponse) {
+    return __awaiter(this, void 0, Promise, function () {
+        var email, name, password, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    email = dataResponse.email, name = dataResponse.username, password = dataResponse.password;
+                    return [4 /*yield*/, axios_1.apiClient().post('/users/send-email', {
+                            email: email,
+                            name: name,
+                            message: "Sua senha de acesso \u00E9: <b>" + password + "</b>"
+                        })];
+                case 1:
+                    data = (_a.sent()).data;
+                    return [2 /*return*/, data];
+            }
+        });
+    });
+}
+exports.sendEmail = sendEmail;
+function findByProvider(provider, user) {
+    return __awaiter(this, void 0, Promise, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.apiClient().get("/provider/find?provider=" + provider + "&idProvider=" + user.id)];
+                case 1:
+                    response = _a.sent();
+                    return [2 /*return*/, response.data];
+            }
+        });
+    });
+}
+exports.findByProvider = findByProvider;
+var UserService = {
+    create: create,
+    sendEmail: sendEmail,
+    findByProvider: findByProvider
+};
+exports["default"] = UserService;

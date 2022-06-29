@@ -1,4 +1,4 @@
-import AddEdit from "../../components/upa/AddEdit";
-import withAuthentication from "../../components/withAuthentication";
+import AddEdit from "components/upa/AddEdit";
+import withAuthentication from "components/withAuthentication";
 
 export default withAuthentication(AddEdit)

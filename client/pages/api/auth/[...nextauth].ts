@@ -3,9 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import GithubProvider from "next-auth/providers/github"
 import FacebookProvider from 'next-auth/providers/facebook'
-import userService from '../../../services/user'
-import { handleRefreshToken } from '../../../services/auth'
-import { useCallback } from "react"
+import userService from 'services/user'
 
 const GOOGLE_AUTHORIZATION_URL =
   "https://accounts.google.com/o/oauth2/v2/auth?" +
@@ -15,6 +13,7 @@ const GOOGLE_AUTHORIZATION_URL =
     response_type: "code",
   })
 
+  console.log(process.env.GOOGLE_CLIENT_ID)
 async function findProvider(provider: string, user: any) {
   try {
       const dataProvider = {
@@ -92,8 +91,8 @@ async function refreshAccessToken(token: any) {
         const url =
           "https://oauth2.googleapis.com/token?" +
           new URLSearchParams({
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            client_id: '80208103401-2is5sf9cdimhq4ghphnn75aa4p1b4p20.apps.googleusercontent.com',
+            client_secret: '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',
             grant_type: "refresh_token",
             refresh_token: token.refreshToken,
           })
@@ -134,13 +133,13 @@ export default NextAuth({
   // https://next-auth.js.org/configuration/providers
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || 'googleId',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'googleSecret',
       authorization: GOOGLE_AUTHORIZATION_URL
     }),
     FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET
+      clientId: process.env.FACEBOOK_CLIENT_ID || 'facebookId',
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'facebookSecret'
     }),
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,

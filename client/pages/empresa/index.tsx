@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from "react"
-import { Link } from "../../components/Link"
-import EmpresaService, { EmpresaType } from "../../services/empresa"
+import { useContext, useEffect, useState, useCallback } from "react"
+import { Link } from "components/Link"
+import EmpresaService, { EmpresaType } from "services/empresa"
 import { TrashIcon as TrashIconOut, PencilAltIcon as PencilAltIconOut
 } from '@heroicons/react/outline'
 import { TrashIcon, PencilAltIcon, UsersIcon } from '@heroicons/react/solid'
 import { GetServerSideProps } from "next"
-import AlertService from '../../services/alert'
-import Modal from "../../components/Modal"
+import AlertService from 'services/alert'
+import Modal from "components/Modal"
 import { getSession } from 'next-auth/react'
-import { useAppSelector } from "../../store/hooks"
-import withAuthentication from "../../components/withAuthentication"
-import { AuthContext } from "../../contexts/AuthContext"
+import { useAppSelector } from "store/hooks"
+import withAuthentication from "components/withAuthentication"
+import { AuthContext } from "contexts/AuthContext"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
@@ -18,8 +18,8 @@ const EmpresaIndex = () => {
     const [openModal, setOpenModal] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
-    
-    const loadEmpresas = async () => {
+
+    const loadEmpresas = useCallback(async() => {
         try {
             setIsLoading(true)
             const { data: { empresas } } = await client.get('empresa')
@@ -28,11 +28,11 @@ const EmpresaIndex = () => {
         } catch (error:any) {
             AlertService.error(error?.message)
         }
-    }
+    }, [client])
 
     useEffect(() => {
         loadEmpresas()
-    }, [])
+    }, [loadEmpresas])
 
     function toogleDeleteModal(id: string) {
         const empresa = empresas.filter((empresa: EmpresaType) => empresa.id === id)

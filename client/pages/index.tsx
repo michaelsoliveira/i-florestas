@@ -2,10 +2,10 @@
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 import { getSession } from 'next-auth/react'
-import Tabs from '../components/Tabs'
-import Logo from '../components/Logo'
-import { Carousel } from '../components/home/Carousel'
-import Hero from '../components/home/Hero'
+import Tabs from 'components/Tabs'
+import Logo from 'components/Logo'
+import { Carousel } from 'components/home/Carousel'
+import Hero from 'components/home/Hero'
 
 export default function Dashboard({ localSession }: any) {
   

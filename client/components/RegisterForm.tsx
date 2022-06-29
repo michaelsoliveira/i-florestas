@@ -27,7 +27,7 @@ type RegisterType = {
     redirect?: boolean
 }
 
-export const RegisterForm = ({ styles, empresaId, userId, redirect }: RegisterType) => {
+export const RegisterForm = function RegisterForm({ styles, empresaId, userId, redirect }: RegisterType) {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const user = useSelector((state: RootState) => state.user.data)

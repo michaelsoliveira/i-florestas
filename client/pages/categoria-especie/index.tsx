@@ -1,12 +1,14 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "../../components/withAuthentication"
-import { Pagination } from "../../components/Pagination"
-import { AuthContext } from "../../contexts/AuthContext"
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { paginate, setCurrentPagePagination } from "../../store/paginationSlice"
-import Categorias, { CategoriaEspecieType } from "../../components/Categorias"
+import withAuthentication from "components/withAuthentication"
+import { Pagination } from "components/Pagination"
+import { AuthContext } from "contexts/AuthContext"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { paginate, setCurrentPagePagination } from "store/paginationSlice"
+import Categorias, { CategoriaEspecieType } from "components/Categorias"
 import { useRouter } from "next/router"
-import { RootState } from "../../store"
+import { RootState } from "store"
+
+
 
 const CategoriaIndex = () => {
     const { client } = useContext(AuthContext)
@@ -28,11 +30,11 @@ const CategoriaIndex = () => {
         setTotalItems(data?.count)
         setCurrentCategorias(data?.categorias)
         setLoading(false)
-    }, [])
+    }, [client, pagination.currentPage, pagination.name])
 
     useEffect(() => {
         loadCategorias(itemsPerPage)
-    }, [])
+    }, [itemsPerPage, loadCategorias])
 
     const onPageChanged = async (paginatedData: any) => {
         

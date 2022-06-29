@@ -6,7 +6,7 @@ export const loginSchema = Yup.object().shape({
   password: Yup.string().required('Required').min(3, 'Too Short!'),
 })
 
-export const LoginForm = ({ styles, parentShowLogin }: any) => {
+export const LoginForm = function LoginForm({ styles, parentShowLogin }: any) {
 
   return (
     <Formik

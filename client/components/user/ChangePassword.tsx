@@ -7,7 +7,7 @@ import { AuthContext } from '../../contexts/AuthContext'
 import alertService from "../../services/alert"
 import { useRouter } from "next/router"
 
-export const ChangePassword = () => {
+export const ChangePassword = function ChangePassword() {
     const { client } = useContext(AuthContext)
     const router = useRouter()
 

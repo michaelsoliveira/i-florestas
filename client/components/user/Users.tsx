@@ -21,15 +21,15 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
         setFilteredUsers(currentUsers)
     }, [currentUsers, currentPage])
 
-    function selectToModal(id: string) {
+    function selectToModal(id?: string) {
         const user = currentUsers.find((user: User) => user.id === id)
         setSelectedUser(user)
         setOpenModal(true)
     }
 
-    async function deleteUser(id: string) {
+    async function deleteUser() {
         try {
-            client.delete(`/users/${id}`)
+            client.delete(`/users/${selectedUser?.id}`)
                 .then(() => {
                     alertService.success('O usuário foi deletada com SUCESSO!!!')
                     loadUsers()
@@ -250,7 +250,6 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
                     buttonText="Deletar"
                     bodyText={`Tem certeza que seja excluir o usuário ${selectedUser?.username}?`}
                     data={selectedUser}
-                    parentReturnData={selectToModal}
                     parentFunction={deleteUser}
                     hideModal={() => setOpenModal(false)}
                     open={openModal}

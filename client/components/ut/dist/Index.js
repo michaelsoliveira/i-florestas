@@ -117,7 +117,7 @@ var Index = function (_a) {
             });
         defaultOptions();
         setFilteredUpa(currentUpas);
-    }, [currentUpas, currentPage, client]);
+    }, [currentUpas, currentPage, client, umf]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {

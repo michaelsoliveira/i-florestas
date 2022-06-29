@@ -1,11 +1,12 @@
-import '../styles/globals.css'
+import "tailwindcss/tailwind.css"
+// import 'tailwindcss/tailwind.css'
 import 'react-toastify/dist/ReactToastify.css'
 import type { AppProps } from 'next/app'
-import { AuthProvider } from '../contexts/AuthContext'
+import { AuthProvider } from 'contexts/AuthContext'
 import { Provider } from 'react-redux'
-import { store } from '../store'
-import { saveState } from '../store/browser-storage'
-import Layout from '../components/Layout'
+import { store } from 'store'
+import { saveState } from 'store/browser-storage'
+import Layout from 'components/Layout'
 import { ToastContainer } from 'react-toastify';
 import { SessionProvider } from 'next-auth/react'
 import { debounce } from "debounce"

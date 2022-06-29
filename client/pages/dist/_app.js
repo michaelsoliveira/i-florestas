@@ -22,13 +22,14 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 exports.__esModule = true;
-require("../styles/globals.css");
+require("tailwindcss/tailwind.css");
+// import 'tailwindcss/tailwind.css'
 require("react-toastify/dist/ReactToastify.css");
-var AuthContext_1 = require("../contexts/AuthContext");
+var AuthContext_1 = require("contexts/AuthContext");
 var react_redux_1 = require("react-redux");
-var store_1 = require("../store");
-var browser_storage_1 = require("../store/browser-storage");
-var Layout_1 = require("../components/Layout");
+var store_1 = require("store");
+var browser_storage_1 = require("store/browser-storage");
+var Layout_1 = require("components/Layout");
 var react_toastify_1 = require("react-toastify");
 var react_1 = require("next-auth/react");
 var debounce_1 = require("debounce");

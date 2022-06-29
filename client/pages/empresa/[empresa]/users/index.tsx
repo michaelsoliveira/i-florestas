@@ -1,15 +1,15 @@
 import { GetServerSideProps } from "next"
 import { getSession } from "next-auth/react"
-import withAuthentication from "../../../../components/withAuthentication"
+import withAuthentication from "components/withAuthentication"
 import { useCallback, useContext, useEffect, useState } from "react"
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks"
-import { AuthContext } from "../../../../contexts/AuthContext"
-import { paginate, setCurrentPagePagination } from "../../../../store/paginationSlice"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { AuthContext } from "contexts/AuthContext"
+import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
-import { RootState } from "../../../../store"
-import { User } from "../../../../services/auth"
-import Users from "../../../../components/user/Users"
-import { Pagination } from "../../../../components/Pagination"
+import { RootState } from "store"
+import { User } from "services/auth"
+import Users from "components/user/Users"
+import { Pagination } from "components/Pagination"
 
 type EmpresaUserType = {
     empresaId: string
@@ -40,11 +40,11 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
+    }, [client, empresaId, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
 
     useEffect(() => {  
         loadUsers(itemsPerPage)
-    }, [itemsPerPage])
+    }, [itemsPerPage, loadUsers])
 
     const onPageChanged = async (paginatedData: any) => {
         

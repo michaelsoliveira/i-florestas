@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import { useRouter } from "next/router";
 
-export const Pagination = ({ perPage, totalItems, orderBy, order, currentPage, onPageChanged, pageNeighbours }: any) => {
+export const Pagination = function Pagination({ perPage, totalItems, orderBy, order, currentPage, onPageChanged, pageNeighbours }: any) {
     
     // const [currentPage, setCurrentPage] = useState(1)
     const lastItem = currentPage * perPage;

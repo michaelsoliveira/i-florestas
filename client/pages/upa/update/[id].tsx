@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import AddEdit from "../../../components/upa/AddEdit";
+import AddEdit from "components/upa/AddEdit";
 
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {

@@ -3,16 +3,14 @@ import { FormInput } from './FormInput'
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import alertService from '../services/alert'
-import { AuthContext } from '../contexts/AuthContext'
+import alertService from 'services/alert'
+import { AuthContext } from 'contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from './LinkBack'
 import { Link } from './Link'
 
-const Especie = ({ id }: any) => {
+const Categoria = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [categoria, setCategoria] = useState<OptionType>()
-    const [categorias, setCategorias] = useState<any>()
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const router = useRouter()
@@ -281,4 +279,4 @@ const Especie = ({ id }: any) => {
     )
 }
 
-export default Especie
+export default Categoria

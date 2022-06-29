@@ -44,10 +44,10 @@ export async function findByProvider(provider: string, user: any): Promise<any> 
     return response.data
 }
 
-const AuthService = {
+const UserService = {
     create,
     sendEmail,
     findByProvider
 }
 
-export default AuthService
+export default UserService

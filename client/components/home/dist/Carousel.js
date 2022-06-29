@@ -7,7 +7,7 @@ var react_1 = require("react");
 var images_json_1 = require("./images.json");
 var recursiveTimeout_1 = require("./recursiveTimeout");
 var AUTOPLAY_INTERVAL = 6000;
-exports.Carousel = function () {
+exports.Carousel = function Carousel() {
     var maxScrollWidth = react_1.useRef(0);
     var _a = react_1.useState(0), currentIndex = _a[0], setCurrentIndex = _a[1];
     var carousel = react_1.useRef(null);

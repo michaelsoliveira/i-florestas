@@ -2,7 +2,8 @@ import React, {
     FC,
     forwardRef,
     DetailedHTMLProps,
-    InputHTMLAttributes
+    InputHTMLAttributes,
+    Ref
 } from 'react';
 import classNames from 'classnames';
 
@@ -21,28 +22,16 @@ export type InputProps = {
   'size'
 >;
 
-// Using maps so that the full Tailwind classes can be seen for purging
-// see https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html
-
 const sizeMap: { [key in InputSize]: string } = {
   medium: 'p-3 text-base',
   large: 'p-4 text-base',
 };
 
-export const Input: FC<InputProps> = forwardRef(
-  (
-    {
-      id,
-      name,
-      label,
-      type = 'text',
-      size = 'medium',
-      className = '',
-      placeholder,
-      ...rest
-    },
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  function Input(
+    { id, name, type = 'text', label, placeholder, size = 'medium', className, ...rest}, 
     ref
-  ) => {
+  ) {
     return (
       <input
         id={id}
@@ -62,5 +51,5 @@ export const Input: FC<InputProps> = forwardRef(
   }
 )
 
-Input.displayName = 'Input'
-  // export default Input
+// Input.displayName = 'Input'
+//   // export default Input

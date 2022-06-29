@@ -67,7 +67,7 @@ function classNames() {
     }
     return classes.filter(Boolean).join(' ');
 }
-exports.RegisterForm = function (_a) {
+exports.RegisterForm = function RegisterForm(_a) {
     var styles = _a.styles, empresaId = _a.empresaId, userId = _a.userId, redirect = _a.redirect;
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();

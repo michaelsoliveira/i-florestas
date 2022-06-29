@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import Login from '../components/Login'
-import Logo from '../components/Logo'
+import Login from 'components/Login'
+import Logo from 'components/Logo'
 import { getCsrfToken, getSession } from 'next-auth/react'
 import Link from 'next/link';
 

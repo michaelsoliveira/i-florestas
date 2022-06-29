@@ -38,21 +38,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.getServerSideProps = void 0;
 var react_1 = require("react");
-var Link_1 = require("../../components/Link");
-var empresa_1 = require("../../services/empresa");
+var Link_1 = require("components/Link");
+var empresa_1 = require("services/empresa");
 var solid_1 = require("@heroicons/react/solid");
-var alert_1 = require("../../services/alert");
-var Modal_1 = require("../../components/Modal");
+var alert_1 = require("services/alert");
+var Modal_1 = require("components/Modal");
 var react_2 = require("next-auth/react");
-var withAuthentication_1 = require("../../components/withAuthentication");
-var AuthContext_1 = require("../../contexts/AuthContext");
+var withAuthentication_1 = require("components/withAuthentication");
+var AuthContext_1 = require("contexts/AuthContext");
 var EmpresaIndex = function () {
     var _a = react_1.useState([]), empresas = _a[0], setEmpresas = _a[1];
     var _b = react_1.useState(), selectedEmpresa = _b[0], setSelectedEmpresa = _b[1];
     var _c = react_1.useState(false), openModal = _c[0], setOpenModal = _c[1];
     var _d = react_1.useState(false), isLoading = _d[0], setIsLoading = _d[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var loadEmpresas = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var loadEmpresas = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var empresas_1, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -72,10 +72,10 @@ var EmpresaIndex = function () {
                 case 3: return [2 /*return*/];
             }
         });
-    }); };
+    }); }, [client]);
     react_1.useEffect(function () {
         loadEmpresas();
-    }, []);
+    }, [loadEmpresas]);
     function toogleDeleteModal(id) {
         var empresa = empresas.filter(function (empresa) { return empresa.id === id; });
         setSelectedEmpresa(empresa[0]);

@@ -8,7 +8,7 @@ import RecursiveTimeout from './recursiveTimeout';
 
 const AUTOPLAY_INTERVAL = 6000
 
-export const Carousel = () => {
+export const Carousel = function Carousel() {
   const maxScrollWidth = useRef(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carousel = useRef<HTMLDivElement>(null);

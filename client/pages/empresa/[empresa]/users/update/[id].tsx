@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next"
-import withAuthentication from "../../../../../components/withAuthentication"
+import withAuthentication from "components/withAuthentication"
 
 const EmpresaUpdateUser = () => {
     return (

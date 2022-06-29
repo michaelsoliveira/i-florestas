@@ -25,19 +25,17 @@ exports.__esModule = true;
 exports.Input = void 0;
 var react_1 = require("react");
 var classnames_1 = require("classnames");
-// Using maps so that the full Tailwind classes can be seen for purging
-// see https://tailwindcss.com/docs/optimizing-for-production#writing-purgeable-html
 var sizeMap = {
     medium: 'p-3 text-base',
     large: 'p-4 text-base'
 };
-exports.Input = react_1.forwardRef(function (_a, ref) {
-    var id = _a.id, name = _a.name, label = _a.label, _b = _a.type, type = _b === void 0 ? 'text' : _b, _c = _a.size, size = _c === void 0 ? 'medium' : _c, _d = _a.className, className = _d === void 0 ? '' : _d, placeholder = _a.placeholder, rest = __rest(_a, ["id", "name", "label", "type", "size", "className", "placeholder"]);
+exports.Input = react_1.forwardRef(function Input(_a, ref) {
+    var id = _a.id, name = _a.name, _b = _a.type, type = _b === void 0 ? 'text' : _b, label = _a.label, placeholder = _a.placeholder, _c = _a.size, size = _c === void 0 ? 'medium' : _c, className = _a.className, rest = __rest(_a, ["id", "name", "type", "label", "placeholder", "size", "className"]);
     return (react_1["default"].createElement("input", __assign({ id: id, ref: ref, name: name, type: type, "aria-label": label, placeholder: placeholder, className: classnames_1["default"]([
             'relative inline-flex w-full rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30',
             sizeMap[size],
             className,
         ]) }, rest)));
 });
-exports.Input.displayName = 'Input';
-// export default Input
+// Input.displayName = 'Input'
+//   // export default Input

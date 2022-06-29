@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "../../components/withAuthentication"
-import { Pagination } from "../../components/Pagination"
-import { UpaType } from "../../services/upa"
-import { AuthContext } from "../../contexts/AuthContext"
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { paginate } from "../../store/paginationSlice"
+import withAuthentication from "components/withAuthentication"
+import { Pagination } from "components/Pagination"
+import { UpaType } from "services/upa"
+import { AuthContext } from "contexts/AuthContext"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { paginate } from "store/paginationSlice"
 import { useRouter } from "next/router"
-import { RootState } from "../../store"
-import Index from "../../components/upa/Index"
+import { RootState } from "store"
+import Index from "components/upa/Index"
 
 const UpaIndex = () => {
     const { client } = useContext(AuthContext)
@@ -36,11 +36,11 @@ const UpaIndex = () => {
         setTotalItems(data?.count)
         setCurrentUpas(data?.upas)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, umf.id])
 
     useEffect(() => {  
         loadUpas(itemsPerPage)
-    }, [itemsPerPage])
+    }, [itemsPerPage, loadUpas])
 
     const onPageChanged = async (paginatedData: any) => {
         

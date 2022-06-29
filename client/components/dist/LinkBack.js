@@ -2,7 +2,7 @@
 exports.__esModule = true;
 exports.LinkBack = void 0;
 var Link_1 = require("./Link");
-exports.LinkBack = function (_a) {
+exports.LinkBack = function LinkBack(_a) {
     var href = _a.href, className = _a.className;
     return (React.createElement("div", null,
         React.createElement(Link_1.Link, { href: href, className: className },

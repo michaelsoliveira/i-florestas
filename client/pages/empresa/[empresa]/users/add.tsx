@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next"
-import { RegisterForm } from "../../../../components/RegisterForm"
-import withAuthentication from "../../../../components/withAuthentication"
+import { RegisterForm } from "components/RegisterForm"
+import withAuthentication from "components/withAuthentication"
 
 type IAddUserToEmpresa = {
     empresaId: string;

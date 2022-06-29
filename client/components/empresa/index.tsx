@@ -36,6 +36,7 @@ const Empresa = ({ id }: any) => {
         }
         loadEmpresa()
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session, isAddMode, client, id])
 
     const validationSchema = Yup.object().shape({

@@ -3,15 +3,14 @@ exports.__esModule = true;
 exports.Nav = void 0;
 var react_1 = require("react");
 var NavLink_1 = require("./NavLink");
-var services_1 = require("services");
 function Nav() {
     var _a = react_1.useState(null), user = _a[0], setUser = _a[1];
     react_1.useEffect(function () {
-        var subscription = services_1.userService.user.subscribe(function (x) { return setUser(x); });
-        return function () { return subscription.unsubscribe(); };
+        // const subscription = userService.user.subscribe(x => setUser(x));
+        // return () => subscription.unsubscribe();
     }, []);
     function logout() {
-        services_1.userService.logout();
+        // userService.logout();
     }
     // only show nav when logged in
     if (!user)

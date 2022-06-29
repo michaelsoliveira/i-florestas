@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, SVGProps, useCallback, useContext, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition, Popover } from '@headlessui/react'
@@ -50,7 +51,7 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
 
     useEffect(() => {
         addEventListener('scroll', handleScroll)
-    })
+    }, [])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const changeCurrentParent = (key: any, href?: string) =>  {
@@ -97,7 +98,7 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
         if (session) {
             checkCurrentNavigation()
         }
-    }, [session])
+    }, [checkCurrentNavigation, defaultNavigation, session])
 
     return (
         <Disclosure as="nav" className={classNames(

@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "../../components/withAuthentication"
-import Especies from "../../components/Especies"
-import { Pagination } from "../../components/Pagination"
-import { EspecieType } from "../../services/especie"
-import { AuthContext } from "../../contexts/AuthContext"
-import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { paginate, setCurrentPagePagination } from "../../store/paginationSlice"
+import withAuthentication from "components/withAuthentication"
+import Especies from "components/Especies"
+import { Pagination } from "components/Pagination"
+import { EspecieType } from "services/especie"
+import { AuthContext } from "contexts/AuthContext"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
-import { RootState } from "../../store"
+import { RootState } from "store"
 
 const EspecieIndex = () => {
     const { client } = useContext(AuthContext)
@@ -36,11 +36,11 @@ const EspecieIndex = () => {
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname])
 
     useEffect(() => {  
         loadEspecies(itemsPerPage)
-    }, [itemsPerPage])
+    }, [itemsPerPage, loadEspecies])
 
     const onPageChanged = async (paginatedData: any) => {
         

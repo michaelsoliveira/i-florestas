@@ -48,13 +48,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var withAuthentication_1 = require("../../components/withAuthentication");
-var Pagination_1 = require("../../components/Pagination");
-var AuthContext_1 = require("../../contexts/AuthContext");
-var hooks_1 = require("../../store/hooks");
-var paginationSlice_1 = require("../../store/paginationSlice");
+var withAuthentication_1 = require("components/withAuthentication");
+var Pagination_1 = require("components/Pagination");
+var AuthContext_1 = require("contexts/AuthContext");
+var hooks_1 = require("store/hooks");
+var paginationSlice_1 = require("store/paginationSlice");
 var router_1 = require("next/router");
-var Index_1 = require("../../components/umf/Index");
+var Index_1 = require("components/umf/Index");
 var UmfIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
@@ -90,7 +90,7 @@ var UmfIndex = function () {
     }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname]);
     react_1.useEffect(function () {
         loadUmfs(itemsPerPage);
-    }, [itemsPerPage]);
+    }, [itemsPerPage, loadUmfs]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
         var name, currentPage, perPage, totalPages, orderBy, order, search, url, data, data;
         return __generator(this, function (_a) {

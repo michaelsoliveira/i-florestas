@@ -1,11 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { RegisterForm } from '../components/RegisterForm'
-import Logo from '../components/Logo'
+import { RegisterForm } from 'components/RegisterForm'
+import Logo from 'components/Logo'
 import { getCsrfToken, getSession } from 'next-auth/react'
 import Link from 'next/link';
 
-import {styles} from '../components/helpers/defaultStyles'
+import {styles} from 'components/helpers/defaultStyles'
 
 const Pagelogin = ({ csrfToken }: any) => {
 
