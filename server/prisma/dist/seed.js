@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,6 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var client_1 = require("@prisma/client");
+var bcryptjs_1 = require("bcryptjs");
 var prisma = new client_1.PrismaClient();
 var equacoesModelo = [
     {
@@ -205,13 +217,13 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _i, estados_1, e, estado, user, _a, _b, _c, _d, empresa, _e, equacoesModelo_1, eqModelo, equacaoModelo, _f, equacoesVolume_1, eqVolume, equacaoVolume;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
                     console.log("Start seeding ...");
                     _i = 0, estados_1 = estados;
-                    _a.label = 1;
+                    _g.label = 1;
                 case 1:
                     if (!(_i < estados_1.length)) return [3 /*break*/, 4];
                     e = estados_1[_i];
@@ -219,67 +231,88 @@ function main() {
                             data: e
                         })];
                 case 2:
-                    estado = _a.sent();
+                    estado = _g.sent();
                     console.log("Created estado with id: " + estado.id);
-                    _a.label = 3;
+                    _g.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
                 case 4:
-                    // const user = await prisma.user.create({
-                    //   data: {
-                    //         username: 'michaelsoliveira',
-                    //         email: 'michaelsoliveira@gmail.com',
-                    //         password: await bcrypt.hash('Fms237691', 10)
-                    //     },
-                    // })
-                    // console.log(`Created user admin with id: ${user.id}`)
-                    // const empresa = await prisma.empresa.create({
-                    //     data: {
-                    //         nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
-                    //         razao_social: 'iFlorestas SA',
-                    //         endereco: 'BR 210',
-                    //         municipio: 'Macapá',
-                    //         empresa_users: {
-                    //             create: [
-                    //                 {
-                    //                     users: {
-                    //                         connect: {
-                    //                             id: user.id
-                    //                         }
-                    //                     }
-                    //                 }
-                    //             ]
-                    //         }
-                    //     }
-                    // })
-                    // console.log(`Empresa ${empresa.nome_fantasia} criada com o id: ${empresa.id}`)
-                    // for (const eqModelo of equacoesModelo) {
-                    //   const equacaoModelo = await prisma.equacaoModelo.create({
-                    //     data: {
-                    //       ...eqModelo,
-                    //       empresa: {
-                    //         connect: {
-                    //           id: empresa.id
-                    //         }
-                    //       }
-                    //     },
-                    //   })
-                    //   console.log(`Created user Equação Modelo with id: ${equacaoModelo.id}`)
-                    // }
-                    // for (const eqVolume of equacoesVolume) {
-                    //   const equacaoVolume = await prisma.equacaoVolume.create({
-                    //     data: {
-                    //       ...eqVolume,
-                    //       empresa: {
-                    //         connect: {
-                    //           id: empresa.id
-                    //         }
-                    //       }
-                    //     },
-                    //   })
-                    //   console.log(`Created user Equação Volume with id: ${equacaoVolume.id}`)
-                    // }
+                    _b = (_a = prisma.user).create;
+                    _c = {};
+                    _d = {
+                        username: 'michaelsoliveira',
+                        email: 'michaelsoliveira@gmail.com'
+                    };
+                    return [4 /*yield*/, bcryptjs_1["default"].hash('Fms237691', 10)];
+                case 5: return [4 /*yield*/, _b.apply(_a, [(_c.data = (_d.password = _g.sent(),
+                            _d),
+                            _c)])];
+                case 6:
+                    user = _g.sent();
+                    console.log("Created user admin with id: " + user.id);
+                    return [4 /*yield*/, prisma.empresa.create({
+                            data: {
+                                nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
+                                razao_social: 'iFlorestas SA',
+                                endereco: 'BR 210',
+                                municipio: 'Macapá',
+                                empresa_users: {
+                                    create: [
+                                        {
+                                            users: {
+                                                connect: {
+                                                    id: user.id
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        })];
+                case 7:
+                    empresa = _g.sent();
+                    console.log("Empresa " + empresa.nome_fantasia + " criada com o id: " + empresa.id);
+                    _e = 0, equacoesModelo_1 = equacoesModelo;
+                    _g.label = 8;
+                case 8:
+                    if (!(_e < equacoesModelo_1.length)) return [3 /*break*/, 11];
+                    eqModelo = equacoesModelo_1[_e];
+                    return [4 /*yield*/, prisma.equacaoModelo.create({
+                            data: __assign(__assign({}, eqModelo), { empresa: {
+                                    connect: {
+                                        id: empresa.id
+                                    }
+                                } })
+                        })];
+                case 9:
+                    equacaoModelo = _g.sent();
+                    console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
+                    _g.label = 10;
+                case 10:
+                    _e++;
+                    return [3 /*break*/, 8];
+                case 11:
+                    _f = 0, equacoesVolume_1 = equacoesVolume;
+                    _g.label = 12;
+                case 12:
+                    if (!(_f < equacoesVolume_1.length)) return [3 /*break*/, 15];
+                    eqVolume = equacoesVolume_1[_f];
+                    return [4 /*yield*/, prisma.equacaoVolume.create({
+                            data: __assign(__assign({}, eqVolume), { empresa: {
+                                    connect: {
+                                        id: empresa.id
+                                    }
+                                } })
+                        })];
+                case 13:
+                    equacaoVolume = _g.sent();
+                    console.log("Created user Equa\u00E7\u00E3o Volume with id: " + equacaoVolume.id);
+                    _g.label = 14;
+                case 14:
+                    _f++;
+                    return [3 /*break*/, 12];
+                case 15:
                     console.log("Seeding finished.");
                     return [2 /*return*/];
             }

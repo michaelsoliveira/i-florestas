@@ -1,0 +1,19 @@
+{
+    "name": "iflorestas",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "start": "docker-compose up",
+        "build": "docker-compose build",
+        "stop": "docker-compose down",
+        "clean": "npm run clean:images && npm run clean:volumes",
+        "clean:images": "docker system prune -af",
+        "clean:volumes": "docker volume prune -f",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "generate": "docker exec -it backend npx prisma generate",
+        "migrate": "docker exec -it backend npx prisma migrate dev",
+        "seed": "docker exec -it backend npx prisma db seed"
+    },
+    "author": "",
+    "license": "ISC"
+}

@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../bomanejo-web"
+		},
+		{
+			"path": "../bomanejo-client"
+		},
+		{
+			"path": "../laravel-nuxt-sanctum"
+		}
+	],
+	"settings": {
+		"compile-hero.disable-compile-files-on-did-save-code": false
+	}
+}

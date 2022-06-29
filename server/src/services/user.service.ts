@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { DataStoredInToken } from "src/interfaces/DataStoredInToken"
 import { getRepository, Repository, getConnection } from "typeorm"
 import { User } from "../entities/User"

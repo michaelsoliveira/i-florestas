@@ -136,9 +136,9 @@ export class UserController {
         const createUserACLService = new CreateUserACLService();
 
         const result = await createUserACLService.execute({
-        id,
-        permissions,
-        roles,
+            id,
+            permissions,
+            roles,
         });
 
         if (result instanceof Error) {

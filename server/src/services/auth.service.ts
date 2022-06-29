@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import { getRepository } from "typeorm"
 import { User } from "../entities/User"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { response } from "express"
 import { DataStoredInToken } from "src/interfaces/DataStoredInToken"
 import { RefreshToken } from "../entities/RefreshToken"

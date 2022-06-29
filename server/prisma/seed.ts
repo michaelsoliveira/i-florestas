@@ -1,5 +1,5 @@
 import { PrismaClient, Prisma } from '@prisma/client'
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
@@ -180,65 +180,65 @@ async function main() {
     console.log(`Created estado with id: ${estado.id}`)
   }
 
-    // const user = await prisma.user.create({
-    //   data: {
-    //         username: 'michaelsoliveira',
-    //         email: 'michaelsoliveira@gmail.com',
-    //         password: await bcrypt.hash('Fms237691', 10)
-    //     },
-    // })
-    // console.log(`Created user admin with id: ${user.id}`)
+    const user = await prisma.user.create({
+      data: {
+            username: 'michaelsoliveira',
+            email: 'michaelsoliveira@gmail.com',
+            password: await bcrypt.hash('Fms237691', 10)
+        },
+    })
+    console.log(`Created user admin with id: ${user.id}`)
 
-    // const empresa = await prisma.empresa.create({
-    //     data: {
-    //         nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
-    //         razao_social: 'iFlorestas SA',
-    //         endereco: 'BR 210',
-    //         municipio: 'Macapá',
-    //         empresa_users: {
-    //             create: [
-    //                 {
-    //                     users: {
-    //                         connect: {
-    //                             id: user.id
-    //                         }
-    //                     }
-    //                 }
-    //             ]
-    //         }
-    //     }
-    // })
+    const empresa = await prisma.empresa.create({
+        data: {
+            nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
+            razao_social: 'iFlorestas SA',
+            endereco: 'BR 210',
+            municipio: 'Macapá',
+            empresa_users: {
+                create: [
+                    {
+                        users: {
+                            connect: {
+                                id: user.id
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    })
     
-    // console.log(`Empresa ${empresa.nome_fantasia} criada com o id: ${empresa.id}`)
+    console.log(`Empresa ${empresa.nome_fantasia} criada com o id: ${empresa.id}`)
 
-    // for (const eqModelo of equacoesModelo) {
-    //   const equacaoModelo = await prisma.equacaoModelo.create({
-    //     data: {
-    //       ...eqModelo,
-    //       empresa: {
-    //         connect: {
-    //           id: empresa.id
-    //         }
-    //       }
-    //     },
-    //   })
-    //   console.log(`Created user Equação Modelo with id: ${equacaoModelo.id}`)
-    // }
+    for (const eqModelo of equacoesModelo) {
+      const equacaoModelo = await prisma.equacaoModelo.create({
+        data: {
+          ...eqModelo,
+          empresa: {
+            connect: {
+              id: empresa.id
+            }
+          }
+        },
+      })
+      console.log(`Created user Equação Modelo with id: ${equacaoModelo.id}`)
+    }
 
-    // for (const eqVolume of equacoesVolume) {
-    //   const equacaoVolume = await prisma.equacaoVolume.create({
-    //     data: {
-    //       ...eqVolume,
-    //       empresa: {
-    //         connect: {
-    //           id: empresa.id
-    //         }
-    //       }
-    //     },
+    for (const eqVolume of equacoesVolume) {
+      const equacaoVolume = await prisma.equacaoVolume.create({
+        data: {
+          ...eqVolume,
+          empresa: {
+            connect: {
+              id: empresa.id
+            }
+          }
+        },
         
-    //   })
-    //   console.log(`Created user Equação Volume with id: ${equacaoVolume.id}`)
-    // }
+      })
+      console.log(`Created user Equação Volume with id: ${equacaoVolume.id}`)
+    }
   
   console.log(`Seeding finished.`)
 }

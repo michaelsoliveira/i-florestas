@@ -1,0 +1,75 @@
+version: '3.7'
+services:
+  postgres:
+    container_name: postgres
+    ports:
+      - '5433:5432'
+    image: postgis/postgis
+    restart: always
+    environment:
+      POSTGRES_DB: bomanejo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    depends_on:
+      - postgres
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    restart: unless-stopped
+  prisma:
+    depends_on:
+      - postgres
+    container_name: prisma
+    ports:
+      - '5555:5555'
+    build:
+      context: server/prisma
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_URL: ${POSTGRES_URL}
+    volumes:
+      - /app/prisma
+  backend:
+    depends_on:
+      - postgres
+    container_name: backend
+    ports:
+      - '3333:3333'
+    build:
+      context: server
+      dockerfile: Dockerfile
+      args:
+        - POSTGRES_URL=${POSTGRES_URL}
+    environment:
+      POSTGRES_URL: ${POSTGRES_URL}
+      FRONTEND_URL: ${FRONTEND_URL}
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+      - /app/prisma
+  frontend:
+    container_name: frontend
+    ports:
+      - '3000:3000'
+    build:
+      context: client
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_URL: ${BACKEND_URL}
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  pgdata:
+  pgadmindata:

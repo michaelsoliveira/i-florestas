@@ -50,7 +50,7 @@ exports.__esModule = true;
 var jsonwebtoken_1 = require("jsonwebtoken");
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entities/User");
-var bcrypt_1 = require("bcrypt");
+var bcryptjs_1 = require("bcryptjs");
 var RefreshToken_1 = require("../entities/RefreshToken");
 var dayjs_1 = require("dayjs");
 var config = require("../config");
@@ -72,7 +72,8 @@ var AuthService = /** @class */ (function () {
                                 "users.id",
                                 "users.username",
                                 "users.password",
-                                "users.email"
+                                "users.email",
+                                "users.image"
                             ])
                                 .where("users.email = :email", { email: email })
                                 .getOne()];
@@ -80,7 +81,7 @@ var AuthService = /** @class */ (function () {
                         user = _b.sent();
                         if (!user)
                             throw new Error("Usuário informado não existe na base de dados");
-                        return [4 /*yield*/, bcrypt_1["default"].compareSync(password, user.password)];
+                        return [4 /*yield*/, bcryptjs_1["default"].compareSync(password, user.password)];
                     case 3:
                         passwordMatch = _b.sent();
                         if (!passwordMatch) {
@@ -102,7 +103,7 @@ var AuthService = /** @class */ (function () {
                                     id: user.id,
                                     username: user.username,
                                     email: user.email,
-                                    image: '',
+                                    image: user.image,
                                     access_token: access_token,
                                     expires_in: expires_in,
                                     refresh_token: refresh_token
