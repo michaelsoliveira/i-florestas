@@ -21,7 +21,7 @@ var useClient = function (options) {
     // const handleError = useErrorHandler();
     return react_2.useMemo(function () {
         var api = axios_1["default"].create({
-            baseURL: 'http://192.168.1.105:3333',
+            baseURL: 'http://localhost:3333',
             headers: __assign({ Authorization: token ? "Bearer " + token : '' }, ((options === null || options === void 0 ? void 0 : options.headers) ? options.headers : {}))
         });
         api.interceptors.response.use(function (response) {

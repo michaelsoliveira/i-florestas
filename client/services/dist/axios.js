@@ -11,6 +11,7 @@ function apiClient(ctx) {
     api.interceptors.response.use(function (response) {
         return response;
     }, function (error) {
+        console.log(error);
         var status = error.response.status;
         if (status === 401) {
             console.log(error.response);

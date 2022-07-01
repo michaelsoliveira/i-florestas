@@ -10,7 +10,7 @@ const useClient = (options?: any) => {
 
   return useMemo(() => {
     const api = axios.create({
-      baseURL: 'http://192.168.1.105:3333',
+      baseURL: 'http://localhost:3333',
         headers: {
             Authorization: token ? `Bearer ${token}` : '',
             ...(options?.headers ? options.headers : {})
@@ -21,6 +21,7 @@ const useClient = (options?: any) => {
     api.interceptors.response.use(response => {
         return response
     }, error => {
+      
         const { status } = error.response
         
         if (status === 401) {

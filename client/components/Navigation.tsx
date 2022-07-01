@@ -38,7 +38,7 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
     // const { data: session, status } = useSession()
     const router = useRouter()
 
-    const [navigation, setNavigation] = useState<NavigationType[]>([])
+    const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
     const [sticky, setSticky] = useState(false)
 
     const handleScroll = () => {
@@ -75,30 +75,48 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
         if (href) router.push(href)
     }
 
-    const checkCurrentNavigation = useCallback(() => {
+    // const checkCurrentNavigation = useCallback(() => {
             
+    //         defaultNavigation?.map((nav: NavigationType, indexParent: number) => {
+    //             if (nav?.subMenuItems) {
+    //                 if (router.pathname === nav.href) {
+    //                     return changeCurrentParent(indexParent)
+    //                 }
+    //                 nav.subMenuItems?.map((subMenu: SubMenuType, index: number) => {
+    //                     if (router.pathname === subMenu.href) {
+    //                         return changeCurrentParent(indexParent)
+    //                     }
+    //                 })
+    //             }
+    //         })
+        
+    // }, [changeCurrentParent, defaultNavigation, router.pathname])
+    
+
+    useEffect(() => {
+        function checkCurrentNavigation() {
             defaultNavigation?.map((nav: NavigationType, indexParent: number) => {
                 if (nav?.subMenuItems) {
                     if (router.pathname === nav.href) {
-                        return changeCurrentParent(indexParent)
+                        changeCurrentParent(indexParent)
                     }
                     nav.subMenuItems?.map((subMenu: SubMenuType, index: number) => {
                         if (router.pathname === subMenu.href) {
-                            return changeCurrentParent(indexParent)
+                            changeCurrentParent(indexParent)
                         }
                     })
                 }
             })
-        
-    }, [changeCurrentParent, defaultNavigation, router.pathname])
-    
-
-    useEffect(() => {
-        setNavigation(defaultNavigation)
-        if (session) {
-            checkCurrentNavigation()
         }
-    }, [checkCurrentNavigation, defaultNavigation, session])
+        async function loadNavigation() {
+            if (session) {
+                checkCurrentNavigation()
+            }
+        }
+
+        loadNavigation()
+
+    }, [defaultNavigation, router.pathname, session])
 
     return (
         <Disclosure as="nav" className={classNames(

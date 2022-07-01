@@ -67,6 +67,7 @@ class EmpresaService {
     }
 
     async getAll() {
+        
         const response = await apiClient().get(`/empresa`, this.headers)
         
                 .then((response: any) => {

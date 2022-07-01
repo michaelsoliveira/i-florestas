@@ -56,6 +56,7 @@ var empresa_1 = require("../../services/empresa");
 var alert_1 = require("../../services/alert");
 var react_2 = require("next-auth/react");
 var AuthContext_1 = require("../../contexts/AuthContext");
+var Empresa_module_scss_1 = require("styles/Empresa.module.scss");
 var Empresa = function (_a) {
     var _b, _c, _d, _e, _f, _g, _h;
     var id = _a.id;
@@ -174,55 +175,55 @@ var Empresa = function (_a) {
                             React.createElement("div", { className: "px-4 py-5 bg-white sm:p-6" },
                                 React.createElement("div", { className: "grid grid-cols-6 gap-6" },
                                     React.createElement("div", { className: "col-span-6 sm:col-span-3" },
-                                        React.createElement("label", { htmlFor: "razaoSocial", className: "field-label" }, "*Raz\u00E3o Social"),
+                                        React.createElement("label", { htmlFor: "razaoSocial", className: Empresa_module_scss_1["default"].fieldLabel }, "*Raz\u00E3o Social"),
                                         React.createElement("input", __assign({}, register('razaoSocial'), { 
                                             // value={state.razaoSocial}
                                             // onChange={handleChange}
-                                            required: true, name: "razaoSocial", type: "text", id: "razacaoSocial", className: "field-text" })),
+                                            required: true, name: "razaoSocial", type: "text", id: "razacaoSocial", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_b = errors.razaoSocial) === null || _b === void 0 ? void 0 : _b.message)),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-3" },
-                                        React.createElement("label", { htmlFor: "nomeFantasia", className: "field-label" }, "Nome Fantasia"),
+                                        React.createElement("label", { htmlFor: "nomeFantasia", className: Empresa_module_scss_1["default"].fieldLabel }, "Nome Fantasia"),
                                         React.createElement("input", __assign({}, register('nomeFantasia'), { 
                                             // value={state.nomeFantasia}
                                             // onChange={handleChange}
-                                            type: "text", name: "nomeFantasia", id: "nomeFantasia", className: "field-text" })),
+                                            type: "text", name: "nomeFantasia", id: "nomeFantasia", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_c = errors.nomeFantasia) === null || _c === void 0 ? void 0 : _c.message)),
-                                    React.createElement("div", { className: "col-span-6 sm:col-span-3" },
-                                        React.createElement("label", { htmlFor: "nomeFantasia", className: "field-label" }, "CNPJ"),
+                                    React.createElement("div", { className: "col-span-6 sm:col-span-3 w-48" },
+                                        React.createElement("label", { htmlFor: "nomeFantasia", className: Empresa_module_scss_1["default"].fieldLabel }, "CNPJ"),
                                         React.createElement("input", __assign({}, register('cnpj'), { 
                                             // value={state.nomeFantasia}
                                             // onChange={handleChange}
-                                            type: "text", name: "cnpj", id: "cnpj", className: "field-text w-64" })),
+                                            type: "text", name: "cnpj", id: "cnpj", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_d = errors.cnpj) === null || _d === void 0 ? void 0 : _d.message)),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-3" },
-                                        React.createElement("label", { htmlFor: "respTecnico", className: "field-label" }, "Registro Ambiental"),
+                                        React.createElement("label", { htmlFor: "respTecnico", className: Empresa_module_scss_1["default"].fieldLabel }, "Registro Ambiental"),
                                         React.createElement("input", __assign({}, register('regAmbiental'), { 
                                             // value={state.respTecnico}
                                             // onChange={handleChange}
-                                            type: "text", name: "regAmbiental", id: "regAmbiental", className: "field-text" })),
+                                            type: "text", name: "regAmbiental", id: "regAmbiental", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_e = errors.regAmbiental) === null || _e === void 0 ? void 0 : _e.message)),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-4" },
-                                        React.createElement("label", { htmlFor: "respTecnico", className: "field-label" }, "Respons\u00E1vel T\u00E9cnico"),
+                                        React.createElement("label", { htmlFor: "respTecnico", className: Empresa_module_scss_1["default"].fieldLabel }, "Respons\u00E1vel T\u00E9cnico"),
                                         React.createElement("input", __assign({}, register('respTecnico'), { 
                                             // value={state.respTecnico}
                                             // onChange={handleChange}
-                                            type: "text", name: "respTecnico", id: "respTecnico", className: "field-text" })),
+                                            type: "text", name: "respTecnico", id: "respTecnico", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_f = errors.respTecnico) === null || _f === void 0 ? void 0 : _f.message)),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-2" },
-                                        React.createElement("label", { htmlFor: "creaResp", className: "field-label" }, "CREA Respons\u00E1vel"),
+                                        React.createElement("label", { htmlFor: "creaResp", className: Empresa_module_scss_1["default"].fieldLabel }, "CREA Respons\u00E1vel"),
                                         React.createElement("input", __assign({}, register('creaResp'), { 
                                             // value={state.respTecnico}
                                             // onChange={handleChange}
-                                            type: "text", name: "creaResp", id: "creaResp", className: "field-text" })),
+                                            type: "text", name: "creaResp", id: "creaResp", className: Empresa_module_scss_1["default"].fieldText })),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_g = errors.creaResp) === null || _g === void 0 ? void 0 : _g.message)),
-                                    React.createElement("div", { className: "col-span-6" },
-                                        React.createElement("label", { htmlFor: "CEP", className: "field-label" }, "CEP"),
-                                        React.createElement("input", __assign({}, register('cep'), { type: "text", name: "cep", id: "cep", className: "field-text w-48 lg:w-48" }))),
+                                    React.createElement("div", { className: "col-span-6 w-48 lg:w-48" },
+                                        React.createElement("label", { htmlFor: "CEP", className: Empresa_module_scss_1["default"].fieldLabel }, "CEP"),
+                                        React.createElement("input", __assign({}, register('cep'), { type: "text", name: "cep", id: "cep", className: Empresa_module_scss_1["default"].fieldText }))),
                                     React.createElement("div", { className: "col-span-4" },
-                                        React.createElement("label", { htmlFor: "street_address", className: "field-label" }, "Endere\u00E7o"),
-                                        React.createElement("input", __assign({}, register('endereco'), { type: "text", name: "endereco", id: "endereco", className: "field-text" }))),
+                                        React.createElement("label", { htmlFor: "street_address", className: Empresa_module_scss_1["default"].fieldLabel }, "Endere\u00E7o"),
+                                        React.createElement("input", __assign({}, register('endereco'), { type: "text", name: "endereco", id: "endereco", className: Empresa_module_scss_1["default"].fieldText }))),
                                     React.createElement("div", { className: "col-span-2 sm:col-span-2" },
-                                        React.createElement("label", { htmlFor: "country", className: "field-label" }, "Estado"),
+                                        React.createElement("label", { htmlFor: "country", className: Empresa_module_scss_1["default"].fieldLabel }, "Estado"),
                                         React.createElement("select", __assign({}, register('estado'), { id: "estado", name: "estado", className: "mt-1 relative flex w-24 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" }),
                                             React.createElement("option", null, "AP"),
                                             React.createElement("option", null, "BA"),
@@ -230,11 +231,11 @@ var Empresa = function (_a) {
                                             React.createElement("option", null, "MA")),
                                         React.createElement("p", { className: 'text-sm text-red-500 mt-1' }, (_h = errors.estado) === null || _h === void 0 ? void 0 : _h.message)),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-6 lg:col-span-3" },
-                                        React.createElement("label", { htmlFor: "cidade", className: "field-label" }, "Cidade"),
-                                        React.createElement("input", __assign({}, register('municipio'), { type: "text", name: "municipio", id: "municipio", className: "field-text" }))),
+                                        React.createElement("label", { htmlFor: "cidade", className: Empresa_module_scss_1["default"].fieldLabel }, "Cidade"),
+                                        React.createElement("input", __assign({}, register('municipio'), { type: "text", name: "municipio", id: "municipio", className: Empresa_module_scss_1["default"].fieldText }))),
                                     React.createElement("div", { className: "col-span-6 sm:col-span-3 lg:col-span-3" },
-                                        React.createElement("label", { htmlFor: "complemento", className: "field-label" }, "Complemento"),
-                                        React.createElement("input", __assign({}, register('complemento'), { type: "text", name: "complemento", id: "complemento", className: "field-text" }))))),
+                                        React.createElement("label", { htmlFor: "complemento", className: Empresa_module_scss_1["default"].fieldLabel }, "Complemento"),
+                                        React.createElement("input", __assign({}, register('complemento'), { type: "text", name: "complemento", id: "complemento", className: Empresa_module_scss_1["default"].fieldText }))))),
                             React.createElement("div", { className: "px-4 py-3 bg-gray-50 text-right sm:px-6" },
                                 React.createElement("button", { type: "submit", className: "inline-flex w-40 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease duration-200" }, "Salvar")))))))));
 };

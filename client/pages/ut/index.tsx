@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
-import Index from "components/upa/Index"
+import Index from "components/ut/Index"
 
 const UtIndex = () => {
     const { client } = useContext(AuthContext)
@@ -15,32 +15,32 @@ const UtIndex = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUpas, setCurrentUpas] = useState<UpaType[]>([])
-    const [totalPages, setTotalPages] = useState(0)
+    const [currentUts, setCurrentUts] = useState<UpaType[]>([])
     const [orderBy, setOrderBy] = useState('descricao')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const umf = useAppSelector((state: RootState) => state.umf)
+    const upa = useAppSelector((state: RootState) => state.upa)
     const dispatch = useAppDispatch()
     const router = useRouter()
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const loadUpas = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
+    const loadUts = useCallback(async (itemsPerPage = 1, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : itemsPerPage
         setCurrentPage(currentPagePagination)
-        const url = `/upa?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}&umf=${umf.id}`
+        const url = `/ut?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}&upa=${upa.id}`
         
         const { data } = await client.get(url)
         
         setTotalItems(data?.count)
-        setCurrentUpas(data?.upas)
+        setCurrentUts(data?.uts)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, umf.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, upa.id])
 
     useEffect(() => {  
-        loadUpas(itemsPerPage)
-    }, [itemsPerPage, loadUpas])
+        loadUts(itemsPerPage)
+    }, [itemsPerPage, loadUts])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -51,10 +51,10 @@ const UtIndex = () => {
             totalPages,
             orderBy,
             order,
-            umf,
+            upa,
             search
         } = paginatedData
-        const url = `/upa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}&search=${search}`
+        const url = `/ut?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&upa=${upa}&search=${search}`
 
         if (search) {
             
@@ -67,7 +67,7 @@ const UtIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/upa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}`)
+            var { data } = await client.get(`/ut?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&upa=${upa}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -83,8 +83,7 @@ const UtIndex = () => {
         setOrderBy(orderBy)
         setOrder(order)
         setTotalItems(data?.count)
-        setCurrentUpas(data?.upas)
-        setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
+        setCurrentUts(data?.uts)
     }
 
     const changeItemsPerPage = (value: number) => {
@@ -100,9 +99,9 @@ const UtIndex = () => {
     return (
     <div>
         <Index
-            currentUpas={currentUpas}
+            currentUts={currentUts}
             loading={loading}
-            loadUpas={loadUpas}
+            loadUts={loadUts}
             currentPage={currentPage}
             orderBy={orderBy}
             order={order}

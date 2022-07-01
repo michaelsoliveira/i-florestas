@@ -1,6 +1,6 @@
 import { apiClient } from "./axios"
 
-import type { User } from "./auth"
+import authHeader from "./auth-header"
 
 export type UserData = {
     email: string;
@@ -8,6 +8,7 @@ export type UserData = {
     password: string;
     provider: string;
     idProvider: string;
+    image: string;
 }
 
 export type ResponseData = {
@@ -18,6 +19,17 @@ export type ResponseData = {
 
 export async function create(dataRequest: UserData) : Promise<ResponseData> {
     const { data } = await apiClient().post('users/create', dataRequest)
+        return {
+            data: data.user,
+            errorMessage: data.errorMessage,
+            error: data.error
+        }
+}
+
+export async function update(id:string, dataRequest: UserData) : Promise<ResponseData> {
+    
+    const { provider, headers } = await authHeader()
+    const { data } = await apiClient().put(`/users/${id}`, dataRequest, headers)
         return {
             data: data.user,
             errorMessage: data.errorMessage,
@@ -37,17 +49,19 @@ export async function sendEmail(dataResponse: any): Promise<void> {
     return data
 }
 
-export async function findByProvider(provider: string, user: any): Promise<any> {
-    
-    const response = await apiClient().get(`/provider/find?provider=${provider}&idProvider=${user.id}`)
-    
+export async function findProvider(email: string): Promise<any> {
+    const { provider, headers } = await authHeader()
+    // const response = await apiClient().get(`/provider/find?provider=${provider}&idProvider=${user.id}`)
+    const response = await apiClient().get(`/users/provider/find-by-email?email=${email}`, headers)
+    console.log(response.data)
     return response.data
 }
 
 const UserService = {
     create,
     sendEmail,
-    findByProvider
+    findProvider,
+    update
 }
 
 export default UserService

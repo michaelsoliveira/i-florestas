@@ -188,8 +188,8 @@ var Index = function (_a) {
         var sortedUpas = [];
         sortedUpas = filteredUpa.sort(function (a, b) {
             return sorted
-                ? a.nome.toLowerCase().localeCompare(b.descricao.toLowerCase())
-                : b.nome.toLowerCase().localeCompare(a.descricao.toLowerCase());
+                ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
+                : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         });
         setSorted(!sorted);
         setFilteredUpa(sortedUpas);

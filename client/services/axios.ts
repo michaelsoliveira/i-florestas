@@ -13,9 +13,11 @@ export function apiClient(ctx?: any) {
         // withCredentials: true
     })
 
+
     api.interceptors.response.use(response => {
         return response
     }, error => {
+        console.log(error)
         const { status } = error.response
         if (status === 401) {
             console.log(error.response)

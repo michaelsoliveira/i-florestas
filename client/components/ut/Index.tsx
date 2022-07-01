@@ -5,27 +5,53 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
-import { UpaType } from "../../services/upa"
+import { UtType } from "../../services/ut"
 import { OptionType, Select } from '../Select'
-import { setUmf } from "../../store/umfSlice"
+import { setUmf, UmfType } from "../../store/umfSlice"
+import { setUpa } from "../../store/upaSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 
-const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
+const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUts }: any) => {
     
-    const [filteredUpa, setFilteredUpa] = useState<UpaType[]>(currentUpas)
-    const [selectedUpa, setSelectedUpa] = useState<UpaType>()
+    const [filteredUts, setFilteredUts] = useState<UtType[]>(currentUts)
+    const [selectedUt, setSelectedUt] = useState<UtType>()
     const [uploading, setUploading] = useState<boolean>(false)
     const [removeSingleModal, setOpenSingleModal] = useState<boolean>(false)
     const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
-    const [checkedUpas, setCheckedUpas] = useState<any>([])
+    const [checkedUts, setCheckedUts] = useState<any>([])
     const [sorted, setSorted] = useState(false)
     const [umfs, setUmfs] = useState<any>()
+    const [upas, setUpas] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
+    const upa = useAppSelector((state: RootState) => state.upa)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
+    
+    const [selectedUpa, setSelectedUpa] = useState<OptionType>()
+
     const dispatch = useAppDispatch()
     
+
+    const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
+        const data = response.data
+
+        console.log(data)
+        
+        callback(data?.map((upa: any) => ({
+            value: upa.id,
+            label: upa.descricao
+        })))
+    }
+
+    const defaultUpasOptions = useCallback(async() => {
+        const umfId = umf.id
+        const response = umf ? await client.get(`/upa?orderBy=nome&order=asc&umf=${umfId}`) : await client.get(`/upa?orderBy=nome&order=asc`)
+        const { upas } = response.data
+
+        setUpas(upas)
+    }, [client, umf])
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
@@ -38,20 +64,40 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     useEffect(() => {
-        async function defaultOptions() {
+
+        async function defaultUmfsOptions() {
             const response = await client.get(`/umf?orderBy=nome&order=asc`)
                 const { umfs } = response.data
                 setUmfs(umfs)
+        }
+
+        async function defaultUpasOptions() {
+            const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.id}`)
+                const { upas } = response.data
+                setUpas(upas)
+                if (upas.length == 0) {
+                    setSelectedUpa({
+                        value: '0',
+                        label: 'Sem UPAs'
+                    })
+                } 
         }
 
         if (umf) setSelectedUmf({
             value: umf.id,
             label: umf.nome
         })
+
+        if (upa) setSelectedUpa({
+            value: upa.id,
+            label: upa.descricao
+        })
         
-        defaultOptions()
-        setFilteredUpa(currentUpas)
-    }, [currentUpas, currentPage, client, umf])
+        
+        defaultUmfsOptions()
+        defaultUpasOptions()
+        setFilteredUts(currentUts)
+    }, [currentUts, currentPage, client, umf, upa])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -59,10 +105,25 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
             nome: umf.label
         }))
         setSelectedUmf(umf)
-        const response = await client.get(`/upa?orderBy=nome&order=asc&umf=${umf.value}`)
+
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
         const { upas } = response.data
         
-        setFilteredUpa(upas)
+        setUpas(upas)
+        // setFilteredUts(upas)
+    }
+
+    const selectUpa = async (upa: any) => {
+        dispatch(setUpa({
+            id: upa.value,
+            descricao: upa.label
+        }))
+        setSelectedUpa(upa)
+        
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa.value}`)
+        const { uts } = response.data
+        
+        setFilteredUts(uts)
     }
 
     function getUmfsDefaultOptions() {
@@ -74,20 +135,29 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         })
     }
 
+    function getUpasDefaultOptions() {
+        return upas?.map((upa: any) => {
+            return {
+                label: upa.descricao,
+                value: upa.id
+            }
+        })
+    }
+
     function toogleDeleteModal(id?: string) {
         if (id) {
-            const upa = currentUpas.find((upa: UpaType) => upa.id === id)
-            setSelectedUpa(upa)
+            const ut = currentUts.find((ut: UtType) => ut.id === id)
+            setSelectedUt(ut)
         }
         setOpenSingleModal(true)
     }
 
     async function deleteUmf(id?: string) {
         try {
-            client.delete(`/upa/single/${id}`)
+            client.delete(`/ut/single/${id}`)
                 .then(() => {
-                    alertService.success('A UPA foi deletada com SUCESSO!!!')
-                    loadUpas()
+                    alertService.success('A UT foi deletada com SUCESSO!!!')
+                    loadUts()
                     setOpenSingleModal(false)
                 })
         } catch (error) {
@@ -104,50 +174,50 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
             search: query
         }
         onPageChanged({
-            umf: umf.id,
+            upa: upa.id,
             ...paginatedData
         })
     }
 
     const sortUpas = () => {
         let sortedUpas: any = []        
-        sortedUpas = filteredUpa.sort((a: any, b: any) => {
+        sortedUpas = filteredUts.sort((a: any, b: any) => {
             return sorted
-                ? a.nome.toLowerCase().localeCompare(b.descricao.toLowerCase())
-                : b.nome.toLowerCase().localeCompare(a.descricao.toLowerCase());
+                ? a.numero_ut.localeCompare(b.numero_ut)
+                : b.numero_ut.localeCompare(a.numero_ut);
         })
         
         setSorted(!sorted)
-        setFilteredUpa(sortedUpas)    
+        setFilteredUts(sortedUpas)    
     }
 
     const handleSelectUpa = (evt: any) => {
         const upaId = evt.target.value
 
-        if (!checkedUpas.includes(upaId)) {
-            setCheckedUpas([...checkedUpas, upaId])
+        if (!checkedUts.includes(upaId)) {
+            setCheckedUts([...checkedUts, upaId])
         } else {
-            setCheckedUpas(checkedUpas.filter((checkedUpaId: any) => {
+            setCheckedUts(checkedUts.filter((checkedUpaId: any) => {
                 return checkedUpaId !== upaId
             }))
         }
     }
 
     const handleSelectAllUpas = () => {
-        if (checkedUpas?.length < currentUpas?.length) {
-            setCheckedUpas(currentUpas.map(({ id }: any) => id));
+        if (checkedUts?.length < currentUts?.length) {
+            setCheckedUts(currentUts.map(({ id }: any) => id));
         } else {
-            setCheckedUpas([]);
+            setCheckedUts([]);
         }
     };
 
-    const deleteUpas = async () => {
+    const deleteUts = async () => {
         try {
-            await client.delete('/upa/multiples', { data: { ids: checkedUpas} })
+            await client.delete('/ut/multiples', { data: { ids: checkedUts} })
                 .then((response: any) => {
-                    setCheckedUpas([])
-                    alertService.success('As UPAs foram deletadas com SUCESSO!!!')
-                    loadUpas()  
+                    setCheckedUts([])
+                    alertService.success('As Uts foram deletadas com SUCESSO!!!')
+                    loadUts()  
                     setOpenMultipleModal(false)
                 })
         } catch (error) {
@@ -158,7 +228,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     return (
         <div>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Unidade de Planejamento Anual</h1>
+                <h1 className="font-medium text-2xl font-roboto text-white">Unidades de Trabalho</h1>
                 <Link
                     href='/upa/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
@@ -185,9 +255,9 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
-                            <div className="w-3/12 flex items-center">UMF: </div>
-                            <div className="w-9/12">
+                        <div className="lg:flex lg:flex-col lg:w-8/12 px-4 space-y-4">
+                            {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
+                            <div>
                                 <Select
                                     initialData={
                                         {
@@ -198,15 +268,31 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                     selectedValue={selectedUmf}
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
-                                    // label="Volume da Árvore"
+                                    label="UMF:"
                                     callback={selectUmf}
                                 />
                             </div>
+                            {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UPA...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUpa}
+                                    defaultOptions={getUpasDefaultOptions()}
+                                    options={loadUpas}
+                                    label="UPA:"
+                                    callback={selectUpa}
+                                />
+                            </div>
                         </div>
-                        <div className="w-60 px-4">Pesquisar UPA:</div>
+                        <div className="w-72 px-4 lg:mt-0 mt-4">Pesquisar UT:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Upa"
+                                label="Pesquisar UT"
                                 id="search"
                                 name="search"
                                 onChange={(e: any) => handleSearch(e.target.value)}
@@ -218,7 +304,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     </div>
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedUpas.length > 0 && (
+                            {checkedUts.length > 0 && (
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
@@ -234,7 +320,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             <th className="w-1/12">
                                 <div className="flex justify-center">
                                 <input  
-                                    checked={checkedUpas?.length === currentUpas?.length}
+                                    checked={checkedUts?.length === currentUts?.length}
                                     onChange={handleSelectAllUpas}                
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                                 />
@@ -254,9 +340,9 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </th>
                             <th
                                 scope="col"
-                                className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Descrição
+                                Número UT
                             </th>
                             <th
                                 scope="col"
@@ -276,12 +362,12 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUpa?.map((upa: UpaType) => (
+                        {filteredUts?.map((ut: UtType) => (
                         <tr key={upa.id}>
                             <td className="flex justify-center">
                                 <input                 
-                                    value={upa?.id}
-                                    checked={checkedUpas.includes(upa?.id)}
+                                    value={ut?.id}
+                                    checked={checkedUts.includes(ut?.id)}
                                     onChange={handleSelectUpa}
                                     id="upaId"
                                     type="checkbox"
@@ -290,20 +376,20 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{upa?.ano}</div>
+                                    <div className="text-sm font-medium text-gray-900">{ut?.numero_ut}</div>
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{upa?.descricao}</div>
+                                <div className="text-sm text-gray-900">{ [ut?.latitude, ut?.longitude] }</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>Cartesiano X Y</div>) : (<div>GPS</div>) }</div>
+                                    <div className="text-sm text-gray-500">{ ut?.area_util }</div>
                                 </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.equacao_volume?.nome }</div>
+                                    <div className="text-sm text-gray-500">{ ut?.area_total }</div>
                                 </span>
                             </td>   
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
@@ -325,10 +411,10 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                 <Modal
                     className="w-full"
                     styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UPA"
+                    title="Deletar UT"
                     buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a UPA ${selectedUpa?.descricao}?`}
-                    data={selectedUpa}
+                    bodyText={`Tem certeza que seja excluir a UT ${selectedUt?.numero_ut}?`}
+                    data={selectedUt}
                     parentFunction={deleteUmf}
                     hideModal={() => setOpenSingleModal(false)}
                     open={removeSingleModal}
@@ -338,11 +424,11 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                 <Modal
                     className="w-full"
                     styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UMFs"
+                    title="Deletar UTs"
                     buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir as ${checkedUpas?.length} UPAs selecionados?`}
-                    data={checkedUpas}
-                    parentFunction={deleteUpas}
+                    bodyText={`Tem certeza que seja excluir as ${checkedUts?.length} UTs selecionados?`}
+                    data={checkedUts}
+                    parentFunction={deleteUts}
                     hideModal={() => setOpenMultipleModal(false)}
                     open={removeMultipleModal}
                 />}

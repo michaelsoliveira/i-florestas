@@ -1,23 +1,18 @@
 import authHeader from "./auth-header"
 import { apiClient } from "./axios"
+import { UpaType } from "./upa";
 
-export type SpatialRefSysType = {
-    srid: number;
-    srtext: string
-}
-
-export type EquacaoVolumeType = {
+export interface UtType {
     id: string;
-    nome: string;
-}
-
-export type UpaType = {
-    id: string;
-    descricao: string;
-    ano: number;
-    tipo: number;
-    spatial_ref_sys: SpatialRefSysType
-    equacao_volume: EquacaoVolumeType
+    numero_ut: number;
+    area_util: number;
+    area_total: number;
+    quantidade_faixas: number;
+    largura_faixas: number;
+    latitude: number;
+    longitude: number;
+    comprimento_faixas: number;
+    upa: UpaType;
 }
 
 export type ResponseData = {
@@ -26,9 +21,9 @@ export type ResponseData = {
     error: boolean
 }
 
-export async function create(dataRequest: UpaType): Promise<ResponseData> {
+export async function create(dataRequest: UtType): Promise<ResponseData> {
     const { provider, headers } = await authHeader()
-    const { data } = await apiClient().post(`/upa`, dataRequest, headers)
+    const { data } = await apiClient().post(`/ut`, dataRequest, headers)
         return {
             data: data.upa,
             message: data.message,
@@ -36,10 +31,10 @@ export async function create(dataRequest: UpaType): Promise<ResponseData> {
         }
 }
 
-export async function update(id: string, dataRequest: UpaType): Promise<ResponseData> {
+export async function update(id: string, dataRequest: UtType): Promise<ResponseData> {
     console.log(dataRequest)
     const { provider, headers } = await authHeader()
-    const { data } = await apiClient().put(`/upa/${id}`, dataRequest, headers)
+    const { data } = await apiClient().put(`/ut/${id}`, dataRequest, headers)
         return {
             data: data.upa,
             message: data.message,
@@ -49,11 +44,11 @@ export async function update(id: string, dataRequest: UpaType): Promise<Response
 
 export async function getAll() {
     const { provider, headers } = await authHeader()
-    const request = await apiClient().get(`/upa`, headers)
+    const request = await apiClient().get(`/ut`, headers)
             .then((response: any) => {
                 
                 const data = {
-                    data: response.data.upas,
+                    data: response.data.uts,
                     message: response.data.message,
                     error: response.data.error
                 }  
@@ -68,7 +63,7 @@ export async function getAll() {
 
 export async function getById(id: string): Promise<ResponseData> {
     const { provider, headers } = await authHeader()
-    const response = await apiClient().get(`/upa/${id}`, headers)
+    const response = await apiClient().get(`/ut/${id}`, headers)
     
         return {
             data: response.data,
@@ -79,10 +74,10 @@ export async function getById(id: string): Promise<ResponseData> {
 
 export async function _delete(id: string, ctx?: any): Promise<void>{
     const { provider, headers } = await authHeader()
-    await apiClient().delete(`/upa/${id}`, headers)
+    await apiClient().delete(`/ut/${id}`, headers)
 }
 
-const upaService = {
+const utService = {
     create,
     update,
     getById,
@@ -90,4 +85,4 @@ const upaService = {
     delete: _delete
 }
 
-export default upaService
+export default utService

@@ -113,8 +113,8 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         let sortedUpas: any = []        
         sortedUpas = filteredUpa.sort((a: any, b: any) => {
             return sorted
-                ? a.nome.toLowerCase().localeCompare(b.descricao.toLowerCase())
-                : b.nome.toLowerCase().localeCompare(a.descricao.toLowerCase());
+                ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
+                : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         })
         
         setSorted(!sorted)

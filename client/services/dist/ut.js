@@ -36,20 +36,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.findProvider = exports.sendEmail = exports.update = exports.create = void 0;
-var axios_1 = require("./axios");
+exports._delete = exports.getById = exports.getAll = exports.update = exports.create = void 0;
 var auth_header_1 = require("./auth-header");
+var axios_1 = require("./axios");
 function create(dataRequest) {
     return __awaiter(this, void 0, Promise, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.apiClient().post('users/create', dataRequest)];
+        var _a, provider, headers, data;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, auth_header_1["default"]()];
                 case 1:
-                    data = (_a.sent()).data;
+                    _a = _b.sent(), provider = _a.provider, headers = _a.headers;
+                    return [4 /*yield*/, axios_1.apiClient().post("/ut", dataRequest, headers)];
+                case 2:
+                    data = (_b.sent()).data;
                     return [2 /*return*/, {
-                            data: data.user,
-                            errorMessage: data.errorMessage,
+                            data: data.upa,
+                            message: data.message,
                             error: data.error
                         }];
             }
@@ -62,15 +65,17 @@ function update(id, dataRequest) {
         var _a, provider, headers, data;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, auth_header_1["default"]()];
+                case 0:
+                    console.log(dataRequest);
+                    return [4 /*yield*/, auth_header_1["default"]()];
                 case 1:
                     _a = _b.sent(), provider = _a.provider, headers = _a.headers;
-                    return [4 /*yield*/, axios_1.apiClient().put("/users/" + id, dataRequest, headers)];
+                    return [4 /*yield*/, axios_1.apiClient().put("/ut/" + id, dataRequest, headers)];
                 case 2:
                     data = (_b.sent()).data;
                     return [2 /*return*/, {
-                            data: data.user,
-                            errorMessage: data.errorMessage,
+                            data: data.upa,
+                            message: data.message,
                             error: data.error
                         }];
             }
@@ -78,50 +83,76 @@ function update(id, dataRequest) {
     });
 }
 exports.update = update;
-function sendEmail(dataResponse) {
-    return __awaiter(this, void 0, Promise, function () {
-        var email, name, password, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    email = dataResponse.email, name = dataResponse.username, password = dataResponse.password;
-                    return [4 /*yield*/, axios_1.apiClient().post('/users/send-email', {
-                            email: email,
-                            name: name,
-                            message: "Sua senha de acesso \u00E9: <b>" + password + "</b>"
-                        })];
+function getAll() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, provider, headers, request;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, auth_header_1["default"]()];
                 case 1:
-                    data = (_a.sent()).data;
-                    return [2 /*return*/, data];
+                    _a = _b.sent(), provider = _a.provider, headers = _a.headers;
+                    return [4 /*yield*/, axios_1.apiClient().get("/ut", headers)
+                            .then(function (response) {
+                            var data = {
+                                data: response.data.uts,
+                                message: response.data.message,
+                                error: response.data.error
+                            };
+                            return data;
+                        })["catch"](function (error) {
+                            return Promise.reject(error);
+                        })];
+                case 2:
+                    request = _b.sent();
+                    return [2 /*return*/, request];
             }
         });
     });
 }
-exports.sendEmail = sendEmail;
-function findProvider(email) {
+exports.getAll = getAll;
+function getById(id) {
     return __awaiter(this, void 0, Promise, function () {
         var _a, provider, headers, response;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, auth_header_1["default"]()
-                    // const response = await apiClient().get(`/provider/find?provider=${provider}&idProvider=${user.id}`)
-                ];
+                case 0: return [4 /*yield*/, auth_header_1["default"]()];
                 case 1:
                     _a = _b.sent(), provider = _a.provider, headers = _a.headers;
-                    return [4 /*yield*/, axios_1.apiClient().get("/users/provider/find-by-email?email=" + email, headers)];
+                    return [4 /*yield*/, axios_1.apiClient().get("/ut/" + id, headers)];
                 case 2:
                     response = _b.sent();
-                    console.log(response.data);
-                    return [2 /*return*/, response.data];
+                    return [2 /*return*/, {
+                            data: response.data,
+                            message: "",
+                            error: false
+                        }];
             }
         });
     });
 }
-exports.findProvider = findProvider;
-var UserService = {
+exports.getById = getById;
+function _delete(id, ctx) {
+    return __awaiter(this, void 0, Promise, function () {
+        var _a, provider, headers;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, auth_header_1["default"]()];
+                case 1:
+                    _a = _b.sent(), provider = _a.provider, headers = _a.headers;
+                    return [4 /*yield*/, axios_1.apiClient()["delete"]("/ut/" + id, headers)];
+                case 2:
+                    _b.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports._delete = _delete;
+var utService = {
     create: create,
-    sendEmail: sendEmail,
-    findProvider: findProvider,
-    update: update
+    update: update,
+    getById: getById,
+    getAll: getAll,
+    "delete": _delete
 };
-exports["default"] = UserService;
+exports["default"] = utService;

@@ -54,58 +54,61 @@ var AuthContext_1 = require("contexts/AuthContext");
 var hooks_1 = require("store/hooks");
 var paginationSlice_1 = require("store/paginationSlice");
 var router_1 = require("next/router");
-var Index_1 = require("components/upa/Index");
+var Index_1 = require("components/ut/Index");
 var UtIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _a = react_1.useState(false), loading = _a[0], setLoading = _a[1];
     var _b = react_1.useState(1), currentPage = _b[0], setCurrentPage = _b[1];
     var _c = react_1.useState(10), itemsPerPage = _c[0], setItemsPerPage = _c[1];
     var _d = react_1.useState(0), totalItems = _d[0], setTotalItems = _d[1];
-    var _e = react_1.useState([]), currentUpas = _e[0], setCurrentUpas = _e[1];
-    var _f = react_1.useState(0), totalPages = _f[0], setTotalPages = _f[1];
-    var _g = react_1.useState('descricao'), orderBy = _g[0], setOrderBy = _g[1];
-    var _h = react_1.useState('asc'), order = _h[0], setOrder = _h[1];
+    var _e = react_1.useState([]), currentUts = _e[0], setCurrentUts = _e[1];
+    var _f = react_1.useState('descricao'), orderBy = _f[0], setOrderBy = _f[1];
+    var _g = react_1.useState('asc'), order = _g[0], setOrder = _g[1];
     var pagination = hooks_1.useAppSelector(function (state) { return state.pagination; });
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
+    var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    var loadUpas = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
-        var currentPagePagination, url, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    setLoading(true);
-                    currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1;
-                    setCurrentPage(currentPagePagination);
-                    url = "/upa?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + pagination.perPage + "&orderBy=" + orderBy + "&order=" + order + "&umf=" + umf.id;
-                    return [4 /*yield*/, client.get(url)];
-                case 1:
-                    data = (_a.sent()).data;
-                    setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentUpas(data === null || data === void 0 ? void 0 : data.upas);
-                    setLoading(false);
-                    return [2 /*return*/];
-            }
+    var loadUts = react_1.useCallback(function (itemsPerPage, currentPage) {
+        if (itemsPerPage === void 0) { itemsPerPage = 1; }
+        return __awaiter(void 0, void 0, void 0, function () {
+            var currentPagePagination, url, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        setLoading(true);
+                        currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : itemsPerPage;
+                        setCurrentPage(currentPagePagination);
+                        url = "/ut?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + pagination.perPage + "&orderBy=" + orderBy + "&order=" + order + "&upa=" + upa.id;
+                        return [4 /*yield*/, client.get(url)];
+                    case 1:
+                        data = (_a.sent()).data;
+                        setTotalItems(data === null || data === void 0 ? void 0 : data.count);
+                        setCurrentUts(data === null || data === void 0 ? void 0 : data.uts);
+                        setLoading(false);
+                        return [2 /*return*/];
+                }
+            });
         });
-    }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, umf.id]);
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, upa.id]);
     react_1.useEffect(function () {
-        loadUpas(itemsPerPage);
-    }, [itemsPerPage, loadUpas]);
+        loadUts(itemsPerPage);
+    }, [itemsPerPage, loadUts]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
-        var name, currentPage, perPage, totalPages, orderBy, order, umf, search, url, data, data;
+        var name, currentPage, perPage, totalPages, orderBy, order, upa, search, url, data, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    name = paginatedData.name, currentPage = paginatedData.currentPage, perPage = paginatedData.perPage, totalPages = paginatedData.totalPages, orderBy = paginatedData.orderBy, order = paginatedData.order, umf = paginatedData.umf, search = paginatedData.search;
-                    url = "/upa?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&umf=" + umf + "&search=" + search;
+                    name = paginatedData.name, currentPage = paginatedData.currentPage, perPage = paginatedData.perPage, totalPages = paginatedData.totalPages, orderBy = paginatedData.orderBy, order = paginatedData.order, upa = paginatedData.upa, search = paginatedData.search;
+                    url = "/ut?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&upa=" + upa + "&search=" + search;
                     if (!search) return [3 /*break*/, 2];
                     return [4 /*yield*/, client.get(url)];
                 case 1:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, client.get("/upa?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&umf=" + umf)];
+                case 2: return [4 /*yield*/, client.get("/ut?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&upa=" + upa)];
                 case 3:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
@@ -117,8 +120,7 @@ var UtIndex = function () {
                     setOrderBy(orderBy);
                     setOrder(order);
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentUpas(data === null || data === void 0 ? void 0 : data.upas);
-                    setTotalPages(totalPages ? totalPages : Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage));
+                    setCurrentUts(data === null || data === void 0 ? void 0 : data.uts);
                     return [2 /*return*/];
             }
         });
@@ -133,7 +135,7 @@ var UtIndex = function () {
         });
     };
     return (React.createElement("div", null,
-        React.createElement(Index_1["default"], { currentUpas: currentUpas, loading: loading, loadUpas: loadUpas, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
+        React.createElement(Index_1["default"], { currentUts: currentUts, loading: loading, loadUts: loadUts, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
         React.createElement(Pagination_1.Pagination, { perPage: itemsPerPage, totalItems: totalItems, orderBy: orderBy, order: order, currentPage: currentPage, onPageChanged: onPageChanged, pageNeighbours: 3 })));
 };
 exports["default"] = withAuthentication_1["default"](UtIndex);

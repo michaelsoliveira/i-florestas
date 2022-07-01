@@ -7,6 +7,7 @@ var userSlice_1 = require("./userSlice");
 var messageSlice_1 = require("./messageSlice");
 var paginationSlice_1 = require("./paginationSlice");
 var umfSlice_2 = require("./umfSlice");
+var upaSlice_1 = require("./upaSlice");
 var browser_storage_1 = require("./browser-storage");
 exports.store = toolkit_1.configureStore({
     devTools: true,
@@ -15,7 +16,8 @@ exports.store = toolkit_1.configureStore({
         user: userSlice_1["default"],
         message: messageSlice_1["default"],
         pagination: paginationSlice_1["default"],
-        umf: umfSlice_2["default"]
+        umf: umfSlice_2["default"],
+        upa: upaSlice_1["default"]
     },
     preloadedState: browser_storage_1.loadState()
 });

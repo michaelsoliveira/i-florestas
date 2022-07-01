@@ -3,7 +3,9 @@ import { getSession, useSession } from "next-auth/react";
 
 
 export default async function authHeader() : Promise<any> {
+    
     return await getSession().then((response: any) => {
+        console.log(response)
         const authorization = {
             headers: {
                 Authorization: `Bearer ${response?.accessToken}`

@@ -4,6 +4,7 @@ import userReducer from './userSlice'
 import messageReducer from './messageSlice'
 import paginationReducer from "./paginationSlice";
 import umfReducer from './umfSlice'
+import upaReducer from './upaSlice'
 import { loadState } from "./browser-storage";
 
 export const store = configureStore({
@@ -13,7 +14,8 @@ export const store = configureStore({
         user: userReducer,
         message: messageReducer,
         pagination: paginationReducer,
-        umf: umfReducer
+        umf: umfReducer,
+        upa: upaReducer
     },
     preloadedState: loadState()
 })
