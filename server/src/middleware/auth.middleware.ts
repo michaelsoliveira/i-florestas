@@ -20,7 +20,9 @@ export const Authentication = () => {
     }
 
     return async (request: Request, response: Response, next: NextFunction) => {
+        
         const { authorization } = request.headers;
+        
         // const { provider } = request.query
         
         if (!authorization) {
@@ -33,7 +35,6 @@ export const Authentication = () => {
         try {
             switch (provider) {
                 case 'ya2': {
-                    // const url = 'https://www.googleapis.com/oauth2/v2/userinfo'
                     
                     const provider = await getDecodedOAuthJwtGoogle(token)
 
@@ -60,7 +61,7 @@ export const Authentication = () => {
                             headers: { authorization: `token ${token}` }
                         }).then(async(response: any) => {
                             const provider = response.data
-                            console.log(provider)
+                            
                             const user = await userService.findByProvider('github', provider.id)
 
                             request.user = {
@@ -73,13 +74,13 @@ export const Authentication = () => {
                     break;
                 }
                     case 'EAA': {
-                    
+                        console.log(provider)
                     await axios.get(`https://graph.facebook.com/me?access_token=${token}&fields=id`)
                         .then(async (response: any) => {
                         const provider = response.data
-
+                        
                         const user = await userService.findByProvider('facebook', provider.id)
-                            
+                        console.log(user)
                         request.user = {
                             id: user.id,
                             email: user.email,
@@ -105,6 +106,7 @@ export const Authentication = () => {
 
             return next()
         } catch (error) {
+            console.log(error)
             return response.status(401).json({ 
                 error: true, 
                 message: error.message, 

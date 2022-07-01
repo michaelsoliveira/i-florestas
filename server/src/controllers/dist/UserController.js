@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.UserController = void 0;
+var prismaClient_1 = require("../database/prismaClient");
 var acl_service_1 = require("../services/acl.service");
 var user_service_1 = require("../services/user.service");
 var UserController = /** @class */ (function () {
@@ -65,7 +66,41 @@ var UserController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
-                                errorMessage: error_1.message
+                                message: error_1.message
+                            })];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserController.prototype.findByEmail = function (request, response) {
+        return __awaiter(this, void 0, Promise, function () {
+            var email, user, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        email = request.query.email;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                                where: {
+                                    email: email
+                                }
+                            })];
+                    case 2:
+                        user = _a.sent();
+                        return [2 /*return*/, response.json({
+                                error: false,
+                                user: user,
+                                message: null
+                            })];
+                    case 3:
+                        error_2 = _a.sent();
+                        return [2 /*return*/, response.json({
+                                error: true,
+                                user: null,
+                                message: error_2.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -75,7 +110,7 @@ var UserController = /** @class */ (function () {
     UserController.prototype.update = function (request, response) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var id, user, error_2;
+            var id, user, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -92,11 +127,11 @@ var UserController = /** @class */ (function () {
                                 message: 'Usuário atualizado com sucesso!'
                             })];
                     case 3:
-                        error_2 = _b.sent();
+                        error_3 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
-                                errorMessage: error_2.message
+                                errorMessage: error_3.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -106,7 +141,7 @@ var UserController = /** @class */ (function () {
     UserController.prototype.updatePassword = function (request, response) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var id, _b, oldPassword, newPassword, user, error_3;
+            var id, _b, oldPassword, newPassword, user, error_4;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -124,11 +159,11 @@ var UserController = /** @class */ (function () {
                                 message: 'Senha alterada com sucesso'
                             })];
                     case 3:
-                        error_3 = _c.sent();
+                        error_4 = _c.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
-                                message: error_3.message
+                                message: error_4.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -230,7 +265,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findProvider = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, provider, idProvider, user, error_4;
+            var _a, provider, idProvider, user, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -243,8 +278,8 @@ var UserController = /** @class */ (function () {
                         user = _b.sent();
                         return [2 /*return*/, response.json(user)];
                     case 3:
-                        error_4 = _b.sent();
-                        return [2 /*return*/, response.json(error_4)];
+                        error_5 = _b.sent();
+                        return [2 /*return*/, response.json(error_5)];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -252,7 +287,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findAll = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var users, error_5;
+            var users, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -262,8 +297,8 @@ var UserController = /** @class */ (function () {
                         users = _a.sent();
                         return [2 /*return*/, response.json(users)];
                     case 2:
-                        error_5 = _a.sent();
-                        return [2 /*return*/, response.json(error_5.message)];
+                        error_6 = _a.sent();
+                        return [2 /*return*/, response.json(error_6.message)];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -271,7 +306,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, users, error_6;
+            var id, users, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -284,8 +319,8 @@ var UserController = /** @class */ (function () {
                         users = _a.sent();
                         return [2 /*return*/, response.json(users)];
                     case 3:
-                        error_6 = _a.sent();
-                        return [2 /*return*/, response.json(error_6.message)];
+                        error_7 = _a.sent();
+                        return [2 /*return*/, response.json(error_7.message)];
                     case 4: return [2 /*return*/];
                 }
             });

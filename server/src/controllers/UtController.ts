@@ -1,23 +1,23 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import upaService from "../services/upa.service";
+import utService from "../services/ut.service";
 
-export class UpaController {
+export class UtController {
     async store(request : Request, response: Response) : Promise<Response> {
         
         try {    
-            const upa = await upaService.create(request.body, request.user?.id)
+            const ut = await utService.create(request.body, request.user?.id)
             return response.json({
                 error: false,
-                upa,
-                message: `UPA ${upa.descricao} cadastrada com SUCESSO!!!`
+                ut,
+                message: `A Ut de número ${ut.numero_ut} cadastrada com SUCESSO!!!`
             })
 
         } catch (error) {
             console.log(error.message)
             return response.json({
                 error: true,
-                upa: null,
+                ut: null,
                 message: error.message
             })
         }
@@ -27,18 +27,18 @@ export class UpaController {
         const { id } = request.params
         
          try {    
-            const upa = await upaService.update(id, request.body)
+            const ut = await utService.update(id, request.body)
             return response.json({
                 error: false,
-                upa,
-                message: `UPA ${upa.descricao} atualizada com SUCESSO!!!`
+                ut,
+                message: `A UT ${ut.numero_ut} atualizada com SUCESSO!!!`
             })
 
         } catch (error) {
             console.log(error.message)
             return response.json({
                 error: true,
-                upa: null,
+                ut: null,
                 message: error.message
             })
         }
@@ -48,7 +48,7 @@ export class UpaController {
         const { id } = request.params
 
         try {
-            await upaService.delete(id)
+            await utService.delete(id)
 
             return response.status(200).json({
                 error: false,
@@ -57,7 +57,7 @@ export class UpaController {
         } catch (error) {
             return response.json({
                 error: true,
-                upa: null,
+                ut: null,
                 message: error.message
             })
         }
@@ -65,11 +65,11 @@ export class UpaController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await upaService.getAll(request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await utService.getAll(request.query, request.user?.id)
             
             return response.json({
                 error: false,
-                upas: data,
+                uts: data,
                 perPage,
                 page,
                 skip,
@@ -81,7 +81,7 @@ export class UpaController {
         } catch(error) {
             return response.json({
                 error: false,
-                upas: [],
+                uts: [],
                 message: error.message
             })
         }
@@ -90,27 +90,27 @@ export class UpaController {
     async deleteUpas(request: Request, response: Response) {
         const { ids } = request.body
         
-        await upaService.deleteUpas(ids)
+        await utService.deleteUts(ids)
 
         return response.json({
             ids,
-            message: 'UPAs deletadas com sucesso',
+            message: 'Uts deletadas com sucesso',
             error: false
         })   
     }
 
     async search(request: Request, response: Response) : Promise<Response>{
-        const { descricao } = request.query
+        const { numero_ut } = request.query
         
-        const upas = descricao ? await upaService.search(descricao) : await upaService.getAll()
+        const uts = numero_ut ? await utService.search(numero_ut) : await utService.getAll()
 
-        return response.json(upas)
+        return response.json(uts)
     }
 
     async findOne(request: Request, response: Response) : Promise<Response>{
         const { id } = request.params
         try {
-            const upa = await upaService.findById(id)
+            const upa = await utService.findById(id)
             return response.json(upa)
         } catch(error) {
             return response.json(error.message)

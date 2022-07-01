@@ -1,5 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
+import { prismaClient } from "../database/prismaClient";
 import {
     CreatePermissionService,
     CreateRoleService,
@@ -31,7 +32,32 @@ export class UserController {
             return response.json({
                 error: true,
                 user: null,
-                errorMessage: error.message
+                message: error.message
+            })
+        }
+    }
+
+    async findByEmail(request: Request, response: Response) : Promise<Response> {
+        const { email }: any = request.query
+        
+        try {
+            const user = await prismaClient.user.findFirst({
+                where: {
+                    email
+                }
+            })
+
+            return response.json({
+                error: false,
+                user,
+                message: null
+            })
+            
+        } catch (error) {
+            return response.json({
+                error: true,
+                user: null,
+                message: error.message
             })
         }
     }

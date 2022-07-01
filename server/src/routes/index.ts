@@ -12,11 +12,13 @@ import { EstadoController } from "../controllers/EstadoController"
 import { UpaController } from "../controllers/UpaController"
 import { EquacaoVolumeController } from "../controllers/EquacaoVolumeController"
 import { SysRefController } from "../controllers/SysRefController"
+import { UtController } from "../controllers/UtController"
 
 const routes = express.Router()
 
 routes.get('/users', Authentication(), new UserController().findAll)
 routes.get('/users/:id', Authentication(), new UserController().findOne)
+routes.get('/users/provider/find-by-email', Authentication(), new UserController().findByEmail)
 routes.post('/users/create', new UserController().store)
 routes.put('/users', Authentication(), new UserController().update)
 routes.post('/users/create-role', new UserController().createRole)
@@ -69,6 +71,15 @@ routes.get('/upa/search/q', Authentication(), new UpaController().search)
 routes.put('/upa/:id', Authentication(), new UpaController().update)
 routes.delete('/upa/single/:id', Authentication(), new UpaController().delete)
 routes.delete('/upa/multiples', Authentication(), new UpaController().deleteUpas)
+
+//Ut
+routes.post('/ut/', Authentication(), new UtController().store)
+routes.get('/ut/', Authentication(), new UtController().findAll)
+routes.get('/ut/:id', Authentication(), new UtController().findOne)
+routes.get('/ut/search/q', Authentication(), new UtController().search)
+routes.put('/ut/:id', Authentication(), new UtController().update)
+routes.delete('/ut/single/:id', Authentication(), new UtController().delete)
+routes.delete('/ut/multiples', Authentication(), new UtController().deleteUpas)
 
 //Umf
 routes.post('/estado/', Authentication(), new EstadoController().store)

@@ -36,33 +36,33 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.UpaController = void 0;
-var upa_service_1 = require("../services/upa.service");
-var UpaController = /** @class */ (function () {
-    function UpaController() {
+exports.UtController = void 0;
+var ut_service_1 = require("../services/ut.service");
+var UtController = /** @class */ (function () {
+    function UtController() {
     }
-    UpaController.prototype.store = function (request, response) {
+    UtController.prototype.store = function (request, response) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var upa, error_1;
+            var ut, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, upa_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                        return [4 /*yield*/, ut_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
-                        upa = _b.sent();
+                        ut = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                upa: upa,
-                                message: "UPA " + upa.descricao + " cadastrada com SUCESSO!!!"
+                                ut: ut,
+                                message: "A Ut de n\u00FAmero " + ut.numero_ut + " cadastrada com SUCESSO!!!"
                             })];
                     case 2:
                         error_1 = _b.sent();
                         console.log(error_1.message);
                         return [2 /*return*/, response.json({
                                 error: true,
-                                upa: null,
+                                ut: null,
                                 message: error_1.message
                             })];
                     case 3: return [2 /*return*/];
@@ -70,9 +70,9 @@ var UpaController = /** @class */ (function () {
             });
         });
     };
-    UpaController.prototype.update = function (request, response) {
+    UtController.prototype.update = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var id, upa, error_2;
+            var id, ut, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -80,20 +80,20 @@ var UpaController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, upa_service_1["default"].update(id, request.body)];
+                        return [4 /*yield*/, ut_service_1["default"].update(id, request.body)];
                     case 2:
-                        upa = _a.sent();
+                        ut = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                upa: upa,
-                                message: "UPA " + upa.descricao + " atualizada com SUCESSO!!!"
+                                ut: ut,
+                                message: "A UT " + ut.numero_ut + " atualizada com SUCESSO!!!"
                             })];
                     case 3:
                         error_2 = _a.sent();
                         console.log(error_2.message);
                         return [2 /*return*/, response.json({
                                 error: true,
-                                upa: null,
+                                ut: null,
                                 message: error_2.message
                             })];
                     case 4: return [2 /*return*/];
@@ -101,7 +101,7 @@ var UpaController = /** @class */ (function () {
             });
         });
     };
-    UpaController.prototype["delete"] = function (request, response) {
+    UtController.prototype["delete"] = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
             var id, error_3;
             return __generator(this, function (_a) {
@@ -111,7 +111,7 @@ var UpaController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, upa_service_1["default"]["delete"](id)];
+                        return [4 /*yield*/, ut_service_1["default"]["delete"](id)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, response.status(200).json({
@@ -122,7 +122,7 @@ var UpaController = /** @class */ (function () {
                         error_3 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
-                                upa: null,
+                                ut: null,
                                 message: error_3.message
                             })];
                     case 4: return [2 /*return*/];
@@ -130,19 +130,20 @@ var UpaController = /** @class */ (function () {
             });
         });
     };
-    UpaController.prototype.findAll = function (request, response) {
+    UtController.prototype.findAll = function (request, response) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _a, data, perPage, page, orderBy, order, skip, count, error_4;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _b, data, perPage, page, orderBy, order, skip, count, error_4;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, upa_service_1["default"].getAll(request.query)];
+                        _c.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, ut_service_1["default"].getAll(request.query, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
-                        _a = _b.sent(), data = _a.data, perPage = _a.perPage, page = _a.page, orderBy = _a.orderBy, order = _a.order, skip = _a.skip, count = _a.count;
+                        _b = _c.sent(), data = _b.data, perPage = _b.perPage, page = _b.page, orderBy = _b.orderBy, order = _b.order, skip = _b.skip, count = _b.count;
                         return [2 /*return*/, response.json({
                                 error: false,
-                                upas: data,
+                                uts: data,
                                 perPage: perPage,
                                 page: page,
                                 skip: skip,
@@ -152,10 +153,10 @@ var UpaController = /** @class */ (function () {
                                 message: null
                             })];
                     case 2:
-                        error_4 = _b.sent();
+                        error_4 = _c.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                upas: [],
+                                uts: [],
                                 message: error_4.message
                             })];
                     case 3: return [2 /*return*/];
@@ -163,49 +164,49 @@ var UpaController = /** @class */ (function () {
             });
         });
     };
-    UpaController.prototype.deleteUpas = function (request, response) {
+    UtController.prototype.deleteUpas = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var ids;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         ids = request.body.ids;
-                        return [4 /*yield*/, upa_service_1["default"].deleteUpas(ids)];
+                        return [4 /*yield*/, ut_service_1["default"].deleteUts(ids)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, response.json({
                                 ids: ids,
-                                message: 'UPAs deletadas com sucesso',
+                                message: 'Uts deletadas com sucesso',
                                 error: false
                             })];
                 }
             });
         });
     };
-    UpaController.prototype.search = function (request, response) {
+    UtController.prototype.search = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var descricao, upas, _a;
+            var numero_ut, uts, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        descricao = request.query.descricao;
-                        if (!descricao) return [3 /*break*/, 2];
-                        return [4 /*yield*/, upa_service_1["default"].search(descricao)];
+                        numero_ut = request.query.numero_ut;
+                        if (!numero_ut) return [3 /*break*/, 2];
+                        return [4 /*yield*/, ut_service_1["default"].search(numero_ut)];
                     case 1:
                         _a = _b.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, upa_service_1["default"].getAll()];
+                    case 2: return [4 /*yield*/, ut_service_1["default"].getAll()];
                     case 3:
                         _a = _b.sent();
                         _b.label = 4;
                     case 4:
-                        upas = _a;
-                        return [2 /*return*/, response.json(upas)];
+                        uts = _a;
+                        return [2 /*return*/, response.json(uts)];
                 }
             });
         });
     };
-    UpaController.prototype.findOne = function (request, response) {
+    UtController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
             var id, upa, error_5;
             return __generator(this, function (_a) {
@@ -215,7 +216,7 @@ var UpaController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, upa_service_1["default"].findById(id)];
+                        return [4 /*yield*/, ut_service_1["default"].findById(id)];
                     case 2:
                         upa = _a.sent();
                         return [2 /*return*/, response.json(upa)];
@@ -227,6 +228,6 @@ var UpaController = /** @class */ (function () {
             });
         });
     };
-    return UpaController;
+    return UtController;
 }());
-exports.UpaController = UpaController;
+exports.UtController = UtController;

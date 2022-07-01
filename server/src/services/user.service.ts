@@ -119,13 +119,31 @@ class UserService {
         return result
     }
 
-    async findByProvider(provider: string, idProvider: string): Promise<any> {
-        const query = await getRepository(User).createQueryBuilder("user")
-        const data =
-            query.where("user.provider = :provider", { provider })
-                .andWhere("user.idProvider = :idProvider", { idProvider })
+    async findByProvider(provider: string, idProvider: string, email?: string): Promise<any> {
+        if (email) {
+            const user = await prismaClient.user.findUnique({
+                where: {
+                    email
+                }
+            })
+            return user
+        }
 
-        return data.getOne()
+        const user = await prismaClient.user.findFirst({
+            where: {
+                AND: [
+                    { provider },
+                    { id_provider: idProvider }
+                ]
+            }
+        })
+        
+        // const query = await getRepository(User).createQueryBuilder("user")
+        // const data =
+        //     query.where("user.provider = :provider", { provider })
+        //         .andWhere("user.idProvider = :idProvider", { idProvider })
+        
+        return user
     }
 
     async sendMail(data: any) {

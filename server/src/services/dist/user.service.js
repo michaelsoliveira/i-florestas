@@ -41,6 +41,7 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("../entities/User");
 var nodemailer_1 = require("nodemailer");
 var Empresa_1 = require("../entities/Empresa");
+var prismaClient_1 = require("../database/prismaClient");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
@@ -201,17 +202,41 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.findByProvider = function (provider, idProvider) {
+    UserService.prototype.findByProvider = function (provider, idProvider, email) {
         return __awaiter(this, void 0, Promise, function () {
-            var query, data;
+            var user_1, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).createQueryBuilder("user")];
+                    case 0:
+                        if (!email) return [3 /*break*/, 2];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
+                                where: {
+                                    email: email
+                                }
+                            })];
                     case 1:
-                        query = _a.sent();
-                        data = query.where("user.provider = :provider", { provider: provider })
-                            .andWhere("user.idProvider = :idProvider", { idProvider: idProvider });
-                        return [2 /*return*/, data.getOne()];
+                        user_1 = _a.sent();
+                        return [2 /*return*/, user_1];
+                    case 2: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: {
+                                AND: [
+                                    { provider: provider },
+                                    { id_provider: idProvider }
+                                ]
+                            }
+                        })
+                        // const query = await getRepository(User).createQueryBuilder("user")
+                        // const data =
+                        //     query.where("user.provider = :provider", { provider })
+                        //         .andWhere("user.idProvider = :idProvider", { idProvider })
+                    ];
+                    case 3:
+                        user = _a.sent();
+                        // const query = await getRepository(User).createQueryBuilder("user")
+                        // const data =
+                        //     query.where("user.provider = :provider", { provider })
+                        //         .andWhere("user.idProvider = :idProvider", { idProvider })
+                        return [2 /*return*/, user];
                 }
             });
         });

@@ -137,7 +137,7 @@ class AuthService {
                     expiresIn,
                     token: newRefreshToken
                 })
-
+                console.log('Novo Refresh Token ', newRefreshToken)
                 await refreshTokenData.save()
 
                 return {

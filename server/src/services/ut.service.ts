@@ -1,23 +1,37 @@
 import { prismaClient } from "../database/prismaClient";
 import { Query } from "typeorm/driver/Query";
 import { Console } from "console";
-import { Upa } from "@prisma/client";
+import { Ut } from "@prisma/client";
 
-export interface UpaType {
-    descricao: string;
-    ano: string;
-    umf: string;
-    equacao_volume: string;
-    tipo: string;
-    spatial_ref_sys: number;
+export interface UtType {
+    numero_ut: number;
+    area_util: number;
+    area_total: number;
+    quantidade_faixas: number;
+    largura_faixas: number;
+    latitude: number;
+    longitude: number;
+    comprimento_faixas: number;
+    upa: string;
 }
 
 class UpaService {
-    async create(data: UpaType, userId: string): Promise<Upa> {
+    async create(data: UtType, userId: string): Promise<Ut> {
         
-        const upaExists = await prismaClient.upa.findFirst({
+        const { 
+            numero_ut, 
+            area_util, 
+            area_total, 
+            quantidade_faixas, 
+            comprimento_faixas, 
+            largura_faixas, 
+            latitude, 
+            longitude 
+        } = data
+
+        const utExists = await prismaClient.ut.findFirst({
             where: {
-                descricao: data.descricao
+                numero_ut: data.numero_ut
             }
         })
 
@@ -33,33 +47,28 @@ class UpaService {
             }
         })
         
-        if (upaExists) {
-            throw new Error('Já existe uma Umf cadastrada com este nome')
+        if (utExists) {
+            throw new Error('Já existe uma Ut cadastrada com este número')
         }
         
-        const upa = await prismaClient.upa.create({
+        const upa = await prismaClient.ut.create({
             data: {
-                descricao: data.descricao,
-                ano: Number.parseInt(data.ano),
-                tipo: Number.parseInt(data.tipo),
+                numero_ut, 
+                area_util, 
+                area_total, 
+                quantidade_faixas, 
+                comprimento_faixas, 
+                largura_faixas, 
+                latitude, 
+                longitude,
                 empresa: {
                     connect: {
                         id: empresa?.id
                     }
                 },
-                umf: {
+                upa: {
                     connect: {
-                        id: data.umf
-                    }
-                },
-                equacao_volume: {
-                    connect: {
-                        id: data.equacao_volume
-                    }
-                },
-                spatial_ref_sys: {
-                    connect: {
-                        srid: data.spatial_ref_sys
+                        id: data.upa
                     }
                 }
                     
@@ -69,28 +78,35 @@ class UpaService {
         return upa
     }
 
-    async update(id: string, data: UpaType): Promise<Upa> {
-        await prismaClient.upa.update({
+    async update(id: string, data: UtType): Promise<Ut> {
+
+        const { 
+            numero_ut, 
+            area_util, 
+            area_total, 
+            quantidade_faixas, 
+            comprimento_faixas, 
+            largura_faixas, 
+            latitude, 
+            longitude 
+        } = data
+
+        await prismaClient.ut.update({
             where: {
                 id
             },
             data: {
-                descricao: data.descricao,
-                ano: Number.parseInt(data.ano),
-                tipo: Number.parseInt(data.tipo),
-                umf: {
+                numero_ut, 
+                area_util, 
+                area_total, 
+                quantidade_faixas, 
+                comprimento_faixas, 
+                largura_faixas, 
+                latitude, 
+                longitude,
+                upa: {
                     connect: {
-                        id: data.umf
-                    }
-                },
-                equacao_volume: {
-                    connect: {
-                        id: data.equacao_volume
-                    }
-                },
-                spatial_ref_sys: {
-                    connect: {
-                        srid: data.spatial_ref_sys
+                        id: data.upa
                     }
                 }
                     
@@ -101,7 +117,7 @@ class UpaService {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.upa.delete({
+        await prismaClient.ut.delete({
             where: {
                 id
             }
@@ -111,8 +127,21 @@ class UpaService {
         })
     }
 
-    async getAll(query?: any): Promise<any> {
-        const { perPage, page, search, orderBy, order, umf } = query
+    async getAll(query?: any, userId?: string): Promise<any> {
+
+        const empresa = await prismaClient.empresa.findFirst({
+            where: {
+                empresa_users: {
+                    some: {
+                        users: {
+                            id: userId
+                        }
+                    }
+                }
+            }
+        })
+
+        const { perPage, page, search, orderBy, order, upa } = query
         const skip = (page - 1) * perPage
         
         let orderByTerm = {}
@@ -129,18 +158,24 @@ class UpaService {
             }
         }
         
-        const [upas, total] = await prismaClient.$transaction([
-            prismaClient.upa.findMany({
+        const [uts, total] = await prismaClient.$transaction([
+            prismaClient.ut.findMany({
                 where: {
                     OR: {
-                        descricao: {
-                            mode: 'insensitive',
-                            contains: search ? search : ''
+                        numero_ut: {
+                            equals: Number.parseInt(search)
                         }
                     },
-                    AND: {
-                        id_umf: umf
-                    }   
+                    AND: [
+                        {
+                            id_empresa: empresa?.id
+                        },
+                        {
+                            upa: {
+                                id: upa
+                            }
+                        }
+                    ] 
                 },
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
@@ -148,16 +183,14 @@ class UpaService {
                     ...orderByTerm
                 },
                 include: {
-                    equacao_volume: true,
-                    spatial_ref_sys: true,
-                    umf: true
+                    upa: true
                 }
             }),
-            prismaClient.upa.count()
+            prismaClient.ut.count()
         ])
 
         return {
-            data: upas,
+            data: uts,
             perPage,
             page,
             skip,
@@ -165,25 +198,24 @@ class UpaService {
         }
     }
 
-    async deleteUpas(upas: string[]): Promise<any> {
-        await prismaClient.upa.deleteMany({
+    async deleteUts(uts: string[]): Promise<any> {
+        await prismaClient.ut.deleteMany({
             where: {
-                id: { in: upas}
+                id: { in: uts}
             }
         })
         
     }
 
-    async search(q: any) : Promise<Upa[]> {
-        const upas = await prismaClient.upa.findMany({
+    async search(q: any) : Promise<Ut[]> {
+        const uts = await prismaClient.ut.findMany({
             where: {
-                descricao: {
-                    mode: 'insensitive',
-                    contains: q
+                numero_ut: {
+                    equals: q
                 }
             }
         })
-        return upas
+        return uts
     }
 
     async findById(id: string) : Promise<any> {

@@ -183,6 +183,7 @@ var AuthService = /** @class */ (function () {
                             expiresIn: expiresIn,
                             token: newRefreshToken
                         });
+                        console.log('Novo Refresh Token ', newRefreshToken);
                         return [4 /*yield*/, refreshTokenData.save()];
                     case 4:
                         _a.sent();

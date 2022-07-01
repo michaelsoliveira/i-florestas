@@ -50,6 +50,7 @@ model Empresa {
   equacao_modelo             EquacaoModelo[]
   equacao_Volume             EquacaoVolume[]
   upa                        Upa[]
+  ut                         Ut[]
   @@map("empresa")
 }
 
@@ -219,6 +220,8 @@ model User {
   users_roles       UserRole[]
   accounts          Account[]
   sessions          Session[]
+
+  @@unique([email])
   @@map("users")
 }
 
@@ -264,6 +267,8 @@ model Ut {
   origem             Unsupported("geometry")?
   id_upa             String?                  @db.Uuid
   upa                Upa?                     @relation(fields: [id_upa], references: [id], onDelete: Cascade, map: "FK_cb45ccb0356c31c3bf2f00b0086")
+  id_empresa         String?                  @db.Uuid
+  empresa            Empresa?                 @relation(fields: [id_empresa], references: [id], onDelete: Cascade)
   @@map("ut")
 }
 
