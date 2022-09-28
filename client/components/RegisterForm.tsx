@@ -64,7 +64,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
             .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
     });
 
-    async function handleRegister(data: UserData) {
+    async function handleRegister(data: any) {
         const preparedData = {
             ...data,
             empresaId
