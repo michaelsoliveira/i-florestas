@@ -54,7 +54,7 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
     }, [])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const changeCurrentParent = (key: any, href?: string) =>  {
+    const changeCurrentParent = useCallback((key: any, href?: string) =>  {
         
         const changeCurrentNav = defaultNavigation.map((nav: any, index: any) => {
             if (key !== index) {
@@ -73,41 +73,27 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
         
         setNavigation(changeCurrentNav)
         if (href) router.push(href)
-    }
+    }, [defaultNavigation, router])
 
-    // const checkCurrentNavigation = useCallback(() => {
+    const checkCurrentNavigation = useCallback(() => {
             
-    //         defaultNavigation?.map((nav: NavigationType, indexParent: number) => {
-    //             if (nav?.subMenuItems) {
-    //                 if (router.pathname === nav.href) {
-    //                     return changeCurrentParent(indexParent)
-    //                 }
-    //                 nav.subMenuItems?.map((subMenu: SubMenuType, index: number) => {
-    //                     if (router.pathname === subMenu.href) {
-    //                         return changeCurrentParent(indexParent)
-    //                     }
-    //                 })
-    //             }
-    //         })
-        
-    // }, [changeCurrentParent, defaultNavigation, router.pathname])
-    
-
-    useEffect(() => {
-        function checkCurrentNavigation() {
             defaultNavigation?.map((nav: NavigationType, indexParent: number) => {
                 if (nav?.subMenuItems) {
                     if (router.pathname === nav.href) {
-                        changeCurrentParent(indexParent)
+                        return changeCurrentParent(indexParent)
                     }
                     nav.subMenuItems?.map((subMenu: SubMenuType, index: number) => {
                         if (router.pathname === subMenu.href) {
-                            changeCurrentParent(indexParent)
+                            return changeCurrentParent(indexParent)
                         }
                     })
                 }
             })
-        }
+        
+    }, [changeCurrentParent, defaultNavigation, router.pathname])
+    
+
+    useEffect(() => {
         async function loadNavigation() {
             if (session) {
                 checkCurrentNavigation()
@@ -116,7 +102,7 @@ export default function Navigation({ session, defaultNavigation, userNavigation 
 
         loadNavigation()
 
-    }, [defaultNavigation, router.pathname, session])
+    }, [checkCurrentNavigation, defaultNavigation, router.pathname, session])
 
     return (
         <Disclosure as="nav" className={classNames(

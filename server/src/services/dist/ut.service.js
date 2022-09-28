@@ -53,14 +53,14 @@ var UpaService = /** @class */ (function () {
     }
     UpaService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, utExists, empresa, upa;
+            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, id_upa, utExists, empresa, upa;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        numero_ut = data.numero_ut, area_util = data.area_util, area_total = data.area_total, quantidade_faixas = data.quantidade_faixas, comprimento_faixas = data.comprimento_faixas, largura_faixas = data.largura_faixas, latitude = data.latitude, longitude = data.longitude;
+                        numero_ut = data.numero_ut, area_util = data.area_util, area_total = data.area_total, quantidade_faixas = data.quantidade_faixas, comprimento_faixas = data.comprimento_faixas, largura_faixas = data.largura_faixas, latitude = data.latitude, longitude = data.longitude, id_upa = data.id_upa;
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
-                                    numero_ut: data.numero_ut
+                                    numero_ut: parseInt(numero_ut)
                                 }
                             })];
                     case 1:
@@ -83,24 +83,16 @@ var UpaService = /** @class */ (function () {
                         }
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.create({
                                 data: {
-                                    numero_ut: numero_ut,
-                                    area_util: area_util,
-                                    area_total: area_total,
-                                    quantidade_faixas: quantidade_faixas,
-                                    comprimento_faixas: comprimento_faixas,
-                                    largura_faixas: largura_faixas,
-                                    latitude: latitude,
-                                    longitude: longitude,
-                                    empresa: {
-                                        connect: {
-                                            id: empresa === null || empresa === void 0 ? void 0 : empresa.id
-                                        }
-                                    },
-                                    upa: {
-                                        connect: {
-                                            id: data.upa
-                                        }
-                                    }
+                                    numero_ut: parseInt(numero_ut),
+                                    area_util: parseFloat(area_util),
+                                    area_total: parseFloat(area_total),
+                                    quantidade_faixas: parseInt(quantidade_faixas),
+                                    comprimento_faixas: parseInt(comprimento_faixas),
+                                    largura_faixas: parseInt(largura_faixas),
+                                    latitude: parseFloat(latitude),
+                                    longitude: parseFloat(longitude),
+                                    id_empresa: empresa === null || empresa === void 0 ? void 0 : empresa.id,
+                                    id_upa: id_upa
                                 }
                             })];
                     case 3:

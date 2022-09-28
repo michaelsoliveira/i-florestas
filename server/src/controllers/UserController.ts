@@ -17,10 +17,10 @@ export interface BaseUser {
 
 export class UserController {
     async store(request : Request, response: Response) : Promise<Response> {
-        const { username, email, password, provider, idProvider, image, empresaId } = request.body;
-        
+        // const { username, email, password, provider, idProvider, image, empresaId } = request.body;
+
         try {    
-            const user = await userService.create({ username, email, password, provider, idProvider, image, empresaId })
+            const user = await userService.create(request.body)
             
             return response.json({
                 error: false,
@@ -78,7 +78,7 @@ export class UserController {
             return response.json({
                 error: true,
                 user: null,
-                errorMessage: error.message
+                message: error.message
             })
         }
     }
@@ -175,10 +175,10 @@ export class UserController {
     }
 
     async findProvider(request: Request, response: Response): Promise<any> {
-        const { provider, idProvider }: any = request.query
+        const { email }: any = request.query
         
         try {
-            const user = await userService.findByProvider(provider, idProvider)
+            const user = await userService.findProvider(email)
             
             return response.json(user)
         } catch (error) {

@@ -28,7 +28,7 @@ export const Authentication = () => {
         if (!authorization) {
             return response.status(401).json({ error: "Token is missing!" })
         }
-
+        
         const token = authorization.replace('Bearer', '').trim()
         const provider = token.substring(0, 3)
         
@@ -38,7 +38,7 @@ export const Authentication = () => {
                     
                     const provider = await getDecodedOAuthJwtGoogle(token)
 
-                    const user = await userService.findByProvider('google', provider.sub)                            
+                    const user = await userService.findProvider(provider.email)                            
                     
                     request.user = {
                         id: user.id,
@@ -46,9 +46,8 @@ export const Authentication = () => {
                         username: user.username,
                         provider: 'google'
                     }
-                        
-                    break;
                 }
+                break;
                 case 'ghu': {
                     // console.log(token)
                     const url = 'https://api.github.com/user'
@@ -62,7 +61,7 @@ export const Authentication = () => {
                         }).then(async(response: any) => {
                             const provider = response.data
                             
-                            const user = await userService.findByProvider('github', provider.id)
+                            const user = await userService.findProvider(provider.email)
 
                             request.user = {
                                 id: user.id,
@@ -71,16 +70,16 @@ export const Authentication = () => {
                                 provider: 'github'
                             }
                         })
-                    break;
                 }
+                break;
                     case 'EAA': {
-                        console.log(provider)
+                        
                     await axios.get(`https://graph.facebook.com/me?access_token=${token}&fields=id`)
                         .then(async (response: any) => {
                         const provider = response.data
                         
-                        const user = await userService.findByProvider('facebook', provider.id)
-                        console.log(user)
+                        const user = await userService.findProvider(provider.email)
+                        
                         request.user = {
                             id: user.id,
                             email: user.email,
@@ -88,8 +87,8 @@ export const Authentication = () => {
                             provider: user.provider
                         }
                     })
-                    break;
                 }
+                break;
                 default: {
                     const verificationResponse = jwt.verify(token, config.server.JWT_SECRET) as User
 

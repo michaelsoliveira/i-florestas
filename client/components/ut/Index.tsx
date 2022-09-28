@@ -114,9 +114,12 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     }
 
     const selectUpa = async (upa: any) => {
+        const upaSelected = upas.find((u: any) => u.id === upa.value)
+        
         dispatch(setUpa({
             id: upa.value,
-            descricao: upa.label
+            descricao: upa.label,
+            tipo: Number.parseInt(upaSelected.tipo)
         }))
         setSelectedUpa(upa)
         
@@ -230,7 +233,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Unidades de Trabalho</h1>
                 <Link
-                    href='/upa/add'
+                    href='/ut/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar

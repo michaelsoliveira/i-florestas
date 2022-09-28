@@ -78,7 +78,7 @@ function Navigation(_a) {
         addEventListener('scroll', handleScroll);
     }, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    var changeCurrentParent = function (key, href) {
+    var changeCurrentParent = react_1.useCallback(function (key, href) {
         var changeCurrentNav = defaultNavigation.map(function (nav, index) {
             if (key !== index) {
                 return __assign(__assign({}, nav), { current: false });
@@ -90,37 +90,23 @@ function Navigation(_a) {
         setNavigation(changeCurrentNav);
         if (href)
             router.push(href);
-    };
-    // const checkCurrentNavigation = useCallback(() => {
-    //         defaultNavigation?.map((nav: NavigationType, indexParent: number) => {
-    //             if (nav?.subMenuItems) {
-    //                 if (router.pathname === nav.href) {
-    //                     return changeCurrentParent(indexParent)
-    //                 }
-    //                 nav.subMenuItems?.map((subMenu: SubMenuType, index: number) => {
-    //                     if (router.pathname === subMenu.href) {
-    //                         return changeCurrentParent(indexParent)
-    //                     }
-    //                 })
-    //             }
-    //         })
-    // }, [changeCurrentParent, defaultNavigation, router.pathname])
-    react_1.useEffect(function () {
-        function checkCurrentNavigation() {
-            defaultNavigation === null || defaultNavigation === void 0 ? void 0 : defaultNavigation.map(function (nav, indexParent) {
-                var _a;
-                if (nav === null || nav === void 0 ? void 0 : nav.subMenuItems) {
-                    if (router.pathname === nav.href) {
-                        changeCurrentParent(indexParent);
-                    }
-                    (_a = nav.subMenuItems) === null || _a === void 0 ? void 0 : _a.map(function (subMenu, index) {
-                        if (router.pathname === subMenu.href) {
-                            changeCurrentParent(indexParent);
-                        }
-                    });
+    }, [defaultNavigation, router]);
+    var checkCurrentNavigation = react_1.useCallback(function () {
+        defaultNavigation === null || defaultNavigation === void 0 ? void 0 : defaultNavigation.map(function (nav, indexParent) {
+            var _a;
+            if (nav === null || nav === void 0 ? void 0 : nav.subMenuItems) {
+                if (router.pathname === nav.href) {
+                    return changeCurrentParent(indexParent);
                 }
-            });
-        }
+                (_a = nav.subMenuItems) === null || _a === void 0 ? void 0 : _a.map(function (subMenu, index) {
+                    if (router.pathname === subMenu.href) {
+                        return changeCurrentParent(indexParent);
+                    }
+                });
+            }
+        });
+    }, [changeCurrentParent, defaultNavigation, router.pathname]);
+    react_1.useEffect(function () {
         function loadNavigation() {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
@@ -132,7 +118,7 @@ function Navigation(_a) {
             });
         }
         loadNavigation();
-    }, [defaultNavigation, router.pathname, session]);
+    }, [checkCurrentNavigation, defaultNavigation, router.pathname, session]);
     return (React.createElement(react_2.Disclosure, { as: "nav", className: classnames_1["default"]("lg:absolute items-center w-full opacity-100 z-50") }, function (_a) {
         var _b, _c, _d, _e, _f, _g;
         var open = _a.open;

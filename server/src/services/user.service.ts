@@ -5,6 +5,7 @@ import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { Empresa } from "../entities/Empresa"
 import { prismaClient } from "../database/prismaClient"
+import { User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,
@@ -13,58 +14,65 @@ export interface UserRequest {
 
 class UserService {
 
-    async create(data: any): Promise<User> {
-        const userRepository = getRepository(User)
-        const userExists = await userRepository.findOne({ where: { email: data?.email } })
+    async create(data: any): Promise<UserPrisma> {
+        const userExists = await prismaClient.user.findFirst({
+            where: {
+                email: data?.email
+            }
+        })
 
         if (userExists) {
-            throw new Error("Já existe um usuário cadastrado com este e-mail")
+            throw new Error("Usuário já cadastrado")
         }
 
         const passwordHash = await bcrypt.hash(data?.password, 10)
 
-        const preparedData = {
+        const dataRequest = {
             username: data?.username,
             email: data?.email,
             password: passwordHash,
             image: data?.image,
             provider: data?.provider,
-            idProvider: data?.idProvider
-        }
-        const empresa = data?.empresaId && await getRepository(Empresa).findOne(data?.empresaId)
-
-        const user = userRepository.create(preparedData)
-        if (empresa) {
-            user.empresas = [empresa]
+            id_provider: data?.id_provider
         }
 
-        await user.save()
+        const preparedData = (data?.empresaId) ? 
+        { ...data, empresa_users: { create: { id_empresa: data.empresaId } } } : { ...dataRequest }
+
+        const user = await prismaClient.user.create({
+            data: {
+                ...preparedData
+            }
+        })
 
         return user
     }
 
-    async update(id: string, data: any): Promise<User> {
-        const userRepository = getRepository(User)
-        const userExists = await userRepository.findOne({ where: { id } })
+    async update(id: string, data: any): Promise<UserPrisma> {
+        const userExists = await prismaClient.user.findFirst({
+            where: {
+                id
+            }
+        })
 
         if (!userExists) {
             throw new Error("Usuário não localizado")
         }
 
-        const passwordHash = await bcrypt.hash(data?.password, 10)
-
         const preparedData = {
-            username: data?.username,
-            email: data?.email,
-            password: passwordHash,
             image: data?.image,
             provider: data?.provider,
-            idProvider: data?.idProvider
+            id_provider: data?.idProvider
         }
 
-        await userRepository.update(id, preparedData)
+        const user = await prismaClient.user.update({
+            where: {
+                id
+            },
+            data: { ...preparedData }
+        })
 
-        return this.findOne(id)
+        return user
     }
 
     async updatePassword(id: string, oldPassword: string, newPassword: string) {
@@ -75,7 +83,6 @@ class UserService {
             throw new Error("Usuário não localizado")
         }
         const validPassword = await bcrypt.compare(oldPassword, userData.password)
-        console.log(validPassword)
 
         if (!validPassword) {
             throw new Error("Senha informada não corresponde com a cadastrada")
@@ -83,18 +90,7 @@ class UserService {
 
         const passwordHash = await bcrypt.hash(newPassword, 10)
 
-        const preparedData = {
-            username: userData?.username,
-            email: userData?.email,
-            password: passwordHash,
-            image: userData?.image,
-            provider: userData?.provider,
-            idProvider: userData?.idProvider
-        }
-
-        console.log(preparedData)
-
-        await userRepository.update(id, preparedData)
+        await userRepository.update(id, { password: passwordHash })
 
         return this.findOne(id)
     }
@@ -119,29 +115,13 @@ class UserService {
         return result
     }
 
-    async findByProvider(provider: string, idProvider: string, email?: string): Promise<any> {
-        if (email) {
-            const user = await prismaClient.user.findUnique({
-                where: {
-                    email
-                }
-            })
-            return user
-        }
-
+    async findProvider(email?: string): Promise<any> {
+        
         const user = await prismaClient.user.findFirst({
             where: {
-                AND: [
-                    { provider },
-                    { id_provider: idProvider }
-                ]
+                email
             }
         })
-        
-        // const query = await getRepository(User).createQueryBuilder("user")
-        // const data =
-        //     query.where("user.provider = :provider", { provider })
-        //         .andWhere("user.idProvider = :idProvider", { idProvider })
         
         return user
     }
@@ -177,7 +157,7 @@ class UserService {
         
     // send mail with defined transport object
     transporter.sendMail({
-        from: '"Michael Santos de Oliveira 👻" <michaelsoliveira@gmail.com>', // sender address
+        from: '"Michael Santos de Oliveira" <michaelsoliveira@gmail.com>', // sender address
         to: email, // list of receivers
         subject: "Acesso ao Software BOManejo Web", // Subject line
         text: `Usuário ${name} foi cadastrado com Sucesso!`, // plain text body
@@ -222,26 +202,18 @@ class UserService {
         }
     });
 
-    
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-    // Preview only available when sending through an Ethereal account
-    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }
 
     async findWithPassword(id: string) {
-        const userRepository = await getRepository(User).createQueryBuilder("users")
-        const user = await userRepository
-            .select([
-                "users.id",
-                "users.username",
-                "users.password",
-                "users.email",
-                "users.provider",
-                "users.idProvider"
-            ])
-            .where("users.id = :id", { id })
-            .getOne()
+        const user = await prismaClient.user.findFirst({
+            where: {
+                id
+            },
+            select: {
+                id: true,
+                password: true
+            }
+        })
         
         return user
     }

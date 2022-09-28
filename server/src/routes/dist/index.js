@@ -19,7 +19,7 @@ routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.Us
 routes.get('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
 routes.get('/users/provider/find-by-email', auth_middleware_1.Authentication(), new UserController_1.UserController().findByEmail);
 routes.post('/users/create', new UserController_1.UserController().store);
-routes.put('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
+routes.put('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
 routes.post('/users/create-role', new UserController_1.UserController().createRole);
 routes.post('/users/create-permission', new UserController_1.UserController().createPermission);
 routes.post('/users/create-role-permission', new UserController_1.UserController().createRolePermission);

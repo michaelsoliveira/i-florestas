@@ -8,8 +8,9 @@ import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { RootState } from '../../store'
+import { setUpa } from "../../store/upaSlice"
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -19,6 +20,7 @@ const AddEdit = ({ id }: any) => {
     const [sysRefs, setSysRefs] = useState<any>()
     const { client } = useContext(AuthContext)
     const umf = useAppSelector((state: RootState) => state.umf)
+    const dispatch = useAppDispatch()
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
@@ -165,8 +167,13 @@ const AddEdit = ({ id }: any) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, upa } = response.data
                 if (!error) {
+                    dispatch(setUpa({
+                        id: upa.id,
+                        descricao: upa.descricao,
+                        tipo: upa.tipo
+                    }))
                     alertService.success(message);
                     router.push('/upa')
                 } else {

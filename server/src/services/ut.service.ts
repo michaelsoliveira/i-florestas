@@ -16,7 +16,7 @@ export interface UtType {
 }
 
 class UpaService {
-    async create(data: UtType, userId: string): Promise<Ut> {
+    async create(data: any, userId: string): Promise<Ut> {
         
         const { 
             numero_ut, 
@@ -26,12 +26,13 @@ class UpaService {
             comprimento_faixas, 
             largura_faixas, 
             latitude, 
-            longitude 
+            longitude,
+            id_upa
         } = data
-
+        
         const utExists = await prismaClient.ut.findFirst({
             where: {
-                numero_ut: data.numero_ut
+                numero_ut: parseInt(numero_ut)
             }
         })
 
@@ -53,25 +54,16 @@ class UpaService {
         
         const upa = await prismaClient.ut.create({
             data: {
-                numero_ut, 
-                area_util, 
-                area_total, 
-                quantidade_faixas, 
-                comprimento_faixas, 
-                largura_faixas, 
-                latitude, 
-                longitude,
-                empresa: {
-                    connect: {
-                        id: empresa?.id
-                    }
-                },
-                upa: {
-                    connect: {
-                        id: data.upa
-                    }
-                }
-                    
+                numero_ut: parseInt(numero_ut), 
+                area_util: parseFloat(area_util), 
+                area_total: parseFloat(area_total), 
+                quantidade_faixas: parseInt(quantidade_faixas), 
+                comprimento_faixas: parseInt(comprimento_faixas), 
+                largura_faixas: parseInt(largura_faixas), 
+                latitude: parseFloat(latitude), 
+                longitude: parseFloat(longitude),
+                id_empresa: empresa?.id,
+                id_upa
             }
         })
 

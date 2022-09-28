@@ -45,30 +45,27 @@ var UserController = /** @class */ (function () {
     }
     UserController.prototype.store = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, username, email, password, provider, idProvider, image, empresaId, user, error_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var user, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _a = request.body, username = _a.username, email = _a.email, password = _a.password, provider = _a.provider, idProvider = _a.idProvider, image = _a.image, empresaId = _a.empresaId;
-                        _b.label = 1;
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, user_service_1["default"].create(request.body)];
                     case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, user_service_1["default"].create({ username: username, email: email, password: password, provider: provider, idProvider: idProvider, image: image, empresaId: empresaId })];
-                    case 2:
-                        user = _b.sent();
+                        user = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 user: user,
                                 message: null
                             })];
-                    case 3:
-                        error_1 = _b.sent();
+                    case 2:
+                        error_1 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
                                 message: error_1.message
                             })];
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -131,7 +128,7 @@ var UserController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
-                                errorMessage: error_3.message
+                                message: error_3.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -265,20 +262,20 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findProvider = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, provider, idProvider, user, error_5;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var email, user, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _a = request.query, provider = _a.provider, idProvider = _a.idProvider;
-                        _b.label = 1;
+                        email = request.query.email;
+                        _a.label = 1;
                     case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, user_service_1["default"].findByProvider(provider, idProvider)];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, user_service_1["default"].findProvider(email)];
                     case 2:
-                        user = _b.sent();
+                        user = _a.sent();
                         return [2 /*return*/, response.json(user)];
                     case 3:
-                        error_5 = _b.sent();
+                        error_5 = _a.sent();
                         return [2 /*return*/, response.json(error_5)];
                     case 4: return [2 /*return*/];
                 }

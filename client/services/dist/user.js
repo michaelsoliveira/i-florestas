@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38,18 +49,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.findProvider = exports.sendEmail = exports.update = exports.create = void 0;
 var axios_1 = require("./axios");
-var auth_header_1 = require("./auth-header");
 function create(dataRequest) {
     return __awaiter(this, void 0, Promise, function () {
-        var data;
+        var url, response, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.apiClient().post('users/create', dataRequest)];
+                case 0:
+                    url = process.env.PUBLIC_API_URL + "/users/create";
+                    return [4 /*yield*/, fetch(url, {
+                            method: "POST",
+                            body: JSON.stringify(__assign({}, dataRequest)),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        })];
                 case 1:
-                    data = (_a.sent()).data;
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    console.log(data);
                     return [2 /*return*/, {
                             data: data.user,
-                            errorMessage: data.errorMessage,
+                            message: data.message,
                             error: data.error
                         }];
             }
@@ -57,22 +80,36 @@ function create(dataRequest) {
     });
 }
 exports.create = create;
-function update(id, dataRequest) {
+function update(id, dataRequest, token) {
     return __awaiter(this, void 0, Promise, function () {
-        var _a, provider, headers, data;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, auth_header_1["default"]()];
+        var url, response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    url = process.env.PUBLIC_API_URL + "/users/" + id;
+                    return [4 /*yield*/, fetch(url, {
+                            method: "PUT",
+                            body: JSON.stringify(__assign({}, dataRequest)),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                "Authorization": "Bearer " + token
+                            }
+                        })];
                 case 1:
-                    _a = _b.sent(), provider = _a.provider, headers = _a.headers;
-                    return [4 /*yield*/, axios_1.apiClient().put("/users/" + id, dataRequest, headers)];
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()
+                        // if (response.ok) {
+                        //     return data
+                        // }
+                    ];
                 case 2:
-                    data = (_b.sent()).data;
-                    return [2 /*return*/, {
-                            data: data.user,
-                            errorMessage: data.errorMessage,
-                            error: data.error
-                        }];
+                    data = _a.sent();
+                    // if (response.ok) {
+                    //     return data
+                    // }
+                    console.log(data);
+                    return [2 /*return*/, data];
             }
         });
     });
@@ -98,21 +135,36 @@ function sendEmail(dataResponse) {
     });
 }
 exports.sendEmail = sendEmail;
-function findProvider(email) {
+function findProvider(token) {
     return __awaiter(this, void 0, Promise, function () {
-        var _a, provider, headers, response;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, auth_header_1["default"]()
-                    // const response = await apiClient().get(`/provider/find?provider=${provider}&idProvider=${user.id}`)
-                ];
+        var url, response, data, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    console.log(token);
+                    url = process.env.PUBLIC_API_URL + "/users/provider/find-by-email?" +
+                        new URLSearchParams({
+                            email: token === null || token === void 0 ? void 0 : token.email
+                        });
+                    return [4 /*yield*/, fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + (token === null || token === void 0 ? void 0 : token.access_token)
+                            }
+                        })];
                 case 1:
-                    _a = _b.sent(), provider = _a.provider, headers = _a.headers;
-                    return [4 /*yield*/, axios_1.apiClient().get("/users/provider/find-by-email?email=" + email, headers)];
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
                 case 2:
-                    response = _b.sent();
-                    console.log(response.data);
-                    return [2 /*return*/, response.data];
+                    data = _a.sent();
+                    return [2 /*return*/, data.user];
+                case 3:
+                    error_1 = _a.sent();
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
             }
         });
     });

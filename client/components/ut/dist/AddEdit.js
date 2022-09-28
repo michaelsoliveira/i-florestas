@@ -47,7 +47,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var Select_1 = require("../Select");
 var FormInput_1 = require("../FormInput");
 var react_1 = require("react");
 var router_1 = require("next/router");
@@ -58,84 +57,38 @@ var react_2 = require("next-auth/react");
 var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
+var Map_1 = require("../maps/Map");
+var api_1 = require("@react-google-maps/api");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
-    var _c = react_1.useState(), equacao_volume = _c[0], setEquacao = _c[1];
-    var _d = react_1.useState(), equacoes = _d[0], setEquacoes = _d[1];
-    var _e = react_1.useState(), sysRef = _e[0], setSysRef = _e[1];
-    var _f = react_1.useState(), sysRefs = _f[0], setSysRefs = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
+    var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var session = react_2.useSession().data;
+    var _c = react_1.useState(null), utLocation = _c[0], setUtLocation = _c[1];
     var router = router_1.useRouter();
     var isAddMode = !id;
-    var loadEquacoes = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/eq-volume/search/q?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (eqVolume) { return ({
-                        value: eqVolume.id,
-                        label: eqVolume.nome
-                    }); }));
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    var loadSysRefs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/sys-ref/search/q?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (sysRef) { return ({
-                        value: sysRef.srid,
-                        label: sysRef.srtext
-                    }); }));
-                    return [2 /*return*/];
-            }
-        });
-    }); };
+    var isLoaded = api_1.useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "" + process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+        libraries: ['places', 'geometry', 'drawing']
+    }).isLoaded;
     react_1.useEffect(function () {
-        function loadUpa() {
-            var _a, _b, _c, _d, _e, _f, _g;
+        function loadUt() {
             return __awaiter(this, void 0, void 0, function () {
-                var upa, _i, _h, _j, key, value;
-                return __generator(this, function (_k) {
-                    switch (_k.label) {
+                var ut, _i, _a, _b, key, value;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
                         case 0:
                             if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, client.get("/upa/" + id)];
+                            return [4 /*yield*/, client.get("/ut/" + id)];
                         case 1:
-                            upa = (_k.sent()).data;
-                            setEquacao({
-                                label: (_a = upa === null || upa === void 0 ? void 0 : upa.equacao_volume) === null || _a === void 0 ? void 0 : _a.nome,
-                                value: (_b = upa === null || upa === void 0 ? void 0 : upa.equacao_volume) === null || _b === void 0 ? void 0 : _b.id
-                            });
-                            setSysRef({
-                                label: (_c = upa === null || upa === void 0 ? void 0 : upa.spatial_ref_sys) === null || _c === void 0 ? void 0 : _c.srtext.split("\"")[1],
-                                value: (_d = upa === null || upa === void 0 ? void 0 : upa.spatial_ref_sys) === null || _d === void 0 ? void 0 : _d.srid
-                            });
-                            for (_i = 0, _h = Object.entries(upa); _i < _h.length; _i++) {
-                                _j = _h[_i], key = _j[0], value = _j[1];
+                            ut = (_c.sent()).data;
+                            for (_i = 0, _a = Object.entries(ut); _i < _a.length; _i++) {
+                                _b = _a[_i], key = _b[0], value = _b[1];
                                 switch (key) {
-                                    case 'equacao_volume':
-                                        setValue('equacao_volume', (_e = upa.equacao_volume) === null || _e === void 0 ? void 0 : _e.id);
-                                        break;
-                                    case 'spatial_ref_sys':
-                                        setValue('spatial_ref_sys', (_f = upa.spatial_ref_sys) === null || _f === void 0 ? void 0 : _f.srid);
-                                        break;
-                                    case 'umf':
-                                        setValue('umf', (_g = upa.umf) === null || _g === void 0 ? void 0 : _g.id);
-                                        break;
-                                    case 'tipo':
-                                        setValue('tipo', upa === null || upa === void 0 ? void 0 : upa.tipo.toString());
+                                    case 'upa':
+                                        setValue('upa', ut === null || ut === void 0 ? void 0 : ut.upa.id);
                                         break;
                                     default: {
                                         setValue(key, value, {
@@ -145,53 +98,22 @@ var AddEdit = function (_a) {
                                     }
                                 }
                             }
-                            _k.label = 2;
+                            _c.label = 2;
                         case 2: return [2 /*return*/];
                     }
                 });
             });
         }
-        loadUpa();
-    }, [session, isAddMode, client, id, setValue, setEquacao]);
-    react_1.useEffect(function () {
-        var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var eqResponse, equacoes_1, sysRefResponse, sysRefs_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, client.get("/eq-volume?orderBy=nome&order=asc")];
-                    case 1:
-                        eqResponse = _a.sent();
-                        equacoes_1 = eqResponse.data.equacoes;
-                        return [4 /*yield*/, client.get("/sys-ref?orderBy=srtext&order=asc")];
-                    case 2:
-                        sysRefResponse = _a.sent();
-                        sysRefs_1 = sysRefResponse.data.sysRefs;
-                        setSysRefs(sysRefs_1);
-                        setEquacoes(equacoes_1);
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
-            });
-        }); };
-        defaultOptions();
-    }, [session, client]);
-    var selectedEquacao = function (data) {
-        setEquacao(data);
-        setValue('equacao_volume', data === null || data === void 0 ? void 0 : data.value);
-    };
-    var selectedSysRef = function (data) {
-        setSysRef(data);
-        setValue('spatial_ref_sys', data === null || data === void 0 ? void 0 : data.value);
-    };
+        console.log(session);
+        loadUt();
+    }, [session, isAddMode, client, id, setValue, upa]);
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 try {
                     return [2 /*return*/, isAddMode
-                            ? createUpa(data)
-                            : updateUpa(id, data)];
+                            ? createUt(data)
+                            : updateUt(id, data)];
                 }
                 catch (error) {
                     alert_1["default"].error(error.message);
@@ -200,32 +122,16 @@ var AddEdit = function (_a) {
             });
         });
     }
-    function getSysRefDefaultOptions() {
-        return sysRefs === null || sysRefs === void 0 ? void 0 : sysRefs.map(function (spatialRef) {
-            return {
-                label: spatialRef.srtext,
-                value: spatialRef.srid
-            };
-        });
-    }
-    function getEquacoesDefaultOptions() {
-        return equacoes === null || equacoes === void 0 ? void 0 : equacoes.map(function (equacao) {
-            return {
-                label: equacao.nome,
-                value: equacao.id
-            };
-        });
-    }
-    function createUpa(data) {
+    function createUt(data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.post('upa', __assign({ umf: umf.id }, data))
+                    case 0: return [4 /*yield*/, client.post('ut', __assign({ id_upa: upa.id }, data))
                             .then(function (response) {
                             var _a = response.data, error = _a.error, message = _a.message;
                             if (!error) {
                                 alert_1["default"].success(message);
-                                router.push('/upa');
+                                router.push('/ut');
                             }
                             else {
                                 alert_1["default"].error(message);
@@ -238,16 +144,27 @@ var AddEdit = function (_a) {
             });
         });
     }
-    function updateUpa(id, data) {
+    function setLocation(location) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log(location);
+                setUtLocation(location);
+                setValue('latitude', location.lat);
+                setValue('longitude', location.lng);
+                return [2 /*return*/];
+            });
+        });
+    }
+    function updateUt(id, data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.put("/upa/" + id, __assign({ umf: umf.id }, data))
+                    case 0: return [4 /*yield*/, client.put("/ut/" + id, __assign({ id_upa: upa.id }, data))
                             .then(function (response) {
                             var _a = response.data, error = _a.error, message = _a.message;
                             if (!error) {
                                 alert_1["default"].success(message);
-                                router.push('/upa');
+                                router.push('/ut');
                             }
                             else {
                                 alert_1["default"].error(message);
@@ -261,50 +178,50 @@ var AddEdit = function (_a) {
         });
     }
     return (React.createElement("div", null,
-        React.createElement("div", { className: "py-6 flex flex-col justify-center sm:py-12 bg-gray-50" },
-            React.createElement("div", { className: "relative py-3 w-11/12 max-w-none lg:max-w-5xl mx-auto" },
+        React.createElement("div", { className: "py-4 flex flex-col justify-center sm:py-12 bg-gray-50" },
+            React.createElement("div", { className: "relative py-3 w-full max-w-none lg:max-w-5xl mx-auto z-40" },
                 React.createElement("div", { className: 'flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl' },
                     React.createElement("div", null,
-                        React.createElement(LinkBack_1.LinkBack, { href: "/upa", className: "flex flex-col relative left-0 ml-4" })),
-                    React.createElement("div", null, isAddMode ? (React.createElement("h1", { className: 'text-xl' }, "Cadastrar UPA")) : (React.createElement("h1", { className: 'text-xl' }, "Editar UPA"))),
+                        React.createElement(LinkBack_1.LinkBack, { href: "/ut", className: "flex flex-col relative left-0 ml-4" })),
+                    React.createElement("div", null, isAddMode ? (React.createElement("h1", { className: 'text-xl' }, "Cadastrar UT")) : (React.createElement("h1", { className: 'text-xl' }, "Editar UT"))),
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'flex flex-col lg:flex-row md:flex-row space-x-0 md:space-x-4' },
-                            React.createElement("div", { className: 'w-3/12' },
-                                React.createElement(FormInput_1.FormInput, { name: "ano", label: "Ano", register: register, errors: errors, rules: {
-                                        required: 'O campo nome é obrigatório',
-                                        minLength: {
-                                            value: 3,
-                                            message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                        }
-                                    }, id: "ano", className: "pb-4" })),
-                            React.createElement("div", { className: 'lg:w-9/12' },
-                                React.createElement(FormInput_1.FormInput, { id: "descricao", name: "descricao", label: "Descri\u00E7\u00E3o", type: "text", register: register, errors: errors, className: "pb-4" }))),
-                        React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md" },
-                            React.createElement("span", { className: "text-gray-700" }, "Forma de Invent\u00E1rio"),
-                            React.createElement("div", { className: "mt-2" },
-                                React.createElement("label", { className: "inline-flex items-center" },
-                                    React.createElement("input", __assign({}, register("tipo"), { type: "radio", className: "form-radio", name: "tipo", value: "0" })),
-                                    React.createElement("span", { className: "ml-2" }, "Cartesiano (X Y)")),
-                                React.createElement("label", { className: "inline-flex items-center ml-6" },
-                                    React.createElement("input", __assign({}, register("tipo"), { type: "radio", className: "form-radio", name: "tipo", value: "1" })),
-                                    React.createElement("span", { className: "ml-2" }, "GPS")))),
-                        React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4' },
-                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Coordenadas"),
-                                React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Selecione o Sistema de Coordenadas',
-                                            value: ''
-                                        }, selectedValue: sysRef, defaultOptions: getSysRefDefaultOptions(), options: loadSysRefs, label: "Sistema de Coordenada", callback: selectedSysRef }))),
-                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Equa\u00E7\u00E3o"),
-                                React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Selecione uma Equacao',
-                                            value: ''
-                                        }, selectedValue: equacao_volume, defaultOptions: getEquacoesDefaultOptions(), options: loadEquacoes, label: "Volume da \u00C1rvore", callback: selectedEquacao })))),
+                        React.createElement("div", { className: 'flex flex-row space-x-4 pb-6' },
+                            React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12" },
+                                React.createElement("span", { className: "text-gray-700 absolute top-9 bg-white px-2" }, "Dados b\u00E1sicos da UT"),
+                                React.createElement("div", null,
+                                    React.createElement(FormInput_1.FormInput, { name: "numero_ut", label: "N\u00FAmero UT", type: "number", register: register, errors: errors, rules: {
+                                            required: 'O campo nome é obrigatório'
+                                        }, id: "numero_ut", className: "pb-4" })),
+                                React.createElement("div", { className: 'flex flex-col lg:flex-row lg:space-x-4' },
+                                    React.createElement("div", null,
+                                        React.createElement(FormInput_1.FormInput, { name: "area_util", label: "\u00C1rea \u00DAtil", type: "number", register: register, errors: errors, rules: {
+                                                required: 'O campo nome é obrigatório'
+                                            }, id: "area_util", className: "pb-4" })),
+                                    React.createElement("div", null,
+                                        React.createElement(FormInput_1.FormInput, { name: "area_total", label: "\u00C1rea Total", type: "number", register: register, errors: errors, rules: {
+                                                required: 'O campo nome é obrigatório'
+                                            }, id: "area_total", className: "pb-4" })))),
+                            React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12" },
+                                React.createElement("span", { className: "text-gray-700 absolute top-9 bg-white px-2" }, "Coordenadas"),
+                                React.createElement("div", { className: "flex flex-col" },
+                                    React.createElement(FormInput_1.FormInput, { id: "latitude", name: "latitude", label: "Latitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" }),
+                                    React.createElement(FormInput_1.FormInput, { id: "longitude", name: "longitude", label: "Longitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" })))),
+                        (upa.tipo === 0)
+                            ?
+                                (React.createElement("div", { className: "space-y-8" },
+                                    React.createElement("div", { className: "relative border border-gray-200 p-4 rounded-md" },
+                                        React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Faixas"),
+                                        React.createElement("div", { className: "flex flex-row space-x-4" },
+                                            React.createElement(FormInput_1.FormInput, { name: "quantidade_faixas", label: "Quantidade", type: "number", register: register, errors: errors, id: "quantidade_faixas", className: "pb-4" }),
+                                            React.createElement(FormInput_1.FormInput, { name: "largura_faixas", label: "Largura", type: "number", register: register, errors: errors, id: "largura_faixas", className: "pb-4" }),
+                                            React.createElement(FormInput_1.FormInput, { name: "comprimento_faixas", label: "Comprimento", type: "number", register: register, errors: errors, id: "comprimento_faixas", className: "pb-4" }))),
+                                    React.createElement("div", { className: "relative border border-gray-200 p-4 rounded-md" },
+                                        React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Localiza\u00E7\u00E3o da UT"),
+                                        React.createElement("div", { className: 'flex flex-row items-center mx-auto z-40' }, (!isLoaded) ? React.createElement("div", null, "Loading...") :
+                                            (React.createElement(Map_1["default"], { setLocation: setLocation }))))))
+                            : (React.createElement("div", null)),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
                             React.createElement(Link_1.Link, { href: "/upa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));

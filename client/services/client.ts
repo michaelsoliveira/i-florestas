@@ -9,6 +9,7 @@ const useClient = (options?: any) => {
   // const handleError = useErrorHandler();
 
   return useMemo(() => {
+    console.log(token)
     const api = axios.create({
       baseURL: 'http://localhost:3333',
         headers: {

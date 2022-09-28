@@ -58,6 +58,7 @@ var react_2 = require("next-auth/react");
 var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
+var upaSlice_1 = require("../../store/upaSlice");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
@@ -67,6 +68,7 @@ var AddEdit = function (_a) {
     var _f = react_1.useState(), sysRefs = _f[0], setSysRefs = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
+    var dispatch = hooks_1.useAppDispatch();
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
@@ -244,8 +246,13 @@ var AddEdit = function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, client.put("/upa/" + id, __assign({ umf: umf.id }, data))
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
+                            var _a = response.data, error = _a.error, message = _a.message, upa = _a.upa;
                             if (!error) {
+                                dispatch(upaSlice_1.setUpa({
+                                    id: upa.id,
+                                    descricao: upa.descricao,
+                                    tipo: upa.tipo
+                                }));
                                 alert_1["default"].success(message);
                                 router.push('/upa');
                             }

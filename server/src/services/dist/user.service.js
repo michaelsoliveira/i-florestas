@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,50 +51,42 @@ var bcryptjs_1 = require("bcryptjs");
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entities/User");
 var nodemailer_1 = require("nodemailer");
-var Empresa_1 = require("../entities/Empresa");
 var prismaClient_1 = require("../database/prismaClient");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
     UserService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var userRepository, userExists, passwordHash, preparedData, empresa, _a, user;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        userRepository = typeorm_1.getRepository(User_1.User);
-                        return [4 /*yield*/, userRepository.findOne({ where: { email: data === null || data === void 0 ? void 0 : data.email } })];
+            var userExists, passwordHash, dataRequest, preparedData, user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: {
+                                email: data === null || data === void 0 ? void 0 : data.email
+                            }
+                        })];
                     case 1:
-                        userExists = _b.sent();
+                        userExists = _a.sent();
                         if (userExists) {
-                            throw new Error("Já existe um usuário cadastrado com este e-mail");
+                            throw new Error("Usuário já cadastrado");
                         }
                         return [4 /*yield*/, bcryptjs_1["default"].hash(data === null || data === void 0 ? void 0 : data.password, 10)];
                     case 2:
-                        passwordHash = _b.sent();
-                        preparedData = {
+                        passwordHash = _a.sent();
+                        dataRequest = {
                             username: data === null || data === void 0 ? void 0 : data.username,
                             email: data === null || data === void 0 ? void 0 : data.email,
                             password: passwordHash,
                             image: data === null || data === void 0 ? void 0 : data.image,
                             provider: data === null || data === void 0 ? void 0 : data.provider,
-                            idProvider: data === null || data === void 0 ? void 0 : data.idProvider
+                            id_provider: data === null || data === void 0 ? void 0 : data.id_provider
                         };
-                        _a = (data === null || data === void 0 ? void 0 : data.empresaId);
-                        if (!_a) return [3 /*break*/, 4];
-                        return [4 /*yield*/, typeorm_1.getRepository(Empresa_1.Empresa).findOne(data === null || data === void 0 ? void 0 : data.empresaId)];
+                        preparedData = (data === null || data === void 0 ? void 0 : data.empresaId) ? __assign(__assign({}, data), { empresa_users: { create: { id_empresa: data.empresaId } } }) : __assign({}, dataRequest);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
+                                data: __assign({}, preparedData)
+                            })];
                     case 3:
-                        _a = (_b.sent());
-                        _b.label = 4;
-                    case 4:
-                        empresa = _a;
-                        user = userRepository.create(preparedData);
-                        if (empresa) {
-                            user.empresas = [empresa];
-                        }
-                        return [4 /*yield*/, user.save()];
-                    case 5:
-                        _b.sent();
+                        user = _a.sent();
                         return [2 /*return*/, user];
                 }
             });
@@ -91,39 +94,40 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var userRepository, userExists, passwordHash, preparedData;
+            var userExists, preparedData, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        userRepository = typeorm_1.getRepository(User_1.User);
-                        return [4 /*yield*/, userRepository.findOne({ where: { id: id } })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: {
+                                id: id
+                            }
+                        })];
                     case 1:
                         userExists = _a.sent();
                         if (!userExists) {
                             throw new Error("Usuário não localizado");
                         }
-                        return [4 /*yield*/, bcryptjs_1["default"].hash(data === null || data === void 0 ? void 0 : data.password, 10)];
-                    case 2:
-                        passwordHash = _a.sent();
                         preparedData = {
-                            username: data === null || data === void 0 ? void 0 : data.username,
-                            email: data === null || data === void 0 ? void 0 : data.email,
-                            password: passwordHash,
                             image: data === null || data === void 0 ? void 0 : data.image,
                             provider: data === null || data === void 0 ? void 0 : data.provider,
-                            idProvider: data === null || data === void 0 ? void 0 : data.idProvider
+                            id_provider: data === null || data === void 0 ? void 0 : data.idProvider
                         };
-                        return [4 /*yield*/, userRepository.update(id, preparedData)];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/, this.findOne(id)];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
+                                where: {
+                                    id: id
+                                },
+                                data: __assign({}, preparedData)
+                            })];
+                    case 2:
+                        user = _a.sent();
+                        return [2 /*return*/, user];
                 }
             });
         });
     };
     UserService.prototype.updatePassword = function (id, oldPassword, newPassword) {
         return __awaiter(this, void 0, void 0, function () {
-            var userRepository, userData, validPassword, passwordHash, preparedData;
+            var userRepository, userData, validPassword, passwordHash;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -137,23 +141,13 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, bcryptjs_1["default"].compare(oldPassword, userData.password)];
                     case 2:
                         validPassword = _a.sent();
-                        console.log(validPassword);
                         if (!validPassword) {
                             throw new Error("Senha informada não corresponde com a cadastrada");
                         }
                         return [4 /*yield*/, bcryptjs_1["default"].hash(newPassword, 10)];
                     case 3:
                         passwordHash = _a.sent();
-                        preparedData = {
-                            username: userData === null || userData === void 0 ? void 0 : userData.username,
-                            email: userData === null || userData === void 0 ? void 0 : userData.email,
-                            password: passwordHash,
-                            image: userData === null || userData === void 0 ? void 0 : userData.image,
-                            provider: userData === null || userData === void 0 ? void 0 : userData.provider,
-                            idProvider: userData === null || userData === void 0 ? void 0 : userData.idProvider
-                        };
-                        console.log(preparedData);
-                        return [4 /*yield*/, userRepository.update(id, preparedData)];
+                        return [4 /*yield*/, userRepository.update(id, { password: passwordHash })];
                     case 4:
                         _a.sent();
                         return [2 /*return*/, this.findOne(id)];
@@ -202,40 +196,18 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.findByProvider = function (provider, idProvider, email) {
+    UserService.prototype.findProvider = function (email) {
         return __awaiter(this, void 0, Promise, function () {
-            var user_1, user;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (!email) return [3 /*break*/, 2];
-                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
-                                where: {
-                                    email: email
-                                }
-                            })];
-                    case 1:
-                        user_1 = _a.sent();
-                        return [2 /*return*/, user_1];
-                    case 2: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
                             where: {
-                                AND: [
-                                    { provider: provider },
-                                    { id_provider: idProvider }
-                                ]
+                                email: email
                             }
-                        })
-                        // const query = await getRepository(User).createQueryBuilder("user")
-                        // const data =
-                        //     query.where("user.provider = :provider", { provider })
-                        //         .andWhere("user.idProvider = :idProvider", { idProvider })
-                    ];
-                    case 3:
+                        })];
+                    case 1:
                         user = _a.sent();
-                        // const query = await getRepository(User).createQueryBuilder("user")
-                        // const data =
-                        //     query.where("user.provider = :provider", { provider })
-                        //         .andWhere("user.idProvider = :idProvider", { idProvider })
                         return [2 /*return*/, user];
                 }
             });
@@ -265,7 +237,7 @@ var UserService = /** @class */ (function () {
                 linkLogin = "\n            <a href=\"" + url + "\" target=\"_blank\" style=\"font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: " + buttonTextColor + "; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid " + buttonBorderColor + "; display: inline-block; font-weight: bold;\">\n                Login\n            </a>\n        ";
                 // send mail with defined transport object
                 transporter.sendMail({
-                    from: '"Michael Santos de Oliveira 👻" <michaelsoliveira@gmail.com>',
+                    from: '"Michael Santos de Oliveira" <michaelsoliveira@gmail.com>',
                     to: email,
                     subject: "Acesso ao Software BOManejo Web",
                     text: "Usu\u00E1rio " + name + " foi cadastrado com Sucesso!",
@@ -284,24 +256,19 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.findWithPassword = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var userRepository, user;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).createQueryBuilder("users")];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: {
+                                id: id
+                            },
+                            select: {
+                                id: true,
+                                password: true
+                            }
+                        })];
                     case 1:
-                        userRepository = _a.sent();
-                        return [4 /*yield*/, userRepository
-                                .select([
-                                "users.id",
-                                "users.username",
-                                "users.password",
-                                "users.email",
-                                "users.provider",
-                                "users.idProvider"
-                            ])
-                                .where("users.id = :id", { id: id })
-                                .getOne()];
-                    case 2:
                         user = _a.sent();
                         return [2 /*return*/, user];
                 }

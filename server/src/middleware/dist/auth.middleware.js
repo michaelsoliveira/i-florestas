@@ -75,7 +75,7 @@ exports.Authentication = function () {
                 case 2: return [4 /*yield*/, decodeJwtGoogle_1.getDecodedOAuthJwtGoogle(token)];
                 case 3:
                     provider_1 = _b.sent();
-                    return [4 /*yield*/, user_service_1["default"].findByProvider('google', provider_1.sub)];
+                    return [4 /*yield*/, user_service_1["default"].findProvider(provider_1.email)];
                 case 4:
                     user = _b.sent();
                     request.user = {
@@ -97,7 +97,7 @@ exports.Authentication = function () {
                                 switch (_a.label) {
                                     case 0:
                                         provider = response.data;
-                                        return [4 /*yield*/, user_service_1["default"].findByProvider('github', provider.id)];
+                                        return [4 /*yield*/, user_service_1["default"].findProvider(provider.email)];
                                     case 1:
                                         user = _a.sent();
                                         request.user = {
@@ -115,29 +115,26 @@ exports.Authentication = function () {
                     // console.log(verificationResponse)
                     _b.sent();
                     return [3 /*break*/, 11];
-                case 7:
-                    console.log(provider);
-                    return [4 /*yield*/, axios_1["default"].get("https://graph.facebook.com/me?access_token=" + token + "&fields=id")
-                            .then(function (response) { return __awaiter(void 0, void 0, void 0, function () {
-                            var provider, user;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        provider = response.data;
-                                        return [4 /*yield*/, user_service_1["default"].findByProvider('facebook', provider.id)];
-                                    case 1:
-                                        user = _a.sent();
-                                        console.log(user);
-                                        request.user = {
-                                            id: user.id,
-                                            email: user.email,
-                                            username: user.username,
-                                            provider: user.provider
-                                        };
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); })];
+                case 7: return [4 /*yield*/, axios_1["default"].get("https://graph.facebook.com/me?access_token=" + token + "&fields=id")
+                        .then(function (response) { return __awaiter(void 0, void 0, void 0, function () {
+                        var provider, user;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    provider = response.data;
+                                    return [4 /*yield*/, user_service_1["default"].findProvider(provider.email)];
+                                case 1:
+                                    user = _a.sent();
+                                    request.user = {
+                                        id: user.id,
+                                        email: user.email,
+                                        username: user.username,
+                                        provider: user.provider
+                                    };
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })];
                 case 8:
                     _b.sent();
                     return [3 /*break*/, 11];

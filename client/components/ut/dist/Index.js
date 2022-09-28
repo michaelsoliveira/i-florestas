@@ -209,13 +209,15 @@ var Index = function (_a) {
         });
     }); };
     var selectUpa = function (upa) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, uts;
+        var upaSelected, response, uts;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    upaSelected = upas.find(function (u) { return u.id === upa.value; });
                     dispatch(upaSlice_1.setUpa({
                         id: upa.value,
-                        descricao: upa.label
+                        descricao: upa.label,
+                        tipo: Number.parseInt(upaSelected.tipo)
                     }));
                     setSelectedUpa(upa);
                     return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upa.value)];
@@ -341,7 +343,7 @@ var Index = function (_a) {
     return (React.createElement("div", null,
         React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidades de Trabalho"),
-            React.createElement(Link_1.Link, { href: '/upa/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
+            React.createElement(Link_1.Link, { href: '/ut/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
                 React.createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },

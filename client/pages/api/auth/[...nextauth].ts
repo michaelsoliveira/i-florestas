@@ -15,34 +15,35 @@ const GOOGLE_AUTHORIZATION_URL =
     response_type: "code",
   })
 
-async function findProvider(provider: string, user: any) {
+async function findProvider(token: any) {
   
+  const { name , email, provider, access_token } = token
+  console.log(token)
   try {
       const dataProvider = {
-        username: user?.name,
-        email: user?.email,
+        username: name,
+        email,
         password: Math.random().toString(36).slice(-8),
-        image: user?.image,
+        image: token?.picture,
         provider,
-        idProvider: user?.id,
+        id_provider: token?.sub
       }
       
-      const userExists = await userService.findProvider(user?.email)
+      const userExists = await userService.findProvider(token)
         
-      if (userExists) {  
-        if (!userExists.provider) {
-          await userService.update(userExists?.id, dataProvider)
-        } else {
-
-        }
-      } else {
+      if (userExists && !userExists.provider) {
+        
+          await userService.update(userExists?.id, dataProvider, access_token)
+      } 
+      if (!userExists) {
+        
         await userService.create(dataProvider)
           .then( () => {
               userService.sendEmail(dataProvider)
           })
       }
-    } catch (error) {
-        console.log(error)
+    } catch (error: any) {
+        console.log(error.message)
     }
 }
 
@@ -53,7 +54,7 @@ async function refreshAccessToken(token: any) {
   switch (provider) {
     case 'local': {
       try {
-        const response = await fetch('http://localhost:3333/auth/refresh', {
+        const response = await fetch(`${process.env.PUBLIC_API_URL}/auth/refresh`, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -163,7 +164,7 @@ const options: NextAuthOptions = {
           },
             async authorize(credentials, req) {
             try {
-              const res = await fetch("http://localhost:3333/auth/login", {
+              const res = await fetch(`${process.env.PUBLIC_API_URL}/auth/login`, {
                   method: 'POST',
                   body: JSON.stringify(credentials),
                   headers: { "Content-Type": "application/json" }
@@ -259,8 +260,7 @@ const options: NextAuthOptions = {
           }
         }
         if (account) {
-          await findProvider(account.provider, user)
-          
+          await findProvider({ ...token, ...account})
           return {
             provider: account.provider,
             accessToken: account.access_token,
@@ -274,7 +274,7 @@ const options: NextAuthOptions = {
         if (Date.now() < token.accessTokenExpires) {
           return token
         }
-
+        
         // Access token has expired, try to update it
         return refreshAccessToken(token)
       },
@@ -305,5 +305,9 @@ const options: NextAuthOptions = {
     debug: false,
   }
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default NextAuth(options)
+
+const Auth = async (req: NextApiRequest, res: NextApiResponse) => {  
+  return NextAuth(req, res, options)
+}
+
+export default Auth
