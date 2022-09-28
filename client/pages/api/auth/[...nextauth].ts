@@ -153,8 +153,8 @@ const options: NextAuthOptions = {
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET || 'undefined'
       }),
       GithubProvider({
-        clientId: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET
+        clientId: process.env.GITHUB_CLIENT_ID || 'undefined',
+        clientSecret: process.env.GITHUB_CLIENT_SECRET || 'undefined'
       }),
         CredentialsProvider({
           name: 'Credentials',
