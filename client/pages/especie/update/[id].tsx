@@ -1,27 +1,15 @@
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
 import Especie from "components/Especie";
+import withAuthentication from "@/components/withAuthentication";
 
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    
-    const session = await getSession(ctx)
-    
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false
-            }
-        }
-    }  
 
     return {
         props: {
-            localSession: session,
             id: ctx.params?.id
         }
     }
 }
 
-export default Especie;
+export default withAuthentication(Especie);

@@ -6,18 +6,26 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var nextConfig = {
-  reactStrictMode: true,
-  future: {
-    // Opt-in to webpack@5
-    webpack5: false
+  publicRuntimeConfig: {
+    // remove private variables from processEnv
+    processEnv: Object.fromEntries(Object.entries(process.env).filter(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 1),
+          key = _ref2[0];
+
+      return key.includes('NEXT_PUBLIC_');
+    }))
   },
-  webpack: function webpack(config, _ref) {
-    var buildId = _ref.buildId,
-        dev = _ref.dev,
-        isServer = _ref.isServer,
-        defaultLoaders = _ref.defaultLoaders,
-        _webpack = _ref.webpack;
+  webpack: function webpack(config, _ref3) {
+    var isServer = _ref3.isServer;
 
     if (!isServer) {
       config.resolve = _objectSpread({}, config.resolve, {

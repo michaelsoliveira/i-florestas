@@ -1,5 +1,4 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react";
-import { getUser, signInRequest } from "../services/auth";
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import useClient from "../services/client";
 import { Axios } from "axios";

@@ -1,16 +1,13 @@
 import { useContext, useEffect, useState, useCallback } from "react"
 import { Link } from "components/Link"
-import EmpresaService, { EmpresaType } from "services/empresa"
 import { TrashIcon as TrashIconOut, PencilAltIcon as PencilAltIconOut
 } from '@heroicons/react/outline'
 import { TrashIcon, PencilAltIcon, UsersIcon } from '@heroicons/react/solid'
-import { GetServerSideProps } from "next"
 import AlertService from 'services/alert'
 import Modal from "components/Modal"
-import { getSession } from 'next-auth/react'
-import { useAppSelector } from "store/hooks"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
+import { EmpresaType } from "types/IEmpresa"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
@@ -42,7 +39,7 @@ const EmpresaIndex = () => {
 
     async function deleteEmpresa(id?: string) {
         try {
-            await EmpresaService._delete(id)
+            await client.delete(`/empresa/${id}`)
                 .then(() => {
                     AlertService.success('A empresa foi deletada com SUCESSO!!!')
                     loadEmpresas()
@@ -173,23 +170,6 @@ const EmpresaIndex = () => {
             )}
     </div>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    
-    const session = await getSession(ctx)
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
-        }
-    }  
-
-    return {
-        props: {}
-    }
 }
 
 export default withAuthentication(EmpresaIndex)

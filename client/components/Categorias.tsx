@@ -5,19 +5,7 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../services/alert'
 import Modal from "./Modal"
 import { AuthContext } from "../contexts/AuthContext"
-
-export type CategoriaEspecieType = {
-    id: string;
-    nome: string,
-    criterioFuste?: number;
-    criterioDminc?: number;
-    criterioDmaxc?: number;
-    criterioNMin?: number;
-    criterioPercMin?: number;
-    criterioAltura?: number;
-    criterioVolume?: number;
-    preservar: boolean;
-}
+import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
 
 const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     

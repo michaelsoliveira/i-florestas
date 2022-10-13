@@ -2,12 +2,12 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
 import Especies from "components/Especies"
 import { Pagination } from "components/Pagination"
-import { EspecieType } from "services/especie"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
+import { EspecieType } from "types/IEspecieType"
 
 const EspecieIndex = () => {
     const { client } = useContext(AuthContext)

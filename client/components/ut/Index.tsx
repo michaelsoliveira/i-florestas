@@ -5,12 +5,12 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
-import { UtType } from "../../services/ut"
 import { OptionType, Select } from '../Select'
 import { setUmf, UmfType } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
+import { UtType } from "types/IUtType"
 
 const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUts }: any) => {
     

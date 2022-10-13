@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { useSession, signOut } from 'next-auth/react';
 import { useMemo } from 'react';
-// import { getSession } from 'next-auth/react'
 
 const useClient = (options?: any) => {
   const { data: session } = useSession();
+  
   const token = session?.accessToken;
   // const handleError = useErrorHandler();
 
   return useMemo(() => {
-    console.log(token)
+    
     const api = axios.create({
       baseURL: 'http://localhost:3333',
         headers: {

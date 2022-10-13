@@ -48,7 +48,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.findProvider = exports.sendEmail = exports.update = exports.create = void 0;
-var axios_1 = require("./axios");
 function create(dataRequest) {
     return __awaiter(this, void 0, Promise, function () {
         var url, response, data;
@@ -117,18 +116,27 @@ function update(id, dataRequest, token) {
 exports.update = update;
 function sendEmail(dataResponse) {
     return __awaiter(this, void 0, Promise, function () {
-        var email, name, password, data;
+        var email, name, password, url, response, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     email = dataResponse.email, name = dataResponse.username, password = dataResponse.password;
-                    return [4 /*yield*/, axios_1.apiClient().post('/users/send-email', {
-                            email: email,
-                            name: name,
-                            message: "Sua senha de acesso \u00E9: <b>" + password + "</b>"
+                    url = process.env.PUBLIC_API_URL + "/users/send-email";
+                    return [4 /*yield*/, fetch(url, {
+                            method: "POST",
+                            body: JSON.stringify({
+                                email: email,
+                                name: name,
+                                message: "Sua senha de acesso \u00E9: <b>" + password + "</b>"
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
                         })];
                 case 1:
-                    data = (_a.sent()).data;
+                    response = _a.sent();
+                    data = response.json();
                     return [2 /*return*/, data];
             }
         });

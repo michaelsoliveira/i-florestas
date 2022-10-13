@@ -5,12 +5,12 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import Modal from "../../components/Modal"
 import { AuthContext } from "../../contexts/AuthContext"
-import { User } from "../../services/auth"
+import { UserType } from "types/IUserType"
 
 const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
     
-    const [filteredUsers, setFilteredUsers] = useState<User[]>(currentUsers)
-    const [selectedUser, setSelectedUser] = useState<User>()
+    const [filteredUsers, setFilteredUsers] = useState<UserType[]>(currentUsers)
+    const [selectedUser, setSelectedUser] = useState<UserType>()
     const [uploading, setUploading] = useState<boolean>(false)
     const [openModal, setOpenModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
@@ -22,7 +22,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
     }, [currentUsers, currentPage])
 
     function selectToModal(id?: string) {
-        const user = currentUsers.find((user: User) => user.id === id)
+        const user = currentUsers.find((user: UserType) => user.id === id)
         setSelectedUser(user)
         setOpenModal(true)
     }

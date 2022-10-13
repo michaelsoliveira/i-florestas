@@ -3,15 +3,17 @@ import { useForm, useFormState } from 'react-hook-form'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from "next/router"
-import EmpresaService, { EmpresaType } from "../../services/empresa"
-import { useDispatch, useSelector } from "react-redux";
 import AlertService from "../../services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useAppSelector } from "../../store/hooks";
 import styles from 'styles/Empresa.module.scss'
 
-const Empresa = ({ id }: any) => {
+type EmpresaIndex = {
+    id: string;
+}
+
+const Empresa = ({ id }: EmpresaIndex) => {
     const router = useRouter()
     // const { id } = router.query as any
     const isAddMode = !id
@@ -79,7 +81,7 @@ const Empresa = ({ id }: any) => {
     }
 
     async function createEmpresa(data: any) {
-        await EmpresaService.create(data)
+        await client.post('/empresa', data)
             .then((response: any) => {
                 const empresa = response.data
                 AlertService.success(`Empresa ${empresa?.razaoSocial} cadastrada com SUCESSO!!!`);
@@ -89,7 +91,7 @@ const Empresa = ({ id }: any) => {
 
     async function updateEmpresa(id: string, data: any) {
         
-        await EmpresaService.update(id, data)
+        await client.put(`/empresa/${id}`, data)
             .then((response: any) => {
                 const empresa = response.data
                 AlertService.success(`Empresa ${empresa?.razaoSocial} atualizada com SUCESSO!!!`);

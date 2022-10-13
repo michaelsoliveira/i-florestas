@@ -1,5 +1,3 @@
-import { apiClient } from "./axios"
-
 export type UserData = {
     email: string;
     username: string;
@@ -67,12 +65,21 @@ export async function update(id:string, dataRequest: UserData, token: string) : 
 
 export async function sendEmail(dataResponse: any): Promise<void> {
     const { email, username: name, password } = dataResponse
-    
-    const { data } = await apiClient().post('/users/send-email', {
-        email,
-        name,
-        message: `Sua senha de acesso é: <b>${password}</b>`
+    const url = `${process.env.PUBLIC_API_URL}/users/send-email`
+
+    const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+            email,
+            name,
+            message: `Sua senha de acesso é: <b>${password}</b>`
+        }),
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
     })
+    const data = response.json()
 
     return data
 }

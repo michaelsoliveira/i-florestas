@@ -7,9 +7,9 @@ import { AuthContext } from "contexts/AuthContext"
 import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
-import { User } from "services/auth"
 import Users from "components/user/Users"
 import { Pagination } from "components/Pagination"
+import { UserType } from "types/IUserType"
 
 type EmpresaUserType = {
     empresaId: string
@@ -22,7 +22,7 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUsers, setCurrentUsers] = useState<User[]>([])
+    const [currentUsers, setCurrentUsers] = useState<UserType[]>([])
     const [totalPages, setTotalPages] = useState(0)
     const [orderBy, setOrderBy] = useState('user.username')
     const [order, setOrder] = useState('ASC')
@@ -127,17 +127,7 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
-    const session = await getSession({ req })
-    
     const empresaId = params?.empresa
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/',
-                permanent: false
-            }
-        }
-    }  
 
     return {
         props: {

@@ -1,17 +1,14 @@
-import { useEffect, useContext, Context, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { api } from '../services/api';
 import { LockClosedIcon } from '@heroicons/react/solid'
-import { AuthContext } from '../contexts/AuthContext2';
-import { parseCookies } from 'nookies';
-import Logo from '../components/Logo'
-import { setMessage } from '../store/messageSlice'
-import { useAppDispatch } from '../store/hooks';
+// import { parseCookies } from 'nookies';
+// import Logo from '../components/Logo'
+// import { setMessage } from '../store/messageSlice'
+// import { useAppDispatch } from '../store/hooks';
 import AlertService from '../services/alert';
-import { signIn, useSession, getCsrfToken } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
 
 // import { userService } from 'services';
@@ -19,9 +16,8 @@ import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
 export default Login;
 
 function Login({ csrfToken }: any) {
-  const { data } = useSession()
+  const { data: session } = useSession()
     const router = useRouter();
-    const { signIn: login, loggedUser } = useContext(AuthContext)
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -33,10 +29,6 @@ function Login({ csrfToken }: any) {
     // get functions to build form with useForm() hook
     const { register, handleSubmit, setError, formState } = useForm(formOptions);
     const { errors } = formState;
-
-  // useEffect(() => {
-    
-  // })
 
   function signInProvider(provider: string) {
     event?.preventDefault()

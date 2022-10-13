@@ -52,7 +52,6 @@ var react_hook_form_1 = require("react-hook-form");
 var Yup = require("yup");
 var yup_1 = require("@hookform/resolvers/yup");
 var router_1 = require("next/router");
-var empresa_1 = require("../../services/empresa");
 var alert_1 = require("../../services/alert");
 var react_2 = require("next-auth/react");
 var AuthContext_1 = require("../../contexts/AuthContext");
@@ -130,7 +129,7 @@ var Empresa = function (_a) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, empresa_1["default"].create(data)
+                    case 0: return [4 /*yield*/, client.post('/empresa', data)
                             .then(function (response) {
                             var empresa = response.data;
                             alert_1["default"].success("Empresa " + (empresa === null || empresa === void 0 ? void 0 : empresa.razaoSocial) + " cadastrada com SUCESSO!!!");
@@ -147,7 +146,7 @@ var Empresa = function (_a) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, empresa_1["default"].update(id, data)
+                    case 0: return [4 /*yield*/, client.put("/empresa/" + id, data)
                             .then(function (response) {
                             var empresa = response.data;
                             alert_1["default"].success("Empresa " + (empresa === null || empresa === void 0 ? void 0 : empresa.razaoSocial) + " atualizada com SUCESSO!!!");

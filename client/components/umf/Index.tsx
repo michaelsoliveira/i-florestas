@@ -5,7 +5,7 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
-import { UmfType } from "../../services/umf"
+import { UmfType } from "types/IUMFType"
 
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     

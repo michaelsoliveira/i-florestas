@@ -36,14 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getServerSideProps = void 0;
 var react_1 = require("react");
 var Link_1 = require("components/Link");
-var empresa_1 = require("services/empresa");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("services/alert");
 var Modal_1 = require("components/Modal");
-var react_2 = require("next-auth/react");
 var withAuthentication_1 = require("components/withAuthentication");
 var AuthContext_1 = require("contexts/AuthContext");
 var EmpresaIndex = function () {
@@ -88,7 +85,7 @@ var EmpresaIndex = function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, empresa_1["default"]._delete(id)
+                        return [4 /*yield*/, client["delete"]("/empresa/" + id)
                                 .then(function () {
                                 alert_1["default"].success('A empresa foi deletada com SUCESSO!!!');
                                 loadEmpresas();
@@ -152,25 +149,4 @@ var EmpresaIndex = function () {
             openModal &&
                 React.createElement(Modal_1["default"], { styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar Empresar", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir a empresa " + (selectedEmpresa === null || selectedEmpresa === void 0 ? void 0 : selectedEmpresa.razaoSocial) + "?", data: selectedEmpresa, parentFunction: deleteEmpresa, hideModal: function () { return setOpenModal(false); }, open: openModal })))));
 };
-exports.getServerSideProps = function (ctx) { return __awaiter(void 0, void 0, void 0, function () {
-    var session;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, react_2.getSession(ctx)];
-            case 1:
-                session = _a.sent();
-                if (!session) {
-                    return [2 /*return*/, {
-                            redirect: {
-                                destination: '/',
-                                permanent: false
-                            }
-                        }];
-                }
-                return [2 /*return*/, {
-                        props: {}
-                    }];
-        }
-    });
-}); };
 exports["default"] = withAuthentication_1["default"](EmpresaIndex);

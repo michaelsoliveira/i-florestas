@@ -7,12 +7,7 @@ const nextConfig = {
       )
     ),
   },
-  reactStrictMode: true,
-  future: {
-    // Opt-in to webpack@5
-    webpack5: false,
-  },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve = {
         ...config.resolve,

@@ -4,10 +4,10 @@ import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate, setCurrentPagePagination } from "store/paginationSlice"
-import Categorias, { CategoriaEspecieType } from "components/Categorias"
+import Categorias from "components/Categorias"
 import { useRouter } from "next/router"
 import { RootState } from "store"
-
+import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
 
 
 const CategoriaIndex = () => {

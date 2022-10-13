@@ -1,13 +1,13 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
 import { Pagination } from "components/Pagination"
-import { UpaType } from "services/upa"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import Index from "components/ut/Index"
+import { UtType } from "types/IUtType"
 
 const UtIndex = () => {
     const { client } = useContext(AuthContext)
@@ -15,7 +15,7 @@ const UtIndex = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUts, setCurrentUts] = useState<UpaType[]>([])
+    const [currentUts, setCurrentUts] = useState<UtType[]>([])
     const [orderBy, setOrderBy] = useState('descricao')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)

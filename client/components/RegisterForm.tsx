@@ -12,8 +12,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import AlertService from '../services/alert'
 import { signIn } from 'next-auth/react';
 import type { UserData } from "../services/user"
-
-import { AuthContext } from '../contexts/AuthContext2';
 import { useRouter } from 'next/router';
 
 function classNames(...classes: string[]) {

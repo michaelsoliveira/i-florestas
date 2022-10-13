@@ -6,7 +6,7 @@ var secret = process.env.JWT_SECRET;
 function apiClient(ctx) {
     // const { 'next-auth.session-token': token } = parseCookies(ctx)
     var api = axios_1["default"].create({
-        baseURL: 'http://192.168.1.105:3333'
+        baseURL: 'http://localhost:3333'
     });
     api.interceptors.response.use(function (response) {
         return response;

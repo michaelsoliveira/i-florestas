@@ -14,13 +14,11 @@ exports.__esModule = true;
 var axios_1 = require("axios");
 var react_1 = require("next-auth/react");
 var react_2 = require("react");
-// import { getSession } from 'next-auth/react'
 var useClient = function (options) {
     var session = react_1.useSession().data;
     var token = session === null || session === void 0 ? void 0 : session.accessToken;
     // const handleError = useErrorHandler();
     return react_2.useMemo(function () {
-        console.log(token);
         var api = axios_1["default"].create({
             baseURL: 'http://localhost:3333',
             headers: __assign({ Authorization: token ? "Bearer " + token : '' }, ((options === null || options === void 0 ? void 0 : options.headers) ? options.headers : {}))
