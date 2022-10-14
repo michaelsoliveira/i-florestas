@@ -14,7 +14,7 @@ export type ResponseData = {
 }
 
 export async function create(dataRequest: UserData) : Promise<ResponseData> {
-    const url = `${process.env.PUBLIC_API_URL}/users/create`
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/create`
 
     const response = await fetch(url, {
         method: "POST",
@@ -40,7 +40,7 @@ export async function create(dataRequest: UserData) : Promise<ResponseData> {
 
 export async function update(id:string, dataRequest: UserData, token: string) : Promise<any> {
     
-    const url = `${process.env.PUBLIC_API_URL}/users/${id}`
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`
     
     const response = await fetch(url, {
         method: "PUT",
@@ -65,7 +65,7 @@ export async function update(id:string, dataRequest: UserData, token: string) : 
 
 export async function sendEmail(dataResponse: any): Promise<void> {
     const { email, username: name, password } = dataResponse
-    const url = `${process.env.PUBLIC_API_URL}/users/send-email`
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/users/send-email`
 
     const response = await fetch(url, {
         method: "POST",
@@ -88,7 +88,7 @@ export async function findProvider(token?: any): Promise<any> {
     try {
         console.log(token)
         const url =
-          `${process.env.PUBLIC_API_URL}/users/provider/find-by-email?` +
+          `${process.env.NEXT_PUBLIC_API_URL}/users/provider/find-by-email?` +
           new URLSearchParams({
             email: token?.email
           })

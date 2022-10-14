@@ -28,7 +28,7 @@ const main = async () => {
             type: "postgres",
             host: process.env.HOST,
             port: 5432,
-            username: process.env.USERNAME,
+            username: process.env.USER_NAME,
             password: process.env.PASSWORD,
             database: process.env.DATABASE_NAME,
             entities: [
