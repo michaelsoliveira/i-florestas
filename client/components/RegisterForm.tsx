@@ -9,7 +9,7 @@ import { create } from '../store/userSlice'
 import * as Yup from 'yup'
 import { setMessage } from "../store/messageSlice"
 import 'react-toastify/dist/ReactToastify.css';
-import AlertService from '../services/alert'
+import alertService from '../services/alert'
 import { signIn } from 'next-auth/react';
 import type { UserData } from "../services/user"
 import { useRouter } from 'next/router';
@@ -70,6 +70,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
         await dispatch(create(preparedData))
         .unwrap()
             .then(async (responseData) => {
+
                 if (redirect) {
                     const { email, password } = data
             
@@ -79,12 +80,11 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                     password,
                     // callbackUrl: `${window.location.origin}`,
                     }).then((response: any) => {
-                        console.log(response)
                         if (response.ok) {
-                            AlertService.success('Login realizado com sucesso')
+                            alertService.success('Login realizado com sucesso')
                             router.push('/')
                         } else {
-                            AlertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
+                            alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
                         }
                         
                     }).catch ((e) => {
@@ -92,12 +92,12 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                     })
                 } else {
                     console.log(responseData)
-                    AlertService.success('Usuário cadastrado com SUCESSO!')
+                    alertService.success('Usuário cadastrado com SUCESSO!')
                     router.push(`/empresa/${empresaId}/users`)
                 }
         })
         .catch((error: any) => {
-            AlertService.warn(`Error: ${error.message}`)
+            alertService.warn(`Error: ${error.message}`)
         });
     }
 

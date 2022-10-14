@@ -61,7 +61,7 @@ const Tabs = () => {
                 // 'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-green-600 ring-white ring-opacity-60'
               )}
             >
-              <RegisterForm styles={styles} redirect={true}/>
+              <RegisterForm styles={styles} redirect/>
             </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

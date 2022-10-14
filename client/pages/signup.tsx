@@ -21,7 +21,7 @@ const Pagelogin = ({ csrfToken }: any) => {
           </div>
         </div>
         <div className='w-full pt-10'>
-          <RegisterForm styles={styles}/>
+          <RegisterForm styles={styles} redirect/>
         </div>
         <div className='w-full border-b border-gray-200 flex items-center'>
           <p className='text-xs py-4 flex items-center text-center'>

@@ -35,16 +35,16 @@ const initialState: UserState = {
 
 export const create = createAsyncThunk('user/create', async (dataRequest: UserData, thunkAPI) => {
     try {
-        const { data, error, errorMessage } = await authService.create(dataRequest) as any
+        const { data, error, message } = await authService.create(dataRequest) as any
         
         if (error) {
-            return thunkAPI.rejectWithValue({message: errorMessage})
+            return thunkAPI.rejectWithValue({message})
         }
 
         return {
             data,
             error,
-            message: errorMessage
+            message
         }
                 
     } catch (error) {
