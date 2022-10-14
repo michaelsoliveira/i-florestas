@@ -30,13 +30,13 @@ async function findProvider(token: any) {
       }
       
       const userExists = await userService.findProvider(token)
-        
-      if (userExists && userExists.provider) {
-        
-          await userService.update(userExists?.id, dataProvider, access_token)
+      
+      if (userExists && !userExists.provider) {
+
+        await userService.update(userExists?.id, dataProvider, access_token)
       } 
       if (!userExists) {
-        console.log(userExists)
+
         await userService.create(dataProvider)
           .then( () => {
               userService.sendEmail(dataProvider)

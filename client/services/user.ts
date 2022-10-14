@@ -42,7 +42,7 @@ export async function create(dataRequest: UserData) : Promise<ResponseData> {
 export async function update(id:string, dataRequest: UserData, token: string) : Promise<any> {
     
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`
-    
+
     const response = await fetch(url, {
         method: "PUT",
         body: JSON.stringify({
@@ -56,10 +56,6 @@ export async function update(id:string, dataRequest: UserData, token: string) : 
     })
 
     const data = await response.json()
-    // if (response.ok) {
-    //     return data
-    // }
-    console.log(data)
 
     return data
 }

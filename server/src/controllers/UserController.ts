@@ -63,8 +63,8 @@ export class UserController {
     }
 
     async update(request: Request, response: Response): Promise<Response> {
-        const id = request.user?.id
-        
+        const id = request.params?.id
+
         try {    
             const user = await userService.update(id, request.body)
             

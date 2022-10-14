@@ -62,7 +62,7 @@ class UserService {
         const preparedData = {
             image: data?.image,
             provider: data?.provider,
-            id_provider: data?.idProvider
+            id_provider: data?.id_provider
         }
 
         const user = await prismaClient.user.update({

@@ -158,10 +158,10 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                             <Field className={styles.field} id="username" name="username" placeholder="Michael" />
                             <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
 
-                            <label className={styles.label} htmlFor="email">Email</label>
+                            <label className={styles.label} htmlFor="emailRegister">Email</label>
                             <Field
                                 className={styles.field}
-                                id="email"
+                                id="emailRegister"
                                 name="email"
                                 placeholder="john@acme.com"
                                 type="email"
@@ -172,7 +172,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                                     <Field
                                         type="password"
                                         className={styles.field}
-                                        id="password"
+                                        id="passwordRegister"
                                         name="password"
                                         placeholder="******"
                                     />

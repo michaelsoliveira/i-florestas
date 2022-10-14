@@ -23,8 +23,6 @@ export const Authentication = () => {
         
         const { authorization } = request.headers;
         
-        // const { provider } = request.query
-        
         if (!authorization) {
             return response.status(401).json({ error: "Token is missing!" })
         }
@@ -49,12 +47,9 @@ export const Authentication = () => {
                 }
                 break;
                 case 'ghu': {
-                    // console.log(token)
+
                     const url = 'https://api.github.com/user'
 
-                    // const verificationResponse = jwt.verify(token, config.server.JWT_SECRET, { algorithms: ['HS256'] }) as DataStoredInToken
-                    // console.log(verificationResponse)
-                    console.log(token)
                     await axios.get(url,
                         {
                             headers: { authorization: `token ${token}` }
@@ -106,7 +101,6 @@ export const Authentication = () => {
 
             return next()
         } catch (error) {
-            console.log(error)
             return response.status(401).json({ 
                 error: true, 
                 message: error.message, 
