@@ -115,11 +115,14 @@ class UserService {
         return result
     }
 
-    async findProvider(email?: string): Promise<any> {
-        
+    async findProvider(provider?: any): Promise<any> {
+        const { email, id } = provider
         const user = await prismaClient.user.findFirst({
             where: {
-                email
+                AND: [
+                    { email },
+                    { id_provider: String(id) }
+                ]
             }
         })
         
@@ -128,6 +131,7 @@ class UserService {
 
     async sendMail(data: any) {
         const { email, name, message } = data
+        console.log(process.env.GMAIL_USER, process.env.GMAIL_PWD)
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {

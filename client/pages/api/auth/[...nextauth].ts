@@ -31,12 +31,12 @@ async function findProvider(token: any) {
       
       const userExists = await userService.findProvider(token)
         
-      if (userExists && !userExists.provider) {
+      if (userExists && userExists.provider) {
         
           await userService.update(userExists?.id, dataProvider, access_token)
       } 
       if (!userExists) {
-        
+        console.log(userExists)
         await userService.create(dataProvider)
           .then( () => {
               userService.sendEmail(dataProvider)
@@ -164,7 +164,7 @@ const options: NextAuthOptions = {
           },
             async authorize(credentials, req) {
             try {
-              const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+              const res: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                   method: 'POST',
                   body: JSON.stringify(credentials),
                   headers: { "Content-Type": "application/json" }

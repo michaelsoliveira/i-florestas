@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { User } from "src/entities/User"
 import userService from "../services/user.service"
-import { getRepository } from "typeorm"
+import { getRepository, SimpleConsoleLogger } from "typeorm"
 import { DataStoredInToken } from "../interfaces/DataStoredInToken"
 import axios from 'axios'
 import { getDecodedOAuthJwtGoogle } from "../services/decodeJwtGoogle"
@@ -38,7 +38,7 @@ export const Authentication = () => {
                     
                     const provider = await getDecodedOAuthJwtGoogle(token)
 
-                    const user = await userService.findProvider(provider.email)                            
+                    const user = await userService.findProvider(provider)                            
                     
                     request.user = {
                         id: user.id,
@@ -54,19 +54,20 @@ export const Authentication = () => {
 
                     // const verificationResponse = jwt.verify(token, config.server.JWT_SECRET, { algorithms: ['HS256'] }) as DataStoredInToken
                     // console.log(verificationResponse)
-
+                    console.log(token)
                     await axios.get(url,
                         {
                             headers: { authorization: `token ${token}` }
                         }).then(async(response: any) => {
+
                             const provider = response.data
                             
-                            const user = await userService.findProvider(provider.email)
+                            const user = await userService.findProvider(provider)
 
                             request.user = {
-                                id: user.id,
-                                email: user.email,
-                                username: user.username,
+                                id: user?.id,
+                                email: user?.email,
+                                username: user?.username,
                                 provider: 'github'
                             }
                         })
@@ -78,7 +79,7 @@ export const Authentication = () => {
                         .then(async (response: any) => {
                         const provider = response.data
                         
-                        const user = await userService.findProvider(provider.email)
+                        const user = await userService.findProvider(provider)
                         
                         request.user = {
                             id: user.id,
