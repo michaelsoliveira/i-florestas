@@ -3,7 +3,9 @@ import NextLink, { LinkProps as NextLinkProps } from 'next/link'
 
 // `LinkProps` is the combination of the MUI `LinkProps` and the Next `LinkProps`
 // We wanna use the `href` prop from `next/link` so we omit it from MUI's.
-export type LinkProps = Omit<NextLinkProps, 'href' | 'as' | 'passHref' | 'children'>
+export type LinkProps = NextLinkProps & {
+    children: React.ReactNode;
+} & Omit<NextLinkProps, 'href' | 'as' | 'passHref' | 'children'>
 // export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 //   { href, children, prefetch, replace, scroll, shallow, locale, ...props },
 //   ref,

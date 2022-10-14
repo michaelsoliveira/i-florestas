@@ -227,7 +227,7 @@ const Layout = ({ children }: props) => {
     const userNavigation = [
         { name: 'Perfil', href: '#' },
         { name: 'Alterar Senha', href: '/user/change-password' },
-        { name: 'Logout', href: '#', click: () => signOut() },
+        { name: 'Logout', href: '#', click: () => signOut({ callbackUrl: "/" }) },
     ]
 
     return (
