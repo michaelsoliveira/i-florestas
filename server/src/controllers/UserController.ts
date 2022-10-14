@@ -43,7 +43,9 @@ export class UserController {
         try {
             const user = await prismaClient.user.findFirst({
                 where: {
-                    email
+                    AND: {
+                        email
+                    }
                 }
             })
 
@@ -85,6 +87,7 @@ export class UserController {
 
     async updatePassword(request: Request, response: Response): Promise<Response> {
         const id = request.user?.id
+
         const { oldPassword, newPassword } = request.body;
         
         try {    
@@ -179,7 +182,7 @@ export class UserController {
         
         try {
             const user = await userService.findProvider(email)
-            
+
             return response.json(user)
         } catch (error) {
             return response.json(error)

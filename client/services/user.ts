@@ -15,7 +15,6 @@ export type ResponseData = {
 
 export async function create(dataRequest: UserData) : Promise<ResponseData> {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/create`
-    console.log('Creating User...')
     
     const response = await fetch(url, {
         method: "POST",
@@ -29,8 +28,6 @@ export async function create(dataRequest: UserData) : Promise<ResponseData> {
     })
 
     const data = await response.json()
-
-    console.log('User Created... [OK]')
 
     return {
         data: data.user,
@@ -99,7 +96,7 @@ export async function findProvider(token?: any): Promise<any> {
             } 
         })
         const data = await response.json()
-
+        console.log('Data Loaded', data)
         return data.user
     } catch (error: any) {
         return false

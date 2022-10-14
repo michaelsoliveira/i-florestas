@@ -18,7 +18,7 @@ const GOOGLE_AUTHORIZATION_URL =
 async function findProvider(token: any) {
   
   const { name , email, provider, access_token } = token
-  console.log(token)
+
   try {
       const dataProvider = {
         username: name,
@@ -31,12 +31,10 @@ async function findProvider(token: any) {
       
       const userExists = await userService.findProvider(token)
       
-      if (userExists && !userExists.provider) {
-
-        await userService.update(userExists?.id, dataProvider, access_token)
-      } 
-      if (!userExists) {
-
+      if (userExists) {
+        if (!userExists.provider || !userExists.id_provider)
+          await userService.update(userExists?.id, dataProvider, access_token)
+      } else {
         await userService.create(dataProvider)
           .then( () => {
               userService.sendEmail(dataProvider)

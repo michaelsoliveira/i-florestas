@@ -119,7 +119,7 @@ class UserService {
         const { email, id } = provider
         const user = await prismaClient.user.findFirst({
             where: {
-                AND: [
+                OR: [
                     { email },
                     { id_provider: String(id) }
                 ]
