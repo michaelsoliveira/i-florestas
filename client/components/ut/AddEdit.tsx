@@ -13,6 +13,8 @@ import { RootState } from '../../store'
 import Map from '../maps/Map'
 import { useJsApiLoader } from '@react-google-maps/api'
 
+export const libraries = String(['places', 'geometry', 'drawing'])
+
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
@@ -25,7 +27,7 @@ const AddEdit = ({ id }: any) => {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: `${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
-        libraries: ['places', 'geometry', 'drawing']
+        [libraries]: libraries
     })
 
     useEffect(() => {        
