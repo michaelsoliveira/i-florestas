@@ -27,19 +27,19 @@ const UtIndex = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadUts = useCallback(async (itemsPerPage = 1, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : itemsPerPage
-        setCurrentPage(currentPagePagination)
-        const url = `/ut?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}&upa=${upa.id}`
+        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : currentPage
+        const perPage = pagination.perPage ? pagination.perPage : itemsPerPage
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/ut?page=${currentPagePagination}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&upa=${upa.id}`
         
         const { data } = await client.get(url)
-        
+        console.log('url', url, 'data', data, 'upa', upa, 'umf', umf)
         setTotalItems(data?.count)
         setCurrentUts(data?.uts)
         setLoading(false)
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, upa.id])
 
     useEffect(() => {  
-        loadUts(itemsPerPage)
+        loadUts(itemsPerPage, 1)
     }, [itemsPerPage, loadUts])
 
     const onPageChanged = async (paginatedData: any) => {

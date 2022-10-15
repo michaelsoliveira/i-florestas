@@ -78,7 +78,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                 if (upas.length == 0) {
                     setSelectedUpa({
                         value: '0',
-                        label: 'Sem UPAs'
+                        label: 'Nenhuma UPA Cadastrada'
                     })
                 } 
         }
@@ -194,19 +194,19 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         setFilteredUts(sortedUpas)    
     }
 
-    const handleSelectUpa = (evt: any) => {
-        const upaId = evt.target.value
+    const handleSelectUt = (evt: any) => {
+        const UtId = evt.target.value
 
-        if (!checkedUts.includes(upaId)) {
-            setCheckedUts([...checkedUts, upaId])
+        if (!checkedUts.includes(UtId)) {
+            setCheckedUts([...checkedUts, UtId])
         } else {
-            setCheckedUts(checkedUts.filter((checkedUpaId: any) => {
-                return checkedUpaId !== upaId
+            setCheckedUts(checkedUts.filter((checkedUtId: any) => {
+                return checkedUtId !== UtId
             }))
         }
     }
 
-    const handleSelectAllUpas = () => {
+    const handleSelectAllUts = () => {
         if (checkedUts?.length < currentUts?.length) {
             setCheckedUts(currentUts.map(({ id }: any) => id));
         } else {
@@ -324,7 +324,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <div className="flex justify-center">
                                 <input  
                                     checked={checkedUts?.length === currentUts?.length}
-                                    onChange={handleSelectAllUpas}                
+                                    onChange={handleSelectAllUts}                
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                                 />
                                 </div>
@@ -334,7 +334,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 onClick={() => sortUpas()}
                             >
                                 <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Ano
+                                    Número UT
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
                                         : (<ChevronDownIcon className="w-5 h-5" />)
@@ -345,19 +345,19 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 scope="col"
                                 className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Número UT
+                                Coordenadas
                             </th>
                             <th
                                 scope="col"
                                 className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Tipo de Coordenada
+                                Área Útil
                             </th>
                             <th
                                 scope="col"
                                 className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Modelo de Equação
+                                Área Total
                             </th>           
                             <th scope="col" className="relative w-1/12 px-6 py-3">
                                 <span className="sr-only">Edit</span>
@@ -366,13 +366,13 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {filteredUts?.map((ut: UtType) => (
-                        <tr key={upa.id}>
+                        <tr key={ut.id}>
                             <td className="flex justify-center">
                                 <input                 
                                     value={ut?.id}
                                     checked={checkedUts.includes(ut?.id)}
-                                    onChange={handleSelectUpa}
-                                    id="upaId"
+                                    onChange={handleSelectUt}
+                                    id="utId"
                                     type="checkbox"
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 />    
@@ -383,7 +383,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{ [ut?.latitude, ut?.longitude] }</div>
+                                <div className="text-sm text-gray-900">[{ ut?.latitude }, { ut?.longitude }]</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
@@ -396,10 +396,10 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 </span>
                             </td>   
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                <Link href={`/upa/update/${upa.id}`}>
+                                <Link href={`/ut/update/${ut.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => toogleDeleteModal(upa.id)}>
+                                <Link href="#" onClick={() => toogleDeleteModal(ut.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>

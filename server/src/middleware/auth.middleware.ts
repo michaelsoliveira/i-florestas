@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
-import { User } from "src/entities/User"
+import { User } from "@prisma/client"
 import userService from "../services/user.service"
 import { getRepository, SimpleConsoleLogger } from "typeorm"
 import { DataStoredInToken } from "../interfaces/DataStoredInToken"

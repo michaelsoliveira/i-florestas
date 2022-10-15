@@ -80,7 +80,7 @@ export async function sendEmail(dataResponse: any): Promise<void> {
 
 export async function findProvider(token?: any): Promise<any> {
     try {
-        console.log(token)
+
         const url =
           `${process.env.NEXT_PUBLIC_API_URL}/users/provider/find-by-email?` +
           new URLSearchParams({
@@ -96,7 +96,7 @@ export async function findProvider(token?: any): Promise<any> {
             } 
         })
         const data = await response.json()
-        console.log('Data Loaded', data)
+
         return data.user
     } catch (error: any) {
         return false

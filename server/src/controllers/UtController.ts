@@ -81,13 +81,13 @@ export class UtController {
         } catch(error) {
             return response.json({
                 error: false,
-                uts: [],
+                data: [],
                 message: error.message
             })
         }
     }
 
-    async deleteUpas(request: Request, response: Response) {
+    async deleteUts(request: Request, response: Response) {
         const { ids } = request.body
         
         await utService.deleteUts(ids)
@@ -102,9 +102,13 @@ export class UtController {
     async search(request: Request, response: Response) : Promise<Response>{
         const { numero_ut } = request.query
         
-        const uts = numero_ut ? await utService.search(numero_ut) : await utService.getAll()
+        const data = numero_ut ? await utService.search(numero_ut) : await utService.getAll()
 
-        return response.json(uts)
+        return response.json({
+            error: false,
+            data,
+            message: ""
+        })
     }
 
     async findOne(request: Request, response: Response) : Promise<Response>{

@@ -100,9 +100,13 @@ class UserService {
         return userRepository.find();
     };
 
-    async findOne(requestId: string): Promise<User> {
-        const user = await getRepository(User).findOne({ where: { id: requestId } });
-        if (!user) throw new Error("User not Found"); 
+    async findOne(requestId: string): Promise<UserPrisma> {
+
+        const user = await prismaClient.user.findFirst({ 
+            where: { id: requestId } 
+        })
+
+        if (!user) throw new Error("User not Found 0")
 
         return user
     }
@@ -110,7 +114,7 @@ class UserService {
     async findByKey(key: string, value: string): Promise<User> {
         const result = await getRepository(User).findOne({ where: { [key]: value } })
 
-        if (!result) throw new Error("User not found")
+        if (!result) throw new Error("User not found 1")
 
         return result
     }

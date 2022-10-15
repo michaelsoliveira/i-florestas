@@ -79,7 +79,7 @@ routes.get('/ut/:id', Authentication(), new UtController().findOne)
 routes.get('/ut/search/q', Authentication(), new UtController().search)
 routes.put('/ut/:id', Authentication(), new UtController().update)
 routes.delete('/ut/single/:id', Authentication(), new UtController().delete)
-routes.delete('/ut/multiples', Authentication(), new UtController().deleteUpas)
+routes.delete('/ut/multiples', Authentication(), new UtController().deleteUts)
 
 //Umf
 routes.post('/estado/', Authentication(), new EstadoController().store)

@@ -15,7 +15,7 @@ export interface UtType {
     upa: string;
 }
 
-class UpaService {
+class UtService {
     async create(data: any, userId: string): Promise<Ut> {
         
         const { 
@@ -149,15 +149,9 @@ class UpaService {
                 [orderByElement]: order
             }
         }
-        
-        const [uts, total] = await prismaClient.$transaction([
-            prismaClient.ut.findMany({
-                where: {
-                    OR: {
-                        numero_ut: {
-                            equals: Number.parseInt(search)
-                        }
-                    },
+
+        const where = search ? 
+                {
                     AND: [
                         {
                             id_empresa: empresa?.id
@@ -166,16 +160,34 @@ class UpaService {
                             upa: {
                                 id: upa
                             }
+                        },
+                        {   
+                            numero_ut: parseInt(search)
                         }
-                    ] 
-                },
+                    ]
+            } : {
+                AND: [
+                    {
+                        id_empresa: empresa?.id
+                    },
+                    {
+                        upa: {
+                            id: upa
+                        }
+                    }
+                ]
+            }
+                    
+        const [uts, total] = await prismaClient.$transaction([
+            prismaClient.ut.findMany({
+                where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 },
                 include: {
-                    upa: true
+                    upa: false
                 }
             }),
             prismaClient.ut.count()
@@ -202,27 +214,23 @@ class UpaService {
     async search(q: any) : Promise<Ut[]> {
         const uts = await prismaClient.ut.findMany({
             where: {
-                numero_ut: {
-                    equals: q
-                }
+                numero_ut: parseInt(q)
             }
         })
         return uts
     }
 
     async findById(id: string) : Promise<any> {
-        const upa = await prismaClient.upa.findUnique({ 
+        const ut = await prismaClient.ut.findUnique({ 
             where: { id },
             include: {
                 empresa: true,
-                spatial_ref_sys: true,
-                equacao_volume: true,
-                umf: true
+                upa: true,
             }
         })
 
-        return upa
+        return ut
     }
 }
 
-export default new UpaService
+export default new UtService
