@@ -52,7 +52,7 @@ export class UtController {
 
             return response.status(200).json({
                 error: false,
-                message: 'UPA deletada com Sucesso!!!'
+                message: 'UT deletada com Sucesso!!!'
             })
         } catch (error) {
             return response.json({

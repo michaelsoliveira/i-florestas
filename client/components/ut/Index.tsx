@@ -153,9 +153,9 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         setOpenSingleModal(true)
     }
 
-    async function deleteUmf(id?: string) {
+    async function deleteUt() {
         try {
-            client.delete(`/ut/single/${id}`)
+            await client.delete(`/ut/single/${selectedUt?.id}`)
                 .then(() => {
                     alertService.success('A UT foi deletada com SUCESSO!!!')
                     loadUts()
@@ -180,16 +180,19 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })
     }
 
-    const sortUpas = () => {
-        let sortedUpas: any = []        
-        sortedUpas = filteredUts.sort((a: any, b: any) => {
+    const sortUts = () => {
+        console.log(sorted)
+        setSorted(!sorted)
+        let sortedUts: any = []        
+        sortedUts = filteredUts.sort((a: any, b: any) => {
+            const [ut_a, ut_b] = [String(a.numero_ut), String(b.numero_ut)]
             return sorted
-                ? a.numero_ut.localeCompare(b.numero_ut)
-                : b.numero_ut.localeCompare(a.numero_ut);
+                ? ut_a.toLowerCase().localeCompare(ut_b.toLowerCase())
+                : ut_b.toLowerCase().localeCompare(ut_a.toLowerCase());
         })
         
-        setSorted(!sorted)
-        setFilteredUts(sortedUpas)    
+        
+        setFilteredUts(sortedUts)    
     }
 
     const handleSelectUt = (evt: any) => {
@@ -329,7 +332,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                             </th>
                             <th
                                 className="w-1/12"
-                                onClick={() => sortUpas()}
+                                onClick={(e) => sortUts()}
                             >
                                 <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
                                     Número UT
@@ -416,7 +419,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     buttonText="Deletar"
                     bodyText={`Tem certeza que seja excluir a UT ${selectedUt?.numero_ut}?`}
                     data={selectedUt}
-                    parentFunction={deleteUmf}
+                    parentFunction={deleteUt}
                     hideModal={() => setOpenSingleModal(false)}
                     open={removeSingleModal}
                 />}

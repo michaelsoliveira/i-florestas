@@ -27,9 +27,9 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
         setOpenModal(true)
     }
 
-    async function deleteCategoria(id?: string) {
+    async function deleteCategoria() {
         try {
-            client.delete(`/categoria/${id}`)
+            client.delete(`/categoria/${selectedCategoria?.id}`)
                 .then(() => {
                     alertService.success('A categoria de espécie foi deletada com SUCESSO!!!')
                     loadCategorias()

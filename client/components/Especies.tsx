@@ -29,9 +29,9 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         setOpenSingleModal(true)
     }
 
-    async function deleteEspecie(id?: string) {
+    async function deleteEspecie() {
         try {
-            client.delete(`/especie/single/${id}`)
+            client.delete(`/especie/single/${selectedEspecie?.id}`)
                 .then(() => {
                     alertService.success('A espécie foi deletada com SUCESSO!!!')
                     loadEspecies()

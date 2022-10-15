@@ -82,9 +82,9 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         setOpenSingleModal(true)
     }
 
-    async function deleteUmf(id?: string) {
+    async function deleteUmf() {
         try {
-            client.delete(`/upa/single/${id}`)
+            await client.delete(`/upa/single/${selectedUpa?.id}`)
                 .then(() => {
                     alertService.success('A UPA foi deletada com SUCESSO!!!')
                     loadUpas()

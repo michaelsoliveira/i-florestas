@@ -37,9 +37,9 @@ const EmpresaIndex = () => {
         setOpenModal(true)
     }
 
-    async function deleteEmpresa(id?: string) {
+    async function deleteEmpresa() {
         try {
-            await client.delete(`/empresa/${id}`)
+            await client.delete(`/empresa/${selectedEmpresa?.id}`)
                 .then(() => {
                     AlertService.success('A empresa foi deletada com SUCESSO!!!')
                     loadEmpresas()
@@ -50,9 +50,6 @@ const EmpresaIndex = () => {
         } catch (error) {
             console.log(error)
         }       
-    }
-    function hideModal() {
-        setOpenModal(false)
     }
 
     return (

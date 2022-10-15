@@ -30,9 +30,9 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
         setOpenSingleModal(true)
     }
 
-    async function deleteUmf(id?: string) {
+    async function deleteUmf() {
         try {
-            client.delete(`/umf/single/${id}`)
+            client.delete(`/umf/single/${selectedUmf?.id}`)
                 .then(() => {
                     alertService.success('A UMF foi deletada com SUCESSO!!!')
                     loadUmfs()
