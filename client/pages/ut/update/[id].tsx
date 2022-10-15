@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
-import AddEdit from "components/upa/AddEdit";
+import AddEdit from "components/ut/AddEdit";
 
 
 import withAuthentication from "@/components/withAuthentication";

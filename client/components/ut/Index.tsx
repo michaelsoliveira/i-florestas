@@ -36,8 +36,6 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
         const data = response.data
-
-        console.log(data)
         
         callback(data?.map((upa: any) => ({
             value: upa.id,

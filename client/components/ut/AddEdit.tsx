@@ -49,7 +49,7 @@ const AddEdit = ({ id }: any) => {
                 }
             }
         }
-        console.log(session)
+
         loadUt()
 
     }, [session, isAddMode, client, id, setValue, upa])

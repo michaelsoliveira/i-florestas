@@ -32,7 +32,7 @@ const UtIndex = () => {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/ut?page=${currentPagePagination}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&upa=${upa.id}`
         
         const { data } = await client.get(url)
-        console.log('url', url, 'data', data, 'upa', upa, 'umf', umf)
+
         setTotalItems(data?.count)
         setCurrentUts(data?.uts)
         setLoading(false)
