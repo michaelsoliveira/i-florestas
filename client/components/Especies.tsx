@@ -79,7 +79,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const sortEspecies = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
         const nElements = sortedBy.length
-        setSorted(!sorted)
+        
         let sortedEspecies: any = []        
         sortedEspecies = filteredEspecies.sort((a: any, b: any) => {
             return  sorted
@@ -91,7 +91,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                     : b[sortBy].toLowerCase().localeCompare(a[sortBy].toLowerCase());
         })
         
-        
+        setSorted(!sorted)
         setFilteredEspecies(sortedEspecies)    
     }
 
@@ -204,7 +204,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 w-full">
                         <tr>
                         <th>
                             <div className="flex justify-center">
@@ -217,48 +217,55 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                         </th>
                         <th
                             scope="col"
-                            className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nome')}
                         >
-                            Nome
-                        {sorted
-                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                            : (<ChevronDownIcon className="w-5 h-5" />)
-                        }
-                                                
+                            <div className="flex flex-row w-full justify-between">
+                                Nome
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>                 
                         </th>
                         <th
                             scope="row"
-                            className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nomeOrgao')}
                         >
-                            Nome Vulgar
-                        {sorted
-                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                            : (<ChevronDownIcon className="w-5 h-5" />)
-                        }
+                            <div className="flex flex-row w-full justify-between">
+                                Nome Vulgar
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
                         </th>
                         <th
                             scope="col"
                             className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nomeCientifico')}
                         >
-                            Nome Científico
-                        {sorted
-                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                            : (<ChevronDownIcon className="w-5 h-5" />)
-                        }
+                            <div className="flex flex-row w-full justify-between">
+                                Nome Científico
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
                         </th>
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('categoria.nome')}
                         >
-                        Categoria
-                        {sorted
-                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                            : (<ChevronDownIcon className="w-5 h-5" />)
-                        }
+                            <div className="flex flex-row w-full justify-between">
+                                Categoria
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
                         </th>
                         <th scope="col" className="relative w-1/12 px-6 py-3">
                             <span className="sr-only">Edit</span>
