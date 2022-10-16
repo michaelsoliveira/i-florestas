@@ -117,7 +117,7 @@ export class EspecieController {
                 return response.status(400).send("Please upload a CSV file!");
             }
 
-            const readableFile = new Readable()
+            const readableFile = new Readable().setEncoding('utf8')
             readableFile.push(request.file?.buffer)
             readableFile.push(null)
 

@@ -22,15 +22,18 @@ const useClient = (options?: any) => {
     api.interceptors.response.use(response => {
         return response
     }, error => {
-      
-        const { status } = error.response
+        try {
+          const { status } = error.response
         
-        if (status === 401) {
-            signOut()
-            // return location.href = '/'
+          if (status === 401) {
+              signOut()
+              // return location.href = '/'
+          }
+          return Promise.reject(error)
+        } catch (e) {
+          console.log(e)
+          return Promise.reject(error)
         }
-        
-        return Promise.reject(error)
     })
           
     return api;

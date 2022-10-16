@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react"
+import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
 import Especies from "components/Especies"
 import { Pagination } from "components/Pagination"
@@ -31,6 +31,7 @@ const EspecieIndex = () => {
         const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
+
         const { data } = await client.get(url)
 
         setTotalItems(data?.count)
@@ -85,11 +86,11 @@ const EspecieIndex = () => {
         setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
     }
 
-    const changeItemsPerPage = (value: number) => {
+    const changeItemsPerPage = (evt: ChangeEvent<HTMLSelectElement>) => {
         onPageChanged({
             name: router.pathname,
             currentPage: 1,
-            perPage: value,
+            perPage: evt.target.value,
             orderBy,
             order
         })

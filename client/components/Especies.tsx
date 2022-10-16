@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { ChangeEvent, ChangeEventHandler, FormEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../components/Link"
 import { Input } from "../components/atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
@@ -11,7 +11,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
-    const [searchInput, setSearchInput] = useState<String>('')
+    const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
     const [singleModel, setOpenSingleModal] = useState<boolean>(false)
     const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
@@ -48,9 +48,9 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
             const formData = new FormData()
             formData.append('file', e.target?.files[0])
             await client.post('/especie/import', formData)
-                .then((data: any) => {
+                .then(async () => {
                     alertService.success('Especies importadas com sucesso!!!')
-                    loadEspecies()
+                    await loadEspecies(10, 1)
                 })
             
         } else {
@@ -64,15 +64,16 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         setUploading(true)
     }
 
-    const handleSearch = async (query: string) => {
+    const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
         const paginatedData = {
             currentPage: 1,
             perPage,
             orderBy,
             order,
-            search: query
+            search: evt.target.value
         }
-        setSearchInput(query)
+        
+        setSearchInput(evt.target.value)
         onPageChanged(paginatedData)
     }
 
@@ -168,7 +169,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                             </div>
                             <select
                                 value={perPage}
-                                onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
+                                onChange={changeItemsPerPage}
                                 id="perPage" 
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
@@ -184,7 +185,9 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                                 label="Pesquisar Espécie"
                                 id="search"
                                 name="search"
-                                onChange={(e: any) => handleSearch(e.target.value)}
+                                value={searchInput}
+                                onChange={handleSearch}
+                                autoFocus
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
                                 

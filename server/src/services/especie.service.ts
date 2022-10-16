@@ -57,18 +57,6 @@ class EspecieService {
             })
             .orderBy(orderBy, order ? order : 'ASC')
             .getManyAndCount()
-        // const [data, total] = await getRepository(Especie).findAndCount({
-        //     select: ['id', 'nome', 'nomeOrgao', 'nomeCientifico', 'categoria'],
-        //     where: {
-        //         nome: search ? ILike(`%${search}%`) : ILike('%%')
-        //     },
-        //     relations: ['categoria'],
-        //     order: {
-        //         [orderBy]: order ? order : 'ASC'
-        //     },
-        //     take: perPage,
-        //     skip
-        // })
                         
         return {
             orderBy,

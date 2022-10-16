@@ -84,9 +84,9 @@ model Especie {
   id                String             @id(map: "PK_07fb45be286aefa181943248b21") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime           @default(now()) @db.Timestamp(6)
   updated_at        DateTime           @default(now()) @db.Timestamp(6)
-  nome              String?            @db.VarChar(50)
-  nome_orgao        String?            @db.VarChar(50)
-  nome_cientifico   String?            @db.VarChar(100)
+  nome              String?            @db.VarChar(100)
+  nome_orgao        String?            @db.VarChar(100)
+  nome_cientifico   String?            @db.VarChar(200)
   id_categoria      String?            @db.Uuid
   categoria_especie CategoriaEspecie? @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
   @@map("especie")
