@@ -11,6 +11,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
+    const [searchInput, setSearchInput] = useState<String>('')
     const [uploading, setUploading] = useState<boolean>(false)
     const [singleModel, setOpenSingleModal] = useState<boolean>(false)
     const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
@@ -71,19 +72,27 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
             order,
             search: query
         }
+        setSearchInput(query)
         onPageChanged(paginatedData)
     }
 
-    const sortEspecies = async (orderBy?: string) => {
-        const paginatedData = {
-            currentPage,
-            perPage,
-            orderBy,
-            order: !sorted ? 'DESC' : 'ASC'
-        }
-
-        onPageChanged(paginatedData)
+    const sortEspecies = (sortBy: string) => {
+        const sortedBy = sortBy.split(".")
+        const nElements = sortedBy.length
         setSorted(!sorted)
+        let sortedEspecies: any = []        
+        sortedEspecies = filteredEspecies.sort((a: any, b: any) => {
+            return  sorted
+                ? nElements > 1 
+                    ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
+                    : a[sortBy].toLowerCase().localeCompare(b[sortBy].toLowerCase())
+                : nElements > 1 
+                    ? b[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(a[sortedBy[0]][sortedBy[1]].toLowerCase()) 
+                    : b[sortBy].toLowerCase().localeCompare(a[sortBy].toLowerCase());
+        })
+        
+        
+        setFilteredEspecies(sortedEspecies)    
     }
 
     const handleSelectEspecie = (evt: any) => {
@@ -175,7 +184,6 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                                 label="Pesquisar Espécie"
                                 id="search"
                                 name="search"
-                                // value={search}
                                 onChange={(e: any) => handleSearch(e.target.value)}
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
@@ -210,7 +218,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('especie.nome')}
+                            onClick={() => sortEspecies('nome')}
                         >
                             Nome
                         {sorted
@@ -220,16 +228,26 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                                                 
                         </th>
                         <th
-                            scope="col"
-                            className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            scope="row"
+                            className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortEspecies('nomeOrgao')}
                         >
                             Nome Vulgar
+                        {sorted
+                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                            : (<ChevronDownIcon className="w-5 h-5" />)
+                        }
                         </th>
                         <th
                             scope="col"
-                            className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortEspecies('nomeCientifico')}
                         >
                             Nome Científico
+                        {sorted
+                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                            : (<ChevronDownIcon className="w-5 h-5" />)
+                        }
                         </th>
                         <th
                             scope="col"

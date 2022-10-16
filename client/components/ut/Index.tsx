@@ -186,7 +186,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         let sortedUts: any = []        
         sortedUts = filteredUts.sort((a: any, b: any) => {
             const [ut_a, ut_b] = [String(a.numero_ut), String(b.numero_ut)]
-            return sorted
+            return  sorted
                 ? ut_a.toLowerCase().localeCompare(ut_b.toLowerCase())
                 : ut_b.toLowerCase().localeCompare(ut_a.toLowerCase());
         })
