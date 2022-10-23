@@ -1,6 +1,5 @@
 import { User, Role, UserRole, Permission } from '@prisma/client';
-import { prismaClient } from 'src/database/prismaClient';
-import { getRepository } from 'typeorm';
+import { prismaClient } from '../database/prismaClient';
 
 type PermissionRequest = {
   name: string;
