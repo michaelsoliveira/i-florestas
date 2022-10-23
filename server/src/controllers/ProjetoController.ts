@@ -1,15 +1,15 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import eqVolumeService from "../services/equacaoVolume.service";
+import projetoService from "../services/ProjetoService";
 
-export class EquacaoVolumeController {
+export class ProjetoController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const eqVolume = await eqVolumeService.create(request.body, request.user?.id)
+            const projeto = await projetoService.create(request.body, request.user?.id)
             return response.json({
                 error: false,
-                equacaoVolume: eqVolume,
-                message: `Equação ${eqVolume.nome} cadastrada com SUCESSO!!!`
+                equacaoVolume: projeto,
+                message: `Projeto ${projeto.nome} cadastrada com SUCESSO!!!`
             })
 
         } catch (error) {
@@ -24,17 +24,17 @@ export class EquacaoVolumeController {
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
          try {    
-            const eqVolume = await eqVolumeService.update(id, request.body)
+            const projeto = await projetoService.update(id, request.body)
             return response.json({
                 error: false,
-                equacaoVolume: eqVolume,
-                message: `Equação ${eqVolume.nome} atualizada com SUCESSO!!!`
+                projeto,
+                message: `Projeto ${projeto.nome} atualizada com SUCESSO!!!`
             })
 
         } catch (error) {
             return response.json({
                 error: true,
-                equacaoVolume: null,
+                projeto: null,
                 message: error.message
             })
         }
@@ -44,16 +44,16 @@ export class EquacaoVolumeController {
         const { id } = request.params
 
         try {
-            await eqVolumeService.delete(id)
+            await projetoService.delete(id)
 
             return response.status(200).json({
                 error: false,
-                message: 'Equacação Volume deletada com Sucesso!!!'
+                message: 'Projeto deletada com Sucesso!!!'
             })
         } catch (error) {
             return response.json({
                 error: true,
-                equacaoVolume: null,
+                projeto: null,
                 message: error.message
             })
         }
@@ -61,11 +61,11 @@ export class EquacaoVolumeController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await eqVolumeService.getAll(request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await projetoService.getAll(request.query)
             
             return response.json({
                 error: false,
-                equacoes: data,
+                projetos: data,
                 perPage,
                 page,
                 skip,
@@ -77,20 +77,20 @@ export class EquacaoVolumeController {
         } catch(error) {
             return response.json({
                 error: false,
-                equacoes: [],
+                projetos: [],
                 message: error.message
             })
         }
     }
 
-    async deleteEquacoes(request: Request, response: Response) {
+    async deleteProjetos(request: Request, response: Response) {
         const { ids } = request.body
         
-        await eqVolumeService.deleteEqVolumes(ids)
+        await projetoService.deleteProjetos(ids)
 
         return response.json({
             ids,
-            message: 'Equações Volume deletadas com sucesso',
+            message: 'Projetos deletadas com sucesso',
             error: false
         })   
     }
@@ -98,17 +98,17 @@ export class EquacaoVolumeController {
     async search(request: Request, response: Response) {
         const { nome } = request.query
         
-        const eqVolumes = nome ? await eqVolumeService.search(nome) : await eqVolumeService.getAll(request.query)
+        const projetos = nome ? await projetoService.search(nome) : await projetoService.getAll(request.query)
         
-        return response.json(eqVolumes)
+        return response.json(projetos)
     }
 
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {
-            const eqVolume = await eqVolumeService.findById(id)
+            const projeto = await projetoService.findById(id)
 
-            return response.json(eqVolume)
+            return response.json(projeto)
         } catch(error) {
             return response.json(error.message)
         }

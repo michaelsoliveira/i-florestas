@@ -13,6 +13,7 @@ import { UpaController } from "../controllers/UpaController"
 import { EquacaoVolumeController } from "../controllers/EquacaoVolumeController"
 import { SysRefController } from "../controllers/SysRefController"
 import { UtController } from "../controllers/UtController"
+import { ProjetoController } from "../controllers/ProjetoController"
 
 const routes = express.Router()
 
@@ -63,7 +64,16 @@ routes.put('/umf/:id', Authentication(), new UmfController().update)
 routes.delete('/umf/single/:id', Authentication(), new UmfController().delete)
 routes.delete('/umf/multiples', Authentication(), new UmfController().deleteUmfs)
 
-//Umf
+//Projeto
+routes.post('/projeto/', Authentication(), new ProjetoController().store)
+routes.get('/projeto/', Authentication(), new ProjetoController().findAll)
+routes.get('/projeto/:id', Authentication(), new ProjetoController().findOne)
+routes.get('/projeto/search/q', Authentication(), new ProjetoController().search)
+routes.put('/projeto/:id', Authentication(), new ProjetoController().update)
+routes.delete('/projeto/single/:id', Authentication(), new ProjetoController().delete)
+routes.delete('/projeto/multiples', Authentication(), new ProjetoController().deleteProjetos)
+
+//Upa
 routes.post('/upa/', Authentication(), new UpaController().store)
 routes.get('/upa/', Authentication(), new UpaController().findAll)
 routes.get('/upa/:id', Authentication(), new UpaController().findOne)

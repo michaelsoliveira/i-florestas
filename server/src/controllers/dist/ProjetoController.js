@@ -36,26 +36,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.EquacaoVolumeController = void 0;
-var equacaoVolume_service_1 = require("../services/equacaoVolume.service");
-var EquacaoVolumeController = /** @class */ (function () {
-    function EquacaoVolumeController() {
+exports.ProjetoController = void 0;
+var ProjetoService_1 = require("../services/ProjetoService");
+var ProjetoController = /** @class */ (function () {
+    function ProjetoController() {
     }
-    EquacaoVolumeController.prototype.store = function (request, response) {
+    ProjetoController.prototype.store = function (request, response) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var eqVolume, error_1;
+            var projeto, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                        return [4 /*yield*/, ProjetoService_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
-                        eqVolume = _b.sent();
+                        projeto = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                equacaoVolume: eqVolume,
-                                message: "Equa\u00E7\u00E3o " + eqVolume.nome + " cadastrada com SUCESSO!!!"
+                                equacaoVolume: projeto,
+                                message: "Projeto " + projeto.nome + " cadastrada com SUCESSO!!!"
                             })];
                     case 2:
                         error_1 = _b.sent();
@@ -69,9 +69,9 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
-    EquacaoVolumeController.prototype.update = function (request, response) {
+    ProjetoController.prototype.update = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var id, eqVolume, error_2;
+            var id, projeto, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -79,19 +79,19 @@ var EquacaoVolumeController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].update(id, request.body)];
+                        return [4 /*yield*/, ProjetoService_1["default"].update(id, request.body)];
                     case 2:
-                        eqVolume = _a.sent();
+                        projeto = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                equacaoVolume: eqVolume,
-                                message: "Equa\u00E7\u00E3o " + eqVolume.nome + " atualizada com SUCESSO!!!"
+                                projeto: projeto,
+                                message: "Projeto " + projeto.nome + " atualizada com SUCESSO!!!"
                             })];
                     case 3:
                         error_2 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
-                                equacaoVolume: null,
+                                projeto: null,
                                 message: error_2.message
                             })];
                     case 4: return [2 /*return*/];
@@ -99,7 +99,7 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
-    EquacaoVolumeController.prototype["delete"] = function (request, response) {
+    ProjetoController.prototype["delete"] = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
             var id, error_3;
             return __generator(this, function (_a) {
@@ -109,18 +109,18 @@ var EquacaoVolumeController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, equacaoVolume_service_1["default"]["delete"](id)];
+                        return [4 /*yield*/, ProjetoService_1["default"]["delete"](id)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, response.status(200).json({
                                 error: false,
-                                message: 'Equacação Volume deletada com Sucesso!!!'
+                                message: 'Projeto deletada com Sucesso!!!'
                             })];
                     case 3:
                         error_3 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
-                                equacaoVolume: null,
+                                projeto: null,
                                 message: error_3.message
                             })];
                     case 4: return [2 /*return*/];
@@ -128,19 +128,19 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
-    EquacaoVolumeController.prototype.findAll = function (request, response) {
+    ProjetoController.prototype.findAll = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, data, perPage, page, orderBy, order, skip, count, error_4;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].getAll(request.query)];
+                        return [4 /*yield*/, ProjetoService_1["default"].getAll(request.query)];
                     case 1:
                         _a = _b.sent(), data = _a.data, perPage = _a.perPage, page = _a.page, orderBy = _a.orderBy, order = _a.order, skip = _a.skip, count = _a.count;
                         return [2 /*return*/, response.json({
                                 error: false,
-                                equacoes: data,
+                                projetos: data,
                                 perPage: perPage,
                                 page: page,
                                 skip: skip,
@@ -153,7 +153,7 @@ var EquacaoVolumeController = /** @class */ (function () {
                         error_4 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                equacoes: [],
+                                projetos: [],
                                 message: error_4.message
                             })];
                     case 3: return [2 /*return*/];
@@ -161,51 +161,51 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
-    EquacaoVolumeController.prototype.deleteEquacoes = function (request, response) {
+    ProjetoController.prototype.deleteProjetos = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var ids;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         ids = request.body.ids;
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].deleteEqVolumes(ids)];
+                        return [4 /*yield*/, ProjetoService_1["default"].deleteProjetos(ids)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, response.json({
                                 ids: ids,
-                                message: 'Equações Volume deletadas com sucesso',
+                                message: 'Projetos deletadas com sucesso',
                                 error: false
                             })];
                 }
             });
         });
     };
-    EquacaoVolumeController.prototype.search = function (request, response) {
+    ProjetoController.prototype.search = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var nome, eqVolumes, _a;
+            var nome, projetos, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         nome = request.query.nome;
                         if (!nome) return [3 /*break*/, 2];
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].search(nome)];
+                        return [4 /*yield*/, ProjetoService_1["default"].search(nome)];
                     case 1:
                         _a = _b.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, equacaoVolume_service_1["default"].getAll(request.query)];
+                    case 2: return [4 /*yield*/, ProjetoService_1["default"].getAll(request.query)];
                     case 3:
                         _a = _b.sent();
                         _b.label = 4;
                     case 4:
-                        eqVolumes = _a;
-                        return [2 /*return*/, response.json(eqVolumes)];
+                        projetos = _a;
+                        return [2 /*return*/, response.json(projetos)];
                 }
             });
         });
     };
-    EquacaoVolumeController.prototype.findOne = function (request, response) {
+    ProjetoController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, eqVolume, error_5;
+            var id, projeto, error_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -213,10 +213,10 @@ var EquacaoVolumeController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, equacaoVolume_service_1["default"].findById(id)];
+                        return [4 /*yield*/, ProjetoService_1["default"].findById(id)];
                     case 2:
-                        eqVolume = _a.sent();
-                        return [2 /*return*/, response.json(eqVolume)];
+                        projeto = _a.sent();
+                        return [2 /*return*/, response.json(projeto)];
                     case 3:
                         error_5 = _a.sent();
                         return [2 /*return*/, response.json(error_5.message)];
@@ -225,6 +225,6 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
-    return EquacaoVolumeController;
+    return ProjetoController;
 }());
-exports.EquacaoVolumeController = EquacaoVolumeController;
+exports.ProjetoController = ProjetoController;

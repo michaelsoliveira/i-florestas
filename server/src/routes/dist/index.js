@@ -14,6 +14,7 @@ var UpaController_1 = require("../controllers/UpaController");
 var EquacaoVolumeController_1 = require("../controllers/EquacaoVolumeController");
 var SysRefController_1 = require("../controllers/SysRefController");
 var UtController_1 = require("../controllers/UtController");
+var ProjetoController_1 = require("../controllers/ProjetoController");
 var routes = express_1["default"].Router();
 routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().findAll);
 routes.get('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
@@ -56,7 +57,15 @@ routes.get('/umf/search/q', auth_middleware_1.Authentication(), new UmfControlle
 routes.put('/umf/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController().update);
 routes["delete"]('/umf/single/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController()["delete"]);
 routes["delete"]('/umf/multiples', auth_middleware_1.Authentication(), new UmfController_1.UmfController().deleteUmfs);
-//Umf
+//Projeto
+routes.post('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().store);
+routes.get('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findAll);
+routes.get('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findOne);
+routes.get('/projeto/search/q', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().search);
+routes.put('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().update);
+routes["delete"]('/projeto/single/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController()["delete"]);
+routes["delete"]('/projeto/multiples', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().deleteProjetos);
+//Upa
 routes.post('/upa/', auth_middleware_1.Authentication(), new UpaController_1.UpaController().store);
 routes.get('/upa/', auth_middleware_1.Authentication(), new UpaController_1.UpaController().findAll);
 routes.get('/upa/:id', auth_middleware_1.Authentication(), new UpaController_1.UpaController().findOne);
@@ -71,7 +80,7 @@ routes.get('/ut/:id', auth_middleware_1.Authentication(), new UtController_1.UtC
 routes.get('/ut/search/q', auth_middleware_1.Authentication(), new UtController_1.UtController().search);
 routes.put('/ut/:id', auth_middleware_1.Authentication(), new UtController_1.UtController().update);
 routes["delete"]('/ut/single/:id', auth_middleware_1.Authentication(), new UtController_1.UtController()["delete"]);
-routes["delete"]('/ut/multiples', auth_middleware_1.Authentication(), new UtController_1.UtController().deleteUpas);
+routes["delete"]('/ut/multiples', auth_middleware_1.Authentication(), new UtController_1.UtController().deleteUts);
 //Umf
 routes.post('/estado/', auth_middleware_1.Authentication(), new EstadoController_1.EstadoController().store);
 routes.get('/estado/', auth_middleware_1.Authentication(), new EstadoController_1.EstadoController().findAll);
