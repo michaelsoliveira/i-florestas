@@ -35,19 +35,23 @@ export class CreateUserACLService {
       return new Error("User does not exists!");
     } 
 
-    await prismaClient.userRole.createMany({
-      data: roles.map((role: any) => ({
-        user_id: id,
-        role_id: role.id
-      }))
-    });
+    if (roles) {
+      await prismaClient.userRole.createMany({
+        data: roles.map((role: any) => ({
+          user_id: id,
+          role_id: role.id
+        }))
+      });
+    }
 
-    await prismaClient.userPermission.createMany({
-      data: permissions.map((permission: any) => ({
-        user_id: id,
-        permission_id: permission.id
-      }))
-    });  
+    if (permissions) {
+      await prismaClient.userPermission.createMany({
+        data: permissions.map((permission: any) => ({
+          user_id: id,
+          permission_id: permission.id
+        }))
+      });  
+    }
 
     return user;
   }
@@ -62,7 +66,7 @@ export class CreateRoleService {
       }
     }) 
     
-    if (!roleExists) {
+    if (roleExists) {
       return new Error("Role already exists");
     }
 
@@ -94,7 +98,9 @@ export class CreatePermissionService {
 export class CreateRolePermissionService {
   async execute({ roleId, permissions }: RolePermissionRequest): Promise<Role | Error> {
 
-    const role = await prismaClient.role.findUnique({ where: { id: roleId } });
+    const role = await prismaClient.role.findUnique({ 
+      where: { id: roleId } 
+    });
 
     if (!role) {
       return new Error("Role does not exists!");

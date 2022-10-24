@@ -160,12 +160,12 @@ export class UserController {
 
     async createUserACL(request: Request, response: Response) {
         const { permissions, roles } = request.body;
-        const { id } = request.user;
+        const { userId } = request.params;
 
         const createUserACLService = new CreateUserACLService();
 
         const result = await createUserACLService.execute({
-            id,
+            id:     userId,
             permissions,
             roles,
         });

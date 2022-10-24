@@ -15,6 +15,7 @@ var EquacaoVolumeController_1 = require("../controllers/EquacaoVolumeController"
 var SysRefController_1 = require("../controllers/SysRefController");
 var UtController_1 = require("../controllers/UtController");
 var ProjetoController_1 = require("../controllers/ProjetoController");
+var permission_1 = require("../middleware/permission");
 var routes = express_1["default"].Router();
 routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().findAll);
 routes.get('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
@@ -23,8 +24,8 @@ routes.post('/users/create', new UserController_1.UserController().store);
 routes.put('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
 routes.post('/users/create-role', new UserController_1.UserController().createRole);
 routes.post('/users/create-permission', new UserController_1.UserController().createPermission);
-routes.post('/users/create-role-permission', new UserController_1.UserController().createRolePermission);
-routes.post('/users/create-user-acl', new UserController_1.UserController().createUserACL);
+routes.post('/users/create-role-permission/:roleId', new UserController_1.UserController().createRolePermission);
+routes.post('/users/create-acl/:userId', auth_middleware_1.Authentication(), permission_1.is(['admin']), new UserController_1.UserController().createUserACL);
 routes.post('/users/send-email', new UserController_1.UserController().sendMail);
 //Alterar senha
 routes.post('/users/change-password', auth_middleware_1.Authentication(), new UserController_1.UserController().updatePassword);
@@ -43,7 +44,7 @@ routes.get('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaContro
 routes.put('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().update);
 routes["delete"]('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController()["delete"]);
 //Categoria
-routes.post('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().store);
+routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.can(['create_especie']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
 routes.get('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findAll);
 routes.get('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findOne);
 routes.get('/categoria/search/q', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().search);

@@ -57,6 +57,7 @@ var CreateUserACLService = /** @class */ (function () {
                         if (!user) {
                             return [2 /*return*/, new Error("User does not exists!")];
                         }
+                        if (!roles) return [3 /*break*/, 3];
                         return [4 /*yield*/, prismaClient_1.prismaClient.userRole.createMany({
                                 data: roles.map(function (role) { return ({
                                     user_id: id,
@@ -65,15 +66,19 @@ var CreateUserACLService = /** @class */ (function () {
                             })];
                     case 2:
                         _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        if (!permissions) return [3 /*break*/, 5];
                         return [4 /*yield*/, prismaClient_1.prismaClient.userPermission.createMany({
                                 data: permissions.map(function (permission) { return ({
                                     user_id: id,
                                     permission_id: permission.id
                                 }); })
                             })];
-                    case 3:
+                    case 4:
                         _b.sent();
-                        return [2 /*return*/, user];
+                        _b.label = 5;
+                    case 5: return [2 /*return*/, user];
                 }
             });
         });
@@ -97,7 +102,7 @@ var CreateRoleService = /** @class */ (function () {
                         })];
                     case 1:
                         roleExists = _b.sent();
-                        if (!roleExists) {
+                        if (roleExists) {
                             return [2 /*return*/, new Error("Role already exists")];
                         }
                         return [4 /*yield*/, prismaClient_1.prismaClient.role.create({
@@ -150,7 +155,9 @@ var CreateRolePermissionService = /** @class */ (function () {
             var role;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.role.findUnique({ where: { id: roleId } })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.role.findUnique({
+                            where: { id: roleId }
+                        })];
                     case 1:
                         role = _b.sent();
                         if (!role) {

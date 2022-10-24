@@ -14,6 +14,7 @@ import { EquacaoVolumeController } from "../controllers/EquacaoVolumeController"
 import { SysRefController } from "../controllers/SysRefController"
 import { UtController } from "../controllers/UtController"
 import { ProjetoController } from "../controllers/ProjetoController"
+import { can, is } from "../middleware/permission"
 
 const routes = express.Router()
 
@@ -24,8 +25,8 @@ routes.post('/users/create', new UserController().store)
 routes.put('/users/:id', Authentication(), new UserController().update)
 routes.post('/users/create-role', new UserController().createRole)
 routes.post('/users/create-permission', new UserController().createPermission)
-routes.post('/users/create-role-permission', new UserController().createRolePermission)
-routes.post('/users/create-user-acl', new UserController().createUserACL)
+routes.post('/users/create-role-permission/:roleId', new UserController().createRolePermission)
+routes.post('/users/create-acl/:userId', Authentication(), is(['admin']), new UserController().createUserACL)
 routes.post('/users/send-email', new UserController().sendMail)
 
 //Alterar senha
@@ -48,7 +49,7 @@ routes.put('/empresa/:id', Authentication(), new EmpresaController().update)
 routes.delete('/empresa/:id', Authentication(), new EmpresaController().delete)
 
 //Categoria
-routes.post('/categoria/', Authentication(), new CategoriaEspecieController().store)
+routes.post('/categoria/', Authentication(), can(['create_especie']), new CategoriaEspecieController().store)
 routes.get('/categoria/', Authentication(), new CategoriaEspecieController().findAll)
 routes.get('/categoria/:id', Authentication(), new CategoriaEspecieController().findOne)
 routes.get('/categoria/search/q', Authentication(), new CategoriaEspecieController().search)

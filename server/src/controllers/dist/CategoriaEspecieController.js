@@ -43,34 +43,27 @@ var CategoriaEspecieController = /** @class */ (function () {
     }
     CategoriaEspecieController.prototype.store = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var categoria, error_1;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, categoria_service_1["default"].create(request.body)];
-                    case 1:
-                        categoria = _a.sent();
-                        return [2 /*return*/, response.json({
-                                error: false,
-                                categoria: categoria,
-                                message: null
-                            })];
-                    case 2:
-                        error_1 = _a.sent();
-                        return [2 /*return*/, response.json({
-                                error: true,
-                                especie: null,
-                                message: error_1.message
-                            })];
-                    case 3: return [2 /*return*/];
+                try {
+                    // const categoria = await categoriaService.create(request.body)
+                    return [2 /*return*/, response.json({
+                            error: false
+                        })];
                 }
+                catch (error) {
+                    return [2 /*return*/, response.json({
+                            error: true,
+                            especie: null,
+                            message: error.message
+                        })];
+                }
+                return [2 /*return*/];
             });
         });
     };
     CategoriaEspecieController.prototype.update = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var id, categoria, error_2;
+            var id, categoria, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -84,14 +77,14 @@ var CategoriaEspecieController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: false,
                                 categoria: categoria,
-                                message: null
+                                message: "Categoria de esp\u00E9cie " + categoria.nome + " atualizada com SUCESSO!!!"
                             })];
                     case 3:
-                        error_2 = _a.sent();
+                        error_1 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 categoria: null,
-                                message: error_2.message
+                                message: error_1.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -100,7 +93,7 @@ var CategoriaEspecieController = /** @class */ (function () {
     };
     CategoriaEspecieController.prototype["delete"] = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var id, error_3;
+            var id, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -116,11 +109,11 @@ var CategoriaEspecieController = /** @class */ (function () {
                                 message: 'Especie deletada com Sucesso!!!'
                             })];
                     case 3:
-                        error_3 = _a.sent();
+                        error_2 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 especie: null,
-                                message: error_3.message
+                                message: error_2.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -129,7 +122,7 @@ var CategoriaEspecieController = /** @class */ (function () {
     };
     CategoriaEspecieController.prototype.findAll = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, data, perPage, page, skip, count, error_4;
+            var _a, data, perPage, page, skip, count, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -147,7 +140,7 @@ var CategoriaEspecieController = /** @class */ (function () {
                                 message: null
                             })];
                     case 2:
-                        error_4 = _b.sent();
+                        error_3 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 categorias: [],
@@ -183,7 +176,7 @@ var CategoriaEspecieController = /** @class */ (function () {
     };
     CategoriaEspecieController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, categoria, error_5;
+            var id, categoria, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -196,8 +189,8 @@ var CategoriaEspecieController = /** @class */ (function () {
                         categoria = _a.sent();
                         return [2 /*return*/, response.json(categoria)];
                     case 3:
-                        error_5 = _a.sent();
-                        return [2 /*return*/, response.json(error_5.message)];
+                        error_4 = _a.sent();
+                        return [2 /*return*/, response.json(error_4.message)];
                     case 4: return [2 /*return*/];
                 }
             });

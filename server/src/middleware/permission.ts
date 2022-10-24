@@ -1,23 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 import { User } from "../entities/User";
 import { getRepository } from "typeorm";
+import { prismaClient } from "../database/prismaClient";
 
 export function can(permissionsRoutes: string[]) {
   return async (request: Request, response: Response, next: NextFunction) => {
     const { id } = request.user;
-
-    const user = await getRepository(User).findOne({
-      where: { id },
-      relations: ["permissions"],
+    
+    const user = await prismaClient.user.findFirst({
+      where: {
+        id
+      },
+      select: {
+        id: true,
+        users_permissions: {
+          select: {
+            permissions: {
+              select: {
+                name: true
+              },
+            },
+          },
+        },
+      }
     });
 
-    if (!user) {
-      return response.status(400).json("User does not exists");
+    if (!user?.users_permissions) {
+      return response.json("User does not have this permission");
     }
 
-    const permissionExists = user.permissions
-      .map((permission) => permission.name)
-      .some((permission) => permissionsRoutes.includes(permission));
+    const permissionExists = user?.users_permissions
+      .map((permission) => permission.permissions)
+      .some((permission) => permissionsRoutes.includes(permission.name));
 
     if (!permissionExists) {
       return response.status(401).end();
@@ -31,21 +45,33 @@ export function is(rolesRoutes: string[]) {
   return async (request: Request, response: Response, next: NextFunction) => {
     const { id } = request.user;
 
-    const user = await getRepository(User).findOne({
-      where: { id },
-      relations: ["roles"],
+    const user = await prismaClient.user.findFirst({
+      where: { 
+        id
+       },
+      select: {
+        users_roles: {
+          select: {
+            roles: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
     });
 
-    if (!user) {
-      return response.status(400).json("User does not exists");
+    if (!user?.users_roles) {
+      return response.status(401).json("User does not have this role");
     }
 
-    const roleExists = user.roles
-      .map((role) => role.name)
-      .some((role) => rolesRoutes.includes(role));
+    const roleExists = user?.users_roles
+      .map((role) => role.roles)
+      .some((role) => rolesRoutes.includes(role.name));
 
     if (!roleExists) {
-      return response.status(401).end();
+      return response.status(401).json("User does not have this role").end();
     }
 
     return next();

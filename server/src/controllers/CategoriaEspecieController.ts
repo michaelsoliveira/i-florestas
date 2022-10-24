@@ -5,11 +5,11 @@ import categoriaService from "../services/categoria.service";
 export class CategoriaEspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const categoria = await categoriaService.create(request.body)
+            // const categoria = await categoriaService.create(request.body)
             return response.json({
                 error: false,
-                categoria,
-                message: `Categoria de espécie ${categoria.nome} cadastrada com SUCESSO!!!`
+                // categoria,
+                // message: `Categoria de espécie ${categoria.nome} cadastrada com SUCESSO!!!`
             })
 
         } catch (error) {

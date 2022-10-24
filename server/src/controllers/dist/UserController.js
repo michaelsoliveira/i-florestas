@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.UserController = void 0;
 var prismaClient_1 = require("../database/prismaClient");
-var acl_service_1 = require("../services/acl.service");
+var UserAclService_1 = require("../services/UserAclService");
 var user_service_1 = require("../services/user.service");
 var UserController = /** @class */ (function () {
     function UserController() {
@@ -82,7 +82,9 @@ var UserController = /** @class */ (function () {
                         _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
                                 where: {
-                                    email: email
+                                    AND: {
+                                        email: email
+                                    }
                                 }
                             })];
                     case 2:
@@ -111,7 +113,7 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        id = (_a = request.user) === null || _a === void 0 ? void 0 : _a.id;
+                        id = (_a = request.params) === null || _a === void 0 ? void 0 : _a.id;
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
@@ -182,7 +184,7 @@ var UserController = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = request.body, name = _a.name, description = _a.description;
-                        createPermissionService = new acl_service_1.CreatePermissionService();
+                        createPermissionService = new UserAclService_1.CreatePermissionService();
                         return [4 /*yield*/, createPermissionService.execute({ name: name, description: description })];
                     case 1:
                         result = _b.sent();
@@ -201,7 +203,7 @@ var UserController = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _a = request.body, name = _a.name, description = _a.description;
-                        createRoleService = new acl_service_1.CreateRoleService();
+                        createRoleService = new UserAclService_1.CreateRoleService();
                         return [4 /*yield*/, createRoleService.execute({ name: name, description: description })];
                     case 1:
                         result = _b.sent();
@@ -221,7 +223,7 @@ var UserController = /** @class */ (function () {
                     case 0:
                         roleId = request.params.roleId;
                         permissions = request.body.permissions;
-                        createRolePermissionService = new acl_service_1.CreateRolePermissionService();
+                        createRolePermissionService = new UserAclService_1.CreateRolePermissionService();
                         return [4 /*yield*/, createRolePermissionService.execute({
                                 roleId: roleId,
                                 permissions: permissions
@@ -238,15 +240,15 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.createUserACL = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, permissions, roles, id, createUserACLService, result;
+            var _a, permissions, roles, userId, createUserACLService, result;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _a = request.body, permissions = _a.permissions, roles = _a.roles;
-                        id = request.user.id;
-                        createUserACLService = new acl_service_1.CreateUserACLService();
+                        userId = request.params.userId;
+                        createUserACLService = new UserAclService_1.CreateUserACLService();
                         return [4 /*yield*/, createUserACLService.execute({
-                                id: id,
+                                id: userId,
                                 permissions: permissions,
                                 roles: roles
                             })];
