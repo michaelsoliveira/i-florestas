@@ -4,7 +4,8 @@ declare namespace Express {
             id: string,
             email: string,
             username: string,
-            provider: string
+            provider: string,
+            roles: Object
         }
     }
 

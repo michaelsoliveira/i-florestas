@@ -65,7 +65,6 @@ function can(permissionsRoutes) {
                         })];
                 case 1:
                     user = _a.sent();
-                    console.log(user === null || user === void 0 ? void 0 : user.users_permissions);
                     if (!(user === null || user === void 0 ? void 0 : user.users_permissions)) {
                         return [2 /*return*/, response.json("User does not have this permission")];
                     }
@@ -105,12 +104,10 @@ function is(rolesRoutes) {
                         })];
                 case 1:
                     user = _a.sent();
-                    console.log(user === null || user === void 0 ? void 0 : user.users_roles);
                     if (!(user === null || user === void 0 ? void 0 : user.users_roles)) {
-                        return [2 /*return*/, response.status(400).json("User does not have this role")];
+                        return [2 /*return*/, response.status(401).json("User does not have this role")];
                     }
                     roleExists = user === null || user === void 0 ? void 0 : user.users_roles.map(function (role) { return role.roles; }).some(function (role) { return rolesRoutes.includes(role.name); });
-                    console.log(roleExists);
                     if (!roleExists) {
                         return [2 /*return*/, response.status(401).json("User does not have this role").end()];
                     }

@@ -1,14 +1,14 @@
 export type EmpresaType = {
     id: string;
-    razaoSocial: string,
-    nomeFantasia: string,
+    razao_social: string,
+    nome_fantasia: string,
     cnpj: string,
-    respTecnico: string,
+    resp_tecnico: string,
     cep: string,
     endereco: string,
     complemento: string,
     municipio: string,
     estado: string,
     telefone: string,
-    regAmbiental: string
+    reg_ambiental: string
 }

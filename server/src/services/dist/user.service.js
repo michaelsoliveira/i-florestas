@@ -110,7 +110,7 @@ var UserService = /** @class */ (function () {
                         preparedData = {
                             image: data === null || data === void 0 ? void 0 : data.image,
                             provider: data === null || data === void 0 ? void 0 : data.provider,
-                            id_provider: data === null || data === void 0 ? void 0 : data.idProvider
+                            id_provider: data === null || data === void 0 ? void 0 : data.id_provider
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                                 where: {
@@ -170,11 +170,28 @@ var UserService = /** @class */ (function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({ where: { id: requestId } })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: { id: requestId },
+                            select: {
+                                id: true,
+                                email: true,
+                                username: true,
+                                users_roles: {
+                                    select: {
+                                        roles: {
+                                            select: {
+                                                id: true,
+                                                name: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })];
                     case 1:
                         user = _a.sent();
                         if (!user)
-                            throw new Error("User not Found");
+                            throw new Error("User not Found 0");
                         return [2 /*return*/, user];
                 }
             });
@@ -190,22 +207,38 @@ var UserService = /** @class */ (function () {
                     case 1:
                         result = _b.sent();
                         if (!result)
-                            throw new Error("User not found");
+                            throw new Error("User not found 1");
                         return [2 /*return*/, result];
                 }
             });
         });
     };
-    UserService.prototype.findProvider = function (email) {
+    UserService.prototype.findProvider = function (provider) {
         return __awaiter(this, void 0, Promise, function () {
-            var user;
+            var email, id, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: {
-                                email: email
-                            }
-                        })];
+                    case 0:
+                        email = provider.email, id = provider.id;
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                                where: {
+                                    OR: [
+                                        { email: email },
+                                        { id_provider: String(id) }
+                                    ]
+                                },
+                                select: {
+                                    users_roles: {
+                                        select: {
+                                            roles: {
+                                                select: {
+                                                    name: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            })];
                     case 1:
                         user = _a.sent();
                         return [2 /*return*/, user];
@@ -218,6 +251,7 @@ var UserService = /** @class */ (function () {
             var email, name, message, transporter, escapedEmail, escapedName, backgroundColor, textColor, mainBackgroundColor, buttonBackgroundColor, buttonBorderColor, buttonTextColor, url, linkLogin;
             return __generator(this, function (_a) {
                 email = data.email, name = data.name, message = data.message;
+                console.log(process.env.GMAIL_USER, process.env.GMAIL_PWD);
                 transporter = nodemailer_1["default"].createTransport({
                     service: 'gmail',
                     auth: {

@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { User } from "../entities/User";
-import { getRepository } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
 
 export function can(permissionsRoutes: string[]) {
@@ -54,7 +52,16 @@ export function is(rolesRoutes: string[]) {
           select: {
             roles: {
               select: {
-                name: true
+                name: true,
+                // permissions_roles: {
+                //   select: {
+                //     permissions: {
+                //       select: {
+                //         name: true
+                //       }
+                //     }
+                //   }
+                // }
               }
             }
           }

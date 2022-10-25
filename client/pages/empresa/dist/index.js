@@ -59,6 +59,7 @@ var EmpresaIndex = function () {
                     return [4 /*yield*/, client.get('empresa')];
                 case 1:
                     empresas_1 = (_a.sent()).data.empresas;
+                    console.log(empresas_1);
                     setEmpresas(empresas_1);
                     setIsLoading(false);
                     return [3 /*break*/, 3];
@@ -78,14 +79,14 @@ var EmpresaIndex = function () {
         setSelectedEmpresa(empresa[0]);
         setOpenModal(true);
     }
-    function deleteEmpresa(id) {
+    function deleteEmpresa() {
         return __awaiter(this, void 0, void 0, function () {
             var error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, client["delete"]("/empresa/" + id)
+                        return [4 /*yield*/, client["delete"]("/empresa/" + (selectedEmpresa === null || selectedEmpresa === void 0 ? void 0 : selectedEmpresa.id))
                                 .then(function () {
                                 alert_1["default"].success('A empresa foi deletada com SUCESSO!!!');
                                 loadEmpresas();
@@ -104,9 +105,6 @@ var EmpresaIndex = function () {
                 }
             });
         });
-    }
-    function hideModal() {
-        setOpenModal(false);
     }
     return (React.createElement("div", null,
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
@@ -127,17 +125,17 @@ var EmpresaIndex = function () {
                         React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, empresas.map(function (empresa) { return (React.createElement("tr", { key: empresa.id },
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap" },
                                 React.createElement("div", { className: "flex flex-col items-starter" },
-                                    React.createElement("div", { className: "text-sm font-medium text-gray-900" }, empresa.razaoSocial),
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, empresa.nomeFantasia))),
+                                    React.createElement("div", { className: "text-sm font-medium text-gray-900" }, empresa.razao_social),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, empresa.nome_fantasia))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap" },
-                                React.createElement("div", { className: "text-sm text-gray-900" }, empresa.respTecnico),
-                                React.createElement("div", { className: "text-sm text-gray-500" }, empresa.creaResp)),
+                                React.createElement("div", { className: "text-sm text-gray-900" }, empresa.resp_tecnico),
+                                React.createElement("div", { className: "text-sm text-gray-500" }, empresa.crea_resp)),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
                                     React.createElement("div", { className: "text-sm text-gray-500" }, empresa.cnpj))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, empresa.regAmbiental))),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, empresa.reg_ambiental))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 React.createElement(Link_1.Link, { href: "/empresa/update/" + empresa.id },
                                     React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
@@ -147,6 +145,6 @@ var EmpresaIndex = function () {
                                     React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))) : (React.createElement("div", { className: "flex flex-col items-center justify-center h-64" },
                 React.createElement("h1", { className: "font-roboto text-2xl font-medium" }, "Nenhuma Empresa Cadastrada")))),
             openModal &&
-                React.createElement(Modal_1["default"], { styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar Empresar", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir a empresa " + (selectedEmpresa === null || selectedEmpresa === void 0 ? void 0 : selectedEmpresa.razaoSocial) + "?", data: selectedEmpresa, parentFunction: deleteEmpresa, hideModal: function () { return setOpenModal(false); }, open: openModal })))));
+                React.createElement(Modal_1["default"], { styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar Empresar", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir a empresa " + (selectedEmpresa === null || selectedEmpresa === void 0 ? void 0 : selectedEmpresa.razao_social) + "?", data: selectedEmpresa, parentFunction: deleteEmpresa, hideModal: function () { return setOpenModal(false); }, open: openModal })))));
 };
 exports["default"] = withAuthentication_1["default"](EmpresaIndex);

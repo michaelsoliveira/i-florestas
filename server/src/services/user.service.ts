@@ -100,10 +100,25 @@ class UserService {
         return userRepository.find();
     };
 
-    async findOne(requestId: string): Promise<UserPrisma> {
+    async findOne(requestId: string): Promise<any> {
 
         const user = await prismaClient.user.findFirst({ 
-            where: { id: requestId } 
+            where: { id: requestId } ,
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                users_roles: {
+                    select: {
+                        roles: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
         })
 
         if (!user) throw new Error("User not Found 0")
@@ -127,6 +142,17 @@ class UserService {
                     { email },
                     { id_provider: String(id) }
                 ]
+            },
+            select: {
+                users_roles: {
+                    select: {
+                        roles: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                }
             }
         })
         

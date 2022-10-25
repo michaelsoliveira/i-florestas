@@ -1,6 +1,8 @@
 import { Empresa } from "../entities/Empresa";
 import { getRepository, ILike } from "typeorm";
 import { User } from "../entities/User";
+import { prismaClient } from "../database/prismaClient";
+import { Empresa as EmpresaPrisma } from "@prisma/client"
 
 interface EmpresaRequest {
     razaoSocial: string,
@@ -68,12 +70,19 @@ class EmpresaService {
             })
     }
 
-    async getAll(userId: any): Promise<Empresa[]> {
-        
-        let query = getRepository(Empresa).createQueryBuilder("empresa")
-            .innerJoin("empresa.users", "users")
-            query.where("users.id = :id", { id: userId })
-        const empresas = await query.getMany()
+    async getAll(userId: any): Promise<any[]> {
+        console.log(userId)
+        const empresas = await prismaClient.empresa.findMany({
+            where: {
+                empresa_users: {
+                    some: {
+                        users: {
+                            id: userId
+                        }
+                    }
+                }
+            }
+        })
 
         return empresas;
     }

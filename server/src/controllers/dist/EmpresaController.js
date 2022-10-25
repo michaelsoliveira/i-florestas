@@ -55,14 +55,14 @@ var EmpresaController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: false,
                                 empresa: empresa,
-                                errorMessage: null
+                                message: null
                             })];
                     case 2:
                         error_1 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 empresa: null,
-                                errorMessage: error_1.message
+                                message: error_1.message
                             })];
                     case 3: return [2 /*return*/];
                 }
@@ -86,7 +86,7 @@ var EmpresaController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: false,
                                 empresa: empresa,
-                                errorMessage: null
+                                message: null
                             })];
                     case 3:
                         error_2 = _b.sent();
@@ -137,13 +137,14 @@ var EmpresaController = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
+                        console.log(request === null || request === void 0 ? void 0 : request.user);
                         return [4 /*yield*/, empresa_service_1["default"].getAll((_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
                         empresas = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 empresas: empresas,
-                                errorMessage: null
+                                message: null
                             })];
                     case 2:
                         error_4 = _b.sent();

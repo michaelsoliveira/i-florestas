@@ -31,8 +31,10 @@ class AuthService {
                 "users.username",
                 "users.password",
                 "users.email",
-                "users.image"
+                "users.image",
+                "roles"
             ])
+            .innerJoinAndSelect('users.roles', 'roles')
             .where("users.email = :email", { email })
             .getOne()
 
@@ -63,6 +65,7 @@ class AuthService {
                 username: user.username,
                 email: user.email,
                 image: user.image,
+                roles: user.roles,
                 access_token,
                 expires_in,
                 refresh_token

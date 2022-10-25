@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { User } from "@prisma/client"
 import userService from "../services/user.service"
-import { getRepository, SimpleConsoleLogger } from "typeorm"
-import { DataStoredInToken } from "../interfaces/DataStoredInToken"
 import axios from 'axios'
 import { getDecodedOAuthJwtGoogle } from "../services/decodeJwtGoogle"
 const config = require("../config")
@@ -42,7 +40,8 @@ export const Authentication = () => {
                         id: user.id,
                         email: user.email,
                         username: user.username,
-                        provider: 'google'
+                        provider: 'google',
+                        roles: user.user_roles.map((userRoles: any) => userRoles.roles)
                     }
                 }
                 break;
@@ -63,7 +62,8 @@ export const Authentication = () => {
                                 id: user?.id,
                                 email: user?.email,
                                 username: user?.username,
-                                provider: 'github'
+                                provider: 'github',
+                                roles: user.user_roles.map((userRoles: any) => userRoles.roles)
                             }
                         })
                 }
@@ -80,21 +80,22 @@ export const Authentication = () => {
                             id: user.id,
                             email: user.email,
                             username: user.username,
-                            provider: user.provider
+                            provider: user.provider,
+                            roles: user.user_roles.map((userRoles: any) => userRoles.roles)
                         }
                     })
                 }
                 break;
                 default: {
                     const verificationResponse = jwt.verify(token, config.server.JWT_SECRET) as User
-
                     const user = await userService.findOne(verificationResponse.id)
                     
                     request.user = {
                         id: user.id,
                         email: user.email,
                         username: user.username,
-                        provider: 'local'
+                        provider: 'local',
+                        roles: user?.users_roles.map((userRoles: any) => userRoles.roles)
                     }    
                 }
             }

@@ -56,7 +56,6 @@ exports.Authentication = function () {
             switch (_b.label) {
                 case 0:
                     authorization = request.headers.authorization;
-                    // const { provider } = request.query
                     if (!authorization) {
                         return [2 /*return*/, response.status(401).json({ error: "Token is missing!" })];
                     }
@@ -75,20 +74,19 @@ exports.Authentication = function () {
                 case 2: return [4 /*yield*/, decodeJwtGoogle_1.getDecodedOAuthJwtGoogle(token)];
                 case 3:
                     provider_1 = _b.sent();
-                    return [4 /*yield*/, user_service_1["default"].findProvider(provider_1.email)];
+                    return [4 /*yield*/, user_service_1["default"].findProvider(provider_1)];
                 case 4:
                     user = _b.sent();
                     request.user = {
                         id: user.id,
                         email: user.email,
                         username: user.username,
-                        provider: 'google'
+                        provider: 'google',
+                        roles: user.user_roles.map(function (userRoles) { return userRoles.roles; })
                     };
                     return [3 /*break*/, 11];
                 case 5:
                     url = 'https://api.github.com/user';
-                    // const verificationResponse = jwt.verify(token, config.server.JWT_SECRET, { algorithms: ['HS256'] }) as DataStoredInToken
-                    // console.log(verificationResponse)
                     return [4 /*yield*/, axios_1["default"].get(url, {
                             headers: { authorization: "token " + token }
                         }).then(function (response) { return __awaiter(void 0, void 0, void 0, function () {
@@ -97,22 +95,21 @@ exports.Authentication = function () {
                                 switch (_a.label) {
                                     case 0:
                                         provider = response.data;
-                                        return [4 /*yield*/, user_service_1["default"].findProvider(provider.email)];
+                                        return [4 /*yield*/, user_service_1["default"].findProvider(provider)];
                                     case 1:
                                         user = _a.sent();
                                         request.user = {
-                                            id: user.id,
-                                            email: user.email,
-                                            username: user.username,
-                                            provider: 'github'
+                                            id: user === null || user === void 0 ? void 0 : user.id,
+                                            email: user === null || user === void 0 ? void 0 : user.email,
+                                            username: user === null || user === void 0 ? void 0 : user.username,
+                                            provider: 'github',
+                                            roles: user.user_roles.map(function (userRoles) { return userRoles.roles; })
                                         };
                                         return [2 /*return*/];
                                 }
                             });
                         }); })];
                 case 6:
-                    // const verificationResponse = jwt.verify(token, config.server.JWT_SECRET, { algorithms: ['HS256'] }) as DataStoredInToken
-                    // console.log(verificationResponse)
                     _b.sent();
                     return [3 /*break*/, 11];
                 case 7: return [4 /*yield*/, axios_1["default"].get("https://graph.facebook.com/me?access_token=" + token + "&fields=id")
@@ -122,14 +119,15 @@ exports.Authentication = function () {
                             switch (_a.label) {
                                 case 0:
                                     provider = response.data;
-                                    return [4 /*yield*/, user_service_1["default"].findProvider(provider.email)];
+                                    return [4 /*yield*/, user_service_1["default"].findProvider(provider)];
                                 case 1:
                                     user = _a.sent();
                                     request.user = {
                                         id: user.id,
                                         email: user.email,
                                         username: user.username,
-                                        provider: user.provider
+                                        provider: user.provider,
+                                        roles: user.user_roles.map(function (userRoles) { return userRoles.roles; })
                                     };
                                     return [2 /*return*/];
                             }
@@ -147,13 +145,13 @@ exports.Authentication = function () {
                         id: user.id,
                         email: user.email,
                         username: user.username,
-                        provider: 'local'
+                        provider: 'local',
+                        roles: user === null || user === void 0 ? void 0 : user.users_roles.map(function (userRoles) { return userRoles.roles; })
                     };
                     _b.label = 11;
                 case 11: return [2 /*return*/, next()];
                 case 12:
                     error_1 = _b.sent();
-                    console.log(error_1);
                     return [2 /*return*/, response.status(401).json({
                             error: true,
                             message: error_1.message,

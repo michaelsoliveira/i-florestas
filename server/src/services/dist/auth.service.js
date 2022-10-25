@@ -73,8 +73,10 @@ var AuthService = /** @class */ (function () {
                                 "users.username",
                                 "users.password",
                                 "users.email",
-                                "users.image"
+                                "users.image",
+                                "roles"
                             ])
+                                .innerJoinAndSelect('users.roles', 'roles')
                                 .where("users.email = :email", { email: email })
                                 .getOne()];
                     case 2:
@@ -104,6 +106,7 @@ var AuthService = /** @class */ (function () {
                                     username: user.username,
                                     email: user.email,
                                     image: user.image,
+                                    roles: user.roles,
                                     access_token: access_token,
                                     expires_in: expires_in,
                                     refresh_token: refresh_token

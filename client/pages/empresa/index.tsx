@@ -20,6 +20,7 @@ const EmpresaIndex = () => {
         try {
             setIsLoading(true)
             const { data: { empresas } } = await client.get('empresa')
+            console.log(empresas)
             setEmpresas(empresas)    
             setIsLoading(false)
         } catch (error:any) {
@@ -110,14 +111,14 @@ const EmpresaIndex = () => {
                                         <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex flex-col items-starter">
                                             
-                                            <div className="text-sm font-medium text-gray-900">{empresa.razaoSocial}</div>
-                                            <div className="text-sm text-gray-500">{empresa.nomeFantasia}</div>
+                                            <div className="text-sm font-medium text-gray-900">{empresa.razao_social}</div>
+                                            <div className="text-sm text-gray-500">{empresa.nome_fantasia}</div>
                                             
                                         </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="text-sm text-gray-900">{empresa.respTecnico}</div>
-                                        <div className="text-sm text-gray-500">{empresa.creaResp}</div>
+                                        <div className="text-sm text-gray-900">{empresa.resp_tecnico}</div>
+                                        <div className="text-sm text-gray-500">{empresa.crea_resp}</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="text-sm font-medium text-gray-900">
@@ -126,7 +127,7 @@ const EmpresaIndex = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                         <span className="text-sm font-medium text-gray-900">
-                                            <div className="text-sm text-gray-500">{empresa.regAmbiental}</div>
+                                            <div className="text-sm text-gray-500">{empresa.reg_ambiental}</div>
                                         </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
@@ -157,7 +158,7 @@ const EmpresaIndex = () => {
                         styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
                         title="Deletar Empresar"
                         buttonText="Deletar"
-                        bodyText={`Tem certeza que seja excluir a empresa ${selectedEmpresa?.razaoSocial}?`}
+                        bodyText={`Tem certeza que seja excluir a empresa ${selectedEmpresa?.razao_social}?`}
                         data={selectedEmpresa}
                         parentFunction={deleteEmpresa}
                         hideModal={() => setOpenModal(false)}

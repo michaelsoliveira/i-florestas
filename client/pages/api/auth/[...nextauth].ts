@@ -250,7 +250,8 @@ const options: NextAuthOptions = {
               id: user.id,
               email: user.email,
               username: user.username,
-              image: user.image
+              image: user.image,
+              roles: user.roles
             },
             accessToken: user.access_token,
             accessTokenExpires: Date.now() + user.expires_in * 1000,
@@ -280,6 +281,7 @@ const options: NextAuthOptions = {
         // Send properties to the client, like an access_token from a provider.
         
         session.user = token.user
+        session.user.roles = token.user?.roles
         session.provider = token.provider
         session.id = token.id
         session.accessToken = token.accessToken

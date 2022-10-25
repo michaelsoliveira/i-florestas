@@ -63,6 +63,7 @@ export class EmpresaController {
 
     async findAll(request: Request, response: Response) {
         try {
+            console.log(request?.user)
             const empresas = await empresaService.getAll(request.user?.id)
 
             return response.json({
