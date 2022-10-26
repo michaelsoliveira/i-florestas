@@ -35,13 +35,13 @@ export const Authentication = () => {
                     const provider = await getDecodedOAuthJwtGoogle(token)
 
                     const user = await userService.findProvider(provider)                            
-                    
+
                     request.user = {
                         id: user.id,
                         email: user.email,
                         username: user.username,
                         provider: 'google',
-                        roles: user.user_roles.map((userRoles: any) => userRoles.roles)
+                        roles: user.user_roles?.map((userRoles: any) => userRoles.roles)
                     }
                 }
                 break;
@@ -63,7 +63,7 @@ export const Authentication = () => {
                                 email: user?.email,
                                 username: user?.username,
                                 provider: 'github',
-                                roles: user.user_roles.map((userRoles: any) => userRoles.roles)
+                                roles: user.user_roles?.map((userRoles: any) => userRoles.roles)
                             }
                         })
                 }
@@ -81,7 +81,7 @@ export const Authentication = () => {
                             email: user.email,
                             username: user.username,
                             provider: user.provider,
-                            roles: user.user_roles.map((userRoles: any) => userRoles.roles)
+                            roles: user.user_roles?.map((userRoles: any) => userRoles.roles)
                         }
                     })
                 }
@@ -95,7 +95,7 @@ export const Authentication = () => {
                         email: user.email,
                         username: user.username,
                         provider: 'local',
-                        roles: user?.users_roles.map((userRoles: any) => userRoles.roles)
+                        roles: user?.users_roles?.map((userRoles: any) => userRoles.roles)
                     }    
                 }
             }

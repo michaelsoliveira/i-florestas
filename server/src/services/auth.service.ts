@@ -34,7 +34,7 @@ class AuthService {
                 "users.image",
                 "roles"
             ])
-            .innerJoinAndSelect('users.roles', 'roles')
+            .leftJoinAndSelect('users.roles', 'roles')
             .where("users.email = :email", { email })
             .getOne()
 

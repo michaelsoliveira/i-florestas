@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 import classNames from './Utils/classNames'
@@ -16,6 +16,9 @@ interface ModaType {
 
 export default function Modal(props: ModaType) {
 
+  const KEY_NAME_ESC = 'Escape';
+  const KEY_EVENT_TYPE = 'keyup';
+
     const {
         title,
         buttonText,
@@ -27,6 +30,19 @@ export default function Modal(props: ModaType) {
         data,
         className
     } = props
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === KEY_NAME_ESC && open) {
+        hideModal();
+      }
+    };
+    
+    useEffect(() => {
+      document.addEventListener('keydown', onKeyDown, false);
+      return () => {
+        document.removeEventListener('keydown', onKeyDown, false);
+      };
+    }, [open]);
 
 
     const cancelButtonRef = useRef(null)

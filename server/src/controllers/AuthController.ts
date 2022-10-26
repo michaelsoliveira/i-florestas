@@ -29,14 +29,14 @@ export class AuthController {
             
             return response.json({
                 error: false,
-                errorMessage: null,
+                message: null,
                 ...user
             })
 
         } catch (error) {
             return response.status(403).json({
                 error: true,
-                errorMessage: error.message,
+                message: error.message,
                 user: null
             })
         }

@@ -144,6 +144,11 @@ class UserService {
                 ]
             },
             select: {
+                id: true,
+                username: true,
+                email: true,
+                provider: true,
+                id_provider: true,
                 users_roles: {
                     select: {
                         roles: {

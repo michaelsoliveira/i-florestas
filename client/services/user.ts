@@ -96,7 +96,7 @@ export async function findProvider(token?: any): Promise<any> {
             } 
         })
         const data = await response.json()
-
+        console.log(data)
         return data.user
     } catch (error: any) {
         return false

@@ -30,6 +30,7 @@ async function findProvider(token: any) {
       }
       
       const userExists = await userService.findProvider(token)
+      console.log('USER EXISTS', userExists)
       
       if (userExists) {
         if (!userExists.provider || !userExists.id_provider)
