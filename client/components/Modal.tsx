@@ -1,39 +1,39 @@
-import { Fragment, useEffect, useRef } from 'react'
+import { Fragment, ReactNode, useEffect, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 import classNames from './Utils/classNames'
+import { useModalContext } from 'contexts/ModalContext'
+
 interface ModaType {
-    title: string,
-    buttonText: string,
-    bodyText: string,
-    styleButton: string,
+    children?: ReactNode,
     parentFunction: () => void,
-    hideModal: () => void,
-    open: boolean,
-    data?: any,
-    className?: string
 }
 
 export default function Modal(props: ModaType) {
 
+  const { modalState: 
+          { 
+          type, 
+          message, 
+          styleButton,
+          className,
+          title,
+          visible,
+          buttonText
+          }, 
+          closeModal 
+      } = useModalContext()
   const KEY_NAME_ESC = 'Escape';
   const KEY_EVENT_TYPE = 'keyup';
 
     const {
-        title,
-        buttonText,
-        bodyText,
-        styleButton,
+        children,
         parentFunction,
-        hideModal,
-        open,
-        data,
-        className
     } = props
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === KEY_NAME_ESC && open) {
-        hideModal();
+      if (event.key === KEY_NAME_ESC && visible) {
+        closeModal();
       }
     };
     
@@ -42,18 +42,18 @@ export default function Modal(props: ModaType) {
       return () => {
         document.removeEventListener('keydown', onKeyDown, false);
       };
-    }, [open]);
+    }, []);
 
 
     const cancelButtonRef = useRef(null)
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={visible} as={Fragment}>
       <Dialog as="div" className={
               classNames("fixed z-10 inset-0 overflow-y-auto",
                       className
               )}
-        initialFocus={cancelButtonRef} onClose={hideModal}>
+        initialFocus={cancelButtonRef} onClose={closeModal}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -91,9 +91,13 @@ export default function Modal(props: ModaType) {
                       {title}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        {bodyText}
-                      </p>
+                      
+                        {
+                          (type === 'text' 
+                          ? (<p className="text-sm text-gray-500">{message}</p>) 
+                          : (children))
+                        }
+                      
                     </div>
                   </div>
                 </div>
@@ -111,7 +115,7 @@ export default function Modal(props: ModaType) {
                 <button
                   type="button"
                   className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={() => hideModal()}
+                  onClick={closeModal}
                   ref={cancelButtonRef}
                 >
                   Cancel

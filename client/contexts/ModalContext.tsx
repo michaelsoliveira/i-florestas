@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
+import Modal from "../components/Modal"
 
 type ModalContextType = {
     modalState: {
@@ -19,21 +20,24 @@ type Props = {
 }
 
 // context
-const ModalContext = createContext({} as ModalContextType);
+const ModalContext = createContext({} as any);
 
 // Provider
 const ModalProvider = ({ children }: Props) => {
   const [modalState, setState] = useState({ visible: false });
 
-  const openModal = (payload: any) =>
+  const openModal = (payload: any) => {
     setState({ ...payload, visible: true });
+    console.log(modalState)
+  }
+    
   const closeModal = () => setState({ visible: false });
 
   return (
     <ModalContext.Provider
       value={{ modalState, openModal, closeModal }}
     >
-      {children}
+        {children}
     </ModalContext.Provider>
   );
 };

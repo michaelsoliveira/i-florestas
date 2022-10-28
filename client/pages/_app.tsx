@@ -3,6 +3,8 @@ import "tailwindcss/tailwind.css"
 import 'react-toastify/dist/ReactToastify.css'
 import type { AppProps } from 'next/app'
 import { AuthProvider } from 'contexts/AuthContext'
+import { ProjetoProvider } from "contexts/ProjetoContext"
+import { ModalProvider } from "contexts/ModalContext"
 import { Provider } from 'react-redux'
 import { store } from 'store'
 import { saveState } from 'store/browser-storage'
@@ -24,13 +26,17 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Provider store={store}>
-        <AuthProvider>
-          <Layout>
-          <ToastContainer />
-            <Component {...pageProps} />  
-            {/* <Script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></Script> */}
-            </Layout>
-          </AuthProvider>
+          <ModalProvider>
+            <ProjetoProvider>
+              <AuthProvider>
+                <Layout>
+                <ToastContainer />
+                  <Component {...pageProps} />  
+                  {/* <Script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></Script> */}
+                  </Layout>
+              </AuthProvider>
+            </ProjetoProvider>
+          </ModalProvider>
       </Provider>
     </SessionProvider>
   )

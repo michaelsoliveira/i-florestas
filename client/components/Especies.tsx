@@ -6,6 +6,7 @@ import alertService from '../services/alert'
 import Modal from "../components/Modal"
 import { AuthContext } from "../contexts/AuthContext"
 import { EspecieType } from "types/IEspecieType"
+import { useModalContext } from "contexts/ModalContext"
 
 const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEspecies }: any) => {
     
@@ -19,6 +20,9 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const fileRef = useRef(null) as any
     const [sorted, setSorted] = useState(false)
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
+    const { openModal, modalState } = useModalContext()
+    const { type, title, visible } = modalState
+    const delModal = () => openModal({ type: 'component', message: 'Tem certeza que deseja Deletar', buttonText: 'Deletar', styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500" })
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
@@ -27,7 +31,8 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     function selectToModal(id: string) {
         const especie = currentEspecies.find((especie: EspecieType) => especie.id === id)
         setSelectedEspecie(especie)
-        setOpenSingleModal(true)
+        delModal()
+        // setOpenSingleModal(true)
     }
 
     async function deleteEspecie() {
@@ -322,29 +327,29 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                 </div>
             </div>
             
-            {singleModel &&
+            {visible &&
                 <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar espécie"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a especie ${selectedEspecie?.nome}?`}
-                    data={selectedEspecie}
+                    // className="w-full"
+                    // styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                    // title="Deletar espécie"
+                    // buttonText="Deletar"
+                    // bodyText={`Tem certeza que seja excluir a especie ${selectedEspecie?.nome}?`}
+                    // data={selectedEspecie}
                     parentFunction={deleteEspecie}
-                    hideModal={() => setOpenSingleModal(false)}
-                    open={singleModel}
-                />}
+                >
+                    <div><h1>asldjkhasldkjasldkj</h1></div>
+                </Modal>
+                
+            }
             {removeMultipleModal &&
             <Modal
-                className="w-full"
-                styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                title="Deletar UMFs"
-                buttonText="Deletar"
-                bodyText={`Tem certeza que seja excluir as ${checkedEspecies?.length} UMFs selecionados?`}
-                data={checkedEspecies}
+                // className="w-full"
+                // styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                // title="Deletar UMFs"
+                // buttonText="Deletar"
+                // bodyText={`Tem certeza que seja excluir as ${checkedEspecies?.length} UMFs selecionados?`}
+                // data={checkedEspecies}
                 parentFunction={deleteEspecies}
-                hideModal={() => setOpenMultipleModal(false)}
-                open={removeMultipleModal}
             />}
             </div>
         )}

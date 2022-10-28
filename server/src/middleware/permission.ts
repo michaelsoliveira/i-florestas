@@ -32,7 +32,7 @@ export function can(permissionsRoutes: string[]) {
       .some((permission) => permissionsRoutes.includes(permission.name));
 
     if (!permissionExists) {
-      return response.status(401).end();
+      return response.json("User does not have this permission").status(401).end();
     }
 
     return next();
@@ -48,6 +48,7 @@ export function is(rolesRoutes: string[]) {
         id
        },
       select: {
+        id: true,
         users_roles: {
           select: {
             roles: {
