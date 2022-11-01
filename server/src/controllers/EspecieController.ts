@@ -46,12 +46,13 @@ export class EspecieController {
         const { id } = request.params
 
         try {
-            await especieService.delete(id)
-
-            return response.status(200).json({
-                error: false,
-                message: 'Especie deletada com Sucesso!!!'
+            await especieService.delete(id).then(data => {
+                return response.status(200).json({
+                    error: false,
+                    message: 'A Espécie foi deletada com Sucesso!!!'
+                })
             })
+
         } catch (error) {
             return response.json({
                 error: true,

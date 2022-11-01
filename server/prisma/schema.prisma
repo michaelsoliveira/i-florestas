@@ -118,9 +118,11 @@ model Projeto {
   updated_at DateTime @default(now()) @db.Timestamp(6)
   nome       String   @db.VarChar
   id_empresa String?  @db.Uuid
+  active     Boolean  @default(true)
   umf        Umf[]
   empresa    Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
   @@map("projeto")
+  @@unique([active, id_empresa])
 }
 
 model RefreshToken {

@@ -1,10 +1,9 @@
 import { ChangeEvent, ChangeEventHandler, FormEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../components/Link"
-import { Input } from "../components/atoms/input"
+import { Link } from "../../components/Link"
+import { Input } from "../../components/atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
-import alertService from '../services/alert'
-import Modal from "../components/Modal"
-import { AuthContext } from "../contexts/AuthContext"
+import alertService from '../../services/alert'
+import { AuthContext } from "../../contexts/AuthContext"
 import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
 
@@ -14,38 +13,56 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
-    const [singleModel, setOpenSingleModal] = useState<boolean>(false)
-    const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const fileRef = useRef(null) as any
     const [sorted, setSorted] = useState(false)
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
-    const { openModal, modalState } = useModalContext()
-    const { type, title, visible } = modalState
-    const delModal = () => openModal({ type: 'component', message: 'Tem certeza que deseja Deletar', buttonText: 'Deletar', styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500" })
+    const { showModal, hideModal } = useModalContext()
+
+    const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+    const especieById = (id?: string) => {
+        return currentEspecies.find((especie: EspecieType) => especie.id === id)
+    }
+    const deleteSingleModal = useCallback((id?: string) => {
+            const especie = especieById(id)
+            showModal({ title: 'Deletar Espécie', onConfirm: () => { deleteEspecie(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Espécie ${especie?.nome}?`})
+        }, [especieById])
+        
+    const deleteMultModal = () => showModal({ title: 'Deletar Espécies', onConfirm: deleteEspecies, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Espécies Selecionadas?' })
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
     }, [currentEspecies, currentPage])
 
-    function selectToModal(id: string) {
-        const especie = currentEspecies.find((especie: EspecieType) => especie.id === id)
-        setSelectedEspecie(especie)
-        delModal()
-        // setOpenSingleModal(true)
-    }
-
-    async function deleteEspecie() {
+    async function deleteEspecie(id?: string) {
+        
         try {
-            client.delete(`/especie/single/${selectedEspecie?.id}`)
-                .then(() => {
-                    alertService.success('A espécie foi deletada com SUCESSO!!!')
-                    loadEspecies()
-                    setOpenSingleModal(false)
+            client.delete(`/especie/single/${id}`)
+                .then((response: any) => {
+                    const { data: error, message } = response
+                    if (!error) {
+                        alertService.success(message)
+                        loadEspecies()
+                        hideModal()
+                    }
                 })
         } catch (error) {
             console.log(error)
         }       
+    }
+
+    const deleteEspecies = async () => {
+        try {
+            await client.delete('/especie/multiples', { data: { ids: checkedEspecies} })
+                .then(() => {
+                    setCheckedEspecies([])
+                    alertService.success('As espécies foram deletadas com SUCESSO!!!')
+                    loadEspecies()
+                    hideModal()
+                })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const handleImportEspecies = async (e: any) => {
@@ -121,20 +138,6 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         }
     };
 
-    const deleteEspecies = async () => {
-        try {
-            await client.delete('/especie/multiples', { data: { ids: checkedEspecies} })
-                .then(() => {
-                    setCheckedEspecies([])
-                    alertService.success('As espécies foram deletadas com SUCESSO!!!')
-                    loadEspecies()
-                    setOpenMultipleModal(false)
-                })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     return (
         <div>
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
@@ -205,7 +208,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={() => setOpenMultipleModal(true)}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -316,7 +319,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                             <Link href={`/especie/update/${especie.id}`}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
-                            <Link href="#" onClick={() => selectToModal(especie.id)}>
+                            <Link href="#" onClick={() => deleteSingleModal(especie.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                             </Link>
                             </td>
@@ -326,32 +329,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                     </table>
                 </div>
             </div>
-            
-            {visible &&
-                <Modal
-                    // className="w-full"
-                    // styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    // title="Deletar espécie"
-                    // buttonText="Deletar"
-                    // bodyText={`Tem certeza que seja excluir a especie ${selectedEspecie?.nome}?`}
-                    // data={selectedEspecie}
-                    parentFunction={deleteEspecie}
-                >
-                    <div><h1>asldjkhasldkjasldkj</h1></div>
-                </Modal>
-                
-            }
-            {removeMultipleModal &&
-            <Modal
-                // className="w-full"
-                // styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                // title="Deletar UMFs"
-                // buttonText="Deletar"
-                // bodyText={`Tem certeza que seja excluir as ${checkedEspecies?.length} UMFs selecionados?`}
-                // data={checkedEspecies}
-                parentFunction={deleteEspecies}
-            />}
-            </div>
+        </div>
         )}
             
     </div>

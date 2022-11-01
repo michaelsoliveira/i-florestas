@@ -11,14 +11,13 @@ import { setUpa } from "../../store/upaSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 import { UtType } from "types/IUtType"
+import { useModalContext } from "contexts/ModalContext"
+import { styles } from "../Utils/styles"
 
 const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUts }: any) => {
     
     const [filteredUts, setFilteredUts] = useState<UtType[]>(currentUts)
     const [selectedUt, setSelectedUt] = useState<UtType>()
-    const [uploading, setUploading] = useState<boolean>(false)
-    const [removeSingleModal, setOpenSingleModal] = useState<boolean>(false)
-    const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const [checkedUts, setCheckedUts] = useState<any>([])
     const [sorted, setSorted] = useState(false)
@@ -31,6 +30,15 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
 
     const dispatch = useAppDispatch()
+
+    const { showModal, hideModal } = useModalContext()
+
+    const utById = (id?: string) => {
+        return currentUts.find((ut: UtType) => ut.id === id)
+    }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UT', onConfirm: () => { deleteUt(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UT ${utById(id)?.numero_ut} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar UTs', onConfirm: deleteUts, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
     
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -43,13 +51,13 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })))
     }
 
-    const defaultUpasOptions = useCallback(async() => {
-        const umfId = umf.id
-        const response = umf ? await client.get(`/upa?orderBy=nome&order=asc&umf=${umfId}`) : await client.get(`/upa?orderBy=nome&order=asc`)
-        const { upas } = response.data
+    // const defaultUpasOptions = useCallback(async() => {
+    //     const umfId = umf.id
+    //     const response = umf ? await client.get(`/upa?orderBy=nome&order=asc&umf=${umfId}`) : await client.get(`/upa?orderBy=nome&order=asc`)
+    //     const { upas } = response.data
 
-        setUpas(upas)
-    }, [client, umf])
+    //     setUpas(upas)
+    // }, [client, umf])
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
@@ -145,21 +153,19 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })
     }
 
-    function toogleDeleteModal(id?: string) {
-        if (id) {
-            const ut = currentUts.find((ut: UtType) => ut.id === id)
-            setSelectedUt(ut)
-        }
-        setOpenSingleModal(true)
+    function toogleDeleteModal(id?: string) {        
+        const ut = currentUts.find((ut: UtType) => ut.id === id)
+        setSelectedUt(ut)
+        deleteSingleModal(id)
     }
 
-    async function deleteUt() {
+    async function deleteUt(id?: string) {
         try {
-            await client.delete(`/ut/single/${selectedUt?.id}`)
+            await client.delete(`/ut/single/${id}`)
                 .then(() => {
                     alertService.success('A UT foi deletada com SUCESSO!!!')
                     loadUts()
-                    setOpenSingleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -222,7 +228,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     setCheckedUts([])
                     alertService.success('As Uts foram deletadas com SUCESSO!!!')
                     loadUts()  
-                    setOpenMultipleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -312,7 +318,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={() => setOpenMultipleModal(true)}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -410,32 +416,6 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     </table>
                 </div>
             </div>
-            
-            {removeSingleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UT"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a UT ${selectedUt?.numero_ut}?`}
-                    data={selectedUt}
-                    parentFunction={deleteUt}
-                    hideModal={() => setOpenSingleModal(false)}
-                    open={removeSingleModal}
-                />}
-
-            {removeMultipleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UTs"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir as ${checkedUts?.length} UTs selecionados?`}
-                    data={checkedUts}
-                    parentFunction={deleteUts}
-                    hideModal={() => setOpenMultipleModal(false)}
-                    open={removeMultipleModal}
-                />}
             </div>
         )}
             

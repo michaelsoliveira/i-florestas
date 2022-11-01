@@ -1,10 +1,15 @@
 import { createContext, ReactNode, useState } from "react"
 
+type ProjetoType = {
+    projeto: any;
+    setProjeto: (projeto: any) => void
+}
+
 type Props = {
     children: ReactNode
 }
 
-const ProjetoContext = createContext({})
+export const ProjetoContext = createContext({} as ProjetoType)
 
 export function ProjetoProvider({ children }: Props) {
     const [projeto, setProjeto] = useState()

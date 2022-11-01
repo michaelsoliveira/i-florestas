@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
-import Especies from "components/Especies"
+import Especies from "components/especie/Especies"
 import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"

@@ -1,11 +1,13 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "./Link"
-import { Input } from "./atoms/input"
+import { Link } from "../Link"
+import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
-import alertService from '../services/alert'
-import Modal from "./Modal"
-import { AuthContext } from "../contexts/AuthContext"
+import alertService from '../../services/alert'
+import { AuthContext } from "../../contexts/AuthContext"
 import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
+import { styles } from "../Utils/styles"
+
+import { useModalContext } from "contexts/ModalContext"
 
 const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
@@ -17,6 +19,18 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
     const [checkedCategorias, setCheckedCategorias] = useState<any>([])
     const [sorted, setSorted] = useState(false)
 
+    const { hideModal, showModal } = useModalContext()
+
+    const categoriaById = (id?: string) => {
+        return currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
+    }
+    const deleteSingleModal = useCallback((id?: string) => {
+            const categoria = categoriaById(id)
+            showModal({ title: 'Deletar Categoria', onConfirm: () => { deleteCategoria(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
+        }, [categoriaById])
+        
+    const deleteMultModal = () => showModal({ title: 'Deletar Categorias', onConfirm: deleteCategorias, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Categorias Selecionadas?' })
+
     useEffect(() => {
         setFilteredCategorias(currentCategorias)
     }, [currentCategorias, currentPage])
@@ -27,13 +41,13 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
         setOpenModal(true)
     }
 
-    async function deleteCategoria() {
+    async function deleteCategoria(id?: string) {
         try {
-            client.delete(`/categoria/${selectedCategoria?.id}`)
+            client.delete(`/categoria/${id}`)
                 .then(() => {
                     alertService.success('A categoria de espécie foi deletada com SUCESSO!!!')
                     loadCategorias()
-                    setOpenModal(false)
+                    hideModal
                 })
         } catch (error) {
             console.log(error)
@@ -81,8 +95,18 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
         }
     };
 
-    const deleteCategorias = () => {
-        
+    const deleteCategorias = async () => {
+        try {
+            await client.delete('/categoria/multiples', { data: { ids: checkedCategorias} })
+                .then(() => {
+                    setCheckedCategorias([])
+                    alertService.success('As espécies foram deletadas com SUCESSO!!!')
+                    loadCategorias()
+                    hideModal()
+                })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -134,7 +158,7 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={deleteCategorias}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -261,7 +285,7 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
                                 <Link href={`/categoria-especie/update/${categoria.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => toogleDeleteModal(categoria.id)}>
+                                <Link href="#" onClick={() => deleteSingleModal(categoria.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>
@@ -271,19 +295,7 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
                     </table>
                 </div>
             </div>
-            
-            {openModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar espécie"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a Categoria ${selectedCategoria?.nome}?`}
-                    data={selectedCategoria}
-                    parentFunction={deleteCategoria}
-                    hideModal={() => setOpenModal(false)}
-                    open={openModal}
-                />}
+
             </div>
         )}
             

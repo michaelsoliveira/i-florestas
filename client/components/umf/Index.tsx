@@ -3,40 +3,39 @@ import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
-import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
 import { UmfType } from "types/IUMFType"
+import { useModalContext } from "contexts/ModalContext"
+import { styles } from "../Utils/styles"
 
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     
     const [filteredUmf, setFilteredUmf] = useState<UmfType[]>(currentUmfs)
     const [selectedUmf, setSelectedUmf] = useState<UmfType>()
-    const [uploading, setUploading] = useState<boolean>(false)
-    const [removeSingleModal, setOpenSingleModal] = useState<boolean>(false)
-    const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const [checkedUmfs, setCheckedUmfs] = useState<any>([])
     const [sorted, setSorted] = useState(false)
+
+    const { showModal, hideModal } = useModalContext()
+
+    const umfById = (id?: string) => {
+        return currentUmfs.find((ut: UmfType) => ut.id === id)
+    }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UMF', onConfirm: () => { deleteUmf(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UMF ${umfById(id)?.nome} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar UMFs', onConfirm: deleteUmfs, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UMFs selecionadas' })
 
     useEffect(() => {
         setFilteredUmf(currentUmfs)
     }, [currentUmfs, currentPage])
 
-    function toogleDeleteModal(id?: string) {
-        if (id) {
-            const umf = currentUmfs.find((umf: UmfType) => umf.id === id)
-            setSelectedUmf(umf)
-        }
-        setOpenSingleModal(true)
-    }
-
-    async function deleteUmf() {
+    async function deleteUmf(id?: string) {
         try {
             client.delete(`/umf/single/${selectedUmf?.id}`)
                 .then(() => {
                     alertService.success('A UMF foi deletada com SUCESSO!!!')
                     loadUmfs()
-                    setOpenSingleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -93,7 +92,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                     setCheckedUmfs([])
                     alertService.success('As UMFs foram deletadas com SUCESSO!!!')
                     loadUmfs()  
-                    setOpenMultipleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -149,7 +148,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={() => setOpenMultipleModal(true)}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -237,7 +236,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <Link href={`/umf/update/${umf.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => toogleDeleteModal(umf.id)}>
+                                <Link href="#" onClick={() => deleteSingleModal(umf.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>
@@ -247,32 +246,6 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                     </table>
                 </div>
             </div>
-            
-            {removeSingleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UMF"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a UMF ${selectedUmf?.nome}?`}
-                    data={selectedUmf}
-                    parentFunction={deleteUmf}
-                    hideModal={() => setOpenSingleModal(false)}
-                    open={removeSingleModal}
-                />}
-
-            {removeMultipleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UMFs"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir as ${checkedUmfs?.length} UMFs selecionados?`}
-                    data={checkedUmfs}
-                    parentFunction={deleteUmfs}
-                    hideModal={() => setOpenMultipleModal(false)}
-                    open={removeMultipleModal}
-                />}
             </div>
         )}
             

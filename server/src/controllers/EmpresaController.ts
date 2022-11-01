@@ -1,6 +1,4 @@
-// import { User } from "../entities/User"
 import { Request, Response } from "express";
-import userService from "src/services/user.service";
 import empresaService from "../services/empresa.service";
 
 export class EmpresaController {
@@ -63,7 +61,6 @@ export class EmpresaController {
 
     async findAll(request: Request, response: Response) {
         try {
-            console.log(request?.user)
             const empresas = await empresaService.getAll(request.user?.id)
 
             return response.json({

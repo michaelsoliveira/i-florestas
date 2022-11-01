@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import Especie from "components/Especie";
+import Especie from "@/components/especie/Especie";
 import withAuthentication from "@/components/withAuthentication";
 
 

@@ -11,6 +11,9 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 import { UpaType } from "types/IUpaType"
 
+import { useModalContext } from "contexts/ModalContext"
+import { styles } from "../Utils/styles"
+
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
     
     const [filteredUpa, setFilteredUpa] = useState<UpaType[]>(currentUpas)
@@ -25,6 +28,15 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     const umf = useAppSelector((state: RootState) => state.umf)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const dispatch = useAppDispatch()
+
+    const { showModal, hideModal } = useModalContext()
+
+    const upaById = (id?: string) => {
+        return currentUpas.find((ut: UpaType) => ut.id === id)
+    }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteUpa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${upaById(id)?.descricao} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -74,21 +86,13 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         })
     }
 
-    function toogleDeleteModal(id?: string) {
-        if (id) {
-            const upa = currentUpas.find((upa: UpaType) => upa.id === id)
-            setSelectedUpa(upa)
-        }
-        setOpenSingleModal(true)
-    }
-
-    async function deleteUmf() {
+    async function deleteUpa(id?: string) {
         try {
-            await client.delete(`/upa/single/${selectedUpa?.id}`)
+            await client.delete(`/upa/single/${id}`)
                 .then(() => {
                     alertService.success('A UPA foi deletada com SUCESSO!!!')
                     loadUpas()
-                    setOpenSingleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -148,7 +152,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     setCheckedUpas([])
                     alertService.success('As UPAs foram deletadas com SUCESSO!!!')
                     loadUpas()  
-                    setOpenMultipleModal(false)
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -222,7 +226,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={() => setOpenMultipleModal(true)}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -310,7 +314,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 <Link href={`/upa/update/${upa.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => toogleDeleteModal(upa.id)}>
+                                <Link href="#" onClick={() => deleteSingleModal(upa.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>
@@ -320,32 +324,6 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     </table>
                 </div>
             </div>
-            
-            {removeSingleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UPA"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir a UPA ${selectedUpa?.descricao}?`}
-                    data={selectedUpa}
-                    parentFunction={deleteUmf}
-                    hideModal={() => setOpenSingleModal(false)}
-                    open={removeSingleModal}
-                />}
-
-            {removeMultipleModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar UMFs"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir as ${checkedUpas?.length} UPAs selecionados?`}
-                    data={checkedUpas}
-                    parentFunction={deleteUpas}
-                    hideModal={() => setOpenMultipleModal(false)}
-                    open={removeMultipleModal}
-                />}
             </div>
         )}
             

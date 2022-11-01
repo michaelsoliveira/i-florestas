@@ -12,6 +12,7 @@ import Layout from 'components/Layout'
 import { ToastContainer } from 'react-toastify';
 import { SessionProvider } from 'next-auth/react'
 import { debounce } from "debounce"
+import Modal from "@/components/Modal"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   
@@ -33,7 +34,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 <ToastContainer />
                   <Component {...pageProps} />  
                   {/* <Script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></Script> */}
-                  </Layout>
+                  <Modal />
+                </Layout>
               </AuthProvider>
             </ProjetoProvider>
           </ModalProvider>

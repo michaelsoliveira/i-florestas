@@ -1,18 +1,15 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
-import Modal from "../components/Modal"
 
-type ModalContextType = {
-    modalState: {
-        type?: string;
-        message?: string;
-        visible?: boolean;
-        title?: string; 
-        buttonText?: string; 
-        styleButton?: string;
-        className?: string;
-    },
-    openModal: (payload: any) => void;
-    closeModal: () => void;    
+type ContextType = {
+    showModal: (modalProps?: any, content?: any) => void;
+    hideModal: () => void;
+    store: any
+}
+
+const initialState: ContextType = {
+  showModal: () => {},
+  hideModal: () => {},
+  store: {}
 }
 
 type Props = {
@@ -20,23 +17,24 @@ type Props = {
 }
 
 // context
-const ModalContext = createContext({} as any);
+const ModalContext = createContext(initialState);
 
 // Provider
 const ModalProvider = ({ children }: Props) => {
-  const [modalState, setState] = useState({ visible: false });
+  const [store, setStore] = useState({});
 
-  const openModal = (payload: any) => {
-    setState({ ...payload, visible: true });
-    console.log(modalState)
+  const showModal = (modalProps: any = {}) => {
+    setStore({
+      ...store,
+      ...modalProps,
+      visible: true
+    });
   }
-    
-  const closeModal = () => setState({ visible: false });
+
+  const hideModal = () => setStore({ modalProps: {}, onConfirm: () => {}, visible: false });
 
   return (
-    <ModalContext.Provider
-      value={{ modalState, openModal, closeModal }}
-    >
+    <ModalContext.Provider value={{ store, showModal, hideModal }}>
         {children}
     </ModalContext.Provider>
   );

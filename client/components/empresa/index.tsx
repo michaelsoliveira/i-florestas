@@ -15,7 +15,6 @@ type EmpresaIndex = {
 
 const Empresa = ({ id }: EmpresaIndex) => {
     const router = useRouter()
-    // const { id } = router.query as any
     const isAddMode = !id
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
@@ -24,9 +23,7 @@ const Empresa = ({ id }: EmpresaIndex) => {
         async function loadEmpresa() {
             
             if (!isAddMode && typeof session !== typeof undefined) {
-                
-                // const response = await EmpresaService.getById(id)
-                // const { data } = response as any
+
                 const { data } = await client.get(`/empresa/${id}`)
                 
                 for (const [key, value] of Object.entries(data)) {

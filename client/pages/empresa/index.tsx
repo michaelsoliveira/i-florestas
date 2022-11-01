@@ -8,6 +8,8 @@ import Modal from "components/Modal"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
+import { useModalContext } from 'contexts/ModalContext'
+import { styles } from "@/components/Utils/styles"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
@@ -15,6 +17,15 @@ const EmpresaIndex = () => {
     const [openModal, setOpenModal] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
+
+    const { showModal, hideModal } = useModalContext()
+
+    const upaById = (id?: string) => {
+        return empresas.find((ut: EmpresaType) => ut.id === id)
+    }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteEmpresa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${upaById(id)?.nome_fantasia} ?` })
+    // const deleteMultModal = () => showModal({ title: 'Deletar UPAs', onConfirm: deleteEmpresas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
 
     const loadEmpresas = useCallback(async() => {
         try {
@@ -32,21 +43,14 @@ const EmpresaIndex = () => {
         loadEmpresas()
     }, [loadEmpresas])
 
-    function toogleDeleteModal(id: string) {
-        const empresa = empresas.filter((empresa: EmpresaType) => empresa.id === id)
-        setSelectedEmpresa(empresa[0])
-        setOpenModal(true)
-    }
-
-    async function deleteEmpresa() {
+    async function deleteEmpresa(id?: string) {
         try {
-            await client.delete(`/empresa/${selectedEmpresa?.id}`)
+            await client.delete(`/empresa/${id}`)
                 .then(() => {
                     AlertService.success('A empresa foi deletada com SUCESSO!!!')
                     loadEmpresas()
-                    setOpenModal(false)
+                    hideModal()
                 })
-            // setEmpresas(empresas.filter((empresa: EmpresaType) => empresa.id !== id))
             
         } catch (error) {
             console.log(error)
@@ -137,7 +141,7 @@ const EmpresaIndex = () => {
                                         <Link href={`/empresa/${empresa.id}/users`}>
                                             <UsersIcon className="w-5 h-5 ml-4 -mr-1 text-indigo-600 hover:text-indigo-700" />
                                         </Link>
-                                        <Link href="#" onClick={() => toogleDeleteModal(empresa.id)}>
+                                        <Link href="#" onClick={() => deleteSingleModal(empresa.id)}>
                                             <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                         </Link>
                                         </td>
@@ -153,17 +157,6 @@ const EmpresaIndex = () => {
                             </div>   
                         )}
                 </div>
-                {openModal &&
-                    <Modal
-                        styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                        title="Deletar Empresar"
-                        buttonText="Deletar"
-                        bodyText={`Tem certeza que seja excluir a empresa ${selectedEmpresa?.razao_social}?`}
-                        data={selectedEmpresa}
-                        parentFunction={deleteEmpresa}
-                        hideModal={() => setOpenModal(false)}
-                        open={openModal}
-                    />}
             </div>        
             )}
     </div>

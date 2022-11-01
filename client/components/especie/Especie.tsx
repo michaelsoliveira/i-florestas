@@ -1,13 +1,13 @@
-import { OptionType, Select } from './Select'
-import { FormInput } from './FormInput'
+import { OptionType, Select } from '../Select'
+import { FormInput } from '../FormInput'
 import { createRef, FormEvent, useRef, useContext, useEffect, useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
-import alertService from '../services/alert'
-import { AuthContext } from '../contexts/AuthContext'
+import alertService from '../../services/alert'
+import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
-import { LinkBack } from './LinkBack'
-import { Link } from './Link'
+import { LinkBack } from '../LinkBack'
+import { Link } from '../Link'
 
 const Especie = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()

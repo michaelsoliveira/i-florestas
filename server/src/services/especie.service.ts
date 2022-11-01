@@ -33,7 +33,7 @@ class EspecieService {
     async delete(id: string): Promise<void> {
         await getRepository(Especie).delete(id)
             .then(response => {
-                console.log(response)
+                return response.affected
             })
     }
 
