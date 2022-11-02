@@ -29,7 +29,8 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const dispatch = useAppDispatch()
 
-    const { showModal, hideModal } = useModalContext()
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
 
     const upaById = (id?: string) => {
         return currentUpas.find((ut: UpaType) => ut.id === id)
@@ -161,6 +162,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Unidade de Planejamento Anual</h1>
                 <Link

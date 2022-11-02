@@ -8,6 +8,7 @@ import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
 import { styles } from "../Utils/styles"
 
 import { useModalContext } from "contexts/ModalContext"
+import Modal from "../Modal"
 
 const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
@@ -19,7 +20,8 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
     const [checkedCategorias, setCheckedCategorias] = useState<any>([])
     const [sorted, setSorted] = useState(false)
 
-    const { hideModal, showModal } = useModalContext()
+    const { hideModal, showModal, store } = useModalContext()
+    const { visible } = store
 
     const categoriaById = (id?: string) => {
         return currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
@@ -111,6 +113,7 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Categoria de Espécies</h1>
                 <Link

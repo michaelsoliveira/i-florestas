@@ -47,11 +47,6 @@ class UmfService {
                     connect: {
                         id: data.estado
                     }
-                },
-                empresa: {
-                    connect: {
-                        id: empresa?.id
-                    }
                 }
                     
             }

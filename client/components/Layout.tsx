@@ -27,50 +27,56 @@ export type props = {
 }
 
     const resources = [
-    {
-        name: 'Empresa',
-        description: 'Informações da Empresa',
-        href: '/empresa',
-        icon: ClipboardListIcon,
-    },
-    {
-        name: 'UMF',
-        description: 'Unidade de Manejo Florestal',
-        href: '/umf',
-        icon: SupportIcon,
-    },
-    {
-        name: 'UPA',
-        description: 'Unidade de Produção Anual',
-        href: '/upa',
-        icon: BookmarkAltIcon,
-    },
-    {
-        name: 'UT',
-        description: 'Unidade de Trabalho',
-        href: '/ut',
-        icon: CalendarIcon,
+        {
+            name: 'Projeto',
+            description: 'Gerenciar Projetos',
+            href: '/projeto',
+            icon: MenuIcon,
         },
-    {
-        name: 'Especies',
-        description: 'Espécies Existentes',
-        href: '/especie',
-        icon: PencilIcon,
-        // subResource: [
-        //     {
-        //         name: 'Categoria de Espécies',
-        //         description: 'Categoria de Espécies',
-        //         href: '/categoria-especie',
-        //         icon: ClipboardListIcon,
-        //     }
-        // ]
-    },
-    {
-        name: 'Categoria de Espécies',
-        description: 'Critérios de seleção',
-        href: '/categoria-especie',
-        icon: TemplateIcon,
-    }
+        {
+            name: 'Empresa',
+            description: 'Informações da Empresa',
+            href: '/empresa',
+            icon: ClipboardListIcon,
+        },
+        {
+            name: 'UMF',
+            description: 'Unidade de Manejo Florestal',
+            href: '/umf',
+            icon: SupportIcon,
+        },
+        {
+            name: 'UPA',
+            description: 'Unidade de Produção Anual',
+            href: '/upa',
+            icon: BookmarkAltIcon,
+        },
+        {
+            name: 'UT',
+            description: 'Unidade de Trabalho',
+            href: '/ut',
+            icon: CalendarIcon,
+            },
+        {
+            name: 'Especies',
+            description: 'Espécies Existentes',
+            href: '/especie',
+            icon: PencilIcon,
+            // subResource: [
+            //     {
+            //         name: 'Categoria de Espécies',
+            //         description: 'Categoria de Espécies',
+            //         href: '/categoria-especie',
+            //         icon: ClipboardListIcon,
+            //     }
+            // ]
+        },
+        {
+            name: 'Categoria de Espécies',
+            description: 'Critérios de seleção',
+            href: '/categoria-especie',
+            icon: TemplateIcon,
+        }
     
     ]
 
@@ -233,7 +239,6 @@ const Layout = ({ children }: props) => {
     return (
         <div className="content font-roboto">
             <Navigation
-                session={session}
                 defaultNavigation={defaultNavigation}
                 userNavigation={userNavigation}
             />

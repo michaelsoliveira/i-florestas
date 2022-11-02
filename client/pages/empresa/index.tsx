@@ -18,7 +18,8 @@ const EmpresaIndex = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
 
-    const { showModal, hideModal } = useModalContext()
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
 
     const upaById = (id?: string) => {
         return empresas.find((ut: EmpresaType) => ut.id === id)
@@ -59,6 +60,7 @@ const EmpresaIndex = () => {
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Empresas</h1>
                 <Link

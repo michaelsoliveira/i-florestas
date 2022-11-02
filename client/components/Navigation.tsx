@@ -7,10 +7,10 @@ import Logo from './Logo'
 import { useSession, signOut, getSession } from 'next-auth/react'
 import { MenuIcon, XIcon, BellIcon } from '@heroicons/react/outline'
 import { ChevronDownIcon, ChevronUpIcon, ChevronRightIcon } from '@heroicons/react/solid'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { GetServerSideProps } from 'next'
 import classNames from 'classnames'
+import { ProjetoContext } from 'contexts/ProjetoContext'
+import { AuthContext } from 'contexts/AuthContext'
 
 type SubMenuType = {
         name?: string,
@@ -33,8 +33,21 @@ type SubMenuType = {
 //   return classes.filter(Boolean).join(' ')
 // }
 
-export default function Navigation({ session, defaultNavigation, userNavigation }: any) {
-    // const { data: session, status } = useSession()
+export default function Navigation({ defaultNavigation, userNavigation }: any) {
+    const { data: session } = useSession() as any
+    const { projeto, setProjeto } = useContext(ProjetoContext)
+    const { client } = useContext(AuthContext)
+
+    useEffect(() => {
+        async function loadProjeto() { 
+          if (session && !projeto) {
+              const { data } = await client.get(`/projeto/active/get`)
+              setProjeto(data)
+          }     
+        }    
+        loadProjeto()
+      }, [session])
+
     const router = useRouter()
 
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)

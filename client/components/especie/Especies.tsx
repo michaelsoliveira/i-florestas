@@ -6,6 +6,7 @@ import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
+import Modal from "../Modal"
 
 const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEspecies }: any) => {
     
@@ -17,7 +18,8 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const fileRef = useRef(null) as any
     const [sorted, setSorted] = useState(false)
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
-    const { showModal, hideModal } = useModalContext()
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = (id?: string) => {
@@ -140,6 +142,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
                 <div className="relative w-64">

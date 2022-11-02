@@ -4,6 +4,9 @@ import Logo from 'components/Logo'
 import { Carousel } from 'components/home/Carousel'
 import Hero from 'components/home/Hero'
 import { useSession } from 'next-auth/react'
+import { useContext, useEffect } from 'react'
+import { ProjetoContext } from 'contexts/ProjetoContext'
+import { AuthContext } from 'contexts/AuthContext'
 
 export default function Dashboard() {
   
@@ -41,7 +44,7 @@ export default function Dashboard() {
               (
                 <div>
                   <h2 className="text-3xl leading-8 font-semibold mt-2 text-green-800">
-                    Vamos testar!
+                    Vamos testar! 
                   </h2>
                   <Tabs />
                 </div>

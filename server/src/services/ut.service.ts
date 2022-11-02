@@ -62,7 +62,6 @@ class UtService {
                 largura_faixas: parseInt(largura_faixas), 
                 latitude: parseFloat(latitude), 
                 longitude: parseFloat(longitude),
-                id_empresa: empresa?.id,
                 id_upa
             }
         })
@@ -224,8 +223,7 @@ class UtService {
         const ut = await prismaClient.ut.findUnique({ 
             where: { id },
             include: {
-                empresa: true,
-                upa: true,
+                upa: true
             }
         })
 

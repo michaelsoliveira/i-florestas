@@ -31,14 +31,15 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     const dispatch = useAppDispatch()
 
-    const { showModal, hideModal } = useModalContext()
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
 
     const utById = (id?: string) => {
         return currentUts.find((ut: UtType) => ut.id === id)
     }
 
     const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UT', onConfirm: () => { deleteUt(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UT ${utById(id)?.numero_ut} ?` })
-    const deleteMultModal = () => showModal({ title: 'Deletar UTs', onConfirm: deleteUts, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
+    const deleteMultModal = () => showModal({ type: 'delete.ut', title: 'Deletar UTs', onConfirm: deleteUts, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
     
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -237,6 +238,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Unidades de Trabalho</h1>
                 <Link

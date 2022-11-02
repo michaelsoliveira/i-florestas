@@ -7,6 +7,7 @@ import { AuthContext } from "../../contexts/AuthContext"
 import { UmfType } from "types/IUMFType"
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
+import Modal from "../Modal"
 
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     
@@ -16,7 +17,8 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
     const [checkedUmfs, setCheckedUmfs] = useState<any>([])
     const [sorted, setSorted] = useState(false)
 
-    const { showModal, hideModal } = useModalContext()
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
 
     const umfById = (id?: string) => {
         return currentUmfs.find((ut: UmfType) => ut.id === id)
@@ -101,6 +103,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Unidade de Manejo Florestal</h1>
                 <Link

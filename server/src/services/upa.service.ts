@@ -42,11 +42,6 @@ class UpaService {
                 descricao: data.descricao,
                 ano: Number.parseInt(data.ano),
                 tipo: Number.parseInt(data.tipo),
-                empresa: {
-                    connect: {
-                        id: empresa?.id
-                    }
-                },
                 umf: {
                     connect: {
                         id: data.umf
@@ -190,7 +185,6 @@ class UpaService {
         const upa = await prismaClient.upa.findUnique({ 
             where: { id },
             include: {
-                empresa: true,
                 spatial_ref_sys: true,
                 equacao_volume: true,
                 umf: true

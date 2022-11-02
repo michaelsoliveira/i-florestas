@@ -23,6 +23,7 @@ export class ProjetoController {
 
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
+        console.log(id, request.body)
          try {    
             const projeto = await projetoService.update(id, request.body)
             return response.json({
@@ -101,6 +102,12 @@ export class ProjetoController {
         const projetos = nome ? await projetoService.search(nome) : await projetoService.getAll(request.query)
         
         return response.json(projetos)
+    }
+
+    async getActive(request: Request, response: Response) {
+        const projeto = await projetoService.getActive()
+
+        return response.json(projeto)
     }
 
     async findOne(request: Request, response: Response) {

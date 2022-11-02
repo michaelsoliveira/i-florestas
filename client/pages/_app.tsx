@@ -34,7 +34,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 <ToastContainer />
                   <Component {...pageProps} />  
                   {/* <Script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></Script> */}
-                  <Modal />
                 </Layout>
               </AuthProvider>
             </ProjetoProvider>

@@ -134,6 +134,16 @@ class ProjetoService {
 
         return projeto
     }
+
+    async getActive(): Promise<Projeto | null> {
+        const projeto = await prismaClient.projeto.findFirst({
+            where: {
+                active: true
+            }
+        })
+
+        return projeto
+    }
 }
 
 export default new ProjetoService
