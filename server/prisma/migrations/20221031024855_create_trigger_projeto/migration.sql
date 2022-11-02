@@ -1,9 +1,15 @@
 CREATE OR REPLACE FUNCTION before_insert_update_projeto()
   RETURNS trigger AS
 $$
+DECLARE id_exists TEXT;
 BEGIN
-IF NEW.active = TRUE THEN
-	UPDATE projeto set active = FALSE WHERE id != NEW.id AND id_empresa = NEW.id_empresa;
+	SELECT id INTO id_exists FROM projeto;
+    IF NOT FOUND THEN
+		NEW.active := TRUE;
+	END IF;
+	
+	IF NEW.active = TRUE THEN
+		UPDATE projeto set active = FALSE WHERE id != NEW.id AND id_empresa = NEW.id_empresa;
 	
 END IF;
 RETURN NEW;

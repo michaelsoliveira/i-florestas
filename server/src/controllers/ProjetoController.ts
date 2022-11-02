@@ -5,6 +5,7 @@ import projetoService from "../services/ProjetoService";
 export class ProjetoController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
+            console.log(request.body)
             const projeto = await projetoService.create(request.body, request.user?.id)
             return response.json({
                 error: false,

@@ -25,17 +25,10 @@ const Projetos = () => {
     const [ projetoLocal, setProjetoLocal ] = useState<any>()
     const [ projetos, setProjetos ] = useState<any>()
     const { data: session } = useSession()
-    // const router = useRouter()
     const isAddMode = !selectedProjeto
 
     const { showModal, hideModal, store } = useModalContext()
     const { visible, type } = store
-
-    // const getProjetoAtivo = () => {
-    //     const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
-    //     setProjeto(projetoAtivo)
-    //     return projetoAtivo
-    // }
 
     let addEditForm = (
             <form onSubmit={handleSubmit(onSubmit)} id="hook-form">
@@ -101,26 +94,6 @@ const Projetos = () => {
         })))
     };
 
-    // useEffect(() => {        
-    //     async function loadProjeto() {
-        
-    //         if (!isAddMode && typeof session !== typeof undefined) {
-                
-    //             const { data: projeto } = await client.get(`/projeto/${projetoLocal.value}`)
-                
-    //             for (const [key, value] of Object.entries(projeto)) {
-    //                 setValue(key, value, {
-    //                     shouldValidate: true,
-    //                     shouldDirty: true
-    //                 })
-    //             }
-    //         }
-    //     }
-        
-    //     loadProjeto()
-
-    // }, [session, isAddMode, client, setValue])
-
     function getProjetosDefaultOptions() {
       return projetos?.map((projeto: any) => {
           return {
@@ -162,8 +135,11 @@ const Projetos = () => {
     }, [session, client])
 
     async function deleteProjeto(id?: string){
-        
-        await client.delete(`/projeto/single/${id}`)
+        if (selectedProjeto?.active) {
+            alertService.warn('Este projeto está ativo, por favor ative outro projeto para poder excluir este!')
+            hideModal()
+        } else {
+            await client.delete(`/projeto/single/${id}`)
             .then((response: any) => {
                 const { error, message } = response.data
 
@@ -175,7 +151,12 @@ const Projetos = () => {
                 
                 hideModal()
                 loadProjetos()
+                setProjetoLocal({
+                    value: projeto.id,
+                    label: projeto.nome
+                })
             })
+        }
     }
 
     async function onSubmit(data: any) {

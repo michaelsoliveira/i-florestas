@@ -8,13 +8,13 @@ export interface ProjetoType {
 class ProjetoService {
     async create(data: ProjetoType, userId: string): Promise<Projeto> {
         
-        const equacaoVolumeExists = await prismaClient.projeto.findFirst({
+        const projetoExists = await prismaClient.projeto.findFirst({
             where: {
                 nome: data.nome 
             }
         })
 
-        if (equacaoVolumeExists) {
+        if (projetoExists) {
             throw new Error('Já existe um Projeto cadastrada com este nome')
         }
 
@@ -32,7 +32,7 @@ class ProjetoService {
 
         const projeto = await prismaClient.projeto.create({
             data: {
-                nome: data.nome,
+                ...data,
                 empresa: {
                     connect: {
                         id: empresa?.id
