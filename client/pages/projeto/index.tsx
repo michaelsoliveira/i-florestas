@@ -1,5 +1,5 @@
-import withAuthentication from "../../components/withAuthentication"
-import Projetos from "../../components/projeto/Index"
+import withAuthentication from "components/withAuthentication"
+import Projetos from "components/projeto/Index"
 
 const ProjetoIndex = () => {
 
