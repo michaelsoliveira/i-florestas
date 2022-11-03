@@ -237,15 +237,19 @@ const Layout = ({ children }: props) => {
     ]
 
     return (
-        <div className="content font-roboto">
+        <div className="">
+            <div>
             <Navigation
                 defaultNavigation={defaultNavigation}
                 userNavigation={userNavigation}
             />
-            <div className="lg:pt-14">
+            </div>
+            <div className="lg:pt-14 h-full">
                 {children}
             </div>
+            <div className="">
             <Footer />
+            </div>
         </div>
     )
 }

@@ -11,6 +11,7 @@ interface ModaType {
 type ModalProps = {
     styleButton?: string,
     className?: string,
+    size?: string,
     title?: string,
     visible?: boolean,
     confirmBtn?: string,
@@ -28,6 +29,7 @@ export default function Modal(props: ModaType) {
           styleButton,
           className,
           title,
+          size,
           visible,
           confirmBtn,
           onConfirm,
@@ -65,7 +67,7 @@ export default function Modal(props: ModaType) {
                       className
               )}
         initialFocus={cancelButtonRef} onClose={hideModal}>
-        <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0">
+        <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -91,7 +93,10 @@ export default function Modal(props: ModaType) {
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className={classNames(
+              'inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
+                size ? size : 'sm:max-w-xl'
+              )}>
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   { (iconType === 'warn') && (

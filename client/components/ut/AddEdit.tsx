@@ -110,7 +110,7 @@ const AddEdit = ({ id }: any) => {
     return (
         <div>
             <div className="py-4 flex flex-col justify-center sm:py-12 bg-gray-50">                
-                <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto z-40">
+                <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto">
                     <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl'>
                         
                         <div>
@@ -128,7 +128,7 @@ const AddEdit = ({ id }: any) => {
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='flex flex-row space-x-4 pb-6'>
-                                <div className="border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12">
+                                <div className="border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12">
                                 <span className="text-gray-700 absolute top-9 bg-white px-2">Dados básicos da UT</span>
                                     <div>
                                         <FormInput
@@ -181,7 +181,7 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                     </div>
                                 </div>
-                                <div className="border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12">
+                                <div className="border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12">
                                 <span className="text-gray-700 absolute top-9 bg-white px-2">Coordenadas</span>
                                     <div className="flex flex-col">
                                         <FormInput
@@ -212,7 +212,7 @@ const AddEdit = ({ id }: any) => {
                                 (upa.tipo === 0) 
                                 ? 
                                 (<div className="space-y-8">
-                                    <div className="relative border border-gray-200 p-4 rounded-md">
+                                    <div className="relative border border-gray-400 p-4 rounded-md">
                                         <span className="text-gray-700 absolute -top-3 bg-white px-2">Faixas</span>
                                         <div className="flex flex-row space-x-4">
                                             <FormInput
@@ -244,9 +244,9 @@ const AddEdit = ({ id }: any) => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="relative border border-gray-200 p-4 rounded-md">
+                                    <div className="relative border border-gray-400 p-4 rounded-md my-auto">
                                     <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
-                                        <div className='flex flex-row items-center mx-auto z-40'>
+                                        <div className='flex flex-row items-center mx-auto'>
                                         {
                                             (!isLoaded) ? <div>Loading...</div> : 
                                             (

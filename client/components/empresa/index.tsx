@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useAppSelector } from "../../store/hooks";
 import styles from 'styles/Empresa.module.scss'
+import { Link } from "../Link";
 
 type EmpresaIndex = {
     id: string;
@@ -98,7 +99,7 @@ const Empresa = ({ id }: EmpresaIndex) => {
     
     return (
         <div className="px-4 py-4">
-            <div className="mt-10 sm:mt-0 shadow-md">
+            <div className="mt-10 sm:mt-0">
                 <div className="md:grid md:grid-cols-3 md:gap-6">
                     <div className="md:col-span-1">
                         <div className="lg:p-6 p-4">
@@ -218,7 +219,8 @@ const Empresa = ({ id }: EmpresaIndex) => {
                                 </div>
                             </div>
                         </div>
-                        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        <div className="flex flex-row items-center justify-between px-4 py-3 bg-gray-50 text-right sm:px-6">
+                            <Link href="/empresa" className="text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md">Voltar</Link>
                             <button type="submit" className="inline-flex w-40 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease duration-200">
                                 Salvar
                             </button>

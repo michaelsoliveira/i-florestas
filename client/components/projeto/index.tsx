@@ -1,7 +1,6 @@
 import { OptionType, Select } from '@/components/Select'
 import { FormInput } from '@/components/FormInput'
-import { createRef, FormEvent, useRef, useContext, useEffect, useCallback, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
 import { AuthContext } from '../../contexts/AuthContext'
@@ -12,9 +11,11 @@ import { ProjetoContext } from 'contexts/ProjetoContext'
 import { styles } from '../Utils/styles'
 import { useModalContext } from 'contexts/ModalContext'
 import {
-    PlusIcon
+    PlusIcon,
+    PencilIcon,
+    TrashIcon
 } from '@heroicons/react/outline'
-import { ErrorMessage } from '@hookform/error-message'
+
 import Modal from '../Modal'
 
 const Projetos = () => {
@@ -47,7 +48,7 @@ const Projetos = () => {
                                     message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
                                 }
                             }}
-                        className="lg:w-96 pb-4"
+                        className="lg:w-[50vh] pb-4"
                     />
                 </div>
                 <FormInput
@@ -55,25 +56,23 @@ const Projetos = () => {
                     name="active"
                     label="Ativo?"
                     type="checkbox"
-                    // layout="floatLabel"
                     register={register}
                     errors={errors}
                     className="py-4 w-10"
                 />
-                {/* <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button> */}
             </form>
     )
 
 
     const deleteSingleModal = () => 
-    showModal({ 
+        showModal({ 
             type: 'delete.projeto',
-            title: 'Deletar Projeto', onConfirm: () => {
-            deleteProjeto(selectedProjeto?.id) }, 
+            title: 'Deletar Projeto', 
+            onConfirm: () => { deleteProjeto(selectedProjeto?.id) }, 
             styleButton: styles.redButton, 
             iconType: 'warn', 
             confirmBtn: 'Deletar', 
-            content: `Tem Certeza que deseja excluir a UMF ${selectedProjeto?.nome} ?` 
+            content: `Tem Certeza que deseja excluir o Projeto ${selectedProjeto?.nome} ?` 
         })
 
     const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar' })
@@ -218,10 +217,10 @@ const Projetos = () => {
     return (
         <div>
             {visible && (type === 'submit') ? (<Modal>{addEditForm}</Modal>) : (<Modal />)}
-            <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
+            <div className="py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto h-max-screen lg:h-[73vh] h-[50vh] p-2">
                 
-                <div className="relative py-3 w-full max-w-xl mx-auto">
-                    <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
+                <div className="relative py-3 w-full max-w-xl mx-auto h-full">
+                    <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
@@ -239,7 +238,7 @@ const Projetos = () => {
                         </Link>
                         </div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl">
+                    <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
                         
 
                             <div className='pb-4'>
@@ -264,10 +263,20 @@ const Projetos = () => {
 
                             {
                                 projetoLocal && (
-                                    <div className='flex items-center justify-between pt-4'>
-                                        <Link href="#" className="text-center w-2/5 bg-sky-500 text-white p-3 rounded-md" onClick={editModal}>Editar</Link>
-                                
-                                        <Link href="#" className="text-center w-2/5 bg-red-600 text-white p-3 rounded-md" onClick={deleteSingleModal}>Deletar</Link>
+                                    <div className='flex flex-row items-center justify-between pt-5'>
+                                        <Link href="#" className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
+                                            <div className='flex flex-row items-center justify-center space-x-2'>
+                                                <PencilIcon className="h-5 w-5" />
+                                                <span>Editar</span>
+                                            </div>
+                                        </Link>
+                                        
+                                        <Link href="#" className="text-center w-32 hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
+                                            <div className='flex flex-row items-center justify-center space-x-2'>
+                                                <TrashIcon className="h-5 w-5" />
+                                                <span>Deletar</span>
+                                            </div>
+                                        </Link>
                                     </div>
                                 )
                             }
