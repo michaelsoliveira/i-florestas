@@ -6,6 +6,8 @@ import alertService from '../../services/alert'
 import Modal from "../../components/Modal"
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
+import { styles } from "../Utils/styles"
+import { useModalContext } from "contexts/ModalContext"
 
 const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
     
@@ -17,6 +19,16 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
 
+    const { showModal, hideModal, store } = useModalContext()
+    const { visible } = store
+
+    const upaById = (id?: string) => {
+        return currentUsers.find((user: UserType) => user.id === id)
+    }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', onConfirm: () => { deleteUser(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${upaById(id)?.username} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
+
     useEffect(() => {
         setFilteredUsers(currentUsers)
     }, [currentUsers, currentPage])
@@ -27,9 +39,9 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
         setOpenModal(true)
     }
 
-    async function deleteUser() {
+    async function deleteUser(id?: string) {
         try {
-            client.delete(`/users/${selectedUser?.id}`)
+            client.delete(`/users/${id}`)
                 .then(() => {
                     alertService.success('O usuário foi deletada com SUCESSO!!!')
                     loadUsers()
@@ -97,6 +109,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
 
     return (
         <div>
+            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Usuários</h1>
                 <Link
@@ -145,7 +158,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={deleteUsers}
+                                        onClick={deleteMultModal}
                                     >
                                         Deletar
                                     </button>
@@ -231,7 +244,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
                             <Link href={`/empresa/${empresaId}/users/update/${user.id}`}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
-                            <Link href="#" onClick={() => selectToModal(user.id)}>
+                            <Link href="#" onClick={() => deleteSingleModal(user.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                             </Link>
                             </td>
@@ -241,20 +254,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
                     </table>
                 </div>
             </div>
-            
-            {openModal &&
-                <Modal
-                    className="w-full"
-                    styleButton="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    title="Deletar usuário"
-                    buttonText="Deletar"
-                    bodyText={`Tem certeza que seja excluir o usuário ${selectedUser?.username}?`}
-                    data={selectedUser}
-                    parentFunction={deleteUser}
-                    hideModal={() => setOpenModal(false)}
-                    open={openModal}
-                />}
-            </div>
+        </div>
         )}
             
     </div>
