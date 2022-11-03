@@ -23,13 +23,14 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
     const { hideModal, showModal, store } = useModalContext()
     const { visible } = store
 
-    const categoriaById = (id?: string) => {
+    const categoriaById = useCallback((id?: string) => {
         return currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
-    }
+    }, [currentCategorias])
+    
     const deleteSingleModal = useCallback((id?: string) => {
             const categoria = categoriaById(id)
             showModal({ title: 'Deletar Categoria', onConfirm: () => { deleteCategoria(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
-        }, [categoriaById])
+        }, [categoriaById, deleteCategoria, showModal])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Categorias', onConfirm: deleteCategorias, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Categorias Selecionadas?' })
 

@@ -46,7 +46,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
           }     
         }    
         loadProjeto()
-      }, [session])
+      }, [session, client, setProjeto, projeto])
 
     const router = useRouter()
 

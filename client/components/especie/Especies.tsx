@@ -28,7 +28,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const deleteSingleModal = useCallback((id?: string) => {
             const especie = especieById(id)
             showModal({ title: 'Deletar Espécie', onConfirm: () => { deleteEspecie(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Espécie ${especie?.nome}?`})
-        }, [especieById])
+        }, [especieById, deleteEspecie, deleteEspecie])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Espécies', onConfirm: deleteEspecies, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Espécies Selecionadas?' })
 

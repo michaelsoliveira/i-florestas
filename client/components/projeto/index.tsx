@@ -1,6 +1,6 @@
 import { OptionType, Select } from '@/components/Select'
 import { FormInput } from '@/components/FormInput'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
 import { AuthContext } from '../../contexts/AuthContext'
@@ -101,7 +101,7 @@ const Projetos = () => {
           }
       })
   }
-    const loadProjetos = async () => {
+    const loadProjetos = useCallback(async () => {
         if (typeof session !== typeof undefined){
             const response = await client.get(`projeto`)
             const { projetos } = response.data
@@ -125,13 +125,13 @@ const Projetos = () => {
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
-    }
+    }, [session, projetoLocal])
 
     useEffect(() => {
       
         loadProjetos()    
       
-    }, [session, client])
+    }, [])
 
     async function deleteProjeto(id?: string){
         if (selectedProjeto?.active) {
