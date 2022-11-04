@@ -71,7 +71,6 @@ class EmpresaService {
     }
 
     async getAll(userId: any): Promise<any[]> {
-        console.log(userId)
         const empresas = await prismaClient.empresa.findMany({
             where: {
                 empresa_users: {
