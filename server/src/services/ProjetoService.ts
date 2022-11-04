@@ -66,7 +66,7 @@ class ProjetoService {
         })
     }
 
-    async getAll(query?: any): Promise<any> {
+    async getAll(id:string, query?: any): Promise<any> {
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -82,19 +82,38 @@ class ProjetoService {
                 [orderByElement]: order
             }
         }
-        
+        const where = search ?
+            {
+                AND: {
+                    nome: { contains: search },
+                    empresa: {
+                        empresa_users: {
+                            some: {
+                                id_user: id
+                            }
+                        }
+                    }
+                }
+            } : {
+                empresa: {
+                    empresa_users: {
+                        some: {
+                            id_user: id
+                        }
+                    }
+                }
+            }
+
         const [projetos, total] = await prismaClient.$transaction([
             prismaClient.projeto.findMany({
-                where: {
-                    nome: { mode: 'insensitive', contains: search }
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
-                },
+                }
             }),
-            prismaClient.projeto.count()
+            prismaClient.projeto.count({where})
         ])
 
         return {
@@ -135,10 +154,20 @@ class ProjetoService {
         return projeto
     }
 
-    async getActive(): Promise<Projeto | null> {
+    async getActive(id: string): Promise<Projeto | null> {
         const projeto = await prismaClient.projeto.findFirst({
             where: {
-                active: true
+                AND: {
+                    active: true,
+                    empresa: {
+                        empresa_users: {
+                            none: {
+                                id_user: id
+                            }
+                        }
+                    }
+                }
+                
             }
         })
 

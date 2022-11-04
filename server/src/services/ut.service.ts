@@ -118,17 +118,22 @@ class UtService {
         })
     }
 
-    async getAll(query?: any, userId?: string): Promise<any> {
+    async getAll(userId?: string, query?: any): Promise<any> {
 
-        const empresa = await prismaClient.empresa.findFirst({
+        const projeto = await prismaClient.projeto.findFirst({
             where: {
-                empresa_users: {
-                    some: {
-                        users: {
-                            id: userId
+                AND: [
+                    {
+                        empresa: {
+                            empresa_users: {
+                                none: {
+                                    id_user: userId
+                                }
+                            }
                         }
-                    }
-                }
+                    },
+                    { active: true }
+                ]
             }
         })
 
@@ -151,30 +156,28 @@ class UtService {
 
         const where = search ? 
                 {
-                    AND: [
-                        {
-                            id_empresa: empresa?.id
-                        },
-                        {
-                            upa: {
-                                id: upa
+                    AND: {
+                        upa: {
+                            umf: {
+                                projeto: {
+                                    id: projeto?.id
+                                }
                             }
                         },
-                        {   
-                            numero_ut: parseInt(search)
-                        }
-                    ]
-            } : {
-                AND: [
-                    {
-                        id_empresa: empresa?.id
-                    },
-                    {
-                        upa: {
-                            id: upa
-                        }
+                        id_upa: upa,
+                        numero_ut: parseInt(search)
                     }
-                ]
+            } : {
+                AND: {
+                    upa: {
+                        umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
+                        }
+                    },
+                    id_upa: upa
+                }
             }
                     
         const [uts, total] = await prismaClient.$transaction([

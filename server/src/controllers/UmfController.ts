@@ -61,7 +61,7 @@ export class UmfController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.query, request.user?.id)
             
             return response.json({
                 error: false,

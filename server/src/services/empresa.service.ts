@@ -75,7 +75,7 @@ class EmpresaService {
         const empresas = await prismaClient.empresa.findMany({
             where: {
                 empresa_users: {
-                    some: {
+                    none: {
                         users: {
                             id: userId
                         }

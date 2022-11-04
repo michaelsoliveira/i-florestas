@@ -63,7 +63,7 @@ export class ProjetoController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await projetoService.getAll(request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await projetoService.getAll(request.user?.id, request.query)
             
             return response.json({
                 error: false,
@@ -100,13 +100,14 @@ export class ProjetoController {
     async search(request: Request, response: Response) {
         const { nome } = request.query
         
-        const projetos = nome ? await projetoService.search(nome) : await projetoService.getAll(request.query)
+        const projetos = nome ? await projetoService.search(nome) : await projetoService.getAll(request.user?.id, request.query)
         
         return response.json(projetos)
     }
 
     async getActive(request: Request, response: Response) {
-        const projeto = await projetoService.getActive()
+
+        const projeto = await projetoService.getActive(request.user?.id)
 
         return response.json(projeto)
     }

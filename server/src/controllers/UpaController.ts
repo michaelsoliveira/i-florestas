@@ -65,7 +65,7 @@ export class UpaController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await upaService.getAll(request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await upaService.getAll(request.user?.id, request.query)
             
             return response.json({
                 error: false,
@@ -102,7 +102,7 @@ export class UpaController {
     async search(request: Request, response: Response) : Promise<Response>{
         const { descricao } = request.query
         
-        const upas = descricao ? await upaService.search(descricao) : await upaService.getAll()
+        const upas = descricao ? await upaService.search(descricao) : await upaService.getAll(request.user?.id)
 
         return response.json(upas)
     }

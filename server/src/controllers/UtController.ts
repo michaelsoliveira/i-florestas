@@ -65,7 +65,7 @@ export class UtController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await utService.getAll(request.query, request.user?.id)
+            const { data, perPage, page, orderBy, order, skip, count } = await utService.getAll( request.user?.id, request.query)
             
             return response.json({
                 error: false,

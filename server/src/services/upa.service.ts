@@ -106,7 +106,7 @@ class UpaService {
         })
     }
 
-    async getAll(query?: any): Promise<any> {
+    async getAll(id: string, query?: any): Promise<any> {
         const { perPage, page, search, orderBy, order, umf } = query
         const skip = (page - 1) * perPage
         
@@ -123,6 +123,21 @@ class UpaService {
                 [orderByElement]: order
             }
         }
+
+        const projeto = await prismaClient.projeto.findFirst({
+            where: {
+                AND: {
+                    empresa: {
+                        empresa_users: {
+                            none: {
+                                id_user: id
+                            }
+                        }
+                    },
+                    active: true
+                }
+            }
+        })
         
         const [upas, total] = await prismaClient.$transaction([
             prismaClient.upa.findMany({
@@ -134,7 +149,12 @@ class UpaService {
                         }
                     },
                     AND: {
-                        id_umf: umf
+                        id_umf: umf,
+                        umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
+                        }
                     }   
                 },
                 take: perPage ? parseInt(perPage) : 10,
