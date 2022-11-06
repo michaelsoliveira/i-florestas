@@ -9,16 +9,14 @@ import { Upa } from "../entities/Upa"
 import { Ut } from "../entities/Ut"
 import { CategoriaEspecie } from "../entities/CategoriaEspecie"
 import { Especie } from "../entities/Especie"
-import { Poa } from "../entities/Poa"
-import { SituacaoPoa } from "../entities/SituacaoPoa"
-import { TipoMotorista } from "../entities/TipoMotorista"
 import { Projeto } from "../entities/Projeto"
 import { RefreshToken } from "../entities/RefreshToken"
 import { Endereco } from "../entities/Endereco"
 import { SpatialRefSys } from "../entities/SpatialRefSys"
 import { EquacaoVolume } from "../entities/EquacaoVolume"
 
-const dotenv = require('dotenv');
+const dotenv = require('dotenv')
+
 // config() will read your .env file, parse the contents, assign it to process.env.
 dotenv.config();
 

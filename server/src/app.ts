@@ -4,8 +4,6 @@ import "./database"
 import routes from "./routes"
 import cors from 'cors'
 
-import { server } from "./config"
-
 const app = express()
 import fetch from 'cross-fetch'
 

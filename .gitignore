@@ -1,5 +1,5 @@
 # local env files
-.env
+/src/.env
 .env.development.local
 .env.test.local
 .env.production.local
