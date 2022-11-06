@@ -61,7 +61,7 @@ export class UmfController {
 
     async findAll(request: Request, response: Response) {
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.query, request.user?.id)
+            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.user?.id, request.query)
             
             return response.json({
                 error: false,
@@ -98,9 +98,14 @@ export class UmfController {
     async search(request: Request, response: Response) {
         const { nome } = request.query
         
-        const umfs = nome ? await umfService.search(nome) : await umfService.getAll()
+        const umfs = nome ? await umfService.search(request.user?.id, nome) : await umfService.getAll(request.user?.id)
 
         return response.json(umfs)
+    }
+
+    async getUmf(request: Request, response: Response) {
+        const umf = await umfService.getUmf(request.user?.id)
+        return response.json(umf)
     }
 
     async findOne(request: Request, response: Response) {

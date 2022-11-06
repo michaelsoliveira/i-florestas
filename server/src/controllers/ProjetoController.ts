@@ -78,7 +78,7 @@ export class ProjetoController {
             })
         } catch(error) {
             return response.json({
-                error: false,
+                error: true,
                 projetos: [],
                 message: error.message
             })

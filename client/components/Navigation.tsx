@@ -138,133 +138,69 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                         </Link>
                     </div>
                     <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
+                        <div className="ml-10 flex items-baseline space-x-4">
 
-                    {navigation?.map((item: any, key: any) => (
-                        item.visible && (!item.subMenu  ?
-                        (<a
-                            key={key}
-                                href={item.href}
-                                onClick={(evt: any) => {
-                                    evt.preventDefault()
-                                    changeCurrentParent(key, item.href)
-                                    open = !open
-                                }}
-                                className={classNames(
-                                item.current
-                                ? 'border-b-2 border-green-700 text-gray-700 bg-gray-100'
-                                : 'text-gray-700 hover:border-b-2 hover:border-green-700 hover:text-green-800 transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105',
-                              'px-6 py-2 text-sm font-medium hover:bg-gray-100 in-line flex'
-                            )}
-                                aria-current={item.current ? 'page' : undefined}
-                          >
-                                {item.name}
-                        </a>) :
-                            (<Menu
-                                onClick={(evt: any) => {
-                                    evt.preventDefault()
-                                    changeCurrentParent(key)
-                                }}
-                                as="div" className={classNames(
-                                item?.current
-                                && 'border-b-2 border-green-700 text-gray-700 bg-gray-100',
-                                "relative inline-block text-left")} key={key}>
-                            {({ open }) => (
-                            <>
-                            <div>
-                            <Menu.Button className={classNames(
-                                !item?.current && 'hover:border-b-2 hover:border-green-700 hover:text-green-800',
-                                    "inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105")}>
-                                {item.name}
-                                <ChevronDownIcon
+                        {navigation?.map((item: any, key: any) => (
+                            item.visible && (!item.subMenu  ?
+                            (<a
+                                key={key}
+                                    href={item.href}
+                                    onClick={(evt: any) => {
+                                        evt.preventDefault()
+                                        changeCurrentParent(key, item.href)
+                                        open = !open
+                                    }}
                                     className={classNames(
-                                        open ? 'text-green-700' : 'text-gray-400',
-                                        'w-5 h-5 ml-2 -mr-1'
-                                    )}
-                                    aria-hidden="true"
-                                />
-                                
-                            </Menu.Button>
-                            </div>
-                            <Transition
-                                as={Fragment}
-                                enter="transition ease-out duration-100"
-                                enterFrom="transform opacity-0 scale-95"
-                                enterTo="transform opacity-100 scale-100"
-                                leave="transition ease-in duration-75"
-                                leaveFrom="transform opacity-100 scale-100"
-                                leaveTo="transform opacity-0 scale-95"
+                                    item.current
+                                    ? 'border-b-2 border-green-700 text-gray-700 bg-gray-100'
+                                    : 'text-gray-700 hover:border-b-2 hover:border-green-700 hover:text-green-800 transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105',
+                                'px-6 py-2 text-sm font-medium hover:bg-gray-100 in-line flex'
+                                )}
+                                    aria-current={item.current ? 'page' : undefined}
                             >
-                            <Menu.Items className={classNames(
-                                "z-30 absolute w-72 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none")}>
-                                {item.subMenuItems?.map((subMenu: SubMenuType, key: number) =>
-                                (!subMenu.subMenuItems ?
-                                    (<div className='px-2 py-2' key={key}>
-                                        <Menu.Item key={key}>
-                                            {({ active }) => (
-                                                <Link
-                                                    href={subMenu?.href}
-                                                    className={classNames(
-                                                        active ? 'bg-gray-100' : 'text-gray-800',
-                                                        router.pathname === subMenu?.href && 'bg-gray-100',
-                                                        'group flex rounded-md items-center w-full px-2 py-2 text-sm'
-                                                    )}
-                                                >
-                                                    {subMenu?.icon && (
-                                                        <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
-                                                    )}
-                                                    <div className="ml-4" aria-hidden="true">
-                                                        <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
-                                                        {subMenu?.description && (
-                                                            <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
-                                                        )}
-                                                    </div>
-                                                </Link>
-                                            )}
-                                        </Menu.Item>
-                                    </div>  
-                                ) :
-                                (<div key={key}>
-                                    <Menu>
-                                        <div className='px-2 py-2 w-full'>
-                                            <Menu.Button className={classNames(
-                                                !subMenu.icon ? 'text-sm px-14' : '',
-                                                "inline-flex w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-100")}
-                                            >
-                                                {subMenu?.icon && (
-                                                    <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
-                                                )}
-                                                <div className="ml-2" aria-hidden="true">
-                                                    <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
-                                                    {/* {subMenu?.description && (
-                                                        <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
-                                                    )} */}
-                                                </div>
-                                                <div className='flex absolute right-0 mr-6'>
-                                                    <ChevronRightIcon
-                                                        className={classNames(
-                                                            open ? 'text-green-700' : 'text-gray-400',
-                                                            'w-5 h-5 ml-2 -mr-1'
-                                                        )}
-                                                        aria-hidden="true"
-                                                    />
-                                                </div>
-                                            </Menu.Button>
-                                    </div>
-                                    <Transition
-                                        enter="transition duration-100 ease-out"
-                                        enterFrom="transform scale-95 opacity-0"
-                                        enterTo="transform scale-100 opacity-100"
-                                        leave="transition duration-75 ease-out"
-                                        leaveFrom="transform scale-100 opacity-100"
-                                        leaveTo="transform scale-95 opacity-0"
-                                    ></Transition>
-                                        <Menu.Items className={classNames(
-                                            "z-30 absolute -mr-8 -mt-12 w-72 -right-60 origin-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none")}>
-                                            {subMenu.subMenuItems?.map((subsubMenu: SubMenuType, subKey: number) => (
-                                                // eslint-disable-next-line react/jsx-key
-                                                <div className='px-2 py-2' key={subKey}>
-                                            <Menu.Item key={subKey}>
+                                    {item.name}
+                            </a>) :
+                                (<Menu
+                                    onClick={(evt: any) => {
+                                        evt.preventDefault()
+                                        changeCurrentParent(key)
+                                    }}
+                                    as="div" className={classNames(
+                                    item?.current
+                                    && 'border-b-2 border-green-700 text-gray-700 bg-gray-100',
+                                    "relative inline-block text-left")} key={key}>
+                                {({ open }) => (
+                                <>
+                                <div>
+                                <Menu.Button className={classNames(
+                                    !item?.current && 'hover:border-b-2 hover:border-green-700 hover:text-green-800',
+                                        "inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105")}>
+                                    {item.name}
+                                    <ChevronDownIcon
+                                        className={classNames(
+                                            open ? 'text-green-700' : 'text-gray-400',
+                                            'w-5 h-5 ml-2 -mr-1'
+                                        )}
+                                        aria-hidden="true"
+                                    />
+                                    
+                                </Menu.Button>
+                                </div>
+                                <Transition
+                                    as={Fragment}
+                                    enter="transition ease-out duration-100"
+                                    enterFrom="transform opacity-0 scale-95"
+                                    enterTo="transform opacity-100 scale-100"
+                                    leave="transition ease-in duration-75"
+                                    leaveFrom="transform opacity-100 scale-100"
+                                    leaveTo="transform opacity-0 scale-95"
+                                >
+                                <Menu.Items className={classNames(
+                                    "z-30 absolute w-72 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none")}>
+                                    {item.subMenuItems?.map((subMenu: SubMenuType, key: number) =>
+                                    (!subMenu.subMenuItems ?
+                                        (<div className='px-2 py-2' key={key}>
+                                            <Menu.Item key={key}>
                                                 {({ active }) => (
                                                     <Link
                                                         href={subMenu?.href}
@@ -274,25 +210,89 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                             'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                                                         )}
                                                     >
-                                                        {subsubMenu?.icon && (
-                                                            <subsubMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                                        {subMenu?.icon && (
+                                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
                                                         )}
                                                         <div className="ml-4" aria-hidden="true">
-                                                            <p className="text-base font-medium text-gray-900">{subsubMenu.name}</p>
-                                                            {subsubMenu?.description && (
-                                                                <p className="mt-1 text-sm text-gray-500">{subsubMenu?.description}</p>
+                                                            <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
+                                                            {subMenu?.description && (
+                                                                <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
                                                             )}
                                                         </div>
                                                     </Link>
                                                 )}
                                             </Menu.Item>
                                         </div>  
-                                            ))}
-                                        </Menu.Items>
-                                    </Menu>
-                                </div>  
-                            ))
-                        )}
+                                    ) :
+                                    (<div key={key}>
+                                        <Menu>
+                                            <div className='px-2 py-2 w-full'>
+                                                <Menu.Button className={classNames(
+                                                    !subMenu.icon ? 'text-sm px-14' : '',
+                                                    "inline-flex w-full rounded-md px-2 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-100")}
+                                                >
+                                                    {subMenu?.icon && (
+                                                        <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                                    )}
+                                                    <div className="ml-4" aria-hidden="true">
+                                                        <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
+                                                        {/* {subMenu?.description && (
+                                                            <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
+                                                        )} */}
+                                                    </div>
+                                                    <div className='flex absolute right-0 mr-6'>
+                                                        <ChevronRightIcon
+                                                            className={classNames(
+                                                                open ? 'text-green-700' : 'text-gray-400',
+                                                                'w-5 h-5 ml-2 -mr-1'
+                                                            )}
+                                                            aria-hidden="true"
+                                                        />
+                                                    </div>
+                                                </Menu.Button>
+                                        </div>
+                                        <Transition
+                                            enter="transition duration-100 ease-out"
+                                            enterFrom="transform scale-95 opacity-0"
+                                            enterTo="transform scale-100 opacity-100"
+                                            leave="transition duration-75 ease-out"
+                                            leaveFrom="transform scale-100 opacity-100"
+                                            leaveTo="transform scale-95 opacity-0"
+                                        ></Transition>
+                                            <Menu.Items className={classNames(
+                                                "z-30 absolute -mr-8 -mt-12 w-72 -right-60 origin-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none")}>
+                                                {subMenu.subMenuItems?.map((subsubMenu: SubMenuType, subKey: number) => (
+                                                    // eslint-disable-next-line react/jsx-key
+                                                    <div className='px-2 py-2' key={subKey}>
+                                                <Menu.Item key={subKey}>
+                                                    {({ active }) => (
+                                                        <Link
+                                                            href={subMenu?.href}
+                                                            className={classNames(
+                                                                active ? 'bg-gray-100' : 'text-gray-800',
+                                                                router.pathname === subMenu?.href && 'bg-gray-100',
+                                                                'group flex rounded-md items-center w-full px-2 py-2 text-sm'
+                                                            )}
+                                                        >
+                                                            {subsubMenu?.icon && (
+                                                                <subsubMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                                            )}
+                                                            <div className="ml-4" aria-hidden="true">
+                                                                <p className="text-base font-medium text-gray-900">{subsubMenu.name}</p>
+                                                                {subsubMenu?.description && (
+                                                                    <p className="mt-1 text-sm text-gray-500">{subsubMenu?.description}</p>
+                                                                )}
+                                                            </div>
+                                                        </Link>
+                                                    )}
+                                                </Menu.Item>
+                                            </div>  
+                                                ))}
+                                            </Menu.Items>
+                                        </Menu>
+                                    </div>  
+                                ))
+                            )}
                     </Menu.Items>
                 </Transition>
             </>
@@ -405,30 +405,30 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                     {item.name}
                 </Disclosure.Button>) :
                     (<Popover as="div" className="w-full" key={key}>
-                            {({ open }) => (
+                        {({ open }) => (
                         <>
                         <div>
-                        <Popover.Button className="inline-flex w-full rounded-md px-3 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-green-700">
-                            {item.name}
-                            {open ? (
-                            <ChevronUpIcon
-                                className={classNames(
-                                    open ? 'text-gray-400' : 'text-gray-400',
-                                    'w-5 h-5 ml-4 -mr-1'
+                            <Popover.Button className="inline-flex w-full rounded-md px-3 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-green-700">
+                                {item.name}
+                                {open ? (
+                                    <ChevronUpIcon
+                                        className={classNames(
+                                            open ? 'text-gray-400' : 'text-gray-400',
+                                            'w-5 h-5 ml-4 -mr-1'
+                                        )}
+                                        aria-hidden="true"
+                                    />                    
+                                    ) : (
+                                        <ChevronDownIcon
+                                        className={classNames(
+                                            open ? 'text-gray-400' : 'text-gray-400',
+                                            'w-5 h-5 ml-4 -mr-1'
+                                        )}
+                                        aria-hidden="true"
+                                    />                    
                                 )}
-                                aria-hidden="true"
-                            />                    
-                            ) : (
-                                <ChevronDownIcon
-                                className={classNames(
-                                    open ? 'text-gray-400' : 'text-gray-400',
-                                    'w-5 h-5 ml-4 -mr-1'
-                                )}
-                                aria-hidden="true"
-                            />                    
-                            )}
                             
-                        </Popover.Button>
+                            </Popover.Button>
                         </div>
                         <Transition
                             as={Fragment}
@@ -440,33 +440,104 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                             leaveTo="transform opacity-0 scale-95"
                         >
                         <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                            {item.subMenuItems?.map((subMenu, key) =>
-                            (<div className='px-2 py-2' key={key} aria-hidden="true">
-                                <Link
-                                    href={subMenu.href}
-                                    className={classNames(
-                                        'hover:bg-gray-100',
-                                        'group flex rounded-md items-center w-full px-2 py-2 text-sm'
-                                    )}
-                                    aria-hidden="true"
-                                >
-                                    {subMenu?.icon && (
-                                        <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
-                                    )}
-                                    <div className="ml-4">
-                                        <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
-                                        {subMenu?.description && (
-                                            <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
+                            {item.subMenuItems?.map((subMenu, subkey) => (
+                            <div className='px-2 py-2' key={key} aria-hidden="true">
+                                {!subMenu.subMenuItems ? (
+                                    <Disclosure.Button
+                                        as={Link}
+                                        href={subMenu.href}
+                                        className={classNames(
+                                            'hover:bg-gray-100',
+                                            'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                                         )}
-                                    </div>
-                                </Link>
+                                        aria-hidden="true"
+                                    >
+                                        {subMenu?.icon && (
+                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                        )}
+                                        <div className="ml-4">
+                                            <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
+                                            {subMenu?.description && (
+                                                <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
+                                            )}
+                                        </div>
+                                    </Disclosure.Button>
+                        ) : (
+                                <Popover as="div" className="w-full" key={subkey}>
+                        {({ open }) => (
+                        <>
+                        <div>
+                            <Popover.Button className="inline-flex w-full rounded-md px-3 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200">
+                                
+                                    {subMenu?.icon && (
+                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                        )}
+                                        <div className="ml-4">
+                                            <span className="text-base font-medium text-gray-900">{subMenu.name}</span>
+                                        </div>
+                                {open ? (
+                                    <ChevronUpIcon
+                                        className={classNames(
+                                            open ? 'text-gray-400' : 'text-gray-400',
+                                            'w-5 h-5 ml-4 -mr-1'
+                                        )}
+                                        aria-hidden="true"
+                                    />                    
+                                    ) : (
+                                        <ChevronDownIcon
+                                        className={classNames(
+                                            open ? 'text-gray-400' : 'text-gray-400',
+                                            'w-5 h-5 ml-4 -mr-1'
+                                        )}
+                                        aria-hidden="true"
+                                    />                    
+                                )}
+                            
+                            </Popover.Button>
+                        </div>
+                        <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                        >
+                            <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                {subMenu.subMenuItems?.map((subsubMenu, key) => (
+                                    <Disclosure.Button
+                                        as={Link}
+                                        key={key}
+                                        href={subsubMenu.href}
+                                        className={classNames(
+                                            'hover:bg-gray-100',
+                                            'group flex rounded-md items-center w-full px-2 py-2 text-sm'
+                                        )}
+                                        aria-hidden="true"
+                                    >
+                                        {subsubMenu?.icon && (
+                                            <subsubMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                        )}
+                                        <div className="ml-4">
+                                            <p className="text-base font-medium text-gray-900">{subsubMenu.name}</p>
+                                            {subsubMenu?.description && (
+                                                <p className="mt-1 text-sm text-gray-500">{subsubMenu?.description}</p>
+                                            )}
+                                        </div>
+                                    </Disclosure.Button>))}
+                 
 
-                            </div>  
-                        ))}
+                                                </Popover.Panel>
+                                    </Transition>
+                                </>
+                            )}
+                        </Popover>
+                                )}
+                                </div>))}
                     </Popover.Panel>
                 </Transition>
-                </>
-            )}
+                </>)}
     
             </Popover>
                 ))

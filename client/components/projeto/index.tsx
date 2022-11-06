@@ -22,6 +22,7 @@ const Projetos = () => {
     const { register, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm()
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
+    const [empresa, setEmpresa] = useState()
     const [ selectedProjeto, setSelectedProjeto ] = useState<any>()
     const [ projetoLocal, setProjetoLocal ] = useState<any>()
     const [ projetos, setProjetos ] = useState<any>()
@@ -31,36 +32,36 @@ const Projetos = () => {
     const { showModal, hideModal, store } = useModalContext()
     const { visible, type } = store
 
-    let addEditForm = (
-            <form onSubmit={handleSubmit(onSubmit)} id="hook-form">
-                <div className='w-full'>
-                    <FormInput
-                        id="nome"
-                        name="nome"
-                        label="Nome"
-                        register={register}
-                        errors={errors}
-                        rules={
-                            {
-                                required: 'O campo nome é obrigatório',
-                                minLength: {
-                                    value: 3,
-                                    message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                }
-                            }}
-                        className="lg:w-[50vh] pb-4"
-                    />
-                </div>
+    const addEditForm = (
+        <form onSubmit={handleSubmit(onSubmit)} id="hook-form">
+            <div className='w-full'>
                 <FormInput
-                    id="active"
-                    name="active"
-                    label="Ativo?"
-                    type="checkbox"
+                    id="nome"
+                    name="nome"
+                    label="Nome"
                     register={register}
                     errors={errors}
-                    className="py-4 w-10"
+                    rules={
+                        {
+                            required: 'O campo nome é obrigatório',
+                            minLength: {
+                                value: 3,
+                                message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
+                            }
+                        }}
+                    className="lg:w-[50vh] pb-4"
                 />
-            </form>
+            </div>
+            <FormInput
+                id="active"
+                name="active"
+                label="Ativo?"
+                type="checkbox"
+                register={register}
+                errors={errors}
+                className="py-4 w-10"
+            />
+        </form>
     )
 
 
@@ -103,9 +104,12 @@ const Projetos = () => {
   }
     const loadProjetos = useCallback(async () => {
         if (typeof session !== typeof undefined){
-            const response = await client.get(`projeto`)
-            const { projetos } = response.data
 
+            const response = await client.get('projeto')
+            const { projetos, error, message } = response.data
+            if (error) {
+                console.log(message)
+            }
             if (projetoLocal) {
                 const localProjeto = projetos.find((projeto: any) => projeto.id === projetoLocal.value)
                 if (localProjeto) {
@@ -125,7 +129,7 @@ const Projetos = () => {
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
-    }, [session, projetoLocal])
+    }, [session, projetoLocal, setProjetos, setProjeto])
 
     useEffect(() => {
       

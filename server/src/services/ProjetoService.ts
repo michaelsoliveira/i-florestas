@@ -1,8 +1,27 @@
-import { Projeto } from "@prisma/client";
+import { Prisma, Projeto } from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
     nome: string;
+}
+
+export const getProjeto = async (userId: string) => {
+    return await prismaClient.projeto.findFirst({
+        where: {
+            AND: {
+                empresa: {
+                    empresa_users: {
+                        some: {
+                            users: {
+                                id: userId
+                            }
+                        }
+                    }
+                },
+                active: true
+            }
+        }
+    })
 }
 
 class ProjetoService {
@@ -10,7 +29,18 @@ class ProjetoService {
         
         const projetoExists = await prismaClient.projeto.findFirst({
             where: {
-                nome: data.nome 
+                AND: {
+                    empresa: {
+                        empresa_users: {
+                            some: {
+                                users: {
+                                    id: userId
+                                }
+                            }
+                        }
+                    },
+                    nome: data.nome
+                }
             }
         })
 
@@ -29,6 +59,10 @@ class ProjetoService {
                 }
             }
         })
+
+        if (!empresa) {
+            throw new Error('Por favor configure os dados básicos da empresa antes de cadastrar o Projeto!')
+        }
 
         const projeto = await prismaClient.projeto.create({
             data: {
@@ -85,7 +119,7 @@ class ProjetoService {
         const where = search ?
             {
                 AND: {
-                    nome: { contains: search },
+                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
                     empresa: {
                         empresa_users: {
                             some: {
@@ -138,7 +172,7 @@ class ProjetoService {
     async search(text: any) {
         const projetos = await prismaClient.projeto.findMany({
             where: {
-                nome: { mode: 'insensitive', contains: text }
+                nome: { mode: Prisma.QueryMode.insensitive, contains: text }
             },
             orderBy: {
                 nome:   'asc'
@@ -161,7 +195,7 @@ class ProjetoService {
                     active: true,
                     empresa: {
                         empresa_users: {
-                            none: {
+                            some: {
                                 id_user: id
                             }
                         }

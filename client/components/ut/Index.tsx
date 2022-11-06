@@ -76,30 +76,54 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
             const response = await client.get(`/umf?orderBy=nome&order=asc`)
                 const { umfs } = response.data
                 setUmfs(umfs)
+
+                const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
+
+                if (compareUmf) {
+                    setSelectedUmf({
+                        value: umf.id,
+                        label: umf.nome
+                    })
+                }
+
+                if (umfs.length === 0) {
+                    setSelectedUmf({
+                        value: '0',
+                        label: 'Nenhuma UMF Cadastrada'
+                    })
+                } else {
+                    setSelectedUmf({
+                        value: umfs[0].id,
+                        label: umfs[0].nome
+                    })                        
+                }
         }
 
         async function defaultUpasOptions() {
             const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.id}`)
                 const { upas } = response.data
                 setUpas(upas)
-                if (upas.length == 0) {
+                if (upas.length === 0) {
                     setSelectedUpa({
                         value: '0',
                         label: 'Nenhuma UPA Cadastrada'
                     })
-                } 
-        }
+                } else {
+                    setSelectedUpa({
+                        value: upas[0].id,
+                        label: upas[0].descricao
+                    })
+                }
 
-        if (umf) setSelectedUmf({
-            value: umf.id,
-            label: umf.nome
-        })
+                const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
 
-        if (upa) setSelectedUpa({
-            value: upa.id,
-            label: upa.descricao
-        })
-        
+                if (compareUpa) {
+                    setSelectedUpa({
+                        value: upa.id,
+                        label: upa.descricao
+                    })
+                }
+        }        
         
         defaultUmfsOptions()
         defaultUpasOptions()

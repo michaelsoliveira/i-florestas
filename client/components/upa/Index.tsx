@@ -17,10 +17,6 @@ import { styles } from "../Utils/styles"
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
     
     const [filteredUpa, setFilteredUpa] = useState<UpaType[]>(currentUpas)
-    const [selectedUpa, setSelectedUpa] = useState<UpaType>()
-    const [uploading, setUploading] = useState<boolean>(false)
-    const [removeSingleModal, setOpenSingleModal] = useState<boolean>(false)
-    const [removeMultipleModal, setOpenMultipleModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const [checkedUpas, setCheckedUpas] = useState<any>([])
     const [sorted, setSorted] = useState(false)
@@ -57,10 +53,21 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                 setUmfs(umfs)
         }
 
-        if (umf) setSelectedUmf({
-            value: umf.id,
-            label: umf.nome
-        })
+        const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
+
+        if (compareUmf) {
+            setSelectedUmf({
+                value: umf.id,
+                label: umf.nome
+            })
+        } else {
+            if (umfs) {
+                setSelectedUmf({
+                    value: umfs[0].id,
+                    label: umfs[0].nome
+                })
+            }
+        }
         
         defaultOptions()
         setFilteredUpa(currentUpas)

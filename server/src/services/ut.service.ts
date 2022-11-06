@@ -2,6 +2,7 @@ import { prismaClient } from "../database/prismaClient";
 import { Query } from "typeorm/driver/Query";
 import { Console } from "console";
 import { Ut } from "@prisma/client";
+import { getProjeto } from "./ProjetoService";
 
 export interface UtType {
     numero_ut: number;
@@ -29,25 +30,25 @@ class UtService {
             longitude,
             id_upa
         } = data
+
+        const projeto = await getProjeto(userId)
         
         const utExists = await prismaClient.ut.findFirst({
             where: {
-                numero_ut: parseInt(numero_ut)
-            }
-        })
-
-        const empresa = await prismaClient.empresa.findFirst({
-            where: {
-                empresa_users: {
-                    some: {
-                        users: {
-                            id: userId
+                AND: {
+                    numero_ut: parseInt(numero_ut),
+                    upa: {
+                        umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
                         }
                     }
                 }
+                
             }
         })
-        
+
         if (utExists) {
             throw new Error('Já existe uma Ut cadastrada com este número')
         }
@@ -118,24 +119,9 @@ class UtService {
         })
     }
 
-    async getAll(userId?: string, query?: any): Promise<any> {
+    async getAll(userId: string, query?: any): Promise<any> {
 
-        const projeto = await prismaClient.projeto.findFirst({
-            where: {
-                AND: [
-                    {
-                        empresa: {
-                            empresa_users: {
-                                none: {
-                                    id_user: userId
-                                }
-                            }
-                        }
-                    },
-                    { active: true }
-                ]
-            }
-        })
+        const projeto = await getProjeto(userId)
 
         const { perPage, page, search, orderBy, order, upa } = query
         const skip = (page - 1) * perPage
@@ -192,7 +178,7 @@ class UtService {
                     upa: false
                 }
             }),
-            prismaClient.ut.count()
+            prismaClient.ut.count({ where })
         ])
 
         return {

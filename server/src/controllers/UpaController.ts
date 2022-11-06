@@ -102,7 +102,7 @@ export class UpaController {
     async search(request: Request, response: Response) : Promise<Response>{
         const { descricao } = request.query
         
-        const upas = descricao ? await upaService.search(descricao) : await upaService.getAll(request.user?.id)
+        const upas = descricao ? await upaService.search(request.user?.id, descricao) : await upaService.getAll(request.user?.id)
 
         return response.json(upas)
     }

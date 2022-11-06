@@ -8,6 +8,8 @@ import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
+import { useAppDispatch } from 'store/hooks'
+import { setUmf } from 'store/umfSlice'
 
 const Umf = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -17,6 +19,7 @@ const Umf = ({ id }: any) => {
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
+    const dispatch = useAppDispatch()
 
     const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/estado/search/q?nome=${inputValue}`)
@@ -98,7 +101,12 @@ const Umf = ({ id }: any) => {
     async function createUmf(data: any) {
         await client.post('umf', data)
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, umf } = response.data
+                dispatch(setUmf({
+                    id: umf.id,
+                    nome: umf.nome
+                }))
+
                 if (!error) {
                     alertService.success(message);
                     router.push('/umf')
@@ -112,7 +120,7 @@ const Umf = ({ id }: any) => {
         
         await client.put(`/umf/${id}`, data)
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, umf } = response.data
                 if (!error) {
                     alertService.success(message);
                     router.push('/umf')

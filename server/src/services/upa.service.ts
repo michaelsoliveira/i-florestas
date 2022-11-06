@@ -1,7 +1,6 @@
 import { prismaClient } from "../database/prismaClient";
-import { Query } from "typeorm/driver/Query";
-import { Console } from "console";
-import { Upa } from "@prisma/client";
+import { Prisma, Upa } from "@prisma/client";
+import { getProjeto } from "./ProjetoService";
 
 export interface UpaType {
     descricao: string;
@@ -14,19 +13,16 @@ export interface UpaType {
 
 class UpaService {
     async create(data: UpaType, userId: string): Promise<Upa> {
+
+        const projeto = await getProjeto(userId)
         
         const upaExists = await prismaClient.upa.findFirst({
             where: {
-                descricao: data.descricao
-            }
-        })
-
-        const empresa = await prismaClient.empresa.findFirst({
-            where: {
-                empresa_users: {
-                    some: {
-                        users: {
-                            id: userId
+                AND: {
+                    descricao: data.descricao,
+                    umf: {
+                        projeto: {
+                            id: projeto?.id
                         }
                     }
                 }
@@ -34,7 +30,7 @@ class UpaService {
         })
         
         if (upaExists) {
-            throw new Error('Já existe uma Umf cadastrada com este nome')
+            throw new Error('Já existe uma UPA cadastrada com este nome')
         }
         
         const upa = await prismaClient.upa.create({
@@ -106,7 +102,7 @@ class UpaService {
         })
     }
 
-    async getAll(id: string, query?: any): Promise<any> {
+    async getAll(userId: string, query?: any): Promise<any> {
         const { perPage, page, search, orderBy, order, umf } = query
         const skip = (page - 1) * perPage
         
@@ -124,39 +120,28 @@ class UpaService {
             }
         }
 
-        const projeto = await prismaClient.projeto.findFirst({
-            where: {
-                AND: {
-                    empresa: {
-                        empresa_users: {
-                            none: {
-                                id_user: id
-                            }
-                        }
-                    },
-                    active: true
+        const projeto = await getProjeto(userId)
+
+        const where = {
+            OR: {
+                descricao: {
+                    mode: Prisma.QueryMode.insensitive,
+                    contains: search ? search : ''
                 }
-            }
-        })
+            },
+            AND: {
+                id_umf: umf,
+                umf: {
+                    projeto: {
+                        id: projeto?.id
+                    }
+                }
+            }   
+        }
         
         const [upas, total] = await prismaClient.$transaction([
             prismaClient.upa.findMany({
-                where: {
-                    OR: {
-                        descricao: {
-                            mode: 'insensitive',
-                            contains: search ? search : ''
-                        }
-                    },
-                    AND: {
-                        id_umf: umf,
-                        umf: {
-                            projeto: {
-                                id: projeto?.id
-                            }
-                        }
-                    }   
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
                 orderBy: {
@@ -168,7 +153,7 @@ class UpaService {
                     umf: true
                 }
             }),
-            prismaClient.upa.count()
+            prismaClient.upa.count({ where })
         ])
 
         return {
@@ -189,12 +174,20 @@ class UpaService {
         
     }
 
-    async search(q: any) : Promise<Upa[]> {
+    async search(userId: string, q: any) : Promise<Upa[]> {
+        const projeto = await getProjeto(userId)
         const upas = await prismaClient.upa.findMany({
             where: {
-                descricao: {
-                    mode: 'insensitive',
-                    contains: q
+                AND: {
+                    umf: {
+                        projeto: {
+                            id: projeto?.id
+                        }
+                    },
+                    descricao: {
+                        mode: Prisma.QueryMode.insensitive,
+                        contains: q
+                    }
                 }
             }
         })

@@ -12,11 +12,9 @@ import Modal from "../Modal"
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     
     const [filteredUmf, setFilteredUmf] = useState<UmfType[]>(currentUmfs)
-    const [selectedUmf, setSelectedUmf] = useState<UmfType>()
     const { client } = useContext(AuthContext)
     const [checkedUmfs, setCheckedUmfs] = useState<any>([])
     const [sorted, setSorted] = useState(false)
-
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
 
@@ -33,7 +31,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     async function deleteUmf(id?: string) {
         try {
-            client.delete(`/umf/single/${selectedUmf?.id}`)
+            client.delete(`/umf/single/${id}`)
                 .then(() => {
                     alertService.success('A UMF foi deletada com SUCESSO!!!')
                     loadUmfs()
