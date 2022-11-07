@@ -132,10 +132,25 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                   <div className={classNames(
                     "flex items-center justify-between max-w-full w-full"
                   )}>
+                    
                     <div className="flex-shrink-0 lg:-mr-16">
-                        <Link href="/">
-                            <Logo width='w-10' height='h-10' />
-                        </Link>
+                        {
+                            open ? (
+                                <Disclosure.Button
+                                    as={Link}
+                                    href="/"
+                                >
+                                    <Logo width='w-10' height='h-10' />
+                                </Disclosure.Button>
+                            ) : (
+                                <Link
+                                    href="/"
+                                >
+                                    <Logo width='w-10' height='h-10' />
+                                </Link>
+                            )
+                        }
+                        
                     </div>
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-baseline space-x-4">
@@ -467,7 +482,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                         {({ open }) => (
                         <>
                         <div>
-                            <Popover.Button className="inline-flex w-full rounded-md px-3 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200">
+                            <Popover.Button className="inline-flex w-full rounded-md px-2 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200">
                                 
                                     {subMenu?.icon && (
                                             <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
@@ -511,7 +526,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                         key={key}
                                         href={subsubMenu.href}
                                         className={classNames(
-                                            'hover:bg-gray-100',
+                                            'hover:bg-gray-100 pl-8',
                                             'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                                         )}
                                         aria-hidden="true"

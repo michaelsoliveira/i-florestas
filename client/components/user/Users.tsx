@@ -12,9 +12,6 @@ import { useModalContext } from "contexts/ModalContext"
 const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
     
     const [filteredUsers, setFilteredUsers] = useState<UserType[]>(currentUsers)
-    const [selectedUser, setSelectedUser] = useState<UserType>()
-    const [uploading, setUploading] = useState<boolean>(false)
-    const [openModal, setOpenModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
@@ -33,19 +30,20 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
         setFilteredUsers(currentUsers)
     }, [currentUsers, currentPage])
 
-    function selectToModal(id?: string) {
-        const user = currentUsers.find((user: UserType) => user.id === id)
-        setSelectedUser(user)
-        setOpenModal(true)
-    }
-
     async function deleteUser(id?: string) {
         try {
-            client.delete(`/users/${id}`)
-                .then(() => {
-                    alertService.success('O usuário foi deletada com SUCESSO!!!')
-                    loadUsers()
-                    setOpenModal(false)
+            await client.delete(`/users/${id}`)
+                .then((response: any) => {
+                    const { error, message } = response.data
+                    console.log(response)
+                    if (!error) {
+                        alertService.success(message)
+                        loadUsers()
+                        hideModal()
+                    } else {
+                        alertService.error(message)
+                        hideModal()
+                    }
                 })
         } catch (error) {
             console.log(error)

@@ -139,7 +139,7 @@ async function refreshAccessToken(token: any) {
   }
 }
 
-const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
     // https://next-auth.js.org/configuration/providers
     providers: [
       GoogleProvider({
@@ -308,7 +308,7 @@ const options: NextAuthOptions = {
 
 
 const Auth = async (req: NextApiRequest, res: NextApiResponse) => {  
-  return NextAuth(req, res, options)
+  return NextAuth(req, res, authOptions)
 }
 
 export default Auth

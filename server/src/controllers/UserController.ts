@@ -20,7 +20,7 @@ export class UserController {
         // const { username, email, password, provider, idProvider, image, empresaId } = request.body;
 
         try {    
-            const user = await userService.create(request.body)
+            const user = await userService.create(request.body, request.user?.id)
             
             return response.json({
                 error: false,
@@ -103,6 +103,25 @@ export class UserController {
             return response.json({
                 error: true,
                 user: null,
+                message: error.message
+            })
+        }
+    }
+
+    async delete(request: Request, response: Response): Promise<any> {
+        const { id } = request.params
+
+        try {
+            await userService.delete(id)
+
+            return response.status(200).json({
+                error: false,
+                message: 'Usuário deletada com Sucesso!!!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                upa: null,
                 message: error.message
             })
         }
@@ -191,7 +210,7 @@ export class UserController {
 
     async findAll(request: Request, response: Response) {
         try {
-            let users = await userService.getAll()
+            let users = await userService.getAll(request.user?.id)
 
             return response.json(users)
         } catch(error) {

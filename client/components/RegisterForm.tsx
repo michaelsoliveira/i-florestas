@@ -107,7 +107,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
         password: string;
         confirmPassword: string;
         provider: string;
-        idProvider: string;
+        id_provider: string;
         isAddMode: boolean;
     }
 
@@ -128,7 +128,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                     password: '',
                     confirmPassword: '',
                     provider: '',
-                    idProvider: '',
+                    id_provider: '',
                     isAddMode
                 }}
                 validationSchema={validationSchema}

@@ -5,7 +5,7 @@ import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { Empresa } from "../entities/Empresa"
 import { prismaClient } from "../database/prismaClient"
-import { User as UserPrisma } from "@prisma/client"
+import { prisma, User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,
@@ -14,10 +14,19 @@ export interface UserRequest {
 
 class UserService {
 
-    async create(data: any): Promise<UserPrisma> {
+    async create(data: any, userId?: string): Promise<UserPrisma> {
         const userExists = await prismaClient.user.findFirst({
             where: {
-                email: data?.email
+                AND: {
+                    email: data?.email,
+                    empresa_users: {
+                        some: {
+                            users: {
+                                id: userId
+                            }
+                        }
+                    }
+                }
             }
         })
 
@@ -32,12 +41,40 @@ class UserService {
             email: data?.email,
             password: passwordHash,
             image: data?.image,
-            provider: data?.provider,
-            id_provider: data?.id_provider
+            provider: data?.provider ? data?.provider : 'local',
+            id_provider: data?.id_provider ? data?.id_provider : ''
         }
+        const preparedData = await prismaClient.empresa.findFirst({
+            where: {
+                empresa_users: {
+                    some: {
+                        users: {
+                            id: userId
+                        }
+                    }
+                }
+            }
+        }).then(async (empresa: any) => {
+            const preparedData =
+            { ...dataRequest, empresa_users: {
+                create: {
+                    id_empresa: empresa?.id,
+                    id_user: userId
+                }
+            } }
 
-        const preparedData = (data?.empresaId) ? 
-        { ...data, empresa_users: { create: { id_empresa: data.empresaId } } } : { ...dataRequest }
+            return preparedData
+        }).catch(() => {
+            const preparedData = data?.empresaId ? 
+            { ...dataRequest, empresa_users: {
+                create: {
+                    id_empresa: data?.empresaId,
+                    id_user: userId
+                }
+            } } : { ...dataRequest }
+
+            return preparedData 
+        })
 
         const user = await prismaClient.user.create({
             data: {
@@ -75,6 +112,14 @@ class UserService {
         return user
     }
 
+    async delete(id: string) {
+        await prismaClient.user.delete({
+            where: {
+                id
+            },
+        })
+    }
+
     async updatePassword(id: string, oldPassword: string, newPassword: string) {
         const userRepository = getRepository(User)
         const userData = await this.findWithPassword(id)
@@ -95,9 +140,29 @@ class UserService {
         return this.findOne(id)
     }
 
-    async getAll(): Promise<User[]> {
-        const userRepository = getRepository(User);
-        return userRepository.find();
+    async getAll(userId: string): Promise<any[]> {
+        const users = await prismaClient.empresa.findFirst({
+            where: {
+                empresa_users: {
+                    some: {
+                        id_user: userId
+                    }
+                }
+            }
+        }).then(async (empresa: any) => {
+            return await prismaClient.user.findMany({
+                where: {
+                    empresa_users: {
+                        some: {
+                            id_empresa: empresa.id
+                        }
+                    }
+                    
+                }
+            })
+        })
+ 
+        return users;
     };
 
     async findOne(requestId: string): Promise<any> {
