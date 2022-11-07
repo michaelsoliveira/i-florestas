@@ -22,21 +22,11 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const { visible } = store
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-    const especieById = (id?: string) => {
+    const especieById = useCallback((id?: string) => {
         return currentEspecies.find((especie: EspecieType) => especie.id === id)
-    }
-    const deleteSingleModal = useCallback((id?: string) => {
-            const especie = especieById(id)
-            showModal({ title: 'Deletar Espécie', onConfirm: () => { deleteEspecie(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Espécie ${especie?.nome}?`})
-        }, [especieById, deleteEspecie, deleteEspecie])
-        
-    const deleteMultModal = () => showModal({ title: 'Deletar Espécies', onConfirm: deleteEspecies, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Espécies Selecionadas?' })
+    }, [currentEspecies])
 
-    useEffect(() => {
-        setFilteredEspecies(currentEspecies)
-    }, [currentEspecies, currentPage])
-
-    async function deleteEspecie(id?: string) {
+    const deleteEspecie = useCallback(async (id?: string) => {
         
         try {
             client.delete(`/especie/single/${id}`)
@@ -51,7 +41,18 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         } catch (error) {
             console.log(error)
         }       
-    }
+    }, [client, hideModal, loadEspecies])
+    
+    const deleteSingleModal = useCallback((id?: string) => {
+            const especie = especieById(id)
+            showModal({ title: 'Deletar Espécie', onConfirm: () => { deleteEspecie(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Espécie ${especie?.nome}?`})
+        }, [especieById, showModal, deleteEspecie])
+        
+    const deleteMultModal = () => showModal({ title: 'Deletar Espécies', onConfirm: deleteEspecies, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Espécies Selecionadas?' })
+
+    useEffect(() => {
+        setFilteredEspecies(currentEspecies)
+    }, [currentEspecies, currentPage])
 
     const deleteEspecies = async () => {
         try {

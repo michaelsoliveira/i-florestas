@@ -129,13 +129,13 @@ const Projetos = () => {
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
-    }, [session, projetoLocal, setProjetos, setProjeto])
+    }, [session, client, projetoLocal, setProjeto, projeto.nome, projeto.id])
 
     useEffect(() => {
       
         loadProjetos()    
       
-    }, [])
+    }, [loadProjetos])
 
     async function deleteProjeto(id?: string){
         if (selectedProjeto?.active) {

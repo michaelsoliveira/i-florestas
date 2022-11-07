@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect, useRef } from 'react'
+import { Fragment, ReactNode, useCallback, useEffect, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationIcon } from '@heroicons/react/outline'
 import classNames from './Utils/classNames'
@@ -44,11 +44,11 @@ export default function Modal(props: ModaType) {
         children
     } = props
 
-    const onKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = useCallback((event: KeyboardEvent) => {
       if (event.key === KEY_NAME_ESC && visible) {
         hideModal();
       }
-    };
+    },[hideModal, visible]);
     
     useEffect(() => {
       document.addEventListener('keydown', onKeyDown, false);

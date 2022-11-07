@@ -64,20 +64,25 @@ var AuthContext_1 = require("../../contexts/AuthContext");
 var Select_1 = require("../Select");
 var umfSlice_1 = require("../../store/umfSlice");
 var hooks_1 = require("../../store/hooks");
+var ModalContext_1 = require("contexts/ModalContext");
+var styles_1 = require("../Utils/styles");
 var Index = function (_a) {
     var currentUpas = _a.currentUpas, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUpas = _a.loadUpas;
     var _b = react_1.useState(currentUpas), filteredUpa = _b[0], setFilteredUpa = _b[1];
-    var _c = react_1.useState(), selectedUpa = _c[0], setSelectedUpa = _c[1];
-    var _d = react_1.useState(false), uploading = _d[0], setUploading = _d[1];
-    var _e = react_1.useState(false), removeSingleModal = _e[0], setOpenSingleModal = _e[1];
-    var _f = react_1.useState(false), removeMultipleModal = _f[0], setOpenMultipleModal = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var _g = react_1.useState([]), checkedUpas = _g[0], setCheckedUpas = _g[1];
-    var _h = react_1.useState(false), sorted = _h[0], setSorted = _h[1];
-    var _j = react_1.useState(), umfs = _j[0], setUmfs = _j[1];
+    var _c = react_1.useState([]), checkedUpas = _c[0], setCheckedUpas = _c[1];
+    var _d = react_1.useState(false), sorted = _d[0], setSorted = _d[1];
+    var _e = react_1.useState(), umfs = _e[0], setUmfs = _e[1];
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
-    var _k = react_1.useState(), selectedUmf = _k[0], setSelectedUmf = _k[1];
+    var _f = react_1.useState(), selectedUmf = _f[0], setSelectedUmf = _f[1];
     var dispatch = hooks_1.useAppDispatch();
+    var _g = ModalContext_1.useModalContext(), showModal = _g.showModal, hideModal = _g.hideModal, store = _g.store;
+    var visible = store.visible;
+    var upaById = function (id) {
+        return currentUpas.find(function (ut) { return ut.id === id; });
+    };
+    var deleteSingleModal = function (id) { var _a; return showModal({ title: 'Deletar UPA', onConfirm: function () { deleteUpa(id); }, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: "Tem Certeza que deseja excluir a UPA " + ((_a = upaById(id)) === null || _a === void 0 ? void 0 : _a.descricao) + " ?" }); };
+    var deleteMultModal = function () { return showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' }); };
     var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -110,14 +115,24 @@ var Index = function (_a) {
                 });
             });
         }
-        if (umf)
+        var compareUmf = umfs ? umfs.find(function (u) { return u.id === umf.id; }) : null;
+        if (compareUmf) {
             setSelectedUmf({
                 value: umf.id,
                 label: umf.nome
             });
+        }
+        else {
+            if (umfs) {
+                setSelectedUmf({
+                    value: umfs[0].id,
+                    label: umfs[0].nome
+                });
+            }
+        }
         defaultOptions();
         setFilteredUpa(currentUpas);
-    }, [currentUpas, currentPage, client, umf]);
+    }, [currentUpas, currentPage, client, umf, umfs]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
@@ -145,28 +160,28 @@ var Index = function (_a) {
             };
         });
     }
-    function toogleDeleteModal(id) {
-        if (id) {
-            var upa = currentUpas.find(function (upa) { return upa.id === id; });
-            setSelectedUpa(upa);
-        }
-        setOpenSingleModal(true);
-    }
-    function deleteUmf(id) {
+    function deleteUpa(id) {
         return __awaiter(this, void 0, void 0, function () {
+            var error_1;
             return __generator(this, function (_a) {
-                try {
-                    client["delete"]("/upa/single/" + id)
-                        .then(function () {
-                        alert_1["default"].success('A UPA foi deletada com SUCESSO!!!');
-                        loadUpas();
-                        setOpenSingleModal(false);
-                    });
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, client["delete"]("/upa/single/" + id)
+                                .then(function () {
+                                alert_1["default"].success('A UPA foi deletada com SUCESSO!!!');
+                                loadUpas();
+                                hideModal();
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                catch (error) {
-                    console.log(error);
-                }
-                return [2 /*return*/];
             });
         });
     }
@@ -217,7 +232,7 @@ var Index = function (_a) {
         }
     };
     var deleteUpas = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var error_1;
+        var error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -227,20 +242,21 @@ var Index = function (_a) {
                             setCheckedUpas([]);
                             alert_1["default"].success('As UPAs foram deletadas com SUCESSO!!!');
                             loadUpas();
-                            setOpenMultipleModal(false);
+                            hideModal();
                         })];
                 case 1:
                     _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
-                    error_1 = _a.sent();
-                    console.log(error_1);
+                    error_2 = _a.sent();
+                    console.log(error_2);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
         });
     }); };
     return (React.createElement("div", null,
+        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidade de Planejamento Anual"),
             React.createElement(Link_1.Link, { href: '/upa/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
@@ -269,7 +285,7 @@ var Index = function (_a) {
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     checkedUpas.length > 0 && (React.createElement("div", { className: "py-4" },
-                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: function () { return setOpenMultipleModal(true); } }, "Deletar"))),
+                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
                         React.createElement("thead", { className: "bg-gray-50" },
                             React.createElement("tr", null,
@@ -306,12 +322,8 @@ var Index = function (_a) {
                                 React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                     React.createElement(Link_1.Link, { href: "/upa/update/" + upa.id },
                                         React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
-                                    React.createElement(Link_1.Link, { href: "#", onClick: function () { return toogleDeleteModal(upa.id); } },
+                                    React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(upa.id); } },
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
-                        }))))),
-            removeSingleModal &&
-                React.createElement(Modal_1["default"], { className: "w-full", styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar UPA", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir a UPA " + (selectedUpa === null || selectedUpa === void 0 ? void 0 : selectedUpa.descricao) + "?", data: selectedUpa, parentFunction: deleteUmf, hideModal: function () { return setOpenSingleModal(false); }, open: removeSingleModal }),
-            removeMultipleModal &&
-                React.createElement(Modal_1["default"], { className: "w-full", styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar UMFs", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir as " + (checkedUpas === null || checkedUpas === void 0 ? void 0 : checkedUpas.length) + " UPAs selecionados?", data: checkedUpas, parentFunction: deleteUpas, hideModal: function () { return setOpenMultipleModal(false); }, open: removeMultipleModal })))));
+                        })))))))));
 };
 exports["default"] = Index;

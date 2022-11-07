@@ -71,7 +71,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         
         defaultOptions()
         setFilteredUpa(currentUpas)
-    }, [currentUpas, currentPage, client, umf])
+    }, [currentUpas, currentPage, client, umf, umfs])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({

@@ -27,6 +27,19 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
         return currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
     }, [currentCategorias])
     
+    const deleteCategoria = useCallback(async  (id?: string) => {
+        try {
+            client.delete(`/categoria/${id}`)
+                .then(() => {
+                    alertService.success('A categoria de espécie foi deletada com SUCESSO!!!')
+                    loadCategorias()
+                    hideModal
+                })
+        } catch (error) {
+            console.log(error)
+        }       
+    }, [client, hideModal, loadCategorias])
+    
     const deleteSingleModal = useCallback((id?: string) => {
             const categoria = categoriaById(id)
             showModal({ title: 'Deletar Categoria', onConfirm: () => { deleteCategoria(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
@@ -42,19 +55,6 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
         const categoria = currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
         setSelectedCategoria(categoria)
         setOpenModal(true)
-    }
-
-    async function deleteCategoria(id?: string) {
-        try {
-            client.delete(`/categoria/${id}`)
-                .then(() => {
-                    alertService.success('A categoria de espécie foi deletada com SUCESSO!!!')
-                    loadCategorias()
-                    hideModal
-                })
-        } catch (error) {
-            console.log(error)
-        }       
     }
 
     const handleSearch = async (query: string) => {

@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../../Users/user0/Documents/project_web3"
+		},
+		{
+			"path": "../../../../Users/user0/Documents/tucujucoin"
+		}
+	],
+	"settings": {
+		"compile-hero.disable-compile-files-on-did-save-code": false
+	}
+}
