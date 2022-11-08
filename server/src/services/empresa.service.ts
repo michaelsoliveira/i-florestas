@@ -73,10 +73,12 @@ class EmpresaService {
     async getAll(userId: any): Promise<any[]> {
         const empresas = await prismaClient.empresa.findMany({
             where: {
-                empresa_users: {
+                projeto: {
                     some: {
-                        users: {
-                            id: userId
+                        projeto_users: {
+                            some: {
+                                id_user: userId
+                            }
                         }
                     }
                 }

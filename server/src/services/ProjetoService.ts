@@ -9,16 +9,12 @@ export const getProjeto = async (userId: string) => {
     return await prismaClient.projeto.findFirst({
         where: {
             AND: {
-                empresa: {
-                    empresa_users: {
-                        some: {
-                            users: {
-                                id: userId
-                            }
-                        }
+                projeto_users: {
+                    some: {
+                        id_user: userId,
+                        active: true
                     }
                 },
-                active: true
             }
         }
     })
@@ -30,13 +26,9 @@ class ProjetoService {
         const projetoExists = await prismaClient.projeto.findFirst({
             where: {
                 AND: {
-                    empresa: {
-                        empresa_users: {
-                            some: {
-                                users: {
-                                    id: userId
-                                }
-                            }
+                    projeto_users: {
+                        some: {
+                            id_user: userId
                         }
                     },
                     nome: data.nome
@@ -50,10 +42,12 @@ class ProjetoService {
 
         const empresa = await prismaClient.empresa.findFirst({
             where: {
-                empresa_users: {
+                projeto: {
                     some: {
-                        users: {
-                            id: userId
+                        projeto_users: {
+                            some: {
+                                id_user: userId
+                            }
                         }
                     }
                 }
@@ -63,7 +57,7 @@ class ProjetoService {
         if (!empresa) {
             throw new Error('Por favor configure os dados básicos da empresa antes de cadastrar o Projeto!')
         }
-
+        console.log(data)
         const projeto = await prismaClient.projeto.create({
             data: {
                 ...data,
@@ -120,27 +114,32 @@ class ProjetoService {
             {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    empresa: {
-                        empresa_users: {
-                            some: {
-                                id_user: id
-                            }
+                    projeto_users: {
+                        some: {
+                            id_user: id
                         }
                     }
                 }
             } : {
-                empresa: {
-                    empresa_users: {
-                        some: {
-                            id_user: id
-                        }
+                projeto_users: {
+                    some: {
+                        id_user: id
                     }
                 }
             }
 
         const [projetos, total] = await prismaClient.$transaction([
             prismaClient.projeto.findMany({
-                where,
+                where: {
+                    AND: {
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                        projeto_users: {
+                            some: {
+                                id_user: id
+                            }
+                        }
+                    }
+                },
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
@@ -192,14 +191,12 @@ class ProjetoService {
         const projeto = await prismaClient.projeto.findFirst({
             where: {
                 AND: {
-                    active: true,
-                    empresa: {
-                        empresa_users: {
-                            some: {
-                                id_user: id
-                            }
+                    projeto_users: {
+                        some: {
+                            active: true,
+                            id_user: id
                         }
-                    }
+                    },
                 }
                 
             }

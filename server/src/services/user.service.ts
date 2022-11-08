@@ -19,11 +19,9 @@ class UserService {
             where: {
                 AND: {
                     email: data?.email,
-                    empresa_users: {
+                    projeto_users: {
                         some: {
-                            users: {
-                                id: userId
-                            }
+                            id_user: userId
                         }
                     }
                 }
@@ -46,10 +44,12 @@ class UserService {
         }
         const preparedData = await prismaClient.empresa.findFirst({
             where: {
-                empresa_users: {
+                projeto: {
                     some: {
-                        users: {
-                            id: userId
+                        projeto_users: {
+                            some: {
+                                id_user: userId
+                            }
                         }
                     }
                 }
@@ -141,20 +141,21 @@ class UserService {
     }
 
     async getAll(userId: string): Promise<any[]> {
-        const users = await prismaClient.empresa.findFirst({
+        const users = await prismaClient.projeto.findFirst({
             where: {
-                empresa_users: {
+
+                projeto_users: {
                     some: {
                         id_user: userId
                     }
                 }
             }
-        }).then(async (empresa: any) => {
+        }).then(async (projeto: any) => {
             return await prismaClient.user.findMany({
                 where: {
-                    empresa_users: {
+                    projeto_users: {
                         some: {
-                            id_empresa: empresa.id
+                            id_projeto: projeto?.id
                         }
                     }
                     

@@ -26,10 +26,12 @@ class EquacaoVolumeService {
 
         const empresa = await prismaClient.empresa.findFirst({
             where: {
-                empresa_users: {
+                projeto: {
                     some: {
-                        users: {
-                            id: userId
+                        projeto_users: {
+                            some: {
+                                id_user: userId
+                            }
                         }
                     }
                 }

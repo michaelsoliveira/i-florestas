@@ -43,7 +43,6 @@ model Empresa {
   crea_resp                  String?         @db.VarChar(50)
   dmin_relatorio             Int?
   intervalo_dmin_relatorio   Int?
-  empresa_users              EmpresaUser[]
   empresa_endereco           Endereco[]
   projeto                    Projeto[]
   equacao_modelo             EquacaoModelo[]
@@ -51,16 +50,18 @@ model Empresa {
   @@map("empresa")
 }
 
-model EmpresaUser {
-  id_empresa String  @db.Uuid
+model ProjetoUser {
+  id_projeto String  @db.Uuid
   id_user    String  @db.Uuid
-  empresa    Empresa @relation(fields: [id_empresa], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
+  active     Boolean  @default(false)
+  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: NoAction, map: "FK_9197746d4fec9555520a45d1ad0")
   users      User   @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
 
-  @@id([id_empresa, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
-  @@index([id_empresa], map: "IDX_9197746d4fec9555520a45d1ad")
+  @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
+  @@index([id_projeto], map: "IDX_9197746d4fec9555520a45d1ad")
   @@index([id_user], map: "IDX_ea3cb7162981b687e4daa856bf")
-  @@map("empresa_users")
+  @@map("projeto_users")
+  @@unique([id_projeto, id_user, active])
 }
 
 model Endereco {
@@ -118,11 +119,11 @@ model Projeto {
   updated_at DateTime @default(now()) @db.Timestamp(6)
   nome       String   @db.VarChar
   id_empresa String?  @db.Uuid
-  active     Boolean  @default(true)
-  umf        Umf[]
-  empresa    Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
+  
+  umf               Umf[]
+  projeto_users     ProjetoUser[]
+  empresa           Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
   @@map("projeto")
-  @@unique([active, id_empresa])
 }
 
 model RefreshToken {
@@ -212,7 +213,7 @@ model User {
   id_provider       String?             @db.VarChar
   image             String?             @db.VarChar
   email_verified    DateTime?
-  empresa_users     EmpresaUser[]
+  projeto_users     ProjetoUser[]
   refresh_token     RefreshToken[]
   users_permissions UserPermission[]
   users_roles       UserRole[]

@@ -137,11 +137,9 @@ class UmfService {
                     projeto: {
                         AND: {
                             id: projeto?.id,
-                            empresa: {
-                                empresa_users: {
-                                    some: {
-                                        id_user: id
-                                    }
+                            projeto_users: {
+                                some: {
+                                    id_user: id
                                 }
                             }
                         }
