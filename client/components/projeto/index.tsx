@@ -22,7 +22,6 @@ const Projetos = () => {
     const { register, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm()
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
-    const [empresa, setEmpresa] = useState()
     const [ selectedProjeto, setSelectedProjeto ] = useState<any>()
     const [ projetoLocal, setProjetoLocal ] = useState<any>()
     const [ projetos, setProjetos ] = useState<any>()
@@ -110,26 +109,27 @@ const Projetos = () => {
             if (error) {
                 console.log(message)
             }
-            if (projetoLocal) {
-                const localProjeto = projetos.find((projeto: any) => projeto.id === projetoLocal.value)
-                if (localProjeto) {
-                    setProjetoLocal({
-                        label: localProjeto.nome,
-                        value: localProjeto.id
-                    })
-                } else {
-                    setProjetoLocal({
-                        label: projeto.nome,
-                        value: projeto.id
-                    })
-                }
-            }
+            
+//            if (projetoLocal) {
+//                const localProjeto = projetos.find((projeto: any) => projeto.id === projetoLocal.value)
+//                if (localProjeto) {
+//                    setProjetoLocal({
+//                        label: localProjeto?.nome,
+//                        value: localProjeto?.id
+//                    })
+//                } else {
+//                    setProjetoLocal({
+//                        label: projeto?.nome,
+//                        value: projeto?.id
+//                    })
+//                }
+//            }
             
             setProjetos(projetos)
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
-    }, [session, client, projetoLocal, setProjeto, projeto.nome, projeto.id])
+    }, [session, client, projetoLocal, setProjeto])
 
     useEffect(() => {
       

@@ -2,7 +2,7 @@
 const Footer = () => {
     const dataAtual = new Date().getFullYear()
     return (
-        <div>
+        <div className="flex shrink-0">
             <footer className="w-full pb-4 bottom-0 h-auto mb-0 bg-gray-100 ">
                 <div className="flex flex-col lg:flex-row mx-10 lg:mt-3 md:mx-12 lg:mx-16 lg:justify-between">
                     <div className="mb-4 w-full lg:w-96">

@@ -267,7 +267,7 @@ const Layout = ({ children }: props) => {
                 userNavigation={userNavigation}
             />
             </div>
-            <div className="lg:pt-14 h-full">
+            <div className="flex-auto lg:pt-14">
                 {children}
             </div>
             <div className="">
