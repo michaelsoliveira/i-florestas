@@ -36,7 +36,7 @@ const AddEdit = ({ id }: EmpresaIndex) => {
     
     useEffect(() => {        
         loadEmpresa()
-    }, [])
+    }, [loadEmpresa])
 
     const validationSchema = Yup.object().shape({
         razao_social:

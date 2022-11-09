@@ -13,6 +13,7 @@ import alertService from '../services/alert'
 import { signIn } from 'next-auth/react';
 import type { UserData } from "../services/user"
 import { useRouter } from 'next/router';
+import { ProjetoContext } from 'contexts/ProjetoContext';
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -21,17 +22,16 @@ function classNames(...classes: string[]) {
 type RegisterType = {
     styles?: any;
     userId?: string;
-    projetoId?: string;
     redirect?: boolean
 }
 
-export const RegisterForm = function RegisterForm({ styles, projetoId, userId, redirect }: RegisterType) {
+export const RegisterForm = function RegisterForm({ styles, userId, redirect }: RegisterType) {
     const dispatch = useAppDispatch()
     const router = useRouter()
-    const user = useSelector((state: RootState) => state.user.data)
-    const errorMessage = useSelector((state: RootState) => state.user.errorMessage)
     const isAddMode = !userId
     const { message } = useSelector((state: RootState) => state.message) as any
+    const { projeto, setProjeto } = useContext(ProjetoContext)
+    const projetoId= projeto?.id
 
     const validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
@@ -63,6 +63,7 @@ export const RegisterForm = function RegisterForm({ styles, projetoId, userId, r
     });
 
     async function handleRegister(data: any) {
+        
         const preparedData = {
             ...data,
             projetoId
