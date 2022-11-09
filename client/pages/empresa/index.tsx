@@ -4,7 +4,7 @@ import Modal from "components/Modal"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
-import { ListEmpresas } from "@/components/empresa"
+import { ListEmpresas } from "@/components/empresa/Index"
 import { useModalContext } from "contexts/ModalContext"
 
 const EmpresaIndex = () => {

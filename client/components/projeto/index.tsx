@@ -214,7 +214,7 @@ const Projetos = ({ empresaId } : any) => {
     return (
         <div>
             {visible && (type === 'submit') ? (<Modal>{addEditForm}</Modal>) : (<Modal />)}
-            <div className="py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto h-max-screen lg:h-[73vh] h-[50vh] p-2">
+            <div className="py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto lg:h-[33.3em] h-[24em] p-2">
                 
                 <div className="relative py-3 w-full max-w-xl mx-auto h-full">
                     <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl'>

@@ -23,12 +23,11 @@ const EspecieIndex = () => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadEspecies = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
 

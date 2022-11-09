@@ -36,7 +36,7 @@ export const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
 
 
     return (
-        <div>
+        <div className="lg:h-[33.3em] h-auto">
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Empresas</h1>
                 <Link
@@ -52,7 +52,7 @@ export const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
                 <div className="flex flex-col p-6">
                     {empresas.length ? (
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                            <div className="overflow-auto lg:overflow-hidden border border-gray-400 shadow-lg bg-gray-100 py-4 lg:rounded-t-xl lg:rounded-lg">
                             <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
