@@ -8,7 +8,7 @@ import { AuthContext } from "contexts/AuthContext"
 import { styles } from "../Utils/styles"
 
 
-export const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
+const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
     const { client } = useContext(AuthContext)
 
     const { showModal, hideModal, store } = useModalContext()
@@ -141,3 +141,5 @@ export const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
         </div>
     )
 }
+
+export default ListEmpresas
