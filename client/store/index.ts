@@ -1,5 +1,5 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import projectReducer from './umfSlice'
+import projetoReducer from './projetoSlice'
 import userReducer from './userSlice'
 import messageReducer from './messageSlice'
 import paginationReducer from "./paginationSlice";
@@ -10,7 +10,7 @@ import { loadState } from "./browser-storage";
 export const store = configureStore({
     devTools: true,
     reducer: {
-        project: projectReducer,
+        projeto: projetoReducer,
         user: userReducer,
         message: messageReducer,
         pagination: paginationReducer,

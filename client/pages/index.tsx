@@ -1,12 +1,8 @@
 import Image from 'next/image'
 import Tabs from 'components/Tabs'
-import Logo from 'components/Logo'
 import { Carousel } from 'components/home/Carousel'
 import Hero from 'components/home/Hero'
 import { useSession } from 'next-auth/react'
-import { useContext, useEffect } from 'react'
-import { ProjetoContext } from 'contexts/ProjetoContext'
-import { AuthContext } from 'contexts/AuthContext'
 
 export default function Dashboard() {
   

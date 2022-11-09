@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next"
 import withAuthentication from "components/withAuthentication"
 
-const EmpresaUpdateUser = () => {
+const EmpresaUpdateUser = ({ projetoId, userId } : any) => {
     return (
         <div>
             UPDATE EMPRESA
@@ -10,12 +10,12 @@ const EmpresaUpdateUser = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
-    const empresaId = params?.empresa
+    const projetoId = params?.projeto
     const userId = params?.id
     
     return {
         props: {
-            empresaId,
+            projetoId,
             userId
         }
     }

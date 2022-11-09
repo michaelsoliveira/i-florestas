@@ -11,11 +11,11 @@ import Users from "components/user/Users"
 import { Pagination } from "components/Pagination"
 import { UserType } from "types/IUserType"
 
-type EmpresaUserType = {
-    empresaId: string
+type ProjetoUserType = {
+    projetoId: string
 }
 
-const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
+const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
 
     const { client } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
@@ -35,12 +35,12 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/empresa/${empresaId}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
+        const { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, empresaId, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
+    }, [client, projetoId, order, orderBy, pagination.currentPage, pagination.name, router.pathname])
 
     useEffect(() => {  
         loadUsers(itemsPerPage)
@@ -60,7 +60,7 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
 
         if (search) {
             
-            var { data } = await client.get(`/empresa/${empresaId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -69,7 +69,7 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/empresa/${empresaId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -111,7 +111,7 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
                 onPageChanged={onPageChanged}
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
-                empresaId={empresaId}
+                projetoId={projetoId}
                 />
             <Pagination
                 perPage={itemsPerPage}
@@ -127,11 +127,11 @@ const EmpresaUsersIndex = ({ empresaId }: EmpresaUserType) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
-    const empresaId = params?.empresa
+    const projetoId = params?.empresa
 
     return {
         props: {
-            empresaId
+            projetoId
         }
     }
 }

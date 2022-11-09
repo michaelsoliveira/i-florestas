@@ -4,24 +4,21 @@ import Modal from "components/Modal"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
-import Empresas from "@/components/empresa/Index"
+import { ListEmpresas } from "@/components/empresa"
 import { useModalContext } from "contexts/ModalContext"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
-    const [selectedEmpresa, setSelectedEmpresa] = useState<EmpresaType>()
-    const [openModal, setOpenModal] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
 
-    const { showModal, hideModal, store } = useModalContext()
+    const { store } = useModalContext()
     const { visible } = store
 
     const loadEmpresas = useCallback(async() => {
         try {
             setIsLoading(true)
             const { data: { empresas } } = await client.get('empresa')
-            console.log(empresas)
             setEmpresas(empresas)    
             setIsLoading(false)
         } catch (error:any) {
@@ -36,7 +33,7 @@ const EmpresaIndex = () => {
     return (
         <div>
             {visible && (<Modal />)}
-            <Empresas empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
+            <ListEmpresas empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
         </div>
     )
 }

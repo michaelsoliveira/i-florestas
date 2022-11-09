@@ -1,4 +1,4 @@
-import { ReactNode, useContext, SVGProps } from "react"
+import { ReactNode } from "react"
 import Navigation from './Navigation'
 import Footer from './Footer'
 import { useSession, signOut } from "next-auth/react"

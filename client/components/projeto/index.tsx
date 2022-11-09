@@ -110,9 +110,16 @@ const Projetos = ({ empresaId } : any) => {
             if (error) {
                 console.log(message)
             }
+            const processData = projetos.map((projeto: any) => {
+                return {
+                    id: projeto.id,
+                    nome: projeto.nome,
+                    active: projeto.projeto_users[0].active
+                }
+            })
             
-            setProjetos(projetos)
-            const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
+            setProjetos(processData)
+            const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
     }, [session, client, projetoLocal, setProjeto])
@@ -163,7 +170,7 @@ const Projetos = ({ empresaId } : any) => {
     }
 
     async function createProjeto(data: any) {
-        await client.post('projeto', data)
+        await client.post(`/projeto?id_empresa=${empresaId}`, data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
@@ -213,7 +220,7 @@ const Projetos = ({ empresaId } : any) => {
                     <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl'>
                         
                         <div>
-                            <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
+                            <LinkBack href="/empresa" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
                             {isAddMode ? (

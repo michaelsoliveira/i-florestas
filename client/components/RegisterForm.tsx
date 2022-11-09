@@ -21,11 +21,11 @@ function classNames(...classes: string[]) {
 type RegisterType = {
     styles?: any;
     userId?: string;
-    empresaId?: string;
+    projetoId?: string;
     redirect?: boolean
 }
 
-export const RegisterForm = function RegisterForm({ styles, empresaId, userId, redirect }: RegisterType) {
+export const RegisterForm = function RegisterForm({ styles, projetoId, userId, redirect }: RegisterType) {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const user = useSelector((state: RootState) => state.user.data)
@@ -65,7 +65,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
     async function handleRegister(data: any) {
         const preparedData = {
             ...data,
-            empresaId
+            projetoId
         }
         await dispatch(create(preparedData))
         .unwrap()
@@ -93,7 +93,7 @@ export const RegisterForm = function RegisterForm({ styles, empresaId, userId, r
                 } else {
                     console.log(responseData)
                     alertService.success('Usuário cadastrado com SUCESSO!')
-                    router.push(`/empresa/${empresaId}/users`)
+                    router.push(`/empresa/${projetoId}/users`)
                 }
         })
         .catch((error: any) => {

@@ -114,7 +114,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
 
         loadNavigation()
 
-    }, [checkCurrentNavigation, defaultNavigation, router.pathname, session])
+    }, [session, checkCurrentNavigation, defaultNavigation, router.pathname])
 
     return (
         <Disclosure as="nav" className={classNames(
@@ -343,7 +343,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                     className="bg-gray-200 p-1 rounded-full text-gray-700 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
                     >
                     <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        <BellIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
 
                     {/* Profile dropdown */}
@@ -456,7 +456,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                         >
                         <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             {item.subMenuItems?.map((subMenu, subkey) => (
-                            <div className='px-2 py-2' key={key} aria-hidden="true">
+                            <div className='px-2 py-2' key={subkey} aria-hidden="true">
                                 {!subMenu.subMenuItems ? (
                                     <Disclosure.Button
                                         as={Link}
@@ -520,10 +520,10 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                             leaveTo="transform opacity-0 scale-95"
                         >
                             <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                {subMenu.subMenuItems?.map((subsubMenu, key) => (
+                                {subMenu.subMenuItems?.map((subsubMenu, subsubKey) => (
                                     <Disclosure.Button
                                         as={Link}
-                                        key={key}
+                                        key={subsubKey}
                                         href={subsubMenu.href}
                                         className={classNames(
                                             'hover:bg-gray-100 pl-8',
