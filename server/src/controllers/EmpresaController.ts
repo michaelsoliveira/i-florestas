@@ -23,7 +23,7 @@ export class EmpresaController {
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
          try {    
-             const empresa = await empresaService.update(id, request.body, request.user?.id)
+             const empresa = await empresaService.update(id, request.body)
              
             return response.json({
                 error: false,
@@ -72,31 +72,6 @@ export class EmpresaController {
             return response.json({
                 error: true,
                 empresas: [],
-                message: `Error: ${error.message}`
-            })
-        }
-    }
-
-    async findUsers(request: Request, response: Response) {
-        try {
-            const { empresaId } = request.params
-            const { data, perPage, orderBy, order, page, skip, count } = await empresaService.getUsers(empresaId, request.query)
-
-            return response.json({
-                error: false,
-                users: data,
-                orderBy,
-                order,
-                perPage,
-                page,
-                skip,
-                count,
-                message: 'Usuários carregados com sucesso!'
-            })
-        } catch (error) {
-            return response.json({
-                error: true,
-                users: [],
                 message: `Error: ${error.message}`
             })
         }

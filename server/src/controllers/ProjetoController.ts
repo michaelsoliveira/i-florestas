@@ -4,8 +4,11 @@ import projetoService from "../services/ProjetoService";
 
 export class ProjetoController {
     async store(request : Request, response: Response) : Promise<Response> {
+        const { id_empresa } = request.query
+        const data = { ...request.body, id_empresa }
+        console.log(data)
         try {    
-            const projeto = await projetoService.create(request.body, request.user?.id)
+            const projeto = await projetoService.create(data, request.user?.id)
             return response.json({
                 error: false,
                 equacaoVolume: projeto,
@@ -94,6 +97,31 @@ export class ProjetoController {
             message: 'Projetos deletadas com sucesso',
             error: false
         })   
+    }
+
+    async findUsers(request: Request, response: Response) {
+        try {
+            const { projetoId } = request.params
+            const { data, perPage, orderBy, order, page, skip, count } = await projetoService.getUsers(projetoId, request.query)
+
+            return response.json({
+                error: false,
+                users: data,
+                orderBy,
+                order,
+                perPage,
+                page,
+                skip,
+                count,
+                message: 'Usuários carregados com sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                users: [],
+                message: `Error: ${error.message}`
+            })
+        }
     }
 
     async search(request: Request, response: Response) {

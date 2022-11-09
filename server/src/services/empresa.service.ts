@@ -1,8 +1,7 @@
-import { Empresa } from "../entities/Empresa";
+
 import { getRepository, ILike } from "typeorm";
-import { User } from "../entities/User";
 import { prismaClient } from "../database/prismaClient";
-import { Empresa as EmpresaPrisma } from "@prisma/client"
+import { Empresa, User } from "@prisma/client"
 
 interface EmpresaRequest {
     razao_social: string,
@@ -20,7 +19,7 @@ interface EmpresaRequest {
 }
 
 class EmpresaService {
-    async create(data: EmpresaRequest, userId: string): Promise<any> {        
+    async create(data: EmpresaRequest, userId: string): Promise<Empresa> {        
 
         const empresaExists = await prismaClient.empresa.findFirst({
             where: {
@@ -52,14 +51,7 @@ class EmpresaService {
         return empresa
     }
 
-    async getUser(id: string): Promise<User> {
-        const user = await getRepository(User).findOne(id)
-        if (!user) throw new Error("Usuário não encontrada"); 
-
-        return user
-    }
-
-    async update(id: string, data: any, userId: any): Promise<any> {
+    async update(id: string, data: any): Promise<any> {
         
         const empresa = await prismaClient.empresa.update({
             data: {
@@ -98,39 +90,12 @@ class EmpresaService {
         return empresas;
     }
 
-    async getUsers(empresaId: string, query?: any): Promise<any> {
-        const { perPage, page, order, search, orderBy } = query
-        const skip = (page - 1) * perPage
-
-        const [data, total] = await getRepository(User).createQueryBuilder('user')
-            // .select(['user.id AS user_id', 'user.username', 'user.email'])
-            .innerJoin('user.empresas', 'empresa')
-            .skip(skip)
-            .take(perPage)
-            .where({
-                username: search ? ILike(`%${search}%`) : ILike('%%')
-            })
-            .andWhere('empresa.id = :empresaId', { empresaId })
-            .orderBy(orderBy, order ? order : 'ASC')
-            .getManyAndCount()
-                
-        // const users = await query.getManyAndCount()
-
-        // if(!users) throw new Error('Nenhum usuário cadastrado')
-
-        return {
-            orderBy,
-            order,
-            data,
-            perPage,
-            page,
-            skip,
-            count: total
-        }
-    }
-
     async findOne(id: string): Promise<Empresa> {
-        const empresa = await getRepository(Empresa).findOne({ where: { id } });
+        const empresa = await prismaClient.empresa.findUnique({
+            where: {
+                id
+            }
+        })
         if (!empresa) throw new Error("Empresa não encontrada"); 
 
         return empresa

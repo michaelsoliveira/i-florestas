@@ -44,7 +44,6 @@ routes.get('/auth/callback/github', new AuthController().signInCallback)
 //Empresa
 routes.post('/empresa', Authentication(), new EmpresaController().store)
 routes.get('/empresa', Authentication(), new EmpresaController().findAll)
-routes.get('/empresa/:empresaId/users', Authentication(), new EmpresaController().findUsers)
 routes.get('/empresa/:id', Authentication(), new EmpresaController().findOne)
 routes.put('/empresa/:id', Authentication(), new EmpresaController().update)
 routes.delete('/empresa/:id', Authentication(), new EmpresaController().delete)
@@ -70,6 +69,7 @@ routes.delete('/umf/multiples', Authentication(), new UmfController().deleteUmfs
 //Projeto
 routes.post('/projeto/', Authentication(), new ProjetoController().store)
 routes.get('/projeto/', Authentication(), new ProjetoController().findAll)
+routes.get('/projeto/:projetoId/users', Authentication(), new ProjetoController().findUsers)
 routes.get('/projeto/:id', Authentication(), new ProjetoController().findOne)
 routes.get('/projeto/search/q', Authentication(), new ProjetoController().search)
 routes.get('/projeto/active/get', Authentication(), new ProjetoController().getActive)
