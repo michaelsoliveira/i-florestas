@@ -5,39 +5,49 @@ import { prismaClient } from "../database/prismaClient";
 import { Empresa as EmpresaPrisma } from "@prisma/client"
 
 interface EmpresaRequest {
-    razaoSocial: string,
-    nomeFantasia: string,
+    razao_social: string,
+    nome_fantasia: string,
     cnpj: string,
-    respTecnico: string,
-    creaResp: string,
+    resp_tecnico: string,
+    crea_resp: string,
     cep: string,
     endereco: string,
     complemento: string,
     municipio: string,
     estado: string,
     telefone: string,
-    regAmbiental: string
+    reg_ambiental: string
 }
 
 class EmpresaService {
-    async create(data: EmpresaRequest, userId: any): Promise<Empresa | any> {
-        const repositoryEmpresa = getRepository(Empresa)
-        const empresaExists = await repositoryEmpresa.findOne({ where: { razaoSocial: data?.razaoSocial } })
+    async create(data: EmpresaRequest, userId: string): Promise<any> {        
+
+        const empresaExists = await prismaClient.empresa.findFirst({
+            where: {
+                AND: {
+                    razao_social: data?.razao_social,
+                    projeto: {
+                        some: {
+                            projeto_users: {
+                                some: {
+                                    active: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
         
         if (empresaExists) {
             throw new Error("Já existe uma empresa cadastrado com estas informações")
         }
-        const user = await this.getUser(userId)
-
-        const withUser = {
-            // users: [user],
-            ...data
-        }
         
-        const empresa = repositoryEmpresa.create(data)
-        empresa.users = [user]
-
-        await empresa.save()
+        const empresa = await prismaClient.empresa.create({
+            data: {
+                ...data
+            }
+        })
         
         return empresa
     }
@@ -49,25 +59,25 @@ class EmpresaService {
         return user
     }
 
-    async update(id: string, data: any, userId: any): Promise<Empresa> {
+    async update(id: string, data: any, userId: any): Promise<any> {
         
-        const user = await this.getUser(userId)
-        
-        const withUser = {
-            user,
-            ...data
-        }
-        await getRepository(Empresa).update(id, data);
-
-        return this.findOne(id)
-        // return userData
+        const empresa = await prismaClient.empresa.update({
+            data: {
+                ...data
+            },
+            where: {
+                id
+            }
+        })
+        return empresa
     }
 
     async delete(id: string): Promise<void> {
-        await getRepository(Empresa).delete(id)
-            .then(response => {
-                console.log(response)
-            })
+        await prismaClient.empresa.delete({
+            where: {
+                id
+            }
+        })
     }
 
     async getAll(userId: any): Promise<any[]> {

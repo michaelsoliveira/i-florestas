@@ -45,8 +45,6 @@ model Empresa {
   intervalo_dmin_relatorio   Int?
   empresa_endereco           Endereco[]
   projeto                    Projeto[]
-  equacao_modelo             EquacaoModelo[]
-  equacao_Volume             EquacaoVolume[]
   @@map("empresa")
 }
 
@@ -54,7 +52,7 @@ model ProjetoUser {
   id_projeto String  @db.Uuid
   id_user    String  @db.Uuid
   active     Boolean  @default(false)
-  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: NoAction, map: "FK_9197746d4fec9555520a45d1ad0")
+  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
   users      User   @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
 
   @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
@@ -119,7 +117,8 @@ model Projeto {
   updated_at DateTime @default(now()) @db.Timestamp(6)
   nome       String   @db.VarChar
   id_empresa String?  @db.Uuid
-  
+  equacao_modelo    EquacaoModelo[]
+  equacao_Volume    EquacaoVolume[]
   umf               Umf[]
   projeto_users     ProjetoUser[]
   empresa           Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
@@ -320,8 +319,8 @@ model EquacaoModelo {
   id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome        String
   expressao   String    @db.VarChar(100)
-  id_empresa  String    @db.Uuid
-  empresa     Empresa?  @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_projeto  String    @db.Uuid
+  projeto     Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("equacao_modelo")
 }
 
@@ -329,9 +328,9 @@ model EquacaoVolume {
   id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome        String
   expressao   String @db.VarChar(100)
-  id_empresa  String     @db.Uuid
+  id_projeto  String     @db.Uuid
   observacao  String?
-  empresa     Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projeto     Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   upa         Upa[]
   @@map("equacao_volume")
 }

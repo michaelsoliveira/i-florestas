@@ -24,15 +24,11 @@ class EquacaoVolumeService {
             throw new Error('Já existe uma Equação Volume cadastrada com este nome ou expressão')
         }
 
-        const empresa = await prismaClient.empresa.findFirst({
+        const projeto = await prismaClient.projeto.findFirst({
             where: {
-                projeto: {
+                projeto_users: {
                     some: {
-                        projeto_users: {
-                            some: {
-                                id_user: userId
-                            }
-                        }
+                        id_user: userId
                     }
                 }
             }
@@ -43,9 +39,9 @@ class EquacaoVolumeService {
                 nome: data.nome,
                 expressao: data.expressao,
                 observacao: data?.observacao,
-                empresa: {
+                projeto: {
                     connect: {
-                        id: empresa?.id
+                        id: projeto?.id
                     }
                 }
             }

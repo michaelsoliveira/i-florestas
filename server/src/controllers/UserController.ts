@@ -210,7 +210,7 @@ export class UserController {
 
     async findAll(request: Request, response: Response) {
         try {
-            let users = await userService.getAll(request.user?.id)
+            let users = await userService.getAll()
 
             return response.json(users)
         } catch(error) {

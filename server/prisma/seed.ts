@@ -189,22 +189,33 @@ async function main() {
     })
     console.log(`Created user admin with id: ${user.id}`)
 
+    const projeto = await prisma.projeto.create({
+      data: {
+        nome: 'Projeto Teste',
+        projeto_users: {
+          create: [
+              {
+                  users: {
+                      connect: {
+                          id: user?.id
+                      }
+                  }
+              }
+          ]
+      }
+      }
+    })
+
     const empresa = await prisma.empresa.create({
         data: {
             nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
             razao_social: 'iFlorestas SA',
             endereco: 'BR 210',
             municipio: 'Macapá',
-            empresa_users: {
-                create: [
-                    {
-                        users: {
-                            connect: {
-                                id: user.id
-                            }
-                        }
-                    }
-                ]
+            projeto: {
+              connect: {
+                id: projeto?.id
+              }
             }
         }
     })
@@ -215,9 +226,9 @@ async function main() {
       const equacaoModelo = await prisma.equacaoModelo.create({
         data: {
           ...eqModelo,
-          empresa: {
+          projeto: {
             connect: {
-              id: empresa.id
+              id: projeto?.id
             }
           }
         },
@@ -229,9 +240,9 @@ async function main() {
       const equacaoVolume = await prisma.equacaoVolume.create({
         data: {
           ...eqVolume,
-          empresa: {
+          projeto: {
             connect: {
-              id: empresa.id
+              id: projeto?.id
             }
           }
         },

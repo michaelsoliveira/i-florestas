@@ -1,0 +1,5 @@
+-- DropForeignKey
+ALTER TABLE "projeto_users" DROP CONSTRAINT "FK_9197746d4fec9555520a45d1ad0";
+
+-- AddForeignKey
+ALTER TABLE "projeto_users" ADD CONSTRAINT "FK_9197746d4fec9555520a45d1ad0" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE CASCADE ON UPDATE CASCADE;

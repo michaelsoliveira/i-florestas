@@ -3,6 +3,7 @@ import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
     nome: string;
+    active: boolean;
 }
 
 export const getProjeto = async (userId: string) => {
@@ -22,6 +23,26 @@ export const getProjeto = async (userId: string) => {
 
 class ProjetoService {
     async create(data: ProjetoType, userId: string): Promise<Projeto> {
+
+        const empresaExists = await prismaClient.empresa.findFirst({
+            where: {
+                AND: {
+                    projeto: {
+                        some: {
+                            projeto_users: {
+                                some: {
+                                    id_user: userId
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!empresaExists) {
+            throw new Error('É necessário criar uma empresa primeiro')
+        }
         
         const projetoExists = await prismaClient.projeto.findFirst({
             where: {
@@ -40,30 +61,17 @@ class ProjetoService {
             throw new Error('Já existe um Projeto cadastrada com este nome')
         }
 
-        const empresa = await prismaClient.empresa.findFirst({
-            where: {
-                projeto: {
-                    some: {
-                        projeto_users: {
-                            some: {
-                                id_user: userId
-                            }
-                        }
-                    }
-                }
-            }
-        })
-
-        if (!empresa) {
-            throw new Error('Por favor configure os dados básicos da empresa antes de cadastrar o Projeto!')
-        }
-        console.log(data)
         const projeto = await prismaClient.projeto.create({
             data: {
-                ...data,
-                empresa: {
-                    connect: {
-                        id: empresa?.id
+                nome: data?.nome,
+                projeto_users: {
+                    create: {
+                        users: {
+                            connect: {
+                                id: userId
+                            }
+                        },
+                        active: data?.active
                     }
                 }
             }
@@ -72,15 +80,30 @@ class ProjetoService {
         return projeto
     }
 
-    async update(id: string, data: ProjetoType): Promise<Projeto> {
-        await prismaClient.projeto.update({
+    async update(id: string, data: ProjetoType, userId: string): Promise<Projeto> {
+        const projeto = await prismaClient.projeto.update({
             where: {
                 id
             },
-            data
+            data: {
+                nome: data?.nome,
+                projeto_users: {
+                    update: {
+                        data: {
+                            active: data?.active
+                        },
+                        where: {
+                            id_projeto_id_user: {
+                                id_projeto: id,
+                                id_user: userId
+                            }
+                        }
+                    }
+                }
+            }
         })
 
-        return this.findById(id)
+        return projeto
     }
 
     async delete(id: string): Promise<void> {
@@ -95,7 +118,7 @@ class ProjetoService {
     }
 
     async getAll(id:string, query?: any): Promise<any> {
-        const { perPage, page, search, orderBy, order } = query
+        const { perPage, page, search, orderBy, order, id_empresa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
         
@@ -110,7 +133,7 @@ class ProjetoService {
                 [orderByElement]: order
             }
         }
-        const where = search ?
+        const whereWithoutEmpresa = search ?
             {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
@@ -128,25 +151,39 @@ class ProjetoService {
                 }
             }
 
-        const [projetos, total] = await prismaClient.$transaction([
-            prismaClient.projeto.findMany({
-                where: {
-                    AND: {
-                        nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                        projeto_users: {
-                            some: {
-                                id_user: id
-                            }
-                        }
+        const whereWithEmpresa = search ? {
+            AND: {
+                nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                projeto_users: {
+                    some: {
+                        id_user: id
                     }
                 },
+                empresa: {
+                    id: id_empresa
+                }
+            }
+        } : {
+            projeto_users: {
+                some: {
+                    id_user: id
+                }
+            },
+            empresa: {
+                id: id_empresa
+            }
+        }
+
+        const [projetos, total] = await prismaClient.$transaction([
+            prismaClient.projeto.findMany({
+                where: id_empresa ? whereWithEmpresa : whereWithoutEmpresa,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 }
             }),
-            prismaClient.projeto.count({where})
+            prismaClient.projeto.count({where: id_empresa ? whereWithEmpresa : whereWithoutEmpresa})
         ])
 
         return {

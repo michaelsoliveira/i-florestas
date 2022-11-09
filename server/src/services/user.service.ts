@@ -42,39 +42,37 @@ class UserService {
             provider: data?.provider ? data?.provider : 'local',
             id_provider: data?.id_provider ? data?.id_provider : ''
         }
-        const preparedData = await prismaClient.empresa.findFirst({
+
+        const preparedData = !data?.projetoId ? await prismaClient.projeto.findFirst({
             where: {
-                projeto: {
+                projeto_users: {
                     some: {
-                        projeto_users: {
-                            some: {
-                                id_user: userId
-                            }
-                        }
+                        id_user: userId
                     }
                 }
             }
-        }).then(async (empresa: any) => {
-            const preparedData =
-            { ...dataRequest, empresa_users: {
+        }).then(async (projeto: any) => {
+            if (projeto) {
+                const preparedData =
+                { ...dataRequest, projeto_users: {
+                    create: {
+                        id_projeto: projeto?.id,
+                        id_user: userId
+                    }
+                } }
+                return preparedData
+            }
+            return dataRequest
+            
+        }) : {...dataRequest, projeto_users: {
                 create: {
-                    id_empresa: empresa?.id,
+                    id_projeto: data?.projetoId,
                     id_user: userId
                 }
-            } }
+            }
+        }
 
-            return preparedData
-        }).catch(() => {
-            const preparedData = data?.empresaId ? 
-            { ...dataRequest, empresa_users: {
-                create: {
-                    id_empresa: data?.empresaId,
-                    id_user: userId
-                }
-            } } : { ...dataRequest }
-
-            return preparedData 
-        })
+        console.log(preparedData)
 
         const user = await prismaClient.user.create({
             data: {
@@ -140,27 +138,15 @@ class UserService {
         return this.findOne(id)
     }
 
-    async getAll(userId: string): Promise<any[]> {
-        const users = await prismaClient.projeto.findFirst({
+    async getAll(): Promise<any[]> {
+        const users = await prismaClient.user.findMany({
             where: {
-
                 projeto_users: {
                     some: {
-                        id_user: userId
+                        active: true
                     }
                 }
             }
-        }).then(async (projeto: any) => {
-            return await prismaClient.user.findMany({
-                where: {
-                    projeto_users: {
-                        some: {
-                            id_projeto: projeto?.id
-                        }
-                    }
-                    
-                }
-            })
         })
  
         return users;
