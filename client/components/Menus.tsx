@@ -29,12 +29,6 @@ export const resources = [
         icon: ClipboardListIcon,
     },
     {
-        name: 'Projeto',
-        description: 'Gerenciar Projetos',
-        href: '/projeto',
-        icon: MenuIcon,
-    },
-    {
         name: 'UMF',
         description: 'Unidade de Manejo Florestal',
         href: '/umf',

@@ -18,7 +18,7 @@ import {
 
 import Modal from '../Modal'
 
-const Projetos = () => {
+const Projetos = ({ empresaId } : any) => {
     const { register, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm()
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
@@ -102,28 +102,14 @@ const Projetos = () => {
       })
   }
     const loadProjetos = useCallback(async () => {
+        
         if (typeof session !== typeof undefined){
 
-            const response = await client.get('projeto')
+            const response = await client.get(`/projeto?id_empresa=${empresaId}`)
             const { projetos, error, message } = response.data
             if (error) {
                 console.log(message)
             }
-            
-//            if (projetoLocal) {
-//                const localProjeto = projetos.find((projeto: any) => projeto.id === projetoLocal.value)
-//                if (localProjeto) {
-//                    setProjetoLocal({
-//                        label: localProjeto?.nome,
-//                        value: localProjeto?.id
-//                    })
-//                } else {
-//                    setProjetoLocal({
-//                        label: projeto?.nome,
-//                        value: projeto?.id
-//                    })
-//                }
-//            }
             
             setProjetos(projetos)
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}

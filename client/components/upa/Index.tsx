@@ -57,14 +57,14 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
 
         if (compareUmf) {
             setSelectedUmf({
-                value: umf.id,
-                label: umf.nome
+                value: umf?.id,
+                label: umf?.nome
             })
         } else {
             if (umfs) {
                 setSelectedUmf({
-                    value: umfs[0].id,
-                    label: umfs[0].nome
+                    value: umfs[0]?.id,
+                    label: umfs[0]?.nome
                 })
             }
         }

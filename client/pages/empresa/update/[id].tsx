@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import Empresa from "../../../components/empresa";
+import Empresa from "../../../components/empresa/AddEdit";
 import withAuthentication from "../../../components/withAuthentication";
 
 
