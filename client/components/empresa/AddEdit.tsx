@@ -19,25 +19,6 @@ const AddEdit = ({ id }: EmpresaIndex) => {
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
 
-    const loadEmpresa = useCallback(async () => {
-            
-        if (!isAddMode && typeof session !== typeof undefined) {
-
-            const { data } = await client.get(`/empresa/${id}`)
-            
-            for (const [key, value] of Object.entries(data)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                }) 
-            }
-        }
-    }, [client, isAddMode, session, id])
-    
-    useEffect(() => {        
-        loadEmpresa()
-    }, [loadEmpresa])
-
     const validationSchema = Yup.object().shape({
         razao_social:
             Yup.string()
@@ -64,6 +45,25 @@ const AddEdit = ({ id }: EmpresaIndex) => {
 
     const formOptions = { resolver: yupResolver(validationSchema) }
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm(formOptions)
+
+    const loadEmpresa = useCallback(async () => {
+            
+        if (!isAddMode && typeof session !== typeof undefined) {
+
+            const { data } = await client.get(`/empresa/${id}`)
+            
+            for (const [key, value] of Object.entries(data)) {
+                setValue(key, value, {
+                    shouldValidate: true,
+                    shouldDirty: true
+                }) 
+            }
+        }
+    }, [client, isAddMode, session, setValue, id])
+    
+    useEffect(() => {        
+        loadEmpresa()
+    }, [loadEmpresa])
 
     async function onSubmit(data: any) {
         try {

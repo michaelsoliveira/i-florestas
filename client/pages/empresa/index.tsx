@@ -5,7 +5,7 @@ import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
 import { useModalContext } from "contexts/ModalContext"
-import ListEmpresas from "@/components/empresa/Index"
+import Empresas from "components/empresa/Index"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
@@ -33,7 +33,7 @@ const EmpresaIndex = () => {
     return (
         <div>
             {visible && (<Modal />)}
-            <ListEmpresas empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
+            <Empresas empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
         </div>
     )
 }
