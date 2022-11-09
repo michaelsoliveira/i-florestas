@@ -122,7 +122,7 @@ const Projetos = ({ empresaId } : any) => {
             const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
             setProjeto(projetoAtivo)
         }
-    }, [session, client, projetoLocal, setProjeto, empresaId])
+    }, [session, client, setProjeto, empresaId])
 
     useEffect(() => {
       
