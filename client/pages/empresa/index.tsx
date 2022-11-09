@@ -4,8 +4,8 @@ import Modal from "components/Modal"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
-import ListEmpresas from "../../components/empresa/Index"
 import { useModalContext } from "contexts/ModalContext"
+import ListEmpresas from "@/components/empresa/Index"
 
 const EmpresaIndex = () => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
