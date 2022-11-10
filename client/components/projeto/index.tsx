@@ -106,8 +106,26 @@ const Projetos = () => {
     const loadProjetos = useCallback(async () => {
         
         if (typeof session !== typeof undefined){
-
+            
             const response = await client.get(`/projeto`)
+            await client.get(`/projeto/active/get`).then(({ data }: any) => {
+
+                setProjetoLocal({
+                    label: data?.nome,
+                    value: data?.id
+                })
+    
+                for (const [key, value] of Object.entries(data)) {
+                    setValue(key, value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })
+                }
+
+                setSelectedProjeto(data)
+                setProjeto(data)
+            })
+            
             const { projetos, error, message } = response.data
             if (error) {
                 console.log(message)
@@ -121,21 +139,8 @@ const Projetos = () => {
             })
             
             setProjetos(processData)
-            const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
-            setProjetoLocal({
-                label: projetoAtivo?.nome,
-                value: projetoAtivo?.id
-            })
-
-            for (const [key, value] of Object.entries(projetoAtivo)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                })
-            }
-
-            setSelectedProjeto(projetoAtivo)
-            setProjeto(projetoAtivo)
+            // const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
+            
         }
     }, [session, client, setProjeto, setValue])
 

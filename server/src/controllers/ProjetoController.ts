@@ -9,14 +9,14 @@ export class ProjetoController {
             const projeto = await projetoService.create(request.body, request.user?.id)
             return response.json({
                 error: false,
-                equacaoVolume: projeto,
+                projeto: projeto,
                 message: `Projeto ${projeto.nome} cadastrada com SUCESSO!!!`
             })
 
         } catch (error) {
             return response.json({
                 error: true,
-                equacaoVolume: null,
+                projeto: null,
                 message: error.message
             })
         }

@@ -1,4 +1,5 @@
 import { Prisma, Projeto } from "@prisma/client";
+import { Console } from "console";
 import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
@@ -41,7 +42,7 @@ class ProjetoService {
         if (projetoExists) {
             throw new Error('Já existe um Projeto cadastrada com este nome')
         }
-        
+        console.log(data)
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
@@ -76,7 +77,7 @@ class ProjetoService {
                         where: {
                             id_projeto_id_user: {
                                 id_projeto: id,
-                                id_user: userId
+                                id_user: data?.id_user ? data?.id_user : userId
                             }
                         }
                     }
