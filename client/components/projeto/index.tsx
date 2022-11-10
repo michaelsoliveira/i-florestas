@@ -108,39 +108,30 @@ const Projetos = () => {
         if (typeof session !== typeof undefined){
             
             const response = await client.get(`/projeto`)
-            await client.get(`/projeto/active/get`)
-                .then(({ data }: any) => {
-
-                    setProjetoLocal({
-                        label: data?.nome,
-                        value: data?.id
-                    })
-        
-                    for (const [key, value] of Object.entries({...data, active: true})) {
-                        setValue(key, value, {
-                            shouldValidate: true,
-                            shouldDirty: true
-                        })
-                    }
-
-                    setSelectedProjeto(data)
-                    setProjeto(data)
-                })
-            
             const { projetos, error, message } = response.data
+            
+            const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
+
+            setProjetoLocal({
+                label: projetoAtivo?.nome,
+                value: projetoAtivo?.id
+            })
+
+            for (const [key, value] of Object.entries(projetoAtivo)) {
+                setValue(key, value, {
+                    shouldValidate: true,
+                    shouldDirty: true
+                })
+            }
+
+            setSelectedProjeto(projetoAtivo)
+            setProjeto(projetoAtivo)
+            
             if (error) {
                 console.log(message)
             }
-            const processData = projetos.map((projeto: any) => {
-                return {
-                    id: projeto.id,
-                    nome: projeto.nome,
-                    active: projeto.projeto_users[0].active
-                }
-            })
             
-            setProjetos(processData)
-            // const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
+            setProjetos(projetos)
             
         }
     }, [session, client, setProjeto, setValue])

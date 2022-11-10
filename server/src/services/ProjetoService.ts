@@ -141,8 +141,11 @@ class ProjetoService {
                     projeto_users: {
                         select: {
                             active: true
+                        },
+                        where: {
+                            id_user: id
                         }
-                    }
+                    },
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
@@ -154,8 +157,16 @@ class ProjetoService {
             prismaClient.projeto.count({where})
         ])
 
+        const data = projetos.map((projeto: any) => {
+            return {
+                id: projeto?.id,
+                nome: projeto?.nome,
+                active: projeto?.projeto_users[0].active
+            }
+        })
+
         return {
-            data: projetos,
+            data,
             perPage,
             page,
             skip,

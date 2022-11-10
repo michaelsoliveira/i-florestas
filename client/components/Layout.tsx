@@ -10,7 +10,7 @@ export type props = {
 
 const Layout = ({ children }: props) => {
     const { data: session, status } = useSession()
-
+    const user = session?.user
     const defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
         { name: 'Soluções', href: '#', current: false, visible: !session, subMenu: true, subMenuItems: solutions },
@@ -23,7 +23,7 @@ const Layout = ({ children }: props) => {
     ]
 
     const userNavigation = [
-        { name: 'Perfil', href: '#' },
+        { name: `Perfil (${user?.username})`, href: '#' },
         { name: 'Alterar Senha', href: '/user/change-password' },
         { name: 'Logout', href: '#', click: () => signOut({ callbackUrl: "/" }) },
     ]

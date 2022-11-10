@@ -47,68 +47,105 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.getProjeto = void 0;
+var client_1 = require("@prisma/client");
 var prismaClient_1 = require("../database/prismaClient");
+exports.getProjeto = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
+                    where: {
+                        AND: {
+                            projeto_users: {
+                                some: {
+                                    id_user: userId,
+                                    active: true
+                                }
+                            }
+                        }
+                    }
+                })];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
 var ProjetoService = /** @class */ (function () {
     function ProjetoService() {
     }
     ProjetoService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var equacaoVolumeExists, empresa, projeto;
+            var projetoExists, projeto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
                             where: {
-                                nome: data.nome
+                                AND: {
+                                    projeto_users: {
+                                        some: {
+                                            id_user: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
+                                        }
+                                    },
+                                    nome: data.nome
+                                }
                             }
                         })];
                     case 1:
-                        equacaoVolumeExists = _a.sent();
-                        if (equacaoVolumeExists) {
+                        projetoExists = _a.sent();
+                        if (projetoExists) {
                             throw new Error('Já existe um Projeto cadastrada com este nome');
                         }
-                        return [4 /*yield*/, prismaClient_1.prismaClient.empresa.findFirst({
-                                where: {
-                                    empresa_users: {
-                                        some: {
+                        console.log(data);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.create({
+                                data: {
+                                    nome: data === null || data === void 0 ? void 0 : data.nome,
+                                    projeto_users: {
+                                        create: {
                                             users: {
-                                                id: userId
-                                            }
+                                                connect: {
+                                                    id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
+                                                }
+                                            },
+                                            active: data === null || data === void 0 ? void 0 : data.active
                                         }
                                     }
                                 }
                             })];
                     case 2:
-                        empresa = _a.sent();
-                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.create({
-                                data: {
-                                    nome: data.nome,
-                                    empresa: {
-                                        connect: {
-                                            id: empresa === null || empresa === void 0 ? void 0 : empresa.id
-                                        }
-                                    }
-                                }
-                            })];
-                    case 3:
                         projeto = _a.sent();
                         return [2 /*return*/, projeto];
                 }
             });
         });
     };
-    ProjetoService.prototype.update = function (id, data) {
+    ProjetoService.prototype.update = function (id, data, userId) {
         return __awaiter(this, void 0, Promise, function () {
+            var projeto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.update({
                             where: {
                                 id: id
                             },
-                            data: data
+                            data: {
+                                nome: data === null || data === void 0 ? void 0 : data.nome,
+                                projeto_users: {
+                                    update: {
+                                        data: {
+                                            active: data === null || data === void 0 ? void 0 : data.active
+                                        },
+                                        where: {
+                                            id_projeto_id_user: {
+                                                id_projeto: id,
+                                                id_user: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         })];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.findById(id)];
+                        projeto = _a.sent();
+                        return [2 /*return*/, projeto];
                 }
             });
         });
@@ -132,9 +169,9 @@ var ProjetoService = /** @class */ (function () {
             });
         });
     };
-    ProjetoService.prototype.getAll = function (query) {
+    ProjetoService.prototype.getAll = function (id, query) {
         return __awaiter(this, void 0, Promise, function () {
-            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, _a, projetos, total;
+            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, projetos, total, data;
             var _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -153,21 +190,55 @@ var ProjetoService = /** @class */ (function () {
                                 _c[orderByElement] = order,
                                 _c);
                         }
+                        where = search ?
+                            {
+                                AND: {
+                                    nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
+                                    projeto_users: {
+                                        some: {
+                                            id_user: id
+                                        }
+                                    }
+                                }
+                            } : {
+                            projeto_users: {
+                                some: {
+                                    id_user: id
+                                }
+                            }
+                        };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.projeto.findMany({
-                                    where: {
-                                        nome: { mode: 'insensitive', contains: search }
+                                    select: {
+                                        id: true,
+                                        nome: true,
+                                        projeto_users: {
+                                            select: {
+                                                active: true
+                                            },
+                                            where: {
+                                                id_user: id
+                                            }
+                                        }
                                     },
+                                    where: where,
                                     take: perPage ? parseInt(perPage) : 50,
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm)
                                 }),
-                                prismaClient_1.prismaClient.projeto.count()
+                                prismaClient_1.prismaClient.projeto.count({ where: where })
                             ])];
                     case 1:
                         _a = _d.sent(), projetos = _a[0], total = _a[1];
+                        data = projetos.map(function (projeto) {
+                            return {
+                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id,
+                                nome: projeto === null || projeto === void 0 ? void 0 : projeto.nome,
+                                active: projeto === null || projeto === void 0 ? void 0 : projeto.projeto_users[0].active
+                            };
+                        });
                         return [2 /*return*/, {
-                                data: projetos,
+                                data: data,
                                 perPage: perPage,
                                 page: page,
                                 skip: skip,
@@ -193,6 +264,68 @@ var ProjetoService = /** @class */ (function () {
             });
         });
     };
+    ProjetoService.prototype.getUsers = function (projetoId, query) {
+        return __awaiter(this, void 0, Promise, function () {
+            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, data, total;
+            var _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        perPage = query.perPage, page = query.page, search = query.search, orderBy = query.orderBy, order = query.order;
+                        skip = (page - 1) * perPage;
+                        orderByTerm = {};
+                        orderByElement = orderBy ? orderBy.split('.') : {};
+                        if (orderByElement.length == 2) {
+                            orderByTerm = (_b = {},
+                                _b[orderByElement[1]] = order,
+                                _b);
+                        }
+                        else {
+                            orderByTerm = (_c = {},
+                                _c[orderByElement] = order,
+                                _c);
+                        }
+                        where = search ?
+                            {
+                                AND: {
+                                    nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
+                                    projeto_users: {
+                                        some: {
+                                            id_projeto: projetoId
+                                        }
+                                    }
+                                }
+                            } : {
+                            projeto_users: {
+                                some: {
+                                    id_projeto: projetoId
+                                }
+                            }
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
+                                prismaClient_1.prismaClient.user.findMany({
+                                    where: where,
+                                    take: perPage ? parseInt(perPage) : 50,
+                                    skip: skip ? skip : 0,
+                                    orderBy: __assign({}, orderByTerm)
+                                }),
+                                prismaClient_1.prismaClient.projeto.count({ where: where })
+                            ])];
+                    case 1:
+                        _a = _d.sent(), data = _a[0], total = _a[1];
+                        return [2 /*return*/, {
+                                orderBy: orderBy,
+                                order: order,
+                                data: data,
+                                perPage: perPage,
+                                page: page,
+                                skip: skip,
+                                count: total
+                            }];
+                }
+            });
+        });
+    };
     ProjetoService.prototype.search = function (text) {
         return __awaiter(this, void 0, void 0, function () {
             var projetos;
@@ -200,7 +333,7 @@ var ProjetoService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findMany({
                             where: {
-                                nome: { mode: 'insensitive', contains: text }
+                                nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: text }
                             },
                             orderBy: {
                                 nome: 'asc'
@@ -219,6 +352,30 @@ var ProjetoService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findUnique({ where: { id: id } })];
+                    case 1:
+                        projeto = _a.sent();
+                        return [2 /*return*/, projeto];
+                }
+            });
+        });
+    };
+    ProjetoService.prototype.getActive = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            var projeto;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
+                            where: {
+                                AND: {
+                                    projeto_users: {
+                                        some: {
+                                            active: true,
+                                            id_user: id
+                                        }
+                                    }
+                                }
+                            }
+                        })];
                     case 1:
                         projeto = _a.sent();
                         return [2 /*return*/, projeto];
