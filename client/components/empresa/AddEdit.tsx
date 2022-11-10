@@ -10,10 +10,11 @@ import styles from 'styles/Empresa.module.scss'
 import { Link } from "../Link";
 
 type EmpresaIndex = {
-    id: string;
+    projetoId: string;
+    id?: string;
 }
 
-const AddEdit = ({ id }: EmpresaIndex) => {
+const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
     const router = useRouter()
     const isAddMode = !id
     const { client } = useContext(AuthContext)
@@ -68,8 +69,8 @@ const AddEdit = ({ id }: EmpresaIndex) => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createEmpresa(data)
-                : updateEmpresa(id, data)
+                ? createEmpresa({...data, id_projeto: projetoId})
+                : updateEmpresa(id, { ...data, id_projeto: projetoId})
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -84,9 +85,10 @@ const AddEdit = ({ id }: EmpresaIndex) => {
                 if (error) {
                     alertService.error(message)
                 } else {
-                    const empresa = response.data
+                    const { empresa } = response.data
+                    
                     alertService.success(`Empresa ${empresa?.razao_social} cadastrada com SUCESSO!!!`);
-                    router.push('/empresa')
+                    router.push(`/projeto/${projetoId}/empresa`)
                 }
             }) 
     }
@@ -224,7 +226,7 @@ const AddEdit = ({ id }: EmpresaIndex) => {
                             </div>
                         </div>
                         <div className="flex flex-row items-center justify-between px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <Link href="/empresa" className="text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md">Voltar</Link>
+                            <Link href={`/projeto/${projetoId}/empresa`} className="text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md">Voltar</Link>
                             <button type="submit" className="inline-flex w-40 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease duration-200">
                                 Salvar
                             </button>

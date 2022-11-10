@@ -43,7 +43,7 @@ routes.get('/auth/callback/github', new AuthController().signInCallback)
 
 //Empresa
 routes.post('/empresa', Authentication(), new EmpresaController().store)
-routes.get('/empresa', Authentication(), new EmpresaController().findAll)
+routes.get('/empresa/findAll/:projetoId', Authentication(), new EmpresaController().findAll)
 routes.get('/empresa/:id', Authentication(), new EmpresaController().findOne)
 routes.put('/empresa/:id', Authentication(), new EmpresaController().update)
 routes.delete('/empresa/:id', Authentication(), new EmpresaController().delete)

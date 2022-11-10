@@ -43,8 +43,9 @@ model Empresa {
   crea_resp                  String?         @db.VarChar(50)
   dmin_relatorio             Int?
   intervalo_dmin_relatorio   Int?
+  id_projeto                 String?         @db.Uuid
   empresa_endereco           Endereco[]
-  projeto                    Projeto[]
+  projeto                    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
   @@map("empresa")
 }
 
@@ -116,12 +117,11 @@ model Projeto {
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
   nome       String   @db.VarChar
-  id_empresa String?  @db.Uuid
   equacao_modelo    EquacaoModelo[]
   equacao_Volume    EquacaoVolume[]
   umf               Umf[]
   projeto_users     ProjetoUser[]
-  empresa           Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
+  empresa           Empresa[]
   @@map("projeto")
 }
 

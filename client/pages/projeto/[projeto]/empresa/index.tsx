@@ -5,9 +5,10 @@ import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
 import { useModalContext } from "contexts/ModalContext"
-import ListEmpresas from "@/components/empresa"
+import ListEmpresas from "components/empresa"
+import { GetServerSideProps } from "next"
 
-const EmpresaIndex = () => {
+const EmpresaIndex = ({ projetoId }: any) => {
     const [empresas, setEmpresas] = useState<EmpresaType[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
@@ -18,13 +19,13 @@ const EmpresaIndex = () => {
     const loadEmpresas = useCallback(async() => {
         try {
             setIsLoading(true)
-            const { data: { empresas } } = await client.get('empresa')
+            const { data: { empresas } } = await client.get(`/empresa/findAll/${projetoId}`)
             setEmpresas(empresas)    
             setIsLoading(false)
         } catch (error:any) {
             alertService.error(error?.message)
         }
-    }, [client])
+    }, [client, projetoId])
 
     useEffect(() => {
         loadEmpresas()
@@ -33,9 +34,19 @@ const EmpresaIndex = () => {
     return (
         <div>
             {visible && (<Modal />)}
-            <ListEmpresas empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
+            <ListEmpresas projetoId={projetoId} empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
         </div>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+    const projetoId = params?.projeto
+    
+    return {
+        props: {
+            projetoId
+        }
+    }
 }
 
 export default withAuthentication(EmpresaIndex)

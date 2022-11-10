@@ -1,6 +1,6 @@
 import { OptionType, Select } from '@/components/Select'
 import { FormInput } from '@/components/FormInput'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
 import { AuthContext } from '../../contexts/AuthContext'
@@ -13,12 +13,14 @@ import { useModalContext } from 'contexts/ModalContext'
 import {
     PlusIcon,
     PencilIcon,
-    TrashIcon
+    TrashIcon,
+    InboxInIcon,
+    UsersIcon
 } from '@heroicons/react/outline'
 
 import Modal from '../Modal'
 
-const Projetos = ({ empresaId } : any) => {
+const Projetos = () => {
     const { register, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm()
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
@@ -105,7 +107,7 @@ const Projetos = ({ empresaId } : any) => {
         
         if (typeof session !== typeof undefined){
 
-            const response = await client.get(`/projeto?id_empresa=${empresaId}`)
+            const response = await client.get(`/projeto`)
             const { projetos, error, message } = response.data
             if (error) {
                 console.log(message)
@@ -120,14 +122,27 @@ const Projetos = ({ empresaId } : any) => {
             
             setProjetos(processData)
             const projetoAtivo = processData ? processData.find((projeto: any) => projeto.active === true) : {}
+            setProjetoLocal({
+                label: projetoAtivo?.nome,
+                value: projetoAtivo?.id
+            })
+
+            for (const [key, value] of Object.entries(projetoAtivo)) {
+                setValue(key, value, {
+                    shouldValidate: true,
+                    shouldDirty: true
+                })
+            }
+
+            setSelectedProjeto(projetoAtivo)
             setProjeto(projetoAtivo)
         }
-    }, [session, client, setProjeto, empresaId])
+    }, [session, client, setProjeto, setValue])
 
     useEffect(() => {
-      
+        
         loadProjetos()    
-      
+
     }, [loadProjetos])
 
     async function deleteProjeto(id?: string){
@@ -170,7 +185,7 @@ const Projetos = ({ empresaId } : any) => {
     }
 
     async function createProjeto(data: any) {
-        await client.post(`/projeto?id_empresa=${empresaId}`, data)
+        await client.post(`projeto`, data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
@@ -204,11 +219,11 @@ const Projetos = ({ empresaId } : any) => {
         setProjetoLocal(data)
 
         for (const [key, value] of Object.entries(selectedProjeto)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                })
-            }
+            setValue(key, value, {
+                shouldValidate: true,
+                shouldDirty: true
+            })
+        }
     }
 
     return (
@@ -220,14 +235,10 @@ const Projetos = ({ empresaId } : any) => {
                     <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl'>
                         
                         <div>
-                            <LinkBack href="/empresa" className="flex flex-col relative left-0 ml-4" />
+                            <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
-                            {isAddMode ? (
-                                <h1 className='text-xl text-gray-800'>Cadastrar Projeto</h1>
-                            ): (
-                                <h1 className='text-xl text-gray-800'>Editar Projeto</h1>
-                            )}
+                            <h1 className='text-xl text-gray-800'>Gerenciar Projetos</h1>
                         </div>
                         <div className='flex items-center justify-center h-8 w-8 mr-4 bg-green-400 rounded-full'>
                         <Link href="#" className="" onClick={addModal}>
@@ -261,17 +272,28 @@ const Projetos = ({ empresaId } : any) => {
                             {
                                 projetoLocal && (
                                     <div className='flex flex-row items-center justify-between pt-5'>
-                                        <Link href="#" className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
+                                        <Link href="#" className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
                                             <div className='flex flex-row items-center justify-center space-x-2'>
                                                 <PencilIcon className="h-5 w-5" />
-                                                <span>Editar</span>
+                                            </div>
+                                        </Link>
+
+                                        <Link href={`/projeto/${selectedProjeto?.id}/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                                            <div className='flex flex-row items-center justify-center space-x-2'>
+                                                <UsersIcon className="h-5 w-5" />
                                             </div>
                                         </Link>
                                         
-                                        <Link href="#" className="text-center w-32 hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
+                                        <Link href="#" className="text-center w-auto hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
                                             <div className='flex flex-row items-center justify-center space-x-2'>
                                                 <TrashIcon className="h-5 w-5" />
-                                                <span>Deletar</span>
+                                            </div>
+                                        </Link>
+
+                                        <Link href={`/projeto/${selectedProjeto?.id}/empresa`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                                            <div className='flex flex-row items-center justify-center space-x-2'>
+                                                <InboxInIcon className="h-5 w-5" />
+                                                <span>Empresas</span>
                                             </div>
                                         </Link>
                                     </div>

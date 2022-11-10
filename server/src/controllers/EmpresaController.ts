@@ -4,7 +4,7 @@ import empresaService from "../services/empresa.service";
 export class EmpresaController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const empresa = await empresaService.create(request.body, request.user?.id)
+            const empresa = await empresaService.create(request.body)
             return response.json({
                 error: false,
                 empresa,
@@ -60,8 +60,9 @@ export class EmpresaController {
     }
 
     async findAll(request: Request, response: Response) {
+        const { projetoId } = request.params
         try {
-            const empresas = await empresaService.getAll(request.user?.id)
+            const empresas = await empresaService.getAll(projetoId)
 
             return response.json({
                 error: false,

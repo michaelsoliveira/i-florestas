@@ -8,8 +8,9 @@ import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
 import { styles } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
+import { LinkBack } from "../LinkBack"
 
-const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
+const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
     
     const [filteredUsers, setFilteredUsers] = useState<UserType[]>(currentUsers)
     const { client } = useContext(AuthContext)
@@ -35,7 +36,6 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
             await client.delete(`/users/${id}`)
                 .then((response: any) => {
                     const { error, message } = response.data
-                    console.log(response)
                     if (!error) {
                         alertService.success(message)
                         loadUsers()
@@ -66,7 +66,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
             currentPage,
             perPage,
             orderBy,
-            order: !sorted ? 'DESC' : 'ASC'
+            order: !sorted ? 'desc' : 'asc'
         }
 
         onPageChanged(paginatedData)
@@ -109,9 +109,12 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
         <div>
             {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+                <div>
+                    <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
+                </div>
                 <h1 className="font-medium text-2xl font-roboto">Usuários</h1>
                 <Link
-                    href={`/empresa/${empresaId}/users/add`}
+                    href={`/projeto/${projetoId}/users/add`}
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
@@ -239,7 +242,7 @@ const Users = ({ currentUsers, empresaId, onPageChanged, orderBy, order, changeI
                             </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href={`/empresa/${empresaId}/users/update/${user.id}`}>
+                            <Link href={`/projeto/${projetoId}/users/update/${user.id}`}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
                             <Link href="#" onClick={() => deleteSingleModal(user.id)}>

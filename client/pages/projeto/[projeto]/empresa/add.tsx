@@ -5,9 +5,9 @@ import { GetServerSideProps } from "next";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
         props: {
-            id: ctx.params?.id
+            projetoId: ctx.params?.projeto
         }
     }
 }
 
-export default withAuthentication(AddEdit);
+export default withAuthentication(AddEdit)

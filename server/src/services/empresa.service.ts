@@ -15,24 +15,19 @@ interface EmpresaRequest {
     municipio: string,
     estado: string,
     telefone: string,
-    reg_ambiental: string
+    reg_ambiental: string;
+    id_projeto: string;
 }
 
 class EmpresaService {
-    async create(data: EmpresaRequest, userId: string): Promise<Empresa> {        
+    async create(data: EmpresaRequest): Promise<Empresa> {        
 
         const empresaExists = await prismaClient.empresa.findFirst({
             where: {
                 AND: {
                     razao_social: data?.razao_social,
                     projeto: {
-                        some: {
-                            projeto_users: {
-                                some: {
-                                    active: true
-                                }
-                            }
-                        }
+                        id: data?.id_projeto
                     }
                 }
             }
@@ -45,7 +40,7 @@ class EmpresaService {
         const empresa = await prismaClient.empresa.create({
             data: {
                 ...data
-            }
+            },
         })
         
         return empresa
@@ -72,17 +67,11 @@ class EmpresaService {
         })
     }
 
-    async getAll(userId: any): Promise<any[]> {
+    async getAll(projetoId: any): Promise<any[]> {
         const empresas = await prismaClient.empresa.findMany({
             where: {
                 projeto: {
-                    some: {
-                        projeto_users: {
-                            some: {
-                                id_user: userId
-                            }
-                        }
-                    }
+                    id: projetoId
                 }
             }
         })

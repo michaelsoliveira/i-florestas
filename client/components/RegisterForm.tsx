@@ -92,9 +92,8 @@ export const RegisterForm = function RegisterForm({ styles, userId, redirect }: 
                         console.log(e)
                     })
                 } else {
-                    console.log(responseData)
                     alertService.success('Usuário cadastrado com SUCESSO!')
-                    router.push(`/empresa/${projetoId}/users`)
+                    router.push(`/projeto/${projetoId}/users`)
                 }
         })
         .catch((error: any) => {

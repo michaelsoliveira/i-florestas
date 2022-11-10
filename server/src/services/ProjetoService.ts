@@ -4,7 +4,7 @@ import { prismaClient } from "../database/prismaClient";
 export interface ProjetoType {
     nome: string;
     active: boolean;
-    id_empresa: string;
+    id_user: string;
 }
 
 export const getProjeto = async (userId: string) => {
@@ -24,39 +24,16 @@ export const getProjeto = async (userId: string) => {
 
 class ProjetoService {
     async create(data: ProjetoType, userId: string): Promise<Projeto> {
-
-        const empresaExists = await prismaClient.empresa.findFirst({
-            where: {
-                AND: {
-                    projeto: {
-                        some: {
-                            projeto_users: {
-                                some: {
-                                    id_user: userId
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
-
-        if (!empresaExists) {
-            throw new Error('É necessário criar uma empresa primeiro')
-        }
         
         const projetoExists = await prismaClient.projeto.findFirst({
             where: {
                 AND: {
                     projeto_users: {
                         some: {
-                            id_user: userId
+                            id_user: data?.id_user ? data?.id_user : userId
                         }
                     },
-                    nome: data.nome,
-                    empresa: {
-                        id: data?.id_empresa
-                    }
+                    nome: data.nome
                 }
             }
         })
@@ -68,16 +45,11 @@ class ProjetoService {
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
-                empresa: {
-                    connect: {
-                        id: data?.id_empresa
-                    }
-                },
                 projeto_users: {
                     create: {
                         users: {
                             connect: {
-                                id: userId
+                                id: data?.id_user ? data?.id_user : userId
                             }
                         },
                         active: data?.active
@@ -127,7 +99,7 @@ class ProjetoService {
     }
 
     async getAll(id:string, query?: any): Promise<any> {
-        const { perPage, page, search, orderBy, order, id_empresa } = query
+        const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
         
@@ -142,7 +114,7 @@ class ProjetoService {
                 [orderByElement]: order
             }
         }
-        const whereWithoutEmpresa = search ?
+        const where = search ?
             {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
@@ -160,31 +132,6 @@ class ProjetoService {
                 }
             }
 
-        const whereWithEmpresa = search ? {
-            AND: {
-                nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                projeto_users: {
-                    some: {
-                        id_user: id
-                    }
-                },
-                empresa: {
-                    id: id_empresa
-                }
-            }
-        } : {
-            AND: {
-                projeto_users: {
-                    some: {
-                        id_user: id
-                    }
-                },
-                empresa: {
-                    id: id_empresa
-                }
-            }
-        }
-
         const [projetos, total] = await prismaClient.$transaction([
             prismaClient.projeto.findMany({
                 select: {
@@ -196,14 +143,14 @@ class ProjetoService {
                         }
                     }
                 },
-                where: id_empresa ? whereWithEmpresa : whereWithoutEmpresa,
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 }
             }),
-            prismaClient.projeto.count({where: id_empresa ? whereWithEmpresa : whereWithoutEmpresa})
+            prismaClient.projeto.count({where})
         ])
 
         return {
@@ -261,7 +208,7 @@ class ProjetoService {
 
         const [data, total] = await prismaClient.$transaction([
             prismaClient.user.findMany({
-                where: where,
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {

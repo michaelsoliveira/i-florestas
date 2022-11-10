@@ -23,9 +23,9 @@ import {
 
 export const resources = [
     {
-        name: 'Empresa',
-        description: 'Informações da Empresa',
-        href: '/empresa',
+        name: 'Projeto',
+        description: 'Dados Gerais dos Projetos',
+        href: '/projeto',
         icon: ClipboardListIcon,
     },
     {

@@ -4,11 +4,9 @@ import projetoService from "../services/ProjetoService";
 
 export class ProjetoController {
     async store(request : Request, response: Response) : Promise<Response> {
-        const { id_empresa } = request.query
-        const data = { ...request.body, id_empresa }
-        console.log(data)
+
         try {    
-            const projeto = await projetoService.create(data, request.user?.id)
+            const projeto = await projetoService.create(request.body, request.user?.id)
             return response.json({
                 error: false,
                 equacaoVolume: projeto,

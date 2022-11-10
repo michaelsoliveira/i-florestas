@@ -6,9 +6,10 @@ import { useModalContext } from "contexts/ModalContext"
 import { EmpresaType } from "types/IEmpresa"
 import { AuthContext } from "contexts/AuthContext"
 import { styles } from "../Utils/styles"
+import { LinkBack } from "../LinkBack"
 
 
-const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
+const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) => {
     const { client } = useContext(AuthContext)
 
     const { showModal, hideModal, store } = useModalContext()
@@ -28,19 +29,22 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
         }       
     }
 
-    const upaById = (id?: string) => {
-        return empresas.find((ut: EmpresaType) => ut.id === id)
+    const empresaById = (id?: string) => {
+        return empresas.find((empresa: EmpresaType) => empresa.id === id)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteEmpresa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${upaById(id)?.nome_fantasia} ?` })
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteEmpresa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${empresaById(id)?.razao_social} ?` })
 
 
     return (
         <div className="lg:h-[33.3em] h-auto">
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+                <div>
+                    <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
+                </div>
                 <h1 className="font-medium text-2xl font-roboto">Empresas</h1>
                 <Link
-                    href='/empresa/add'
+                    href={`/projeto/${projetoId}/empresa/add`}
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
@@ -50,7 +54,7 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
                 <div className="flex flex-row items-center justify-center h-full">Loading...</div>
             ): (
                 <div className="flex flex-col p-6">
-                    {empresas.length ? (
+                    {empresas?.length ? (
                         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                             <div className="overflow-auto lg:overflow-hidden border border-gray-400 shadow-lg bg-gray-100 py-4 lg:rounded-t-xl lg:rounded-lg">
                             <table className="min-w-full divide-y divide-gray-200">
@@ -112,14 +116,8 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas } : any) => {
                                     </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                    <Link href={`/empresa/${empresa.id}/projeto`}>
-                                        <InboxInIcon className="w-5 h-5 ml-4 -mr-1 text-indigo-600 hover:text-indigo-700" />
-                                    </Link>
-                                    <Link href={`/empresa/update/${empresa.id}`}>
+                                    <Link href={`/projeto/${projetoId}/empresa/update/${empresa.id}`}>
                                         <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                                    </Link>
-                                    <Link href={`/empresa/${empresa.id}/users`}>
-                                        <UsersIcon className="w-5 h-5 ml-4 -mr-1 text-indigo-600 hover:text-indigo-700" />
                                     </Link>
                                     <Link href="#" onClick={() => deleteSingleModal(empresa.id)}>
                                         <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
