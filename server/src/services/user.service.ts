@@ -43,36 +43,36 @@ class UserService {
             id_provider: data?.id_provider ? data?.id_provider : ''
         }
 
-        const preparedData = !data?.projetoId ? await prismaClient.projeto.findFirst({
-            where: {
+        const preparedData = !data?.projetoId ? 
+            await prismaClient.projeto.findFirst({
+                where: {
+                    projeto_users: {
+                        some: {
+                            id_user: userId
+                        }
+                    }
+                }
+            })
+            .then(async (projeto: any) => {
+                if (projeto) {
+                    const preparedData =
+                    { ...dataRequest, projeto_users: {
+                        create: {
+                            id_projeto: projeto?.id
+                        }
+                    } }
+                    return preparedData
+                }
+                return dataRequest
+                
+            }) : 
+            { ...dataRequest, 
                 projeto_users: {
-                    some: {
-                        id_user: userId
-                    }
-                }
-            }
-        }).then(async (projeto: any) => {
-            if (projeto) {
-                const preparedData =
-                { ...dataRequest, projeto_users: {
                     create: {
-                        id_projeto: projeto?.id,
-                        id_user: userId
+                        id_projeto: data?.projetoId
                     }
-                } }
-                return preparedData
-            }
-            return dataRequest
-            
-        }) : {...dataRequest, projeto_users: {
-                create: {
-                    id_projeto: data?.projetoId,
-                    id_user: userId
                 }
             }
-        }
-
-        console.log(preparedData)
 
         const user = await prismaClient.user.create({
             data: {

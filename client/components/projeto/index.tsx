@@ -108,23 +108,24 @@ const Projetos = () => {
         if (typeof session !== typeof undefined){
             
             const response = await client.get(`/projeto`)
-            await client.get(`/projeto/active/get`).then(({ data }: any) => {
+            await client.get(`/projeto/active/get`)
+                .then(({ data }: any) => {
 
-                setProjetoLocal({
-                    label: data?.nome,
-                    value: data?.id
-                })
-    
-                for (const [key, value] of Object.entries(data)) {
-                    setValue(key, value, {
-                        shouldValidate: true,
-                        shouldDirty: true
+                    setProjetoLocal({
+                        label: data?.nome,
+                        value: data?.id
                     })
-                }
+        
+                    for (const [key, value] of Object.entries({...data, active: true})) {
+                        setValue(key, value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        })
+                    }
 
-                setSelectedProjeto(data)
-                setProjeto(data)
-            })
+                    setSelectedProjeto(data)
+                    setProjeto(data)
+                })
             
             const { projetos, error, message } = response.data
             if (error) {

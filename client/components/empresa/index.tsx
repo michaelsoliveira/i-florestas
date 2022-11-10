@@ -12,8 +12,7 @@ import { LinkBack } from "../LinkBack"
 const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) => {
     const { client } = useContext(AuthContext)
 
-    const { showModal, hideModal, store } = useModalContext()
-    const { visible } = store
+    const { showModal, hideModal } = useModalContext()
 
     async function deleteEmpresa(id?: string) {
         try {
