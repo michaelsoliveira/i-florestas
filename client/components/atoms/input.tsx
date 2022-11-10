@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 
-export type InputSize = 'medium' | 'large';
+export type InputSize = 'small' | 'medium' | 'large';
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'radio' | 'checkbox';
 
 export type InputProps = {
@@ -23,13 +23,14 @@ export type InputProps = {
 >;
 
 const sizeMap: { [key in InputSize]: string } = {
+  small: 'p-2 text-sm',
   medium: 'p-3 text-base',
   large: 'p-4 text-base',
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   function Input(
-    { id, name, type = 'text', label, placeholder, size = 'medium', className, ...rest}, 
+    { id, name, type = 'text', label, placeholder, size = 'small', className, ...rest}, 
     ref
   ) {
     return (

@@ -36,7 +36,7 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: ut } = await client.get(`/ut/${id}`)
-               
+
                 for (const [key, value] of Object.entries(ut)) {
                     switch(key) {
                         case 'upa': setValue('upa', ut?.upa.id);
@@ -109,7 +109,7 @@ const AddEdit = ({ id }: any) => {
 
     return (
         <div>
-            <div className="py-4 flex flex-col justify-center sm:py-12 bg-gray-50">                
+            <div className="text-sm py-4 flex flex-col justify-center sm:py-12 bg-gray-50">                
                 <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto">
                     <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl'>
                         
@@ -127,7 +127,7 @@ const AddEdit = ({ id }: any) => {
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='flex flex-row space-x-4 pb-6'>
+                            <div className='flex flex-col lg:flex-row lg:space-x-4 pb-6'>
                                 <div className="border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12">
                                 <span className="text-gray-700 absolute top-9 bg-white px-2">Dados básicos da UT</span>
                                     <div>
@@ -182,7 +182,7 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                 </div>
                                 <div className="border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12">
-                                <span className="text-gray-700 absolute top-9 bg-white px-2">Coordenadas</span>
+                                <span className="text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2">Coordenadas</span>
                                     <div className="flex flex-col">
                                         <FormInput
                                             id="latitude"
@@ -209,8 +209,7 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                             </div>  
                             {
-                                (upa.tipo === 0) 
-                                ? 
+                                (upa.tipo === 0) &&
                                 (<div className="space-y-8">
                                     <div className="relative border border-gray-400 p-4 rounded-md">
                                         <span className="text-gray-700 absolute -top-3 bg-white px-2">Faixas</span>
@@ -244,24 +243,23 @@ const AddEdit = ({ id }: any) => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="relative border border-gray-400 p-4 rounded-md my-auto">
-                                    <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
-                                        <div className='flex flex-row items-center mx-auto'>
-                                        {
-                                            (!isLoaded) ? <div>Loading...</div> : 
-                                            (
-                                                <Map 
-                                                    setLocation={setLocation}
-                                                />
-                                            )
-                                        }
-                                        </div>
-                                    </div>
                                 </div>)
-                                : (<div></div>)
                             }
+                            <div className="relative border border-gray-400 p-4 rounded-md mt-6">
+                                <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
+                                <div className='flex flex-row items-center mx-auto'>
+                                    {
+                                        (!isLoaded) ? <div>Loading...</div> : 
+                                        (
+                                            <Map 
+                                                setLocation={setLocation}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/upa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
+                                <Link href="/ut" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
                                 <button className="w-1/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
                             </div>
                         </form>

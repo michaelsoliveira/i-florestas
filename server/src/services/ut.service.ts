@@ -53,7 +53,7 @@ class UtService {
             throw new Error('Já existe uma Ut cadastrada com este número')
         }
         
-        const upa = await prismaClient.ut.create({
+        const ut = await prismaClient.ut.create({
             data: {
                 numero_ut: parseInt(numero_ut), 
                 area_util: parseFloat(area_util), 
@@ -63,11 +63,15 @@ class UtService {
                 largura_faixas: parseInt(largura_faixas), 
                 latitude: parseFloat(latitude), 
                 longitude: parseFloat(longitude),
-                id_upa
+                upa: {
+                    connect: {
+                        id: id_upa
+                    }
+                }
             }
         })
 
-        return upa
+        return ut
     }
 
     async update(id: string, data: UtType): Promise<Ut> {

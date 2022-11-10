@@ -24,10 +24,11 @@ export const Select = ({ label, callback, options, defaultOptions, initialData, 
 
     return (
       <div>
-        <label htmlFor="">{ label }</label>
+        <label className="text-sm" htmlFor="">{ label }</label>
         <AsyncSelect
             cacheOptions
             loadOptions={options}
+            className="text-sm"
             defaultOptions={defaultOptions}
             value={typeof selectedValue?.value !== typeof undefined ? selectedValue : initialData}
             onChange={callback}

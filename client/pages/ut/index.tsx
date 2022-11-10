@@ -19,12 +19,10 @@ const UtIndex = () => {
     const [orderBy, setOrderBy] = useState('descricao')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
-    const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const dispatch = useAppDispatch()
     const router = useRouter()
     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadUts = useCallback(async (itemsPerPage = 1, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : currentPage
@@ -36,7 +34,7 @@ const UtIndex = () => {
         setTotalItems(data?.count)
         setCurrentUts(data?.uts)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, upa.id])
+    }, [client, order, orderBy, pagination?.currentPage, pagination?.name, pagination.perPage, router.pathname, upa.id])
 
     useEffect(() => {  
         loadUts(itemsPerPage, 1)

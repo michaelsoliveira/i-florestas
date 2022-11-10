@@ -48,36 +48,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var prismaClient_1 = require("../database/prismaClient");
-var UpaService = /** @class */ (function () {
-    function UpaService() {
+var ProjetoService_1 = require("./ProjetoService");
+var UtService = /** @class */ (function () {
+    function UtService() {
     }
-    UpaService.prototype.create = function (data, userId) {
+    UtService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, id_upa, utExists, empresa, upa;
+            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, id_upa, projeto, utExists, ut;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         numero_ut = data.numero_ut, area_util = data.area_util, area_total = data.area_total, quantidade_faixas = data.quantidade_faixas, comprimento_faixas = data.comprimento_faixas, largura_faixas = data.largura_faixas, latitude = data.latitude, longitude = data.longitude, id_upa = data.id_upa;
+                        return [4 /*yield*/, ProjetoService_1.getProjeto(userId)];
+                    case 1:
+                        projeto = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
-                                    numero_ut: parseInt(numero_ut)
-                                }
-                            })];
-                    case 1:
-                        utExists = _a.sent();
-                        return [4 /*yield*/, prismaClient_1.prismaClient.empresa.findFirst({
-                                where: {
-                                    empresa_users: {
-                                        some: {
-                                            users: {
-                                                id: userId
+                                    AND: {
+                                        numero_ut: parseInt(numero_ut),
+                                        upa: {
+                                            umf: {
+                                                projeto: {
+                                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                                }
                                             }
                                         }
                                     }
                                 }
                             })];
                     case 2:
-                        empresa = _a.sent();
+                        utExists = _a.sent();
                         if (utExists) {
                             throw new Error('Já existe uma Ut cadastrada com este número');
                         }
@@ -91,18 +91,21 @@ var UpaService = /** @class */ (function () {
                                     largura_faixas: parseInt(largura_faixas),
                                     latitude: parseFloat(latitude),
                                     longitude: parseFloat(longitude),
-                                    id_empresa: empresa === null || empresa === void 0 ? void 0 : empresa.id,
-                                    id_upa: id_upa
+                                    upa: {
+                                        connect: {
+                                            id: id_upa
+                                        }
+                                    }
                                 }
                             })];
                     case 3:
-                        upa = _a.sent();
-                        return [2 /*return*/, upa];
+                        ut = _a.sent();
+                        return [2 /*return*/, ut];
                 }
             });
         });
     };
-    UpaService.prototype.update = function (id, data) {
+    UtService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
             var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude;
             return __generator(this, function (_a) {
@@ -136,7 +139,7 @@ var UpaService = /** @class */ (function () {
             });
         });
     };
-    UpaService.prototype["delete"] = function (id) {
+    UtService.prototype["delete"] = function (id) {
         return __awaiter(this, void 0, Promise, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -155,25 +158,15 @@ var UpaService = /** @class */ (function () {
             });
         });
     };
-    UpaService.prototype.getAll = function (query, userId) {
+    UtService.prototype.getAll = function (userId, query) {
         return __awaiter(this, void 0, Promise, function () {
-            var empresa, perPage, page, search, orderBy, order, upa, skip, orderByTerm, orderByElement, _a, uts, total;
+            var projeto, perPage, page, search, orderBy, order, upa, skip, orderByTerm, orderByElement, where, _a, uts, total;
             var _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.empresa.findFirst({
-                            where: {
-                                empresa_users: {
-                                    some: {
-                                        users: {
-                                            id: userId
-                                        }
-                                    }
-                                }
-                            }
-                        })];
+                    case 0: return [4 /*yield*/, ProjetoService_1.getProjeto(userId)];
                     case 1:
-                        empresa = _d.sent();
+                        projeto = _d.sent();
                         perPage = query.perPage, page = query.page, search = query.search, orderBy = query.orderBy, order = query.order, upa = query.upa;
                         skip = (page - 1) * perPage;
                         orderByTerm = {};
@@ -188,33 +181,42 @@ var UpaService = /** @class */ (function () {
                                 _c[orderByElement] = order,
                                 _c);
                         }
+                        where = search ?
+                            {
+                                AND: {
+                                    upa: {
+                                        umf: {
+                                            projeto: {
+                                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                            }
+                                        }
+                                    },
+                                    id_upa: upa,
+                                    numero_ut: parseInt(search)
+                                }
+                            } : {
+                            AND: {
+                                upa: {
+                                    umf: {
+                                        projeto: {
+                                            id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                        }
+                                    }
+                                },
+                                id_upa: upa
+                            }
+                        };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.ut.findMany({
-                                    where: {
-                                        OR: {
-                                            numero_ut: {
-                                                equals: Number.parseInt(search)
-                                            }
-                                        },
-                                        AND: [
-                                            {
-                                                id_empresa: empresa === null || empresa === void 0 ? void 0 : empresa.id
-                                            },
-                                            {
-                                                upa: {
-                                                    id: upa
-                                                }
-                                            }
-                                        ]
-                                    },
+                                    where: where,
                                     take: perPage ? parseInt(perPage) : 10,
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm),
                                     include: {
-                                        upa: true
+                                        upa: false
                                     }
                                 }),
-                                prismaClient_1.prismaClient.ut.count()
+                                prismaClient_1.prismaClient.ut.count({ where: where })
                             ])];
                     case 2:
                         _a = _d.sent(), uts = _a[0], total = _a[1];
@@ -229,7 +231,7 @@ var UpaService = /** @class */ (function () {
             });
         });
     };
-    UpaService.prototype.deleteUts = function (uts) {
+    UtService.prototype.deleteUts = function (uts) {
         return __awaiter(this, void 0, Promise, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -245,16 +247,14 @@ var UpaService = /** @class */ (function () {
             });
         });
     };
-    UpaService.prototype.search = function (q) {
+    UtService.prototype.search = function (q) {
         return __awaiter(this, void 0, Promise, function () {
             var uts;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.findMany({
                             where: {
-                                numero_ut: {
-                                    equals: q
-                                }
+                                numero_ut: parseInt(q)
                             }
                         })];
                     case 1:
@@ -264,27 +264,24 @@ var UpaService = /** @class */ (function () {
             });
         });
     };
-    UpaService.prototype.findById = function (id) {
+    UtService.prototype.findById = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var upa;
+            var ut;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
                             where: { id: id },
                             include: {
-                                empresa: true,
-                                spatial_ref_sys: true,
-                                equacao_volume: true,
-                                umf: true
+                                upa: true
                             }
                         })];
                     case 1:
-                        upa = _a.sent();
-                        return [2 /*return*/, upa];
+                        ut = _a.sent();
+                        return [2 /*return*/, ut];
                 }
             });
         });
     };
-    return UpaService;
+    return UtService;
 }());
-exports["default"] = new UpaService;
+exports["default"] = new UtService;

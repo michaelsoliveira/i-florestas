@@ -47,6 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.libraries = void 0;
 var FormInput_1 = require("../FormInput");
 var react_1 = require("react");
 var router_1 = require("next/router");
@@ -59,20 +60,23 @@ var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
 var Map_1 = require("../maps/Map");
 var api_1 = require("@react-google-maps/api");
+exports.libraries = String(['places', 'geometry', 'drawing']);
 var AddEdit = function (_a) {
+    var _b;
     var id = _a.id;
-    var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
+    var _c = react_hook_form_1.useForm(), register = _c.register, handleSubmit = _c.handleSubmit, errors = _c.formState.errors, setValue = _c.setValue;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var session = react_2.useSession().data;
-    var _c = react_1.useState(null), utLocation = _c[0], setUtLocation = _c[1];
+    var _d = react_1.useState(null), utLocation = _d[0], setUtLocation = _d[1];
     var router = router_1.useRouter();
     var isAddMode = !id;
-    var isLoaded = api_1.useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: "" + process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-        libraries: ['places', 'geometry', 'drawing']
-    }).isLoaded;
+    var isLoaded = api_1.useJsApiLoader((_b = {
+            id: 'google-map-script',
+            googleMapsApiKey: "" + process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+        },
+        _b[exports.libraries] = exports.libraries,
+        _b)).isLoaded;
     react_1.useEffect(function () {
         function loadUt() {
             return __awaiter(this, void 0, void 0, function () {
@@ -104,7 +108,6 @@ var AddEdit = function (_a) {
                 });
             });
         }
-        console.log(session);
         loadUt();
     }, [session, isAddMode, client, id, setValue, upa]);
     function onSubmit(data) {
@@ -178,8 +181,8 @@ var AddEdit = function (_a) {
         });
     }
     return (React.createElement("div", null,
-        React.createElement("div", { className: "py-4 flex flex-col justify-center sm:py-12 bg-gray-50" },
-            React.createElement("div", { className: "relative py-3 w-full max-w-none lg:max-w-5xl mx-auto z-40" },
+        React.createElement("div", { className: "text-sm py-4 flex flex-col justify-center sm:py-12 bg-gray-50" },
+            React.createElement("div", { className: "relative py-3 w-full max-w-none lg:max-w-5xl mx-auto" },
                 React.createElement("div", { className: 'flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl' },
                     React.createElement("div", null,
                         React.createElement(LinkBack_1.LinkBack, { href: "/ut", className: "flex flex-col relative left-0 ml-4" })),
@@ -187,8 +190,8 @@ var AddEdit = function (_a) {
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'flex flex-row space-x-4 pb-6' },
-                            React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12" },
+                        React.createElement("div", { className: 'flex flex-col lg:flex-row lg:space-x-4 pb-6' },
+                            React.createElement("div", { className: "border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12" },
                                 React.createElement("span", { className: "text-gray-700 absolute top-9 bg-white px-2" }, "Dados b\u00E1sicos da UT"),
                                 React.createElement("div", null,
                                     React.createElement(FormInput_1.FormInput, { name: "numero_ut", label: "N\u00FAmero UT", type: "number", register: register, errors: errors, rules: {
@@ -203,27 +206,25 @@ var AddEdit = function (_a) {
                                         React.createElement(FormInput_1.FormInput, { name: "area_total", label: "\u00C1rea Total", type: "number", register: register, errors: errors, rules: {
                                                 required: 'O campo nome é obrigatório'
                                             }, id: "area_total", className: "pb-4" })))),
-                            React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md lg:w-6/12" },
-                                React.createElement("span", { className: "text-gray-700 absolute top-9 bg-white px-2" }, "Coordenadas"),
+                            React.createElement("div", { className: "border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12" },
+                                React.createElement("span", { className: "text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2" }, "Coordenadas"),
                                 React.createElement("div", { className: "flex flex-col" },
                                     React.createElement(FormInput_1.FormInput, { id: "latitude", name: "latitude", label: "Latitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" }),
                                     React.createElement(FormInput_1.FormInput, { id: "longitude", name: "longitude", label: "Longitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" })))),
-                        (upa.tipo === 0)
-                            ?
-                                (React.createElement("div", { className: "space-y-8" },
-                                    React.createElement("div", { className: "relative border border-gray-200 p-4 rounded-md" },
-                                        React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Faixas"),
-                                        React.createElement("div", { className: "flex flex-row space-x-4" },
-                                            React.createElement(FormInput_1.FormInput, { name: "quantidade_faixas", label: "Quantidade", type: "number", register: register, errors: errors, id: "quantidade_faixas", className: "pb-4" }),
-                                            React.createElement(FormInput_1.FormInput, { name: "largura_faixas", label: "Largura", type: "number", register: register, errors: errors, id: "largura_faixas", className: "pb-4" }),
-                                            React.createElement(FormInput_1.FormInput, { name: "comprimento_faixas", label: "Comprimento", type: "number", register: register, errors: errors, id: "comprimento_faixas", className: "pb-4" }))),
-                                    React.createElement("div", { className: "relative border border-gray-200 p-4 rounded-md" },
-                                        React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Localiza\u00E7\u00E3o da UT"),
-                                        React.createElement("div", { className: 'flex flex-row items-center mx-auto z-40' }, (!isLoaded) ? React.createElement("div", null, "Loading...") :
-                                            (React.createElement(Map_1["default"], { setLocation: setLocation }))))))
-                            : (React.createElement("div", null)),
+                        (upa.tipo === 0) &&
+                            (React.createElement("div", { className: "space-y-8" },
+                                React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md" },
+                                    React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Faixas"),
+                                    React.createElement("div", { className: "flex flex-row space-x-4" },
+                                        React.createElement(FormInput_1.FormInput, { name: "quantidade_faixas", label: "Quantidade", type: "number", register: register, errors: errors, id: "quantidade_faixas", className: "pb-4" }),
+                                        React.createElement(FormInput_1.FormInput, { name: "largura_faixas", label: "Largura", type: "number", register: register, errors: errors, id: "largura_faixas", className: "pb-4" }),
+                                        React.createElement(FormInput_1.FormInput, { name: "comprimento_faixas", label: "Comprimento", type: "number", register: register, errors: errors, id: "comprimento_faixas", className: "pb-4" }))))),
+                        React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md mt-6" },
+                            React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Localiza\u00E7\u00E3o da UT"),
+                            React.createElement("div", { className: 'flex flex-row items-center mx-auto' }, (!isLoaded) ? React.createElement("div", null, "Loading...") :
+                                (React.createElement(Map_1["default"], { setLocation: setLocation })))),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
-                            React.createElement(Link_1.Link, { href: "/upa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
+                            React.createElement(Link_1.Link, { href: "/ut", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));
 };
 exports["default"] = AddEdit;

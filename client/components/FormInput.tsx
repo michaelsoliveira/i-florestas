@@ -8,12 +8,13 @@ import {
   FieldError,
   UseFormRegister,
   Path,
+  FieldValues,
 } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import { Input, InputProps } from './atoms/input';
 import { FormErrorMessage } from './atoms/form-error-message';
 
-export type FormInputProps<TFormValues> = {
+export type FormInputProps<TFormValues extends FieldValues> = {
     label?: Path<TFormValues>;
     name: Path<TFormValues>;
     rules?: RegisterOptions;
@@ -43,7 +44,7 @@ export const FormInput = <TFormValues extends Record<string, unknown>>({
       <div className={classNames('', className)} aria-live="polite">
           <label
               htmlFor={label}
-              className='text-primary placeholder-gray-gray4 pt-1.5'
+              className='text-primary placeholder-gray-gray4 pt-1.5 text-sm'
           >
                 {label} {rules?.required && <span className='text-red'>*</span>}
           </label>

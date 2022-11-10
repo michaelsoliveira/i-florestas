@@ -113,6 +113,12 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                         value: upas[0].id,
                         label: upas[0].descricao
                     })
+
+                    dispatch(setUpa({
+                        id: upas[0].id,
+                        descricao: upas[0].descricao,
+                        tipo: Number.parseInt(upas[0].tipo)
+                    }))
                 }
 
                 const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
