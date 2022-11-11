@@ -1,7 +1,5 @@
 import { OptionType, Select } from '@/components/Select'
-import { FormInput } from '@/components/FormInput'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
 import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
@@ -17,11 +15,10 @@ import {
     InboxInIcon,
     UsersIcon
 } from '@heroicons/react/outline'
-
-import Modal from '../Modal'
+import { AddEdit } from './AddEdit'
 
 const Projetos = () => {
-    const { register, handleSubmit, formState: { errors }, setValue, getValues, reset } = useForm()
+    
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
     const [ selectedProjeto, setSelectedProjeto ] = useState<any>()
@@ -32,39 +29,6 @@ const Projetos = () => {
 
     const { showModal, hideModal, store } = useModalContext()
     const { visible, type } = store
-
-    const addEditForm = (
-        <form onSubmit={handleSubmit(onSubmit)} id="hook-form">
-            <div className='w-full'>
-                <FormInput
-                    id="nome"
-                    name="nome"
-                    label="Nome"
-                    register={register}
-                    errors={errors}
-                    rules={
-                        {
-                            required: 'O campo nome é obrigatório',
-                            minLength: {
-                                value: 3,
-                                message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                            }
-                        }}
-                    className="lg:w-[50vh] pb-4"
-                />
-            </div>
-            <FormInput
-                id="active"
-                name="active"
-                label="Ativo?"
-                type="checkbox"
-                register={register}
-                errors={errors}
-                className="py-4 w-10"
-            />
-        </form>
-    )
-
 
     const deleteSingleModal = () => 
         showModal({ 
@@ -77,11 +41,11 @@ const Projetos = () => {
             content: `Tem Certeza que deseja excluir o Projeto ${selectedProjeto?.nome} ?` 
         })
 
-    const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar' })
+    const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
+    content: <AddEdit reloadData={loadProjetos} data={selectedProjeto} /> })
     const addModal = () => {
         setSelectedProjeto(null)
-        reset()
-        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar' })
+        showModal({ title: 'Novo Projeto', type: "submit", styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <AddEdit reloadData={loadProjetos} /> })
     }
         
 
@@ -117,12 +81,6 @@ const Projetos = () => {
                 value: projetoAtivo?.id
             })
 
-            for (const [key, value] of Object.entries(projetoAtivo)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                })
-            }
 
             setSelectedProjeto(projetoAtivo)
             setProjeto(projetoAtivo)
@@ -134,7 +92,7 @@ const Projetos = () => {
             setProjetos(projetos)
             
         }
-    }, [session, client, setProjeto, setValue])
+    }, [session, client, setProjeto])
 
     useEffect(() => {
         
@@ -167,65 +125,14 @@ const Projetos = () => {
         }
     }
 
-    async function onSubmit(data: any) {
-        const preparedData = {
-            ...data
-        }
-
-        try {
-            return isAddMode
-                ? createProjeto(preparedData)
-                : updateProjeto(selectedProjeto?.id, preparedData)
-        } catch (error: any) {
-            alertService.error(error.message);
-        }
-    }
-
-    async function createProjeto(data: any) {
-        await client.post(`projeto`, data)
-            .then((response: any) => {
-                const { error, message } = response.data
-                if (!error) {
-                    alertService.success(message);
-                    hideModal()
-                    loadProjetos()
-                } else {
-                    alertService.error(message)
-                }
-            }) 
-    }
-
-    async function updateProjeto(id: string, data: any) {
-
-        await client.put(`/projeto/${id}`, data)
-            .then((response: any) => {
-                const { error, message } = response.data
-                if (!error) {
-                    alertService.success(message);
-                    hideModal()
-                    loadProjetos()
-                } else {
-                    alertService.error(message)
-                }
-            })
-    }
-
     const selectProjeto = (data: any) => {
         const selectedProjeto = projetos.find((projeto: any) => projeto.id === data.value)
         setSelectedProjeto(selectedProjeto)
         setProjetoLocal(data)
-
-        for (const [key, value] of Object.entries(selectedProjeto)) {
-            setValue(key, value, {
-                shouldValidate: true,
-                shouldDirty: true
-            })
-        }
     }
 
     return (
         <div>
-            {visible && (type === 'submit') ? (<Modal>{addEditForm}</Modal>) : (<Modal />)}
             <div className="py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto lg:h-[33.3em] h-[24em] p-2">
                 
                 <div className="relative py-3 w-full max-w-xl mx-auto h-full">

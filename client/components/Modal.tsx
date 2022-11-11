@@ -60,15 +60,16 @@ export default function Modal(props: ModaType) {
     }, [hideModal, onKeyDown]);
 
 
-    const cancelButtonRef = useRef(null)
+    // const cancelButtonRef = useRef(null)
 
   return (
     <Transition.Root show={visible || false} as={Fragment}>
-      <Dialog as="div" className={
+      <Dialog
+              as="div" className={
               classNames("fixed z-10 inset-0 overflow-y-auto",
                       className
               )}
-        initialFocus={cancelButtonRef} 
+        // initialFocus={cancelButtonRef} 
         onClose={hideModal}>
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full">
           <Transition.Child
@@ -98,11 +99,11 @@ export default function Modal(props: ModaType) {
           >
             <div className={classNames(
               'inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
-                size ? size : 'sm:max-w-xl'
+                size ? size : 'sm:max-w-2xl'
               )}>
                 { (layout === 'none') ? (
                   <div>
-                    {children}
+                        {content}
                   </div>
                 ) :
                 (<div>
@@ -138,7 +139,6 @@ export default function Modal(props: ModaType) {
                       type="button"
                       className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={hideModal}
-                      ref={cancelButtonRef}
                     >
                       Cancelar
                     </button>

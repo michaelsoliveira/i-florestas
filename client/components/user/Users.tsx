@@ -3,13 +3,14 @@ import { Link } from "../../components/Link"
 import { Input } from "../../components/atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
-import Modal from "../../components/Modal"
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
 import { styles } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { RegisterForm } from "../RegisterForm"
+import { createRef } from 'react'
+import { useRouter } from "next/router"
 
 const stylesButton = {
     label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
@@ -26,19 +27,28 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
-    const [userId, setUserId] = useState<any>()
     const { showModal, hideModal, store } = useModalContext()
-    const { visible, type } = store
-
+    const formRef = createRef<any>()
+    
     const userById = (id?: string) => {
         return currentUsers.find((user: UserType) => user.id === id)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', onConfirm: () => { deleteUser(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${userById(id)?.username} ?` })
-    const updateUser = (id?: string) => {
-        setUserId(id)
-        showModal({ layout:'none', type: 'updateUser', title: 'Editar Usuário', onConfirm: () => { () => {} }, styleButton: styles.greenButton, confirmBtn: 'Salvar'})
+    const formSubmit = () => {
+        if (formRef.current){
+            formRef.current.handleSubmit()
+            hideModal()
+        }
+        loadUsers(10)
     }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', styleButton: styles.redButton, iconType: 'warn', onConfirm: deleteUser(id),
+    confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${userById(id)?.username} ?` })
+    const updateUser = (id?: string) => {
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+        content: <RegisterForm ref={formRef} projetoId={projetoId} userId={id} styles={stylesButton} redirect={false} />
+    })    
+}
     
     
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
@@ -123,7 +133,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     return (
         <div>
-            {visible && type === 'updateUser' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)}
+            {/* {visible && type === 'updateUser' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
             
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <div>

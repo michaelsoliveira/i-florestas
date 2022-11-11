@@ -1,4 +1,3 @@
-import Modal from '@/components/Modal';
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 
 type ContextType = {
