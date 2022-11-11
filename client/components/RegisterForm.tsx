@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
-import { useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
@@ -10,10 +10,13 @@ import * as Yup from 'yup'
 import { setMessage } from "../store/messageSlice"
 import 'react-toastify/dist/ReactToastify.css';
 import alertService from '../services/alert'
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import type { UserData } from "../services/user"
 import { useRouter } from 'next/router';
 import { ProjetoContext } from 'contexts/ProjetoContext';
+import { AuthContext } from 'contexts/AuthContext';
+import { LinkBack } from './LinkBack';
+import { useModalContext } from 'contexts/ModalContext';
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
@@ -23,15 +26,15 @@ type RegisterType = {
     styles?: any;
     userId?: string;
     redirect?: boolean
+    projetoId?: string;
 }
 
-export const RegisterForm = function RegisterForm({ styles, userId, redirect }: RegisterType) {
+export const RegisterForm = function RegisterForm({ styles, userId, projetoId, redirect}: RegisterType) {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const isAddMode = !userId
-    const { message } = useSelector((state: RootState) => state.message) as any
-    const { projeto, setProjeto } = useContext(ProjetoContext)
-    const projetoId= projeto?.id
+    const { hideModal } = useModalContext()
+    const { client } = useContext(AuthContext)
 
     const validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
@@ -68,37 +71,54 @@ export const RegisterForm = function RegisterForm({ styles, userId, redirect }: 
             ...data,
             projetoId
         }
-        await dispatch(create(preparedData))
-        .unwrap()
-            .then(async (responseData) => {
 
-                if (redirect) {
-                    const { email, password } = data
-            
-                    const res = await signIn('credentials', {
-                    redirect: false,
-                    email,
-                    password,
-                    // callbackUrl: `${window.location.origin}`,
-                    }).then((response: any) => {
-                        if (response.ok) {
-                            alertService.success('Login realizado com sucesso')
-                            router.push('/')
-                        } else {
-                            alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
-                        }
-                        
-                    }).catch ((e) => {
-                        console.log(e)
-                    })
-                } else {
-                    alertService.success('Usuário cadastrado com SUCESSO!')
-                    router.push(`/projeto/${projetoId}/users`)
-                }
-        })
-        .catch((error: any) => {
-            alertService.warn(`Error: ${error.message}`)
-        });
+        if (isAddMode) {
+            await dispatch(create(preparedData))
+            .unwrap()
+                .then(async (responseData) => {
+
+                    if (redirect) {
+                        const { email, password } = data
+                
+                        const res = await signIn('credentials', {
+                        redirect: false,
+                        email,
+                        password,
+                        // callbackUrl: `${window.location.origin}`,
+                        }).then((response: any) => {
+                            if (response.ok) {
+                                alertService.success('Login realizado com sucesso')
+                                router.push('/')
+                            } else {
+                                alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
+                            }
+                            
+                        }).catch ((e) => {
+                            console.log(e)
+                        })
+                    } else {
+                        alertService.success('Usuário cadastrado com SUCESSO!')
+                        router.push(`/projeto/${projetoId}/users`)
+                    }
+            })
+            .catch((error: any) => {
+                alertService.warn(`Error: ${error.message}`)
+            });
+        } else {
+            console.log(preparedData)
+            await client.put(`/users/${userId}`, preparedData)
+                .then((response: any) => {
+                    const { error, user, message } = response.data
+                    console.log(user)
+                    if (error) {
+                        alertService.error(message)
+                    } else {
+                        alertService.success(message)
+                        router.push(`/projeto/${projetoId}/users`)
+                    }
+                })
+        }
+        
     }
 
     interface Values {
@@ -110,14 +130,6 @@ export const RegisterForm = function RegisterForm({ styles, userId, redirect }: 
         id_provider: string;
         isAddMode: boolean;
     }
-
-    useEffect(() => {
-        setMessage('Loading...')
-        
-        return () => {
-            
-        }
-    }, [])
     
     return (
         <div>
@@ -139,20 +151,38 @@ export const RegisterForm = function RegisterForm({ styles, userId, redirect }: 
                     handleRegister(values)
                 }}
             >
-                {(props) => {
-                    const {
-                        values,
-                        touched,
-                        errors,
-                        dirty,
-                        isSubmitting,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                        handleReset,
-                        setValues
-                    } = props;
+                {({ errors, touched, isSubmitting, setFieldValue }) => {
+
+                    const loadUser = useCallback(async () => {
+                        if (!isAddMode) {
+                            
+                            await client.get(`/users/${userId}`)
+                                .then(({ data }: any) => {
+                                    const fields = ['username', 'email'];
+                                    fields.forEach(field => setFieldValue(field, data[field], false));
+                                });
+                        }
+                    }, [setFieldValue])
+
+                    useEffect(() => {
+                        loadUser()
+                    }, [loadUser]);
+                    
                     return (
+                        <div className="py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto p-2">
+                    
+                    <div className="relative py-3 w-full max-w-xl mx-auto h-full">
+                        <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl'>
+                            
+                            <div>
+                                <LinkBack href="#" className="flex flex-col relative left-0 ml-4" />
+                            </div>
+                            <div>
+                                <h1 className='text-xl text-gray-800'>{isAddMode ? 'Novo ' : 'Editar '} Usuário</h1>
+                            </div>
+                        </div>
+                        <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
+                 
                         <Form>
                             <label className={styles.label} htmlFor="username">Nome</label>
                             <Field className={styles.field} id="username" name="username" placeholder="Michael" />
@@ -189,10 +219,14 @@ export const RegisterForm = function RegisterForm({ styles, userId, redirect }: 
                                 </>
                             )}
                             <div className='mt-8 flex flex-row justify-end w-full items-center'>
-                                <button className={classNames(styles.button, 'w-full')} type="submit">Cadastrar</button>
+                                <button disabled={isSubmitting} className={classNames(styles.button, 'w-full')} type="submit">Salvar</button>
                             </div>
                     
                         </Form>
+                           
+                        </div>
+                    </div>
+                    </div>
                     )
                 }}
             </Formik>

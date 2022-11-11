@@ -9,6 +9,16 @@ import { UserType } from "types/IUserType"
 import { styles } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
+import { RegisterForm } from "../RegisterForm"
+
+const stylesButton = {
+    label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
+    field:
+    'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
+    button:
+    ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
+    errorMsg: 'text-red-500 text-sm',
+}
 
 const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
     
@@ -16,15 +26,21 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
-
+    const [userId, setUserId] = useState<any>()
     const { showModal, hideModal, store } = useModalContext()
-    const { visible } = store
+    const { visible, type } = store
 
-    const upaById = (id?: string) => {
+    const userById = (id?: string) => {
         return currentUsers.find((user: UserType) => user.id === id)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', onConfirm: () => { deleteUser(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${upaById(id)?.username} ?` })
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', onConfirm: () => { deleteUser(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${userById(id)?.username} ?` })
+    const updateUser = (id?: string) => {
+        setUserId(id)
+        showModal({ layout:'none', type: 'updateUser', title: 'Editar Usuário', onConfirm: () => { () => {} }, styleButton: styles.greenButton, confirmBtn: 'Salvar'})
+    }
+    
+    
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
 
     useEffect(() => {
@@ -107,7 +123,8 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     return (
         <div>
-            {visible && (<Modal />)}
+            {visible && type === 'updateUser' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)}
+            
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <div>
                     <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
@@ -242,7 +259,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                             </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href={`/projeto/${projetoId}/users/update/${user.id}`}>
+                            <Link href="#" onClick={() => updateUser(user.id)}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
                             <Link href="#" onClick={() => deleteSingleModal(user.id)}>

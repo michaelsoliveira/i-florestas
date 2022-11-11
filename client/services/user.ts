@@ -54,7 +54,11 @@ export async function update(id:string, dataRequest: UserData, token: string) : 
 
     const data = await response.json()
 
-    return data
+    return {
+        data: data.user,
+        message: data.message,
+        error: data.error
+    }
 }
 
 export async function sendEmail(dataResponse: any): Promise<void> {

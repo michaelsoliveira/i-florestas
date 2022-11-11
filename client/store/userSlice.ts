@@ -3,8 +3,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import authService from "../services/user"
 
 import type { UserData } from "../services/user"
-import { useDispatch } from "react-redux"
-import { setMessage } from "./messageSlice"
+
 
 export const HTTP_STATUS = Object.freeze({
   PENDING: 'PENDING',
@@ -18,7 +17,7 @@ interface UserState {
         username?: string;
         email?: string;
         password?: string;
-        empresaId?: string;
+        projetoId?: string;
     };
     errorMessage?: string
 }

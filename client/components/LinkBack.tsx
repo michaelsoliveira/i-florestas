@@ -5,7 +5,7 @@ export interface ILink{
     className?: string
 }
 
-export const LinkBack = function LinkBack({ href, className }: ILink){
+export const LinkBack = function LinkBack({ href, className}: ILink){
     return (
         <div>
             <Link href={href} className={className}>
