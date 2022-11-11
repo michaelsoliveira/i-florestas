@@ -11,6 +11,7 @@ export type props = {
 const Layout = ({ children }: props) => {
     const { data: session, status } = useSession()
     const user = session?.user
+
     const defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
         { name: 'Soluções', href: '#', current: false, visible: !session, subMenu: true, subMenuItems: solutions },

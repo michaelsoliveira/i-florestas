@@ -1,4 +1,4 @@
-import { Umf } from "@prisma/client";
+import { Prisma, Umf } from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface UmfType {
@@ -62,9 +62,9 @@ class EstadoService {
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        const searchTermFilter = search
+        const where = search
             // ? {OR: [{nome: {contains: search}}, {email: {contains: search}}]}
-            ? {OR: [{nome: {contains: search}}, {uf: {contains: search}}]}
+            ? {OR: [{mode: Prisma.QueryMode.insensitive, nome: {contains: search}}, {mode: Prisma.QueryMode.insensitive, uf: {contains: search}}]}
             : {};
         
         const orderByElement = orderBy ? orderBy.split('.') : {}
@@ -81,17 +81,14 @@ class EstadoService {
         
         const [estados, total] = await prismaClient.$transaction([
             prismaClient.estado.findMany({
-                where: {
-                    // OR: [{nome: {mode: 'insensitive', contains: search}}, {uf: {mode: 'insensitive', contains: search}}]
-                    ...searchTermFilter
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 },
             }),
-            prismaClient.estado.count()
+            prismaClient.estado.count({where})
         ])
 
         return {
@@ -105,7 +102,7 @@ class EstadoService {
 
     async deleteEstados(estados: string[]): Promise<any> {
           
-        await prismaClient.umf.deleteMany({
+        await prismaClient.estado.deleteMany({
             where: {
                 id: { in: estados}
             }
@@ -127,9 +124,9 @@ class EstadoService {
     }
 
     async findById(id: string) : Promise<any> {
-        const umf = await prismaClient.umf.findUnique({ where: { id } })
+        const estado = await prismaClient.estado.findUnique({ where: { id } })
 
-        return umf
+        return estado
     }
 }
 

@@ -32,7 +32,7 @@ export function can(permissionsRoutes: string[]) {
       .some((permission) => permissionsRoutes.includes(permission.name));
 
     if (!permissionExists) {
-      return response.json("User does not have this permission").status(401).end();
+      return response.json("User does not have this permission").status(400).end();
     }
 
     return next();
@@ -54,15 +54,6 @@ export function is(rolesRoutes: string[]) {
             roles: {
               select: {
                 name: true,
-                // permissions_roles: {
-                //   select: {
-                //     permissions: {
-                //       select: {
-                //         name: true
-                //       }
-                //     }
-                //   }
-                // }
               }
             }
           }
@@ -71,15 +62,16 @@ export function is(rolesRoutes: string[]) {
     });
 
     if (!user?.users_roles) {
-      return response.status(401).json("User does not have this role");
+      return response.status(400).json("User does not have this role");
     }
+    
 
     const roleExists = user?.users_roles
       .map((role) => role.roles)
       .some((role) => rolesRoutes.includes(role.name));
 
     if (!roleExists) {
-      return response.status(401).json("User does not have this role").end();
+      return response.status(400).json("User does not have this role").end();
     }
 
     return next();

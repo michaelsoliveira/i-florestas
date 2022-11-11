@@ -15,6 +15,8 @@ import { SysRefController } from "../controllers/SysRefController"
 import { UtController } from "../controllers/UtController"
 import { ProjetoController } from "../controllers/ProjetoController"
 import { can, is } from "../middleware/permission"
+import { RoleController } from "../controllers/RoleController"
+import { PermissionController } from "../controllers/PermissionController"
 
 const routes = express.Router()
 
@@ -27,7 +29,7 @@ routes.delete('/users/:id', Authentication(), new UserController().delete)
 routes.post('/users/create-role', Authentication(), new UserController().createRole)
 routes.post('/users/create-permission', Authentication(), new UserController().createPermission)
 routes.post('/users/create-role-permission/:roleId', Authentication(), new UserController().createRolePermission)
-routes.post('/users/create-acl/:userId', Authentication(), is(['admin']), new UserController().createUserACL)
+routes.post('/users/create-acl/:userId', Authentication(), new UserController().createUserACL)
 routes.post('/users/send-email', new UserController().sendMail)
 
 //Alterar senha
@@ -110,6 +112,24 @@ routes.get('/eq-volume/:id', Authentication(), new EquacaoVolumeController().fin
 routes.get('/eq-volume/search/q', Authentication(), new EquacaoVolumeController().search)
 routes.put('/eq-volume/:id', Authentication(), new EquacaoVolumeController().update)
 routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeController().delete)
+
+//Role
+routes.post('/role/', Authentication(), new RoleController().store)
+routes.get('/role/', Authentication(), new RoleController().findAll)
+routes.get('/role/:id', Authentication(), new RoleController().findOne)
+routes.get('/role/search/q', Authentication(), new RoleController().search)
+routes.put('/role/:id', Authentication(), new RoleController().update)
+routes.delete('/role/single/:id', Authentication(), new RoleController().delete)
+routes.delete('/role/multiples', Authentication(), new RoleController().deleteAll)
+
+//Permission
+routes.post('/permission/', Authentication(), new PermissionController().store)
+routes.get('/permission/', Authentication(), new PermissionController().findAll)
+routes.get('/permission/:id', Authentication(), new PermissionController().findOne)
+routes.get('/permission/search/q', Authentication(), new PermissionController().search)
+routes.put('/permission/:id', Authentication(), new PermissionController().update)
+routes.delete('/permission/single/:id', Authentication(), new PermissionController().delete)
+routes.delete('/permission/multiples', Authentication(), new PermissionController().deleteAll)
 
 //Sistema de Coordenadas
 routes.get('/sys-ref/', Authentication(), new SysRefController().findAll)

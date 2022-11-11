@@ -28,11 +28,6 @@ type SubMenuType = {
         subMenuItems?: SubMenuType[]
     }
 
-
-// function classNames(...classes: any[]) {
-//   return classes.filter(Boolean).join(' ')
-// }
-
 export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     const { projeto, setProjeto } = useContext(ProjetoContext)
