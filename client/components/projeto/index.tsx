@@ -25,10 +25,8 @@ const Projetos = () => {
     const [ projetoLocal, setProjetoLocal ] = useState<any>()
     const [ projetos, setProjetos ] = useState<any>()
     const { data: session } = useSession()
-    const isAddMode = !selectedProjeto
 
-    const { showModal, hideModal, store } = useModalContext()
-    const { visible, type } = store
+    const { showModal, hideModal } = useModalContext()
 
     const deleteSingleModal = () => 
         showModal({ 
@@ -60,13 +58,14 @@ const Projetos = () => {
     };
 
     function getProjetosDefaultOptions() {
-      return projetos?.map((projeto: any) => {
-          return {
-              label: projeto.nome,
-              value: projeto.id
-          }
-      })
-  }
+        return projetos?.map((projeto: any) => {
+            return {
+                label: projeto.nome,
+                value: projeto.id
+            }
+        })
+    }
+
     const loadProjetos = useCallback(async () => {
         
         if (typeof session !== typeof undefined){
@@ -151,58 +150,53 @@ const Projetos = () => {
                         </div>
                     </div>
                     <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
-                        
-
-                            <div className='pb-4'>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Entre com as iniciais...',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={projetoLocal}
-                                    defaultOptions={getProjetosDefaultOptions()}
-                                    options={loadOptions}
-                                    label="Localizar Projeto"
-                                    callback={selectProjeto}
-                                />
-                            </div>
-
-                            <div>
-                                <span className='font-semibold'>Projeto Ativo: { projeto?.nome }</span>
-                            </div>
-
+                <div className='pb-4'>
+                    <Select
+                        initialData={
                             {
-                                projetoLocal && (
-                                    <div className='flex flex-row items-center justify-between pt-5'>
-                                        <Link href="#" className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
-                                            <div className='flex flex-row items-center justify-center space-x-2'>
-                                                <PencilIcon className="h-5 w-5" />
-                                            </div>
-                                        </Link>
-
-                                        <Link href={`/projeto/${selectedProjeto?.id}/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
-                                            <div className='flex flex-row items-center justify-center space-x-2'>
-                                                <UsersIcon className="h-5 w-5" />
-                                            </div>
-                                        </Link>
-                                        
-                                        <Link href="#" className="text-center w-auto hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
-                                            <div className='flex flex-row items-center justify-center space-x-2'>
-                                                <TrashIcon className="h-5 w-5" />
-                                            </div>
-                                        </Link>
-
-                                        <Link href={`/projeto/${selectedProjeto?.id}/empresa`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
-                                            <div className='flex flex-row items-center justify-center space-x-2'>
-                                                <InboxInIcon className="h-5 w-5" />
-                                                <span>Empresas</span>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                )
+                                label: 'Entre com as iniciais...',
+                                value: ''
                             }
+                        }
+                        selectedValue={projetoLocal}
+                        defaultOptions={getProjetosDefaultOptions()}
+                        options={loadOptions}
+                        label="Localizar Projeto"
+                        callback={selectProjeto}
+                    />
+                </div>
+
+                <div>
+                    <span className='font-semibold'>Projeto Ativo: { projeto?.nome }</span>
+                </div>
+                { projetoLocal && (
+                        <div className='flex flex-row items-center justify-between pt-5'>
+                            <Link href="#" className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
+                                <div className='flex flex-row items-center justify-center space-x-2'>
+                                    <PencilIcon className="h-5 w-5" />
+                                </div>
+                            </Link>
+
+                            <Link href={`/projeto/${selectedProjeto?.id}/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                                <div className='flex flex-row items-center justify-center space-x-2'>
+                                    <UsersIcon className="h-5 w-5" />
+                                </div>
+                            </Link>
+                            
+                            <Link href="#" className="text-center w-auto hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
+                                <div className='flex flex-row items-center justify-center space-x-2'>
+                                    <TrashIcon className="h-5 w-5" />
+                                </div>
+                            </Link>
+
+                            <Link href={`/projeto/${selectedProjeto?.id}/empresa`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                                <div className='flex flex-row items-center justify-center space-x-2'>
+                                    <InboxInIcon className="h-5 w-5" />
+                                    <span>Empresas</span>
+                                </div>
+                            </Link>
+                        </div>
+                        )}
                     </div>
                 </div>              
             </div>

@@ -48,40 +48,89 @@ var Link_1 = require("../../components/Link");
 var input_1 = require("../../components/atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
-var Modal_1 = require("../../components/Modal");
 var AuthContext_1 = require("../../contexts/AuthContext");
+var styles_1 = require("../Utils/styles");
+var ModalContext_1 = require("contexts/ModalContext");
+var LinkBack_1 = require("../LinkBack");
+var AddEdit_1 = require("./AddEdit");
+var react_2 = require("react");
+var solid_2 = require("@heroicons/react/solid");
+var stylesForm = {
+    label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
+    field: 'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
+    button: ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
+    errorMsg: 'text-red-500 text-sm'
+};
 var Users = function (_a) {
-    var currentUsers = _a.currentUsers, empresaId = _a.empresaId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers;
+    var currentUsers = _a.currentUsers, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers;
     var _b = react_1.useState(currentUsers), filteredUsers = _b[0], setFilteredUsers = _b[1];
-    var _c = react_1.useState(), selectedUser = _c[0], setSelectedUser = _c[1];
-    var _d = react_1.useState(false), uploading = _d[0], setUploading = _d[1];
-    var _e = react_1.useState(false), openModal = _e[0], setOpenModal = _e[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var _f = react_1.useState(false), sorted = _f[0], setSorted = _f[1];
-    var _g = react_1.useState([]), checkedUsers = _g[0], setCheckedUsers = _g[1];
+    var _c = react_1.useState(false), sorted = _c[0], setSorted = _c[1];
+    var _d = react_1.useState([]), checkedUsers = _d[0], setCheckedUsers = _d[1];
+    var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
+    var _f = react_1.useState(), roles = _f[0], setRoles = _f[1];
+    var formRef = react_2.createRef();
+    var userById = function (id) {
+        return currentUsers.find(function (user) { return user.id === id; });
+    };
+    var formSubmit = function () {
+        if (formRef.current) {
+            formRef.current.handleSubmit();
+            hideModal();
+        }
+    };
+    var deleteSingleModal = function (id) {
+        var _a;
+        return showModal({
+            title: 'Deletar Usuário',
+            onConfirm: function () { deleteUser(id); },
+            styleButton: styles_1.styles.redButton,
+            iconType: 'warn',
+            confirmBtn: 'Deletar',
+            content: "Tem Certeza que deseja excluir o Usu\u00E1rio " + ((_a = userById(id)) === null || _a === void 0 ? void 0 : _a.username) + " ?"
+        });
+    };
+    var updateUser = function (id) {
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: stylesForm, redirect: false })
+        });
+    };
+    var addUser = function () {
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: stylesForm, redirect: false })
+        });
+    };
+    var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
     react_1.useEffect(function () {
         setFilteredUsers(currentUsers);
     }, [currentUsers, currentPage]);
-    function selectToModal(id) {
-        var user = currentUsers.find(function (user) { return user.id === id; });
-        setSelectedUser(user);
-        setOpenModal(true);
-    }
-    function deleteUser() {
+    function deleteUser(id) {
         return __awaiter(this, void 0, void 0, function () {
+            var error_1;
             return __generator(this, function (_a) {
-                try {
-                    client["delete"]("/users/" + (selectedUser === null || selectedUser === void 0 ? void 0 : selectedUser.id))
-                        .then(function () {
-                        alert_1["default"].success('O usuário foi deletada com SUCESSO!!!');
-                        loadUsers();
-                        setOpenModal(false);
-                    });
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, client["delete"]("/users/" + id)
+                                .then(function (response) {
+                                var _a = response.data, error = _a.error, message = _a.message;
+                                if (!error) {
+                                    alert_1["default"].success(message);
+                                    loadUsers();
+                                    hideModal();
+                                }
+                                else {
+                                    alert_1["default"].error(message);
+                                    hideModal();
+                                }
+                            })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
-                catch (error) {
-                    console.log(error);
-                }
-                return [2 /*return*/];
             });
         });
     }
@@ -106,7 +155,7 @@ var Users = function (_a) {
                 currentPage: currentPage,
                 perPage: perPage,
                 orderBy: orderBy,
-                order: !sorted ? 'DESC' : 'ASC'
+                order: !sorted ? 'desc' : 'asc'
             };
             onPageChanged(paginatedData);
             setSorted(!sorted);
@@ -149,8 +198,15 @@ var Users = function (_a) {
     };
     return (React.createElement("div", null,
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
+            React.createElement("div", null,
+                React.createElement(LinkBack_1.LinkBack, { href: "/projeto", className: "flex flex-col relative left-0 ml-4" })),
             React.createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Usu\u00E1rios"),
-            React.createElement(Link_1.Link, { href: "/empresa/" + empresaId + "/users/add", className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
+            React.createElement("button", { 
+                // disabled={formState.isSubmitting}
+                type: "submit", className: "flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", onClick: addUser },
+                React.createElement("span", { className: "flex items-center" },
+                    React.createElement(solid_2.UserAddIcon, { className: "h-5 w-5 text-green-200 group-hover:text-green-100", "aria-hidden": "true" })),
+                React.createElement("div", null, "Novo"))),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
                 React.createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },
@@ -169,7 +225,7 @@ var Users = function (_a) {
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     (checkedUsers === null || checkedUsers === void 0 ? void 0 : checkedUsers.length) > 0 && (React.createElement("div", { className: "py-4" },
-                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteUsers }, "Deletar"))),
+                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
                         React.createElement("thead", { className: "bg-gray-50" },
                             React.createElement("tr", null,
@@ -203,11 +259,9 @@ var Users = function (_a) {
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
                                     React.createElement("div", { className: "text-sm text-gray-500" }, "ADMIN OR USER"))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
-                                React.createElement(Link_1.Link, { href: "/empresa/" + empresaId + "/users/update/" + user.id },
+                                React.createElement(Link_1.Link, { href: "#", onClick: function () { return updateUser(user.id); } },
                                     React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
-                                React.createElement(Link_1.Link, { href: "#", onClick: function () { return selectToModal(user.id); } },
-                                    React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); }))))),
-            openModal &&
-                React.createElement(Modal_1["default"], { className: "w-full", styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar usu\u00E1rio", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir o usu\u00E1rio " + (selectedUser === null || selectedUser === void 0 ? void 0 : selectedUser.username) + "?", data: selectedUser, parentFunction: deleteUser, hideModal: function () { return setOpenModal(false); }, open: openModal })))));
+                                React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(user.id); } },
+                                    React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };
 exports["default"] = Users;

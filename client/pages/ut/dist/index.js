@@ -68,7 +68,6 @@ var UtIndex = function () {
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     var loadUts = react_1.useCallback(function (itemsPerPage, currentPage) {
         if (itemsPerPage === void 0) { itemsPerPage = 1; }
         return __awaiter(void 0, void 0, void 0, function () {

@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -48,9 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var Select_1 = require("@/components/Select");
-var FormInput_1 = require("@/components/FormInput");
 var react_1 = require("react");
-var react_hook_form_1 = require("react-hook-form");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var react_2 = require("next-auth/react");
@@ -60,28 +47,15 @@ var ProjetoContext_1 = require("contexts/ProjetoContext");
 var styles_1 = require("../Utils/styles");
 var ModalContext_1 = require("contexts/ModalContext");
 var outline_1 = require("@heroicons/react/outline");
-var Modal_1 = require("../Modal");
+var AddEdit_1 = require("./AddEdit");
 var Projetos = function () {
-    var _a = react_hook_form_1.useForm(), register = _a.register, handleSubmit = _a.handleSubmit, errors = _a.formState.errors, setValue = _a.setValue, getValues = _a.getValues, reset = _a.reset;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var _b = react_1.useContext(ProjetoContext_1.ProjetoContext), projeto = _b.projeto, setProjeto = _b.setProjeto;
-    var _c = react_1.useState(), selectedProjeto = _c[0], setSelectedProjeto = _c[1];
-    var _d = react_1.useState(), projetoLocal = _d[0], setProjetoLocal = _d[1];
-    var _e = react_1.useState(), projetos = _e[0], setProjetos = _e[1];
+    var _a = react_1.useContext(ProjetoContext_1.ProjetoContext), projeto = _a.projeto, setProjeto = _a.setProjeto;
+    var _b = react_1.useState(), selectedProjeto = _b[0], setSelectedProjeto = _b[1];
+    var _c = react_1.useState(), projetoLocal = _c[0], setProjetoLocal = _c[1];
+    var _d = react_1.useState(), projetos = _d[0], setProjetos = _d[1];
     var session = react_2.useSession().data;
-    var isAddMode = !selectedProjeto;
-    var _f = ModalContext_1.useModalContext(), showModal = _f.showModal, hideModal = _f.hideModal, store = _f.store;
-    var visible = store.visible, type = store.type;
-    var addEditForm = (React.createElement("form", { onSubmit: handleSubmit(onSubmit), id: "hook-form" },
-        React.createElement("div", { className: 'w-full' },
-            React.createElement(FormInput_1.FormInput, { id: "nome", name: "nome", label: "Nome", register: register, errors: errors, rules: {
-                    required: 'O campo nome é obrigatório',
-                    minLength: {
-                        value: 3,
-                        message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                    }
-                }, className: "lg:w-[50vh] pb-4" })),
-        React.createElement(FormInput_1.FormInput, { id: "active", name: "active", label: "Ativo?", type: "checkbox", register: register, errors: errors, className: "py-4 w-10" })));
+    var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal;
     var deleteSingleModal = function () {
         return showModal({
             type: 'delete.projeto',
@@ -93,11 +67,10 @@ var Projetos = function () {
             content: "Tem Certeza que deseja excluir o Projeto " + (selectedProjeto === null || selectedProjeto === void 0 ? void 0 : selectedProjeto.nome) + " ?"
         });
     };
-    var editModal = function () { return showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar' }); };
+    var editModal = function () { return showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { reloadData: loadProjetos, data: selectedProjeto }) }); };
     var addModal = function () {
         setSelectedProjeto(null);
-        reset();
-        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar' });
+        showModal({ title: 'Novo Projeto', type: "submit", styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { reloadData: loadProjetos }) });
     };
     var loadOptions = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, json;
@@ -124,38 +97,31 @@ var Projetos = function () {
         });
     }
     var loadProjetos = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, _a, projetos_1, error, message, projetoAtivo, _i, _b, _c, key, value;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var response, _a, projetos_1, error, message, projetoAtivo;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     if (!(typeof session !== typeof undefined)) return [3 /*break*/, 2];
                     return [4 /*yield*/, client.get("/projeto")];
                 case 1:
-                    response = _d.sent();
+                    response = _b.sent();
                     _a = response.data, projetos_1 = _a.projetos, error = _a.error, message = _a.message;
                     projetoAtivo = projetos_1 ? projetos_1.find(function (projeto) { return projeto.active === true; }) : {};
                     setProjetoLocal({
                         label: projetoAtivo === null || projetoAtivo === void 0 ? void 0 : projetoAtivo.nome,
                         value: projetoAtivo === null || projetoAtivo === void 0 ? void 0 : projetoAtivo.id
                     });
-                    for (_i = 0, _b = Object.entries(projetoAtivo); _i < _b.length; _i++) {
-                        _c = _b[_i], key = _c[0], value = _c[1];
-                        setValue(key, value, {
-                            shouldValidate: true,
-                            shouldDirty: true
-                        });
-                    }
                     setSelectedProjeto(projetoAtivo);
                     setProjeto(projetoAtivo);
                     if (error) {
                         console.log(message);
                     }
                     setProjetos(projetos_1);
-                    _d.label = 2;
+                    _b.label = 2;
                 case 2: return [2 /*return*/];
             }
         });
-    }); }, [session, client, setProjeto, setValue]);
+    }); }, [session, client, setProjeto]);
     react_1.useEffect(function () {
         loadProjetos();
     }, [loadProjetos]);
@@ -192,83 +158,12 @@ var Projetos = function () {
             });
         });
     }
-    function onSubmit(data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var preparedData;
-            return __generator(this, function (_a) {
-                preparedData = __assign({}, data);
-                try {
-                    return [2 /*return*/, isAddMode
-                            ? createProjeto(preparedData)
-                            : updateProjeto(selectedProjeto === null || selectedProjeto === void 0 ? void 0 : selectedProjeto.id, preparedData)];
-                }
-                catch (error) {
-                    alert_1["default"].error(error.message);
-                }
-                return [2 /*return*/];
-            });
-        });
-    }
-    function createProjeto(data) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.post("projeto", data)
-                            .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
-                            if (!error) {
-                                alert_1["default"].success(message);
-                                hideModal();
-                                loadProjetos();
-                            }
-                            else {
-                                alert_1["default"].error(message);
-                            }
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    }
-    function updateProjeto(id, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.put("/projeto/" + id, data)
-                            .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
-                            if (!error) {
-                                alert_1["default"].success(message);
-                                hideModal();
-                                loadProjetos();
-                            }
-                            else {
-                                alert_1["default"].error(message);
-                            }
-                        })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    }
     var selectProjeto = function (data) {
         var selectedProjeto = projetos.find(function (projeto) { return projeto.id === data.value; });
         setSelectedProjeto(selectedProjeto);
         setProjetoLocal(data);
-        for (var _i = 0, _a = Object.entries(selectedProjeto); _i < _a.length; _i++) {
-            var _b = _a[_i], key = _b[0], value = _b[1];
-            setValue(key, value, {
-                shouldValidate: true,
-                shouldDirty: true
-            });
-        }
     };
     return (React.createElement("div", null,
-        visible && (type === 'submit') ? (React.createElement(Modal_1["default"], null, addEditForm)) : (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "py-6 flex flex-col justify-center sm:py-20 bg-gray-100 my-auto lg:h-[33.3em] h-[24em] p-2" },
             React.createElement("div", { className: "relative py-3 w-full max-w-xl mx-auto h-full" },
                 React.createElement("div", { className: 'flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 rounded-t-xl' },

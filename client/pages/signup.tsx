@@ -1,15 +1,23 @@
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
-import { RegisterForm } from 'components/RegisterForm'
+import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
-import { getCsrfToken, getSession } from 'next-auth/react'
+import { UserAddIcon } from '@heroicons/react/solid'
 import Link from 'next/link';
+import { createRef } from 'react';
 
 import {styles} from 'components/helpers/defaultStyles'
+import { useModalContext } from 'contexts/ModalContext';
 
-const Pagelogin = ({ csrfToken }: any) => {
+const SigupPage = ({ csrfToken }: any) => {
+  const { hideModal } = useModalContext()
+  const formRef = createRef<any>()
 
-  const router = useRouter()
+  const submitForm = () => {
+    if (formRef.current) {
+      formRef.current.handleSubmit()
+      hideModal()
+    }
+  }
   
   return (
     <div className="min-h-full flex items-center justify-center my-24 px-4 sm:px-6 lg:px-8">
@@ -20,8 +28,21 @@ const Pagelogin = ({ csrfToken }: any) => {
           <h1 className='font-roboto text-xl font-semibold text-green-700'>iFlorestal</h1>
           </div>
         </div>
-        <div className='w-full pt-10'>
-          <RegisterForm styles={styles} redirect/>
+        <div className='w-full pt-20'>
+          <AddEdit ref={formRef} styles={styles} redirect/>
+          <div className='mx-auto flex flex-row items-center justify-center py-4'>
+            <button
+                // disabled={formState.isSubmitting}
+                type="submit"
+                className="group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                onClick={submitForm}
+              >
+                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                  <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                </span>
+                Cadastrar
+              </button>
+            </div>
         </div>
         <div className='w-full border-b border-gray-200 flex items-center'>
           <p className='text-xs py-4 flex items-center text-center'>
@@ -36,13 +57,4 @@ const Pagelogin = ({ csrfToken }: any) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-
-  return {
-    props: {
-      csrfToken: await getCsrfToken(ctx)
-    },
-  }
-}
-
-export default Pagelogin
+export default SigupPage

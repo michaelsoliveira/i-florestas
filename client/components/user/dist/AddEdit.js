@@ -58,25 +58,72 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 exports.__esModule = true;
-exports.RegisterForm = void 0;
-/* eslint-disable react-hooks/rules-of-hooks */
+exports.AddEdit = void 0;
 var formik_1 = require("formik");
 var react_1 = require("react");
-var hooks_1 = require("../store/hooks");
-var userSlice_1 = require("../store/userSlice");
+var hooks_1 = require("../../store/hooks");
+var userSlice_1 = require("../../store/userSlice");
 var Yup = require("yup");
 require("react-toastify/dist/ReactToastify.css");
-var alert_1 = require("../services/alert");
+var alert_1 = require("../../services/alert");
 var react_2 = require("next-auth/react");
 var router_1 = require("next/router");
 var AuthContext_1 = require("contexts/AuthContext");
-exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
+var Select_1 = require("../Select");
+exports.AddEdit = react_1.forwardRef(function RegisterForm(_a, ref) {
     var _this = this;
     var styles = _a.styles, userId = _a.userId, sendForm = _a.sendForm, redirect = _a.redirect, projetoId = _a.projetoId, rest = __rest(_a, ["styles", "userId", "sendForm", "redirect", "projetoId"]);
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
     var isAddMode = !userId;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
+    var _b = react_1.useState(), selectedRole = _b[0], setSelectedRole = _b[1];
+    var _c = react_1.useState(), roles = _c[0], setRoles = _c[1];
+    var loadRoles = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+        var response, roles;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get('role')];
+                case 1:
+                    response = _a.sent();
+                    roles = response.data.roles;
+                    setRoles(roles);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client]);
+    react_1.useEffect(function () {
+        loadRoles();
+    }, [loadRoles]);
+    var loadOptions = function (inputValue, callback) { return __awaiter(_this, void 0, void 0, function () {
+        var response, json;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/role/search/q?nome=" + inputValue)];
+                case 1:
+                    response = _a.sent();
+                    json = response.data;
+                    callback(json === null || json === void 0 ? void 0 : json.map(function (role) { return ({
+                        value: role.id,
+                        label: role.name
+                    }); }));
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    function getRolesDefaultOptions() {
+        return roles === null || roles === void 0 ? void 0 : roles.map(function (role) {
+            return {
+                label: role.name,
+                value: role.id
+            };
+        });
+    }
+    var selectRole = function (data) {
+        // const selectedRole = roles.find((role: any) => role.id === data.value)
+        setSelectedRole(data);
+        // setProjetoLocal(data)
+    };
     var validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
         username: Yup.string()
@@ -108,7 +155,7 @@ exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        preparedData = __assign(__assign({}, data), { projetoId: projetoId });
+                        preparedData = __assign(__assign({}, data), { id_role: selectedRole === null || selectedRole === void 0 ? void 0 : selectedRole.value, projetoId: projetoId });
                         if (!isAddMode) return [3 /*break*/, 2];
                         return [4 /*yield*/, dispatch(userSlice_1.create(preparedData))
                                 .unwrap()
@@ -150,18 +197,20 @@ exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, client.put("/users/" + userId, preparedData)
-                            .then(function (response) {
-                            var _a = response.data, error = _a.error, user = _a.user, message = _a.message;
-                            if (error) {
-                                alert_1["default"].error(message);
-                            }
-                            else {
-                                alert_1["default"].success(message);
-                                sendForm();
-                                // hideModal()
-                            }
-                        })];
+                    case 2:
+                        console.log(preparedData);
+                        return [4 /*yield*/, client.put("/users/" + userId, preparedData)
+                                .then(function (response) {
+                                var _a = response.data, error = _a.error, user = _a.user, message = _a.message;
+                                if (error) {
+                                    alert_1["default"].error(message);
+                                }
+                                else {
+                                    alert_1["default"].success(message);
+                                    sendForm();
+                                    // hideModal()
+                                }
+                            })];
                     case 3:
                         _a.sent();
                         _a.label = 4;
@@ -184,6 +233,7 @@ exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
                 handleRegister(values);
             } }, function (_a) {
             var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, submitForm = _a.submitForm;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             var loadUser = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -202,11 +252,12 @@ exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
                     }
                 });
             }); }, [setFieldValue]);
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             react_1.useEffect(function () {
                 // onSubmit(submitForm())
                 loadUser();
             }, [loadUser, submitForm]);
-            return (React.createElement("div", { className: "flex flex-col justify-center w-[24em]" },
+            return (React.createElement("div", { className: "flex flex-col justify-center w-[24em] lg:w-[30em]" },
                 React.createElement("div", { className: "relative h-full mx-0" },
                     React.createElement("div", { className: "relative pt-3 pb-6 px-4 bg-white shadow-sm rounded-xl border border-gray-400" },
                         React.createElement(formik_1.Form, null,
@@ -224,6 +275,11 @@ exports.RegisterForm = react_1.forwardRef(function RegisterForm(_a, ref) {
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "password" }, "Confirmar a Senha"),
                                     React.createElement(formik_1.Field, { type: "password", className: styles.field, id: "confirmPassword", name: "confirmPassword", placeholder: "******" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))))));
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))),
+                            React.createElement("div", { className: 'py-4' },
+                                React.createElement(Select_1.Select, { initialData: {
+                                        label: 'Entre com as iniciais...',
+                                        value: ''
+                                    }, selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadOptions, label: "Grupo de Usu\u00E1rio", callback: selectRole })))))));
         })));
 });

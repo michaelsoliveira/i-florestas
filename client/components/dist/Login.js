@@ -52,10 +52,6 @@ var react_hook_form_1 = require("react-hook-form");
 var yup_1 = require("@hookform/resolvers/yup");
 var Yup = require("yup");
 var solid_1 = require("@heroicons/react/solid");
-// import { parseCookies } from 'nookies';
-// import Logo from '../components/Logo'
-// import { setMessage } from '../store/messageSlice'
-// import { useAppDispatch } from '../store/hooks';
 var alert_1 = require("../services/alert");
 var react_1 = require("next-auth/react");
 var fa_1 = require("react-icons/fa");
@@ -123,10 +119,10 @@ function Login(_a) {
             React.createElement("input", { type: "hidden", name: "remember", defaultValue: "true" }),
             React.createElement("div", { className: "rounded-md" },
                 React.createElement("div", { className: "relative" },
-                    React.createElement("input", __assign({ autoFocus: true }, register('email'), { id: "email", name: "email", type: "email", className: "peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600", placeholder: "michaelsoliveira@gmail.com" })),
+                    React.createElement("input", __assign({ autoFocus: true }, register('email'), { id: "emailLogin", name: "email", type: "email", className: "peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600", placeholder: "michaelsoliveira@gmail.com" })),
                     React.createElement("label", { htmlFor: "email", className: "absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm" }, "Email")),
                 React.createElement("div", { className: "mt-10 relative" },
-                    React.createElement("input", __assign({}, register('password'), { id: "password", name: "password", type: "password", className: "peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600", placeholder: "michaelsoliveira@gmail.com" })),
+                    React.createElement("input", __assign({}, register('password'), { id: "passwordLogin", name: "password", type: "password", className: "peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600", placeholder: "michaelsoliveira@gmail.com" })),
                     React.createElement("label", { htmlFor: "password", className: "absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm" }, "Senha"))),
             React.createElement("div", { className: "flex items-center justify-between" },
                 React.createElement("div", { className: "flex items-center" },

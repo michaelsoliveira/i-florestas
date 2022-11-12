@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { Link } from "../../components/Link"
 import { Input } from "../../components/atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
@@ -8,11 +8,11 @@ import { UserType } from "types/IUserType"
 import { styles } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
-import { RegisterForm } from "../RegisterForm"
+import { AddEdit } from "./AddEdit"
 import { createRef } from 'react'
-import { useRouter } from "next/router"
+import { UserAddIcon } from '@heroicons/react/solid'
 
-const stylesButton = {
+const stylesForm = {
     label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
     field:
     'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
@@ -28,6 +28,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
+    const [roles, setRoles] = useState<any[]>()
     const formRef = createRef<any>()
     
     const userById = (id?: string) => {
@@ -39,17 +40,29 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
             formRef.current.handleSubmit()
             hideModal()
         }
-        loadUsers(10)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar Usuário', styleButton: styles.redButton, iconType: 'warn', onConfirm: deleteUser(id),
-    confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir ${userById(id)?.username} ?` })
+    const deleteSingleModal = (id?: string) => 
+        showModal({ 
+            title: 'Deletar Usuário', 
+            onConfirm: () => { deleteUser(id) }, 
+            styleButton: styles.redButton, 
+            iconType: 'warn', 
+            confirmBtn: 'Deletar', 
+            content: `Tem Certeza que deseja excluir o Usuário ${userById(id)?.username} ?` 
+    })
+
     const updateUser = (id?: string) => {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-        content: <RegisterForm ref={formRef} projetoId={projetoId} userId={id} styles={stylesButton} redirect={false} />
-    })    
-}
-    
+            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
+        })    
+    }
+
+    const addUser = () => {
+            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
+        })    
+    }
     
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
 
@@ -140,12 +153,18 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                     <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
                 </div>
                 <h1 className="font-medium text-2xl font-roboto">Usuários</h1>
-                <Link
-                    href={`/projeto/${projetoId}/users/add`}
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Adicionar
-                </Link>
+                
+                <button
+                // disabled={formState.isSubmitting}
+                type="submit"
+                className="flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                onClick={addUser}
+              >
+                <span className="flex items-center">
+                  <UserAddIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
+                </span>
+                <div>Novo</div>
+              </button>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">

@@ -30,7 +30,6 @@ const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadUsers = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
@@ -40,7 +39,7 @@ const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname, setCurrentUsers])
 
     useEffect(() => {  
         loadUsers(itemsPerPage)
@@ -112,7 +111,7 @@ const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
                 projetoId={projetoId}
-                />
+            />
             <Pagination
                 perPage={itemsPerPage}
                 totalItems={totalItems}

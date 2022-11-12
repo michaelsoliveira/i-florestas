@@ -1,4 +1,4 @@
-import { RegisterForm } from "components/RegisterForm"
+import { RegisterForm } from "@/components/user/AddEdit"
 import withAuthentication from "components/withAuthentication"
 
 const styles = {

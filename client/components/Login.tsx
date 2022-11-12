@@ -3,10 +3,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { LockClosedIcon } from '@heroicons/react/solid'
-// import { parseCookies } from 'nookies';
-// import Logo from '../components/Logo'
-// import { setMessage } from '../store/messageSlice'
-// import { useAppDispatch } from '../store/hooks';
 import AlertService from '../services/alert';
 import { signIn, useSession } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';

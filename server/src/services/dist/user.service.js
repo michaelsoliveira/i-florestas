@@ -55,38 +55,81 @@ var prismaClient_1 = require("../database/prismaClient");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
-    UserService.prototype.create = function (data) {
+    UserService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, passwordHash, dataRequest, preparedData, user;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var userExists, passwordHash, dataRequest, preparedData, _a, user;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
                             where: {
-                                email: data === null || data === void 0 ? void 0 : data.email
+                                AND: {
+                                    email: data === null || data === void 0 ? void 0 : data.email,
+                                    projeto_users: {
+                                        some: {
+                                            id_user: userId
+                                        }
+                                    }
+                                }
                             }
                         })];
                     case 1:
-                        userExists = _a.sent();
+                        userExists = _b.sent();
                         if (userExists) {
                             throw new Error("Usuário já cadastrado");
                         }
                         return [4 /*yield*/, bcryptjs_1["default"].hash(data === null || data === void 0 ? void 0 : data.password, 10)];
                     case 2:
-                        passwordHash = _a.sent();
+                        passwordHash = _b.sent();
                         dataRequest = {
                             username: data === null || data === void 0 ? void 0 : data.username,
                             email: data === null || data === void 0 ? void 0 : data.email,
                             password: passwordHash,
                             image: data === null || data === void 0 ? void 0 : data.image,
-                            provider: data === null || data === void 0 ? void 0 : data.provider,
-                            id_provider: data === null || data === void 0 ? void 0 : data.id_provider
+                            provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
+                            id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
                         };
-                        preparedData = (data === null || data === void 0 ? void 0 : data.empresaId) ? __assign(__assign({}, data), { empresa_users: { create: { id_empresa: data.empresaId } } }) : __assign({}, dataRequest);
+                        if (!!(data === null || data === void 0 ? void 0 : data.projetoId)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
+                                where: {
+                                    projeto_users: {
+                                        some: {
+                                            id_user: userId
+                                        }
+                                    }
+                                }
+                            })
+                                .then(function (projeto) { return __awaiter(_this, void 0, void 0, function () {
+                                var preparedData_1;
+                                return __generator(this, function (_a) {
+                                    if (projeto) {
+                                        preparedData_1 = __assign(__assign({}, dataRequest), { projeto_users: {
+                                                create: {
+                                                    id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                                }
+                                            } });
+                                        return [2 /*return*/, preparedData_1];
+                                    }
+                                    return [2 /*return*/, dataRequest];
+                                });
+                            }); })];
+                    case 3:
+                        _a = _b.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        _a = __assign(__assign({}, dataRequest), { projeto_users: {
+                                create: {
+                                    id_projeto: data === null || data === void 0 ? void 0 : data.projetoId
+                                }
+                            } });
+                        _b.label = 5;
+                    case 5:
+                        preparedData = _a;
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign({}, preparedData)
                             })];
-                    case 3:
-                        user = _a.sent();
+                    case 6:
+                        user = _b.sent();
                         return [2 /*return*/, user];
                 }
             });
@@ -94,7 +137,7 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, preparedData, user;
+            var userExists, basicData, user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
@@ -107,20 +150,43 @@ var UserService = /** @class */ (function () {
                         if (!userExists) {
                             throw new Error("Usuário não localizado");
                         }
-                        preparedData = {
-                            image: data === null || data === void 0 ? void 0 : data.image,
-                            provider: data === null || data === void 0 ? void 0 : data.provider,
-                            id_provider: data === null || data === void 0 ? void 0 : data.id_provider
+                        basicData = {
+                            username: data === null || data === void 0 ? void 0 : data.username,
+                            email: data === null || data === void 0 ? void 0 : data.email,
+                            image: (data === null || data === void 0 ? void 0 : data.image) ? data === null || data === void 0 ? void 0 : data.image : userExists === null || userExists === void 0 ? void 0 : userExists.image
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                                 where: {
                                     id: id
                                 },
-                                data: __assign({}, preparedData)
+                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { users_roles: {
+                                        connect: {
+                                            user_id_role_id: {
+                                                role_id: data === null || data === void 0 ? void 0 : data.id_role,
+                                                user_id: id
+                                            }
+                                        }
+                                    } }) : basicData
                             })];
                     case 2:
                         user = _a.sent();
                         return [2 /*return*/, user];
+                }
+            });
+        });
+    };
+    UserService.prototype["delete"] = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user["delete"]({
+                            where: {
+                                id: id
+                            }
+                        })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });
@@ -157,10 +223,22 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.getAll = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var userRepository;
+            var users;
             return __generator(this, function (_a) {
-                userRepository = typeorm_1.getRepository(User_1.User);
-                return [2 /*return*/, userRepository.find()];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findMany({
+                            where: {
+                                projeto_users: {
+                                    some: {
+                                        active: true
+                                    }
+                                }
+                            }
+                        })];
+                    case 1:
+                        users = _a.sent();
+                        return [2 /*return*/, users];
+                }
             });
         });
     };
@@ -228,6 +306,11 @@ var UserService = /** @class */ (function () {
                                     ]
                                 },
                                 select: {
+                                    id: true,
+                                    username: true,
+                                    email: true,
+                                    provider: true,
+                                    id_provider: true,
                                     users_roles: {
                                         select: {
                                             roles: {

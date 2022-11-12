@@ -94,17 +94,29 @@ class UserService {
             throw new Error("Usuário não localizado")
         }
 
-        const preparedData = {
+        const basicData = {
             username: data?.username,
             email: data?.email,
             image: data?.image ? data?.image : userExists?.image
         }
 
         const user = await prismaClient.user.update({
-            where: {
+            where: 
+            {
                 id
             },
-            data: { ...preparedData }
+            data: data?.id_role ? {
+                ...basicData,
+                users_roles: {
+                    connect: 
+                        { 
+                            user_id_role_id: {
+                                role_id: data?.id_role,
+                                user_id: id
+                            },
+                        }
+                }
+            } : basicData
         })
 
         return user

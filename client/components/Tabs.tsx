@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames';
 import Login from './Login'
-import { RegisterForm } from './RegisterForm'
+import { AddEdit } from './user/AddEdit'
 
 const styles = {
   label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
@@ -57,11 +57,11 @@ const Tabs = () => {
           </Tab.Panel>
           <Tab.Panel
               className={classNames(
-                'bg-white shadow-lg rounded-xl px-4 py-2 text-left',
+                'bg-white shadow-lg rounded-xl px-4 py-2 text-left mx-auto flex flex-wrap justify-center items-center',
                 // 'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-green-600 ring-white ring-opacity-60'
               )}
             >
-              <RegisterForm styles={styles} redirect/>
+              <AddEdit styles={styles} redirect/>
             </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

@@ -88,7 +88,7 @@ class EstadoService {
             }
         }
         
-        const [estados, total] = await prismaClient.$transaction([
+        const [data, total] = await prismaClient.$transaction([
             prismaClient.role.findMany({
                 where,
                 take: perPage ? parseInt(perPage) : 50,
@@ -101,7 +101,7 @@ class EstadoService {
         ])
 
         return {
-            data: estados,
+            data,
             perPage,
             page,
             skip,
@@ -122,14 +122,14 @@ class EstadoService {
     async search(text: any, userId?: string) {
         const roles = await prismaClient.role.findMany({
             where: {
-                AND: {
+                // AND: {
                     OR: [{name: { mode: Prisma.QueryMode.insensitive, contains: text }}, {description: { mode: Prisma.QueryMode.insensitive, contains: text }}],
-                    users_roles: {
-                        some: {
-                            user_id: userId
-                        }
-                    }
-                }
+                //     users_roles: {
+                //         some: {
+                //             user_id: userId
+                //         }
+                //     }
+                // }
                 
             },
             orderBy: {

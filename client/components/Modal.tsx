@@ -66,7 +66,7 @@ export default function Modal(props: ModaType) {
     <Transition.Root show={visible || false} as={Fragment}>
       <Dialog
               as="div" className={
-              classNames("fixed z-10 inset-0 overflow-y-auto",
+              classNames("fixed z-50 inset-0 overflow-y-auto text-sm",
                       className
               )}
         // initialFocus={cancelButtonRef} 
@@ -101,24 +101,28 @@ export default function Modal(props: ModaType) {
               'inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
                 size ? size : 'sm:max-w-2xl'
               )}>
-                { (layout === 'none') ? (
-                  <div>
-                        {content}
-                  </div>
-                ) :
-                (<div>
-                  <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
+               <div>
+                  <div className="bg-white px-4">
+                    <div className="sm:flex sm:items-center py-2">
                       { (iconType === 'warn') && (
                         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                           <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
                         </div>
                       ) }
-                      <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                        <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900 pb-4">
+                      <div className="pt-2 py-2 px-2">
+                        <div className='flex flex-row justify-between items-center py-2'>
+                        <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                           {title}
                         </Dialog.Title>
-                        <div className="mt-2 w-full">
+                          {(type && type === 'submit') && (
+                            <div className='hover:cursor-pointer align-top' onClick={hideModal}>
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </div>
+                          )}
+                          </div>
+                        <div className="my-3 w-full">
                           {children ? children : content}
                         </div>
                       </div>
@@ -143,9 +147,7 @@ export default function Modal(props: ModaType) {
                       Cancelar
                     </button>
                   </div>
-                
                 </div>
-                )}
               </div>
           </Transition.Child>
         </div>
