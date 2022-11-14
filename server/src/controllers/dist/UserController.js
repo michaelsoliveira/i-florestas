@@ -44,22 +44,23 @@ var UserController = /** @class */ (function () {
     function UserController() {
     }
     UserController.prototype.store = function (request, response) {
+        var _a;
         return __awaiter(this, void 0, Promise, function () {
             var user, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, user_service_1["default"].create(request.body)];
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, user_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
-                        user = _a.sent();
+                        user = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 user: user,
                                 message: null
                             })];
                     case 2:
-                        error_1 = _a.sent();
+                        error_1 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
@@ -169,6 +170,35 @@ var UserController = /** @class */ (function () {
             });
         });
     };
+    UserController.prototype["delete"] = function (request, response) {
+        return __awaiter(this, void 0, Promise, function () {
+            var id, error_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = request.params.id;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, user_service_1["default"]["delete"](id)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, response.status(200).json({
+                                error: false,
+                                message: 'Usuário deletada com Sucesso!!!'
+                            })];
+                    case 3:
+                        error_5 = _a.sent();
+                        return [2 /*return*/, response.json({
+                                error: true,
+                                upa: null,
+                                message: error_5.message
+                            })];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserController.prototype.sendMail = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -264,7 +294,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findProvider = function (request, response) {
         return __awaiter(this, void 0, Promise, function () {
-            var email, user, error_5;
+            var email, user, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -277,8 +307,8 @@ var UserController = /** @class */ (function () {
                         user = _a.sent();
                         return [2 /*return*/, response.json(user)];
                     case 3:
-                        error_5 = _a.sent();
-                        return [2 /*return*/, response.json(error_5)];
+                        error_6 = _a.sent();
+                        return [2 /*return*/, response.json(error_6)];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -286,7 +316,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findAll = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var users, error_6;
+            var users, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -296,8 +326,8 @@ var UserController = /** @class */ (function () {
                         users = _a.sent();
                         return [2 /*return*/, response.json(users)];
                     case 2:
-                        error_6 = _a.sent();
-                        return [2 /*return*/, response.json(error_6.message)];
+                        error_7 = _a.sent();
+                        return [2 /*return*/, response.json(error_7.message)];
                     case 3: return [2 /*return*/];
                 }
             });
@@ -305,21 +335,21 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, users, error_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var _a, userId, projetoId, users, error_8;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        id = request.params.id;
-                        _a.label = 1;
+                        _a = request.params, userId = _a.userId, projetoId = _a.projetoId;
+                        _b.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, user_service_1["default"].findOne(id)];
+                        _b.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, user_service_1["default"].findOne(userId, projetoId)];
                     case 2:
-                        users = _a.sent();
+                        users = _b.sent();
                         return [2 /*return*/, response.json(users)];
                     case 3:
-                        error_7 = _a.sent();
-                        return [2 /*return*/, response.json(error_7.message)];
+                        error_8 = _b.sent();
+                        return [2 /*return*/, response.json(error_8.message)];
                     case 4: return [2 /*return*/];
                 }
             });

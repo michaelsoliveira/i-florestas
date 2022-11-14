@@ -74,7 +74,7 @@ var ProjetoService = /** @class */ (function () {
     }
     ProjetoService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var projetoExists, projeto;
+            var projetoExists, roleAdmin, projeto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
@@ -94,7 +94,11 @@ var ProjetoService = /** @class */ (function () {
                         if (projetoExists) {
                             throw new Error('Já existe um Projeto cadastrada com este nome');
                         }
-                        console.log(data);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.role.findFirst({
+                                where: { name: { mode: client_1.Prisma.QueryMode.insensitive, equals: 'admin' } }
+                            })];
+                    case 2:
+                        roleAdmin = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.projeto.create({
                                 data: {
                                     nome: data === null || data === void 0 ? void 0 : data.nome,
@@ -105,12 +109,17 @@ var ProjetoService = /** @class */ (function () {
                                                     id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
                                                 }
                                             },
+                                            roles: {
+                                                connect: {
+                                                    id: (data === null || data === void 0 ? void 0 : data.id_role) ? data === null || data === void 0 ? void 0 : data.id_role : roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
+                                                }
+                                            },
                                             active: data === null || data === void 0 ? void 0 : data.active
                                         }
                                     }
                                 }
                             })];
-                    case 2:
+                    case 3:
                         projeto = _a.sent();
                         return [2 /*return*/, projeto];
                 }
@@ -266,7 +275,7 @@ var ProjetoService = /** @class */ (function () {
     };
     ProjetoService.prototype.getUsers = function (projetoId, query) {
         return __awaiter(this, void 0, Promise, function () {
-            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, data, total;
+            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, users, total, data;
             var _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -304,15 +313,42 @@ var ProjetoService = /** @class */ (function () {
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.user.findMany({
+                                    include: {
+                                        projeto_users: {
+                                            include: {
+                                                roles: {
+                                                    select: {
+                                                        id: true,
+                                                        name: true
+                                                    }
+                                                }
+                                            },
+                                            where: {
+                                                id_projeto: projetoId
+                                            }
+                                        }
+                                    },
                                     where: where,
                                     take: perPage ? parseInt(perPage) : 50,
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm)
                                 }),
-                                prismaClient_1.prismaClient.projeto.count({ where: where })
+                                prismaClient_1.prismaClient.user.count({ where: where })
                             ])];
                     case 1:
-                        _a = _d.sent(), data = _a[0], total = _a[1];
+                        _a = _d.sent(), users = _a[0], total = _a[1];
+                        data = users.map(function (user) {
+                            return {
+                                id: user.id,
+                                username: user.username,
+                                email: user.email,
+                                image: user.image,
+                                email_verified: user.email_verified,
+                                roles: user.projeto_users.map(function (user_roles) {
+                                    return __assign({}, user_roles.roles);
+                                })
+                            };
+                        });
                         return [2 /*return*/, {
                                 orderBy: orderBy,
                                 order: order,

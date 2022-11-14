@@ -16,16 +16,19 @@ var SysRefController_1 = require("../controllers/SysRefController");
 var UtController_1 = require("../controllers/UtController");
 var ProjetoController_1 = require("../controllers/ProjetoController");
 var permission_1 = require("../middleware/permission");
+var RoleController_1 = require("../controllers/RoleController");
+var PermissionController_1 = require("../controllers/PermissionController");
 var routes = express_1["default"].Router();
 routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().findAll);
-routes.get('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
+routes.get('/users/:projetoId/:userId', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
 routes.get('/users/provider/find-by-email', auth_middleware_1.Authentication(), new UserController_1.UserController().findByEmail);
 routes.post('/users/create', new UserController_1.UserController().store);
 routes.put('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
-routes.post('/users/create-role', new UserController_1.UserController().createRole);
-routes.post('/users/create-permission', new UserController_1.UserController().createPermission);
-routes.post('/users/create-role-permission/:roleId', new UserController_1.UserController().createRolePermission);
-routes.post('/users/create-acl/:userId', auth_middleware_1.Authentication(), permission_1.is(['admin']), new UserController_1.UserController().createUserACL);
+routes["delete"]('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController()["delete"]);
+routes.post('/users/create-role', auth_middleware_1.Authentication(), new UserController_1.UserController().createRole);
+routes.post('/users/create-permission', auth_middleware_1.Authentication(), new UserController_1.UserController().createPermission);
+routes.post('/users/create-role-permission/:roleId', auth_middleware_1.Authentication(), new UserController_1.UserController().createRolePermission);
+routes.post('/users/create-acl/:userId', auth_middleware_1.Authentication(), new UserController_1.UserController().createUserACL);
 routes.post('/users/send-email', new UserController_1.UserController().sendMail);
 //Alterar senha
 routes.post('/users/change-password', auth_middleware_1.Authentication(), new UserController_1.UserController().updatePassword);
@@ -38,13 +41,12 @@ routes.post('/auth/refresh', new AuthController_1.AuthController().refreshToken)
 routes.get('/auth/callback/github', new AuthController_1.AuthController().signInCallback);
 //Empresa
 routes.post('/empresa', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().store);
-routes.get('/empresa', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findAll);
-routes.get('/empresa/:empresaId/users', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findUsers);
+routes.get('/empresa/findAll/:projetoId', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findAll);
 routes.get('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findOne);
 routes.put('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().update);
 routes["delete"]('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController()["delete"]);
 //Categoria
-routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.can(['create_especie']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
+routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['admin', 'coordenador', 'engenheiro']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
 routes.get('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findAll);
 routes.get('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findOne);
 routes.get('/categoria/search/q', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().search);
@@ -53,6 +55,7 @@ routes["delete"]('/categoria/:id', auth_middleware_1.Authentication(), new Categ
 //Umf
 routes.post('/umf/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().store);
 routes.get('/umf/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().findAll);
+routes.get('/umf/get/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().getUmf);
 routes.get('/umf/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController().findOne);
 routes.get('/umf/search/q', auth_middleware_1.Authentication(), new UmfController_1.UmfController().search);
 routes.put('/umf/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController().update);
@@ -61,8 +64,10 @@ routes["delete"]('/umf/multiples', auth_middleware_1.Authentication(), new UmfCo
 //Projeto
 routes.post('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().store);
 routes.get('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findAll);
+routes.get('/projeto/:projetoId/users', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findUsers);
 routes.get('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findOne);
 routes.get('/projeto/search/q', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().search);
+routes.get('/projeto/active/get', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().getActive);
 routes.put('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().update);
 routes["delete"]('/projeto/single/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController()["delete"]);
 routes["delete"]('/projeto/multiples', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().deleteProjetos);
@@ -96,6 +101,22 @@ routes.get('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolu
 routes.get('/eq-volume/search/q', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().search);
 routes.put('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().update);
 routes["delete"]('/eq-volume/single/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController()["delete"]);
+//Role
+routes.post('/role/', auth_middleware_1.Authentication(), new RoleController_1.RoleController().store);
+routes.get('/role/', new RoleController_1.RoleController().findAll);
+routes.get('/role/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController().findOne);
+routes.get('/role/search/q', auth_middleware_1.Authentication(), new RoleController_1.RoleController().search);
+routes.put('/role/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController().update);
+routes["delete"]('/role/single/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController()["delete"]);
+routes["delete"]('/role/multiples', auth_middleware_1.Authentication(), new RoleController_1.RoleController().deleteAll);
+//Permission
+routes.post('/permission/', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().store);
+routes.get('/permission/', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().findAll);
+routes.get('/permission/:id', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().findOne);
+routes.get('/permission/search/q', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().search);
+routes.put('/permission/:id', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().update);
+routes["delete"]('/permission/single/:id', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController()["delete"]);
+routes["delete"]('/permission/multiples', auth_middleware_1.Authentication(), new PermissionController_1.PermissionController().deleteAll);
 //Sistema de Coordenadas
 routes.get('/sys-ref/', auth_middleware_1.Authentication(), new SysRefController_1.SysRefController().findAll);
 routes.get('/sys-ref/:id', auth_middleware_1.Authentication(), new SysRefController_1.SysRefController().findOne);

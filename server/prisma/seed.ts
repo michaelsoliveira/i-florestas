@@ -3,6 +3,21 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
+const roles: Prisma.RoleCreateInput[] = [
+  {
+    name: 'Admin',
+    description: 'Administrador do Projeto'
+  },
+  {
+    name: 'Gerente',
+    description: 'Gerente do Projeto'
+  },
+  {
+    name: 'Usuario',
+    description: 'Usuário Padrão'
+  }
+]
+
 const equacoesModelo: Prisma.EquacaoModeloCreateInput[] = [
   {
     nome: 'Schumacher - Hall',
@@ -180,11 +195,36 @@ async function main() {
     console.log(`Created estado with id: ${estado.id}`)
   }
 
+  let dataRole = []
+  for (const r of roles) {
+    const role = await prisma.role.create({
+      data: r
+    })
+    console.log(`Created role with id: ${role.id}`)
+  }
+
+  const roleAdmin = await prisma.role.findFirst({
+    where: {
+      name: {
+        equals: 'Admin'
+      }
+    }
+  })
+
     const user = await prisma.user.create({
       data: {
             username: 'michaelsoliveira',
             email: 'michaelsoliveira@gmail.com',
-            password: await bcrypt.hash('Fms237691', 10)
+            password: await bcrypt.hash('Fms237691', 10),
+            users_roles: {
+              create: {
+                roles: {
+                  connect: {
+                    id: roleAdmin?.id
+                  }
+                }
+              }
+            }
         },
     })
     console.log(`Created user admin with id: ${user.id}`)
@@ -199,6 +239,11 @@ async function main() {
                       connect: {
                           id: user?.id
                       }
+                  },
+                  roles: {
+                    connect: {
+                      id: roleAdmin?.id
+                    }
                   }
               }
           ]

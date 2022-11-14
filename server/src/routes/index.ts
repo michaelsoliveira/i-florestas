@@ -21,7 +21,7 @@ import { PermissionController } from "../controllers/PermissionController"
 const routes = express.Router()
 
 routes.get('/users', Authentication(), new UserController().findAll)
-routes.get('/users/:id', Authentication(), new UserController().findOne)
+routes.get('/users/:projetoId/:userId', Authentication(), new UserController().findOne)
 routes.get('/users/provider/find-by-email', Authentication(), new UserController().findByEmail)
 routes.post('/users/create', new UserController().store)
 routes.put('/users/:id', Authentication(), new UserController().update)

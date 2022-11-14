@@ -56,8 +56,9 @@ class UserService {
                     const preparedData =
                     { ...dataRequest, projeto_users: {
                         create: {
-                            id_projeto: projeto?.id
-                        }
+                            id_projeto: projeto?.id,
+                            id_role: data?.id_role
+                        },
                     } }
                     return preparedData
                 }
@@ -67,15 +68,14 @@ class UserService {
             { ...dataRequest, 
                 projeto_users: {
                     create: {
-                        id_projeto: data?.projetoId
+                        id_projeto: data?.projetoId,
+                        id_role: data?.id_role
                     }
                 }
             }
 
         const user = await prismaClient.user.create({
-            data: {
-                ...preparedData
-            }
+            data: { ...preparedData }
         })
 
         return user
@@ -105,14 +105,27 @@ class UserService {
             },
             data: data?.id_role ? {
                 ...basicData,
-                users_roles: {
-                    connect: 
-                        { 
-                            user_id_role_id: {
-                                role_id: data?.id_role,
-                                user_id: id
+                projeto_users: {
+                    update: {
+                        data: {
+                            roles: {
+                                connect: {
+                                    id: data?.id_role
+                                }
                             },
+                            projeto: {
+                                connect: {
+                                    id: data?.id_projeto
+                                }
+                            }
+                        },
+                        where: {
+                            id_projeto_id_user: {
+                                id_projeto: data?.id_projeto,
+                                id_user: id
+                            }
                         }
+                    }
                 }
             } : basicData
         })
@@ -162,15 +175,15 @@ class UserService {
         return users;
     };
 
-    async findOne(requestId: string): Promise<any> {
+    async findOne(id: string, projetoId?: string | undefined): Promise<any> {
 
         const user = await prismaClient.user.findFirst({ 
-            where: { id: requestId } ,
+            where: { id } ,
             select: {
                 id: true,
                 email: true,
                 username: true,
-                users_roles: {
+                projeto_users: {
                     select: {
                         roles: {
                             select: {
@@ -178,14 +191,30 @@ class UserService {
                                 name: true
                             }
                         }
+                    },
+                    where: {
+                        projeto: {
+                            id: projetoId
+                        }
                     }
                 }
             }
         })
 
+        const data = {
+            id: user?.id,
+            email: user?.email,
+            username: user?.username,
+            roles: user?.projeto_users.map((user_roles: any) => {
+                return {
+                    ...user_roles.roles
+                }
+            })
+        }
+
         if (!user) throw new Error("User not Found 0")
 
-        return user
+        return data
     }
 
     async findByKey(key: string, value: string): Promise<User> {

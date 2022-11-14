@@ -54,14 +54,14 @@ var ProjetoController = /** @class */ (function () {
                         projeto = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                equacaoVolume: projeto,
+                                projeto: projeto,
                                 message: "Projeto " + projeto.nome + " cadastrada com SUCESSO!!!"
                             })];
                     case 2:
                         error_1 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
-                                equacaoVolume: null,
+                                projeto: null,
                                 message: error_1.message
                             })];
                     case 3: return [2 /*return*/];
@@ -70,25 +70,26 @@ var ProjetoController = /** @class */ (function () {
         });
     };
     ProjetoController.prototype.update = function (request, response) {
+        var _a;
         return __awaiter(this, void 0, Promise, function () {
             var id, projeto, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         id = request.params.id;
-                        _a.label = 1;
+                        _b.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ProjetoService_1["default"].update(id, request.body)];
+                        _b.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, ProjetoService_1["default"].update(id, request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 2:
-                        projeto = _a.sent();
+                        projeto = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 projeto: projeto,
                                 message: "Projeto " + projeto.nome + " atualizada com SUCESSO!!!"
                             })];
                     case 3:
-                        error_2 = _a.sent();
+                        error_2 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 projeto: null,
@@ -129,15 +130,16 @@ var ProjetoController = /** @class */ (function () {
         });
     };
     ProjetoController.prototype.findAll = function (request, response) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _a, data, perPage, page, orderBy, order, skip, count, error_4;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _b, data, perPage, page, orderBy, order, skip, count, error_4;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, ProjetoService_1["default"].getAll(request.query)];
+                        _c.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, ProjetoService_1["default"].getAll((_a = request.user) === null || _a === void 0 ? void 0 : _a.id, request.query)];
                     case 1:
-                        _a = _b.sent(), data = _a.data, perPage = _a.perPage, page = _a.page, orderBy = _a.orderBy, order = _a.order, skip = _a.skip, count = _a.count;
+                        _b = _c.sent(), data = _b.data, perPage = _b.perPage, page = _b.page, orderBy = _b.orderBy, order = _b.order, skip = _b.skip, count = _b.count;
                         return [2 /*return*/, response.json({
                                 error: false,
                                 projetos: data,
@@ -150,9 +152,9 @@ var ProjetoController = /** @class */ (function () {
                                 message: null
                             })];
                     case 2:
-                        error_4 = _b.sent();
+                        error_4 = _c.sent();
                         return [2 /*return*/, response.json({
-                                error: false,
+                                error: true,
                                 projetos: [],
                                 message: error_4.message
                             })];
@@ -180,32 +182,81 @@ var ProjetoController = /** @class */ (function () {
             });
         });
     };
-    ProjetoController.prototype.search = function (request, response) {
+    ProjetoController.prototype.findUsers = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var nome, projetos, _a;
+            var projetoId, _a, data, perPage, orderBy, order, page, skip, count, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        projetoId = request.params.projetoId;
+                        return [4 /*yield*/, ProjetoService_1["default"].getUsers(projetoId, request.query)];
+                    case 1:
+                        _a = _b.sent(), data = _a.data, perPage = _a.perPage, orderBy = _a.orderBy, order = _a.order, page = _a.page, skip = _a.skip, count = _a.count;
+                        return [2 /*return*/, response.json({
+                                error: false,
+                                users: data,
+                                orderBy: orderBy,
+                                order: order,
+                                perPage: perPage,
+                                page: page,
+                                skip: skip,
+                                count: count,
+                                message: 'Usuários carregados com sucesso!'
+                            })];
+                    case 2:
+                        error_5 = _b.sent();
+                        return [2 /*return*/, response.json({
+                                error: true,
+                                users: [],
+                                message: "Error: " + error_5.message
+                            })];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProjetoController.prototype.search = function (request, response) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var nome, projetos, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         nome = request.query.nome;
                         if (!nome) return [3 /*break*/, 2];
                         return [4 /*yield*/, ProjetoService_1["default"].search(nome)];
                     case 1:
-                        _a = _b.sent();
+                        _b = _c.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, ProjetoService_1["default"].getAll(request.query)];
+                    case 2: return [4 /*yield*/, ProjetoService_1["default"].getAll((_a = request.user) === null || _a === void 0 ? void 0 : _a.id, request.query)];
                     case 3:
-                        _a = _b.sent();
-                        _b.label = 4;
+                        _b = _c.sent();
+                        _c.label = 4;
                     case 4:
-                        projetos = _a;
+                        projetos = _b;
                         return [2 /*return*/, response.json(projetos)];
+                }
+            });
+        });
+    };
+    ProjetoController.prototype.getActive = function (request, response) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var projeto;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, ProjetoService_1["default"].getActive((_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                    case 1:
+                        projeto = _b.sent();
+                        return [2 /*return*/, response.json(projeto)];
                 }
             });
         });
     };
     ProjetoController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, projeto, error_5;
+            var id, projeto, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -218,8 +269,8 @@ var ProjetoController = /** @class */ (function () {
                         projeto = _a.sent();
                         return [2 /*return*/, response.json(projeto)];
                     case 3:
-                        error_5 = _a.sent();
-                        return [2 /*return*/, response.json(error_5.message)];
+                        error_6 = _a.sent();
+                        return [2 /*return*/, response.json(error_6.message)];
                     case 4: return [2 /*return*/];
                 }
             });

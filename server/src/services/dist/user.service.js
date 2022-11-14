@@ -105,7 +105,8 @@ var UserService = /** @class */ (function () {
                                     if (projeto) {
                                         preparedData_1 = __assign(__assign({}, dataRequest), { projeto_users: {
                                                 create: {
-                                                    id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                                    id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id,
+                                                    id_role: data === null || data === void 0 ? void 0 : data.id_role
                                                 }
                                             } });
                                         return [2 /*return*/, preparedData_1];
@@ -119,7 +120,8 @@ var UserService = /** @class */ (function () {
                     case 4:
                         _a = __assign(__assign({}, dataRequest), { projeto_users: {
                                 create: {
-                                    id_projeto: data === null || data === void 0 ? void 0 : data.projetoId
+                                    id_projeto: data === null || data === void 0 ? void 0 : data.projetoId,
+                                    id_role: data === null || data === void 0 ? void 0 : data.id_role
                                 }
                             } });
                         _b.label = 5;
@@ -159,11 +161,25 @@ var UserService = /** @class */ (function () {
                                 where: {
                                     id: id
                                 },
-                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { users_roles: {
-                                        connect: {
-                                            user_id_role_id: {
-                                                role_id: data === null || data === void 0 ? void 0 : data.id_role,
-                                                user_id: id
+                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { projeto_users: {
+                                        update: {
+                                            data: {
+                                                roles: {
+                                                    connect: {
+                                                        id: data === null || data === void 0 ? void 0 : data.id_role
+                                                    }
+                                                },
+                                                projeto: {
+                                                    connect: {
+                                                        id: data === null || data === void 0 ? void 0 : data.id_projeto
+                                                    }
+                                                }
+                                            },
+                                            where: {
+                                                id_projeto_id_user: {
+                                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
+                                                    id_user: id
+                                                }
                                             }
                                         }
                                     } }) : basicData
@@ -243,18 +259,18 @@ var UserService = /** @class */ (function () {
         });
     };
     ;
-    UserService.prototype.findOne = function (requestId) {
+    UserService.prototype.findOne = function (id, projetoId) {
         return __awaiter(this, void 0, Promise, function () {
-            var user;
+            var user, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: { id: requestId },
+                            where: { id: id },
                             select: {
                                 id: true,
                                 email: true,
                                 username: true,
-                                users_roles: {
+                                projeto_users: {
                                     select: {
                                         roles: {
                                             select: {
@@ -262,15 +278,28 @@ var UserService = /** @class */ (function () {
                                                 name: true
                                             }
                                         }
+                                    },
+                                    where: {
+                                        projeto: {
+                                            id: projetoId
+                                        }
                                     }
                                 }
                             }
                         })];
                     case 1:
                         user = _a.sent();
+                        data = {
+                            id: user === null || user === void 0 ? void 0 : user.id,
+                            email: user === null || user === void 0 ? void 0 : user.email,
+                            username: user === null || user === void 0 ? void 0 : user.username,
+                            roles: user === null || user === void 0 ? void 0 : user.projeto_users.map(function (user_roles) {
+                                return __assign({}, user_roles.roles);
+                            })
+                        };
                         if (!user)
                             throw new Error("User not Found 0");
-                        return [2 /*return*/, user];
+                        return [2 /*return*/, data];
                 }
             });
         });

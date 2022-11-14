@@ -219,9 +219,9 @@ export class UserController {
     }
 
     async findOne(request: Request, response: Response) {
-        const { id } = request.params
+        const { userId, projetoId } = request.params
         try {
-            let users = await userService.findOne(id)
+            let users = await userService.findOne(userId, projetoId)
 
             return response.json(users)
         } catch(error) {

@@ -6,6 +6,7 @@ export interface ProjetoType {
     nome: string;
     active: boolean;
     id_user: string;
+    id_role: string;
 }
 
 export const getProjeto = async (userId: string) => {
@@ -42,7 +43,11 @@ class ProjetoService {
         if (projetoExists) {
             throw new Error('Já existe um Projeto cadastrada com este nome')
         }
-        console.log(data)
+
+        const roleAdmin = await prismaClient.role.findFirst({ 
+            where: { name: { mode: Prisma.QueryMode.insensitive, equals: 'admin' } } 
+        })
+        
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
@@ -53,10 +58,15 @@ class ProjetoService {
                                 id: data?.id_user ? data?.id_user : userId
                             }
                         },
+                        roles: {
+                            connect: {
+                                id: data?.id_role ? data?.id_role : roleAdmin?.id
+                            }
+                        },
                         active: data?.active
                     }
                 }
-            }
+            } 
         })
 
         return projeto
@@ -72,7 +82,7 @@ class ProjetoService {
                 projeto_users: {
                     update: {
                         data: {
-                            active: data?.active
+                            active: data?.active,
                         },
                         where: {
                             id_projeto_id_user: {
@@ -218,8 +228,23 @@ class ProjetoService {
                 }
             }
 
-        const [data, total] = await prismaClient.$transaction([
+        const [users, total] = await prismaClient.$transaction([
             prismaClient.user.findMany({
+                include: {
+                    projeto_users: {
+                        include: {
+                            roles: {
+                                select: {
+                                    id: true,
+                                    name: true
+                                }    
+                            }
+                        },
+                        where: {
+                            id_projeto: projetoId
+                        }
+                    },
+                },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
@@ -227,8 +252,23 @@ class ProjetoService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.projeto.count({where})
+            prismaClient.user.count({where})
         ])
+
+        const data = users.map((user) => {
+            return {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                image: user.image,
+                email_verified: user.email_verified,
+                roles: user.projeto_users.map((user_roles) => {
+                    return {
+                        ...user_roles.roles
+                    }
+                })
+            }
+        })
 
         return {
             orderBy,
