@@ -1,11 +1,9 @@
 import bcrypt from "bcryptjs"
-import { DataStoredInToken } from "src/interfaces/DataStoredInToken"
-import { getRepository, Repository, getConnection } from "typeorm"
+import { getRepository } from "typeorm"
 import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
-import { Empresa } from "../entities/Empresa"
 import { prismaClient } from "../database/prismaClient"
-import { prisma, User as UserPrisma } from "@prisma/client"
+import { User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,

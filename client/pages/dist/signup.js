@@ -4,13 +4,12 @@ var AddEdit_1 = require("@/components/user/AddEdit");
 var Logo_1 = require("components/Logo");
 var solid_1 = require("@heroicons/react/solid");
 var link_1 = require("next/link");
-var react_1 = require("react");
+var React = require("react");
 var defaultStyles_1 = require("components/helpers/defaultStyles");
 var ModalContext_1 = require("contexts/ModalContext");
-var SigupPage = function (_a) {
-    var csrfToken = _a.csrfToken;
+var SigupPage = function () {
     var hideModal = ModalContext_1.useModalContext().hideModal;
-    var formRef = react_1.createRef();
+    var formRef = React.createRef();
     var submitForm = function () {
         if (formRef.current) {
             formRef.current.handleSubmit();

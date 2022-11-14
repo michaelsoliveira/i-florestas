@@ -203,7 +203,7 @@ var Index = function (_a) {
         defaultUmfsOptions();
         defaultUpasOptions();
         setFilteredUts(currentUts);
-    }, [currentUts, currentPage, client, umf, upa]);
+    }, [currentUts, currentPage, client, umf, upa, dispatch]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {

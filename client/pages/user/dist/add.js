@@ -1,6 +1,5 @@
 "use strict";
 exports.__esModule = true;
-exports.AddUserToEmpresa = void 0;
 var AddEdit_1 = require("@/components/user/AddEdit");
 var withAuthentication_1 = require("components/withAuthentication");
 var styles = {
@@ -9,8 +8,8 @@ var styles = {
     button: ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
     errorMsg: 'text-red-500 text-sm'
 };
-exports.AddUserToEmpresa = function () {
+var AddUser = function () {
     return (React.createElement("div", { className: "bg-white shadow-lg rounded-xl px-4 py-2 w-1/3 mx-auto my-6" },
-        React.createElement(AddEdit_1.RegisterForm, { styles: styles, redirect: false })));
+        React.createElement(AddEdit_1.AddEdit, { styles: styles, redirect: false })));
 };
-exports["default"] = withAuthentication_1["default"](exports.AddUserToEmpresa);
+exports["default"] = withAuthentication_1["default"](AddUser);

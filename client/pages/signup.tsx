@@ -1,16 +1,15 @@
-import { GetServerSideProps } from 'next';
 import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
 import { UserAddIcon } from '@heroicons/react/solid'
 import Link from 'next/link';
-import { createRef } from 'react';
+import * as React from 'react';
 
 import {styles} from 'components/helpers/defaultStyles'
 import { useModalContext } from 'contexts/ModalContext';
 
-const SigupPage = ({ csrfToken }: any) => {
+const SigupPage = () => {
   const { hideModal } = useModalContext()
-  const formRef = createRef<any>()
+  const formRef = React.createRef<any>()
 
   const submitForm = () => {
     if (formRef.current) {

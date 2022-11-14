@@ -134,7 +134,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         defaultUmfsOptions()
         defaultUpasOptions()
         setFilteredUts(currentUts)
-    }, [currentUts, currentPage, client, umf, upa])
+    }, [currentUts, currentPage, client, umf, upa, dispatch])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({

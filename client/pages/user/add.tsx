@@ -1,4 +1,4 @@
-import { RegisterForm } from "@/components/user/AddEdit"
+import { AddEdit } from "@/components/user/AddEdit"
 import withAuthentication from "components/withAuthentication"
 
 const styles = {
@@ -10,12 +10,12 @@ const styles = {
   errorMsg: 'text-red-500 text-sm',
 }
 
-export const AddUserToEmpresa = () => {
+const AddUser = () => {
     return (
         <div className="bg-white shadow-lg rounded-xl px-4 py-2 w-1/3 mx-auto my-6">
-            <RegisterForm styles={styles} redirect={false} />
+            <AddEdit styles={styles} redirect={false} />
         </div>
     )
 }
 
-export default withAuthentication(AddUserToEmpresa)
+export default withAuthentication(AddUser)
