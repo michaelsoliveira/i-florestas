@@ -90,7 +90,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
             const preparedData = {
                 ...data,
                 id_role: selectedRole?.value,
-                projetoId
+                id_projeto: projetoId
             }
 
             if (isAddMode) {
@@ -126,7 +126,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     alertService.warn(`Error: ${error.message}`)
                 });
             } else {
-                console.log(preparedData)
                 await client.put(`/users/${userId}`, preparedData)
                     .then((response: any) => {
                         const { error, user, message } = response.data
@@ -180,8 +179,12 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
                                 
-                                await client.get(`/users/${userId}`)
+                                await client.get(`/users/${projetoId}/${userId}`)
                                     .then(({ data }: any) => {
+                                        setSelectedRole({
+                                            label: data?.roles[0].name,
+                                            value: data?.roles[0].id
+                                        })
                                         const fields = ['username', 'email'];
                                         fields.forEach(field => setFieldValue(field, data[field], false));
                                     });
@@ -190,7 +193,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
-                            // onSubmit(submitForm())
                             loadUser()
                         }, [loadUser, submitForm]);
                         

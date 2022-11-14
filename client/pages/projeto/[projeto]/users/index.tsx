@@ -130,13 +130,11 @@ const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
     const projetoId = params?.projeto
 
-    const roles = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
+    const { roles } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
         method: 'GET',
     }).then((result: any) => {
         return result.json()
     })
-
-    console.log(roles)
   
     return {
         props: {

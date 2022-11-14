@@ -70,7 +70,7 @@ var Projetos = function () {
     var editModal = function () { return showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { reloadData: loadProjetos, data: selectedProjeto }) }); };
     var addModal = function () {
         setSelectedProjeto(null);
-        showModal({ title: 'Novo Projeto', type: "submit", styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { reloadData: loadProjetos }) });
+        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit_1.AddEdit, { reloadData: loadProjetos }) });
     };
     var loadOptions = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, json;
