@@ -21,14 +21,13 @@ const stylesForm = {
     errorMsg: 'text-red-500 text-sm',
 }
 
-const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers }: any) => {
+const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
     
     const [filteredUsers, setFilteredUsers] = useState<UserType[]>(currentUsers)
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
-    const [roles, setRoles] = useState<any[]>()
     const formRef = createRef<any>()
     
     const userById = (id?: string) => {
@@ -54,13 +53,13 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     const updateUser = (id?: string) => {
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
+            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
         })    
     }
 
     const addUser = () => {
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
+            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
         })    
     }
     

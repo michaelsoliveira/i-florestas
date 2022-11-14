@@ -9,6 +9,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'contexts/AuthContext';
 import { Select, OptionType } from '../Select';
+import { GetServerSideProps } from 'next';
 
 type AddEditType = {
     styles?: any;
@@ -20,8 +21,8 @@ type AddEditType = {
 }
 
 export const AddEdit = forwardRef<any, AddEditType>(
-    function RegisterForm(
-      { styles, userId, sendForm, redirect, projetoId, ...rest}, 
+    function AddEdit(
+      { styles, userId, sendForm, redirect, projetoId, roles}, 
       ref
     ) {
         const dispatch = useAppDispatch()
@@ -29,17 +30,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const isAddMode = !userId
         const { client } = useContext(AuthContext)
         const [selectedRole, setSelectedRole] = useState<any>()
-        const [roles, setRoles] = useState<any[]>()
-
-        const loadRoles = useCallback(async () => {
-            const response = await client.get('role')
-            const { roles } = response.data
-            setRoles(roles)
-        }, [client])
-    
-        useEffect(() => {
-            loadRoles()
-        }, [loadRoles])
 
         const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
             const response = await client.get(`/role/search/q?nome=${inputValue}`)

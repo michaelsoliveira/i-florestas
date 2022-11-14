@@ -52,14 +52,6 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })))
     }
 
-    // const defaultUpasOptions = useCallback(async() => {
-    //     const umfId = umf.id
-    //     const response = umf ? await client.get(`/upa?orderBy=nome&order=asc&umf=${umfId}`) : await client.get(`/upa?orderBy=nome&order=asc`)
-    //     const { upas } = response.data
-
-    //     setUpas(upas)
-    // }, [client, umf])
-
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
         const data = response.data
@@ -70,71 +62,71 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })))
     }
 
-    useEffect(() => {
+    const defaultUmfsOptions = useCallback(async() => {
+        const response = await client.get(`/umf?orderBy=nome&order=asc`)
+            const { umfs } = response.data
+            setUmfs(umfs)
 
-        async function defaultUmfsOptions() {
-            const response = await client.get(`/umf?orderBy=nome&order=asc`)
-                const { umfs } = response.data
-                setUmfs(umfs)
+            const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
 
-                const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
+            if (compareUmf) {
+                setSelectedUmf({
+                    value: umf?.id,
+                    label: umf?.nome
+                })
+            }
 
-                if (compareUmf) {
-                    setSelectedUmf({
-                        value: umf.id,
-                        label: umf.nome
-                    })
-                }
+            if (umfs.length === 0) {
+                setSelectedUmf({
+                    value: '0',
+                    label: 'Nenhuma UMF Cadastrada'
+                })
+            } else {
+                setSelectedUmf({
+                    value: umfs[0].id,
+                    label: umfs[0].nome
+                })                        
+            }
+    }, [client, umf.id, umf?.nome])
 
-                if (umfs.length === 0) {
-                    setSelectedUmf({
-                        value: '0',
-                        label: 'Nenhuma UMF Cadastrada'
-                    })
-                } else {
-                    setSelectedUmf({
-                        value: umfs[0].id,
-                        label: umfs[0].nome
-                    })                        
-                }
-        }
+    const defaultUpasOptions = useCallback(async () => {
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
+            const { upas } = response.data
+            setUpas(upas)
+            if (upas.length === 0) {
+                setSelectedUpa({
+                    value: '0',
+                    label: 'Nenhuma UPA Cadastrada'
+                })
+            } else {
+                setSelectedUpa({
+                    value: upas[0].id,
+                    label: upas[0].descricao
+                })
 
-        async function defaultUpasOptions() {
-            const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.id}`)
-                const { upas } = response.data
-                setUpas(upas)
-                if (upas.length === 0) {
-                    setSelectedUpa({
-                        value: '0',
-                        label: 'Nenhuma UPA Cadastrada'
-                    })
-                } else {
-                    setSelectedUpa({
-                        value: upas[0].id,
-                        label: upas[0].descricao
-                    })
+                dispatch(setUpa({
+                    id: upas[0].id,
+                    descricao: upas[0].descricao,
+                    tipo: Number.parseInt(upas[0].tipo)
+                }))
+            }
 
-                    dispatch(setUpa({
-                        id: upas[0].id,
-                        descricao: upas[0].descricao,
-                        tipo: Number.parseInt(upas[0].tipo)
-                    }))
-                }
+            const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
 
-                const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
+            if (compareUpa) {
+                setSelectedUpa({
+                    value: upa?.id,
+                    label: upa?.descricao
+                })
+            }
+    }, [client, dispatch, umf?.id, upa?.descricao, upa.id])
 
-                if (compareUpa) {
-                    setSelectedUpa({
-                        value: upa.id,
-                        label: upa.descricao
-                    })
-                }
-        }        
+    useEffect(() => {       
         
         defaultUmfsOptions()
         defaultUpasOptions()
         setFilteredUts(currentUts)
-    }, [currentUts, currentPage, client, umf, upa, dispatch])
+    }, [currentUts, currentPage, client, umf, upa, defaultUmfsOptions, defaultUpasOptions])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({

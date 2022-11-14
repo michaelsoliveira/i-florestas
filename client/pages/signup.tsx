@@ -2,7 +2,7 @@ import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
 import { UserAddIcon } from '@heroicons/react/solid'
 import Link from 'next/link';
-import * as React from 'react';
+import React from 'react';
 
 import {styles} from 'components/helpers/defaultStyles'
 import { useModalContext } from 'contexts/ModalContext';

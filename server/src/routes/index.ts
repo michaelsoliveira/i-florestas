@@ -115,7 +115,7 @@ routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeContro
 
 //Role
 routes.post('/role/', Authentication(), new RoleController().store)
-routes.get('/role/', Authentication(), new RoleController().findAll)
+routes.get('/role/', new RoleController().findAll)
 routes.get('/role/:id', Authentication(), new RoleController().findOne)
 routes.get('/role/search/q', Authentication(), new RoleController().search)
 routes.put('/role/:id', Authentication(), new RoleController().update)

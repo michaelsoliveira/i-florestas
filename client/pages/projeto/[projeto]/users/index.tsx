@@ -12,10 +12,11 @@ import { Pagination } from "components/Pagination"
 import { UserType } from "types/IUserType"
 
 type ProjetoUserType = {
-    projetoId: string
+    projetoId: string;
+    roles: any
 }
 
-const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
+const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 
     const { client } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
@@ -111,6 +112,7 @@ const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
                 projetoId={projetoId}
+                roles={roles}
             />
             <Pagination
                 perPage={itemsPerPage}
@@ -128,9 +130,18 @@ const EmpresaUsersIndex = ({ projetoId }: ProjetoUserType) => {
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
     const projetoId = params?.projeto
 
+    const roles = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
+        method: 'GET',
+    }).then((result: any) => {
+        return result.json()
+    })
+
+    console.log(roles)
+  
     return {
         props: {
-            projetoId
+            projetoId,
+            roles
         }
     }
 }
