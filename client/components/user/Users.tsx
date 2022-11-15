@@ -28,6 +28,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
+    const [users, setUsers] = useState<any>()
     const formRef = createRef<any>()
     
     const userById = (id?: string) => {
@@ -43,6 +44,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     const deleteSingleModal = (id?: string) => 
         showModal({ 
+            size: 'max-w-lg',
             title: 'Deletar Usuário', 
             onConfirm: () => { deleteUser(id) }, 
             styleButton: styles.redButton, 
@@ -52,22 +54,28 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     })
 
     const updateUser = (id?: string) => {
-            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
+            showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit users={users} roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
         })    
     }
 
     const addUser = () => {
-            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
+            showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit users={users} roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
         })    
     }
     
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
 
+    const getUsers = useCallback(async() => {
+        const { data } = await client.get('users')
+        setUsers(data)
+    }, [client])
+
     useEffect(() => {
+        getUsers()
         setFilteredUsers(currentUsers)
-    }, [currentUsers, currentPage])
+    }, [currentUsers, currentPage, getUsers])
 
     async function deleteUser(id?: string) {
         try {

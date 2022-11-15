@@ -41,10 +41,10 @@ export const FormInput = <TFormValues extends Record<string, unknown>>({
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-      <div className={classNames('', className)} aria-live="polite">
+      <div className={classNames('flex justify-between items-center', layout === 'floatLabel' ? 'flex-row' : 'flex-col', className)} aria-live="polite">
           <label
               htmlFor={label}
-              className='text-primary placeholder-gray-gray4 pt-1.5 text-sm'
+              className='text-primary placeholder-gray-gray4 pt-1.5 text-sm px-2'
           >
                 {label} {rules?.required && <span className='text-red'>*</span>}
           </label>
@@ -60,14 +60,17 @@ export const FormInput = <TFormValues extends Record<string, unknown>>({
               {...props}
               {...(register && register(name, rules))}
           />
-          <ErrorMessage
-            errors={errors}
-            
-            name={name as any}
-            render={({ message }) => (
-              <FormErrorMessage className="mt-1">{message}</FormErrorMessage>
-            )}
-          />
+          {errors && (
+            <ErrorMessage
+              errors={errors}
+              
+              name={name as any}
+              render={({ message }) => (
+                <FormErrorMessage className="mt-1">{message}</FormErrorMessage>
+              )}
+            />
+          )}
+          
     </div>
   );
 };

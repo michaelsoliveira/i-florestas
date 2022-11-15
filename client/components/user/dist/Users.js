@@ -68,6 +68,7 @@ var Users = function (_a) {
     var _c = react_1.useState(false), sorted = _c[0], setSorted = _c[1];
     var _d = react_1.useState([]), checkedUsers = _d[0], setCheckedUsers = _d[1];
     var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
+    var _f = react_1.useState(), users = _f[0], setUsers = _f[1];
     var formRef = react_2.createRef();
     var userById = function (id) {
         return currentUsers.find(function (user) { return user.id === id; });
@@ -81,6 +82,7 @@ var Users = function (_a) {
     var deleteSingleModal = function (id) {
         var _a;
         return showModal({
+            size: 'max-w-lg',
             title: 'Deletar Usuário',
             onConfirm: function () { deleteUser(id); },
             styleButton: styles_1.styles.redButton,
@@ -90,17 +92,30 @@ var Users = function (_a) {
         });
     };
     var updateUser = function (id) {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: stylesForm, redirect: false })
         });
     };
     var addUser = function () {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: stylesForm, redirect: false })
         });
     };
     var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
+    var getUsers = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get('users')];
+                case 1:
+                    data = (_a.sent()).data;
+                    setUsers(data);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client]);
     react_1.useEffect(function () {
+        getUsers();
         setFilteredUsers(currentUsers);
-    }, [currentUsers, currentPage]);
+    }, [currentUsers, currentPage, getUsers]);
     function deleteUser(id) {
         return __awaiter(this, void 0, void 0, function () {
             var error_1;

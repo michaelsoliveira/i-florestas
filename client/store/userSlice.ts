@@ -17,7 +17,8 @@ interface UserState {
         username?: string;
         email?: string;
         password?: string;
-        projetoId?: string;
+        id_projeto?: string;
+        id_role?: string;
     };
     errorMessage?: string
 }
@@ -27,7 +28,9 @@ const initialState: UserState = {
     data: {
         username: '',
         email: '',
-        password: ''
+        password: '',
+        id_projeto: '',
+        id_role: ''
     },
     errorMessage: ''
 }

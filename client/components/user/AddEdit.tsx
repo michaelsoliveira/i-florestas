@@ -1,15 +1,15 @@
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
-import { useCallback, useContext, useEffect, forwardRef , useState} from 'react'
+import { useCallback, useContext, useEffect, forwardRef , useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { create } from '../../store/userSlice'
 import * as Yup from 'yup'
 import 'react-toastify/dist/ReactToastify.css';
 import alertService from '../../services/alert'
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'contexts/AuthContext';
 import { Select, OptionType } from '../Select';
-import { GetServerSideProps } from 'next';
+import RadioGroup from '../Form/RadioGroup';
 
 type AddEditType = {
     styles?: any;
@@ -18,20 +18,24 @@ type AddEditType = {
     projetoId?: string;
     sendForm?: any;
     roles?: any[]
+    users?: any[]
 }
 
 export const AddEdit = forwardRef<any, AddEditType>(
     function AddEdit(
-      { styles, userId, sendForm, redirect, projetoId, roles}, 
+      { styles, userId, sendForm, redirect, projetoId, roles, users}, 
       ref
     ) {
         const dispatch = useAppDispatch()
         const router = useRouter()
         const isAddMode = !userId
         const { client } = useContext(AuthContext)
+        const [selectedUser, setSelectedUser] = useState<any>()
         const [selectedRole, setSelectedRole] = useState<any>()
+        const [option, setOption] = useState<Number>(0)
+        const { data: session } = useSession()
 
-        const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const loadRolesOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
             const response = await client.get(`/role/search/q?nome=${inputValue}`)
             const json = response.data
             
@@ -41,6 +45,25 @@ export const AddEdit = forwardRef<any, AddEditType>(
             })))
         }
 
+        const loadUsersOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+            const response = await client.get(`/users/search/q?nome=${inputValue}`)
+            const json = response.data
+            
+            callback(json?.map((role: any) => ({
+                value: role.id,
+                label: role.name
+            })))
+        }
+
+        function getUsersDefaultOptions() {
+            return users?.map((user: any) => {
+                return {
+                    label: user.username,
+                    value: user.id
+                }
+            })
+        }
+
         function getRolesDefaultOptions() {
             return roles?.map((role: any) => {
                 return {
@@ -48,12 +71,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     value: role.id
                 }
             })
-        }
-
-        const selectRole = (data: any) => {
-            // const selectedRole = roles.find((role: any) => role.id === data.value)
-            setSelectedRole(data)
-            // setProjetoLocal(data)
         }
 
         const validationSchema = Yup.object().shape({
@@ -174,7 +191,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     }}
                 >
                     {({ errors, touched, isSubmitting, setFieldValue, submitForm }) => {
-
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
@@ -197,75 +213,112 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         }, [loadUser, submitForm]);
                         
                         return (
-                            <div className="flex flex-col justify-center w-[24em] lg:w-[30em]">
+                            <div className="flex flex-col justify-center w-full">
                                 <div className="relative h-full mx-0">
-                                    <div className="relative pt-3 pb-6 px-4 bg-white shadow-sm rounded-xl border border-gray-400">
-                            
-                                    <Form>
-                                        <label className={styles.label} htmlFor="username">Nome</label>
-                                        <Field className={styles.field} id="username" name="username" placeholder="Michael" />
-                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
-
-                                        <label className={styles.label} htmlFor="emailRegister">Email</label>
-                                        <Field
-                                            className={styles.field}
-                                            id="emailRegister"
-                                            name="email"
-                                            placeholder="john@acme.com"
-                                            type="email"
-                                        />
-                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="email" component="div" />
-                                        {isAddMode && (
-                                            <>
-                                                <div>
-                                                    <label className={styles.label} htmlFor="password">Senha</label>
-                                                    <Field
-                                                        type="password"
-                                                        className={styles.field}
-                                                        id="passwordRegister"
-                                                        name="password"
-                                                        placeholder="******"
-                                                    />
-                                                    <ErrorMessage className='text-sm text-red-500 mt-1' name="password" component="div" />
-                                                </div>
-                                                <div>
-                                                    <label className={styles.label} htmlFor="password">Confirmar a Senha</label>
-                                                    <Field
-                                                        type="password"
-                                                        className={styles.field}
-                                                        id="confirmPassword"
-                                                        name="confirmPassword"
-                                                        placeholder="******"
-                                                    />
-                                                    <ErrorMessage className='text-sm text-red-500 mt-1' name="confirmPassword" component="div" />
-                                                </div>
-                                            </>
-                                        )}
-
-                                        <div className='py-4'>
-                                            <Select
-                                                initialData={
-                                                    {
-                                                        label: 'Entre com as iniciais...',
-                                                        value: ''
-                                                    }
-                                                }
-                                                selectedValue={selectedRole}
-                                                defaultOptions={getRolesDefaultOptions()}
-                                                options={loadOptions}
-                                                label="Grupo de Usuário"
-                                                callback={selectRole}
+                                    <div className="relative pt-3 pb-6 px-4 w-full">
+                                        {session && (
+                                            <div className="mx-auto px-5 py-4">
+                                            <RadioGroup
+                                                onChange={(option) => setOption(option)}
+                                                options={[
+                                                // eslint-disable-next-line react/jsx-key
+                                                <div className="flex flex-1 justify-around">
+                                                    <span>Selecionar</span>
+                                                </div>,
+                                                // eslint-disable-next-line react/jsx-key
+                                                <div className="flex  flex-1 justify-around">
+                                                    <span>Cadastrar</span>
+                                                </div>,
+                                                ]}
                                             />
                                         </div>
-                                    </Form>
-                                    
+                                        )}
+                            {option === 1 ? (
+                                 <Form>
+                                 <label className={styles.label} htmlFor="username">Nome</label>
+                                 <Field className={styles.field} id="username" name="username" placeholder="Michael" />
+                                 <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
+
+                                 <label className={styles.label} htmlFor="emailRegister">Email</label>
+                                 <Field
+                                     className={styles.field}
+                                     id="emailRegister"
+                                     name="email"
+                                     placeholder="john@acme.com"
+                                     type="email"
+                                 />
+                                 <ErrorMessage className='text-sm text-red-500 mt-1' name="email" component="div" />
+                                 {isAddMode && (
+                                     <>
+                                         <div>
+                                             <label className={styles.label} htmlFor="password">Senha</label>
+                                             <Field
+                                                 type="password"
+                                                 className={styles.field}
+                                                 id="passwordRegister"
+                                                 name="password"
+                                                 placeholder="******"
+                                             />
+                                             <ErrorMessage className='text-sm text-red-500 mt-1' name="password" component="div" />
+                                         </div>
+                                         <div>
+                                             <label className={styles.label} htmlFor="password">Confirmar a Senha</label>
+                                             <Field
+                                                 type="password"
+                                                 className={styles.field}
+                                                 id="confirmPassword"
+                                                 name="confirmPassword"
+                                                 placeholder="******"
+                                             />
+                                             <ErrorMessage className='text-sm text-red-500 mt-1' name="confirmPassword" component="div" />
+                                         </div>
+                                     </>
+                                 )}
+                             </Form>
+                            ) : (
+                                <div className='py-4'>
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Entre com as iniciais...',
+                                                value: ''
+                                            }
+                                        }
+                                        selectedValue={selectedUser}
+                                        defaultOptions={getUsersDefaultOptions()}
+                                        options={loadUsersOptions}
+                                        label="Pesquisar Usuário"
+                                        callback={(value) => { setSelectedUser(value) }}
+                                    />
+                                </div>
+                            )}
+                                { session && 
+                                (<div>
+                                    <div className='py-4'>
+                                        <Select
+                                            initialData={
+                                                {
+                                                    label: 'Entre com as iniciais...',
+                                                    value: ''
+                                                }
+                                            }
+                                            selectedValue={selectedRole}
+                                            defaultOptions={getRolesDefaultOptions()}
+                                            options={loadRolesOptions}
+                                            label="Grupo de Usuário"
+                                            callback={(value) => { setSelectedRole(value) }}
+                                        />
                                     </div>
                                 </div>
+                                ) }
+                            
                             </div>
-                        )
-                    }}
-                </Formik>
-                
-            </div>
+                        </div>
+                    </div>
+                )
+                }}
+            </Formik>
+            
+        </div>
     )
 })

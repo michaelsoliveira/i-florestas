@@ -44,23 +44,22 @@ var UserController = /** @class */ (function () {
     function UserController() {
     }
     UserController.prototype.store = function (request, response) {
-        var _a;
         return __awaiter(this, void 0, Promise, function () {
             var user, error_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, user_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, user_service_1["default"].create(request.body)];
                     case 1:
-                        user = _b.sent();
+                        user = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 user: user,
                                 message: null
                             })];
                     case 2:
-                        error_1 = _b.sent();
+                        error_1 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,

@@ -18,9 +18,8 @@ export interface BaseUser {
 export class UserController {
     async store(request : Request, response: Response) : Promise<Response> {
         // const { username, email, password, provider, idProvider, image, empresaId } = request.body;
-
         try {    
-            const user = await userService.create(request.body, request.user?.id)
+            const user = await userService.create(request.body)
             
             return response.json({
                 error: false,

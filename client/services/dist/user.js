@@ -54,7 +54,7 @@ function create(dataRequest) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    url = process.env.PUBLIC_API_URL + "/users/create";
+                    url = process.env.NEXT_PUBLIC_API_URL + "/users/create";
                     return [4 /*yield*/, fetch(url, {
                             method: "POST",
                             body: JSON.stringify(__assign({}, dataRequest)),
@@ -68,7 +68,6 @@ function create(dataRequest) {
                     return [4 /*yield*/, response.json()];
                 case 2:
                     data = _a.sent();
-                    console.log(data);
                     return [2 /*return*/, {
                             data: data.user,
                             message: data.message,
@@ -85,7 +84,7 @@ function update(id, dataRequest, token) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    url = process.env.PUBLIC_API_URL + "/users/" + id;
+                    url = process.env.NEXT_PUBLIC_API_URL + "/users/" + id;
                     return [4 /*yield*/, fetch(url, {
                             method: "PUT",
                             body: JSON.stringify(__assign({}, dataRequest)),
@@ -97,18 +96,14 @@ function update(id, dataRequest, token) {
                         })];
                 case 1:
                     response = _a.sent();
-                    return [4 /*yield*/, response.json()
-                        // if (response.ok) {
-                        //     return data
-                        // }
-                    ];
+                    return [4 /*yield*/, response.json()];
                 case 2:
                     data = _a.sent();
-                    // if (response.ok) {
-                    //     return data
-                    // }
-                    console.log(data);
-                    return [2 /*return*/, data];
+                    return [2 /*return*/, {
+                            data: data.user,
+                            message: data.message,
+                            error: data.error
+                        }];
             }
         });
     });
@@ -121,7 +116,7 @@ function sendEmail(dataResponse) {
             switch (_a.label) {
                 case 0:
                     email = dataResponse.email, name = dataResponse.username, password = dataResponse.password;
-                    url = process.env.PUBLIC_API_URL + "/users/send-email";
+                    url = process.env.NEXT_PUBLIC_API_URL + "/users/send-email";
                     return [4 /*yield*/, fetch(url, {
                             method: "POST",
                             body: JSON.stringify({
@@ -150,8 +145,7 @@ function findProvider(token) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
-                    console.log(token);
-                    url = process.env.PUBLIC_API_URL + "/users/provider/find-by-email?" +
+                    url = process.env.NEXT_PUBLIC_API_URL + "/users/provider/find-by-email?" +
                         new URLSearchParams({
                             email: token === null || token === void 0 ? void 0 : token.email
                         });
@@ -168,6 +162,7 @@ function findProvider(token) {
                     return [4 /*yield*/, response.json()];
                 case 2:
                     data = _a.sent();
+                    console.log(data);
                     return [2 /*return*/, data.user];
                 case 3:
                     error_1 = _a.sent();

@@ -57,26 +57,20 @@ var UserService = /** @class */ (function () {
     }
     UserService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, passwordHash, dataRequest, preparedData, _a, user;
-            var _this = this;
+            var userExists, passwordHash, dataRequest, user, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: {
-                                AND: {
-                                    email: data === null || data === void 0 ? void 0 : data.email,
-                                    projeto_users: {
-                                        some: {
-                                            id_user: userId
-                                        }
-                                    }
+                    case 0:
+                        console.log(userId);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                                where: {
+                                    email: data === null || data === void 0 ? void 0 : data.email
                                 }
-                            }
-                        })];
+                            })];
                     case 1:
                         userExists = _b.sent();
                         if (userExists) {
-                            throw new Error("Usuário já cadastrado");
+                            throw new Error("Já existe um usuário com este email cadastrado");
                         }
                         return [4 /*yield*/, bcryptjs_1["default"].hash(data === null || data === void 0 ? void 0 : data.password, 10)];
                     case 2:
@@ -89,49 +83,26 @@ var UserService = /** @class */ (function () {
                             provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
                             id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
                         };
-                        if (!!(data === null || data === void 0 ? void 0 : data.projetoId)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
-                                where: {
-                                    projeto_users: {
-                                        some: {
-                                            id_user: userId
-                                        }
-                                    }
-                                }
-                            })
-                                .then(function (projeto) { return __awaiter(_this, void 0, void 0, function () {
-                                var preparedData_1;
-                                return __generator(this, function (_a) {
-                                    if (projeto) {
-                                        preparedData_1 = __assign(__assign({}, dataRequest), { projeto_users: {
-                                                create: {
-                                                    id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id,
-                                                    id_role: data === null || data === void 0 ? void 0 : data.id_role
-                                                }
-                                            } });
-                                        return [2 /*return*/, preparedData_1];
-                                    }
-                                    return [2 /*return*/, dataRequest];
-                                });
-                            }); })];
+                        if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
+                                data: dataRequest
+                            })];
                     case 3:
                         _a = _b.sent();
-                        return [3 /*break*/, 5];
-                    case 4:
-                        _a = __assign(__assign({}, dataRequest), { projeto_users: {
-                                create: {
-                                    id_projeto: data === null || data === void 0 ? void 0 : data.projetoId,
-                                    id_role: data === null || data === void 0 ? void 0 : data.id_role
-                                }
-                            } });
-                        _b.label = 5;
+                        return [3 /*break*/, 6];
+                    case 4: return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
+                            data: __assign(__assign({}, dataRequest), { projeto_users: {
+                                    create: {
+                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
+                                        id_role: data === null || data === void 0 ? void 0 : data.id_role
+                                    }
+                                } })
+                        })];
                     case 5:
-                        preparedData = _a;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
-                                data: __assign({}, preparedData)
-                            })];
+                        _a = _b.sent();
+                        _b.label = 6;
                     case 6:
-                        user = _b.sent();
+                        user = _a;
                         return [2 /*return*/, user];
                 }
             });

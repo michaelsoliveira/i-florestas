@@ -13,21 +13,15 @@ export interface UserRequest {
 class UserService {
 
     async create(data: any, userId?: string): Promise<UserPrisma> {
+        console.log(userId)
         const userExists = await prismaClient.user.findFirst({
             where: {
-                AND: {
-                    email: data?.email,
-                    projeto_users: {
-                        some: {
-                            id_user: userId
-                        }
-                    }
-                }
+                email: data?.email,
             }
         })
 
         if (userExists) {
-            throw new Error("Usuário já cadastrado")
+            throw new Error("Já existe um usuário com este email cadastrado")
         }
 
         const passwordHash = await bcrypt.hash(data?.password, 10)
@@ -41,41 +35,18 @@ class UserService {
             id_provider: data?.id_provider ? data?.id_provider : ''
         }
 
-        const preparedData = !data?.projetoId ? 
-            await prismaClient.projeto.findFirst({
-                where: {
-                    projeto_users: {
-                        some: {
-                            id_user: userId
-                        }
-                    }
-                }
-            })
-            .then(async (projeto: any) => {
-                if (projeto) {
-                    const preparedData =
-                    { ...dataRequest, projeto_users: {
-                        create: {
-                            id_projeto: projeto?.id,
-                            id_role: data?.id_role
-                        },
-                    } }
-                    return preparedData
-                }
-                return dataRequest
-                
-            }) : 
-            { ...dataRequest, 
+        const user = !data?.id_projeto ? await prismaClient.user.create({
+            data: dataRequest
+        }) : await prismaClient.user.create({
+            data: {
+                ...dataRequest, 
                 projeto_users: {
                     create: {
-                        id_projeto: data?.projetoId,
+                        id_projeto: data?.id_projeto,
                         id_role: data?.id_role
                     }
                 }
             }
-
-        const user = await prismaClient.user.create({
-            data: { ...preparedData }
         })
 
         return user

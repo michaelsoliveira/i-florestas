@@ -4,6 +4,8 @@ export type UserData = {
     password: string;
     provider: string;
     id_provider: string;
+    id_projeto?: string;
+    id_role?: string;
     image: string;
 }
 

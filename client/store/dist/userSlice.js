@@ -49,26 +49,28 @@ var initialState = {
     data: {
         username: '',
         email: '',
-        password: ''
+        password: '',
+        id_projeto: '',
+        id_role: ''
     },
     errorMessage: ''
 };
 exports.create = toolkit_1.createAsyncThunk('user/create', function (dataRequest, thunkAPI) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, data, error, errorMessage, error_1;
+    var _a, data, error, message, error_1;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, user_1["default"].create(dataRequest)];
             case 1:
-                _a = _b.sent(), data = _a.data, error = _a.error, errorMessage = _a.errorMessage;
+                _a = _b.sent(), data = _a.data, error = _a.error, message = _a.message;
                 if (error) {
-                    return [2 /*return*/, thunkAPI.rejectWithValue({ message: errorMessage })];
+                    return [2 /*return*/, thunkAPI.rejectWithValue({ message: message })];
                 }
                 return [2 /*return*/, {
                         data: data,
                         error: error,
-                        message: errorMessage
+                        message: message
                     }];
             case 2:
                 error_1 = _b.sent();

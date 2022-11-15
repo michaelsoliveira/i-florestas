@@ -24,7 +24,6 @@ const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
     const [currentUsers, setCurrentUsers] = useState<UserType[]>([])
-    const [totalPages, setTotalPages] = useState(0)
     const [orderBy, setOrderBy] = useState('user.username')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
@@ -36,11 +35,10 @@ const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
         const { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
-        console.log(data)
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname, setCurrentUsers])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname])
 
     useEffect(() => {  
         loadUsers(itemsPerPage)
@@ -86,7 +84,6 @@ const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
         setOrder(order)
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
-        setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
     }
 
     const changeItemsPerPage = (value: number) => {

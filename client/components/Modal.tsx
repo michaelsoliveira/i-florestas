@@ -60,7 +60,7 @@ export default function Modal(props: ModaType) {
     }, [hideModal, onKeyDown]);
 
 
-    // const cancelButtonRef = useRef(null)
+    const cancelButtonRef = useRef(null)
 
   return (
     <Transition.Root show={visible || false} as={Fragment}>
@@ -69,7 +69,7 @@ export default function Modal(props: ModaType) {
               classNames("fixed z-50 inset-0 overflow-y-auto text-sm",
                       className
               )}
-        // initialFocus={cancelButtonRef} 
+        initialFocus={cancelButtonRef} 
         onClose={hideModal}>
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full">
           <Transition.Child
@@ -98,24 +98,24 @@ export default function Modal(props: ModaType) {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className={classNames(
-              'inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
-                size ? size : 'sm:max-w-2xl'
+              'w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
+                size ? size : 'sm:max-w-md'
               )}>
                <div>
                   <div className="bg-white px-4">
-                    <div className="sm:flex sm:items-center py-2">
+                    <div className="sm:flex sm:items-center py-2 space-x-2">
                       { (iconType === 'warn') && (
                         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                           <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
                         </div>
                       ) }
-                      <div className="pt-2 py-2 px-2">
-                        <div className='flex flex-row justify-between items-center py-2'>
-                        <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
-                          {title}
-                        </Dialog.Title>
+                      <div className="pt-2 w-full">
+                        <div className='relative flex flex-row justify-between items-center'>
+                          <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
+                            {title}
+                          </Dialog.Title>
                           {(type && type === 'submit') && (
-                            <div className='hover:cursor-pointer align-top' onClick={hideModal}>
+                            <div className='absolute right-0 hover:cursor-pointer' onClick={hideModal}>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                               </svg>
@@ -140,6 +140,7 @@ export default function Modal(props: ModaType) {
                       {confirmBtn}
                     </button>
                     <button
+                      ref={cancelButtonRef}
                       type="button"
                       className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                       onClick={hideModal}
