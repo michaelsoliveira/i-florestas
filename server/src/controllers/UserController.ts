@@ -17,7 +17,7 @@ export interface BaseUser {
 
 export class UserController {
     async store(request : Request, response: Response) : Promise<Response> {
-        // const { username, email, password, provider, idProvider, image, empresaId } = request.body;
+        console.log(request.body)
         try {    
             const user = await userService.create(request.body)
             
@@ -34,6 +34,12 @@ export class UserController {
                 message: error.message
             })
         }
+    }
+
+    async search(request: Request, response: Response) {
+        const { nome } = request.query
+        const users = nome ? await userService.search(nome, request.user?.id) : await userService.getAll()
+        return response.json(users)
     }
 
     async findByEmail(request: Request, response: Response) : Promise<Response> {
@@ -209,7 +215,7 @@ export class UserController {
 
     async findAll(request: Request, response: Response) {
         try {
-            let users = await userService.getAll()
+            let users = await userService.getAllByProjeto()
 
             return response.json(users)
         } catch(error) {

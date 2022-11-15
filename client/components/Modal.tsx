@@ -66,7 +66,7 @@ export default function Modal(props: ModaType) {
     <Transition.Root show={visible || false} as={Fragment}>
       <Dialog
               as="div" className={
-              classNames("fixed z-50 inset-0 overflow-y-auto text-sm",
+              classNames("fixed z-10 inset-0 overflow-y-auto text-sm",
                       className
               )}
         initialFocus={cancelButtonRef} 
@@ -98,7 +98,7 @@ export default function Modal(props: ModaType) {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div className={classNames(
-              'w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle',
+              'w-full inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle',
                 size ? size : 'sm:max-w-md'
               )}>
                <div>

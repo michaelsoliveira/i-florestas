@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -60,6 +49,7 @@ var router_1 = require("next/router");
 var AuthContext_1 = require("contexts/AuthContext");
 var Select_1 = require("../Select");
 var RadioGroup_1 = require("../Form/RadioGroup");
+var Option_1 = require("../Form/Option");
 exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
     var styles = _a.styles, userId = _a.userId, sendForm = _a.sendForm, redirect = _a.redirect, projetoId = _a.projetoId, roles = _a.roles, users = _a.users;
@@ -71,11 +61,14 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _c = react_1.useState(), selectedRole = _c[0], setSelectedRole = _c[1];
     var _d = react_1.useState(0), option = _d[0], setOption = _d[1];
     var session = react_2.useSession().data;
+    function onSelect(index) {
+        setOption(index);
+    }
     var loadRolesOptions = function (inputValue, callback) { return __awaiter(_this, void 0, void 0, function () {
         var response, json;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/role/search/q?nome=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/role/search?nome=" + inputValue)];
                 case 1:
                     response = _a.sent();
                     json = response.data;
@@ -91,13 +84,13 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
         var response, json;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/users/search/q?nome=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/users/search?nome=" + inputValue)];
                 case 1:
                     response = _a.sent();
                     json = response.data;
-                    callback(json === null || json === void 0 ? void 0 : json.map(function (role) { return ({
-                        value: role.id,
-                        label: role.name
+                    callback(json === null || json === void 0 ? void 0 : json.map(function (user) { return ({
+                        value: user.id,
+                        label: user.username
                     }); }));
                     return [2 /*return*/];
             }
@@ -122,37 +115,50 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
         username: Yup.string()
-            .test("len", "O nome de usuário tem que ter entre 3 e 20 caracteres.", function (val) {
-            return val &&
-                val.toString().length >= 3 &&
-                val.toString().length <= 20;
-        })
-            .required("Campo obrigatório!"),
+            .when('option', {
+            is: function (option) { return option === 0; },
+            then: Yup.string().test("len", "O nome de usuário tem que ter entre 3 e 20 caracteres.", function (val) {
+                return val &&
+                    val.toString().length >= 3 &&
+                    val.toString().length <= 20;
+            })
+                .required("Campo obrigatório!")
+        }),
         email: Yup.string()
-            .email("Este não é um email válido.")
-            .required("Campo obrigatório!"),
+            .when('option', {
+            is: function (option) { return option === 0; },
+            then: Yup.string()
+                .email("Este não é um email válido.")
+                .required("Campo obrigatório!")
+        }),
         password: Yup.string()
-            .when('isAddMode', {
-            is: true,
-            then: Yup.string().required('Password is required').min(6, 'A senha deve possuir no mínimo 6 caracteres')
+            .when('option', {
+            is: function (option) { return option === 0; },
+            then: Yup.string()
+                .when('isAddMode', {
+                is: true,
+                then: Yup.string().required('Password is required').min(6, 'A senha deve possuir no mínimo 6 caracteres')
+            })
         }),
         confirmPassword: Yup.string()
-            .when('password', function (password, schema) {
-            if (password || isAddMode)
-                return schema.required('A confirmação de senha é obrigatória');
+            .when('option', {
+            is: function (option) { return option === 0; },
+            then: Yup.string()
+                .when('password', function (password, schema) {
+                if (password || isAddMode)
+                    return schema.required('A confirmação de senha é obrigatória');
+            })
+                .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
         })
-            .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
     });
     function handleRegister(data) {
         return __awaiter(this, void 0, void 0, function () {
-            var preparedData;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        preparedData = __assign(__assign({}, data), { id_role: selectedRole === null || selectedRole === void 0 ? void 0 : selectedRole.value, id_projeto: projetoId });
                         if (!isAddMode) return [3 /*break*/, 2];
-                        return [4 /*yield*/, dispatch(userSlice_1.create(preparedData))
+                        return [4 /*yield*/, dispatch(userSlice_1.create(data))
                                 .unwrap()
                                 .then(function (responseData) { return __awaiter(_this, void 0, void 0, function () {
                                 var email, password, res;
@@ -192,7 +198,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                     case 1:
                         _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, client.put("/users/" + userId, preparedData)
+                    case 2: return [4 /*yield*/, client.put("/users/" + userId, data)
                             .then(function (response) {
                             var _a = response.data, error = _a.error, user = _a.user, message = _a.message;
                             if (error) {
@@ -220,12 +226,16 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 confirmPassword: '',
                 provider: '',
                 id_provider: '',
-                isAddMode: isAddMode
+                isAddMode: isAddMode,
+                id_user: '',
+                id_projeto: '',
+                id_role: '',
+                option: 0
             }, validationSchema: validationSchema, onSubmit: function (values, _a) {
                 var setSubmitting = _a.setSubmitting;
                 handleRegister(values);
             } }, function (_a) {
-            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, submitForm = _a.submitForm;
+            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             var loadUser = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
@@ -251,21 +261,18 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             }); }, [setFieldValue]);
             // eslint-disable-next-line react-hooks/rules-of-hooks
             react_1.useEffect(function () {
+                setFieldValue('id_projeto', projetoId);
                 loadUser();
-            }, [loadUser, submitForm]);
+            }, [loadUser, setFieldValue]);
             return (React.createElement("div", { className: "flex flex-col justify-center w-full" },
                 React.createElement("div", { className: "relative h-full mx-0" },
-                    React.createElement("div", { className: "relative pt-3 pb-6 px-4 w-full" },
-                        session && (React.createElement("div", { className: "mx-auto px-5 py-4" },
-                            React.createElement(RadioGroup_1["default"], { onChange: function (option) { return setOption(option); }, options: [
-                                    // eslint-disable-next-line react/jsx-key
-                                    React.createElement("div", { className: "flex flex-1 justify-around" },
-                                        React.createElement("span", null, "Selecionar")),
-                                    // eslint-disable-next-line react/jsx-key
-                                    React.createElement("div", { className: "flex  flex-1 justify-around" },
-                                        React.createElement("span", null, "Cadastrar")),
-                                ] }))),
-                        option === 1 ? (React.createElement(formik_1.Form, null,
+                    React.createElement("div", { className: "relative pt-3 px-4 w-full" },
+                        session && isAddMode && (React.createElement("div", { className: "mx-auto px-5 py-4" },
+                            React.createElement(RadioGroup_1["default"], null, ["Cadastrar", "Selecionar"].map(function (el, index) { return (React.createElement(Option_1["default"], { key: index, index: index, selectedIndex: option, onSelect: function (index) {
+                                    setFieldValue('option', index);
+                                    onSelect(index);
+                                } }, el)); })))),
+                        (option === 0) ? (React.createElement(formik_1.Form, null,
                             React.createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
                             React.createElement(formik_1.Field, { className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
                             React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "username", component: "div" }),
@@ -280,17 +287,25 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "password" }, "Confirmar a Senha"),
                                     React.createElement(formik_1.Field, { type: "password", className: styles.field, id: "confirmPassword", name: "confirmPassword", placeholder: "******" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) : (React.createElement("div", { className: 'py-4' },
-                            React.createElement(Select_1.Select, { initialData: {
-                                    label: 'Entre com as iniciais...',
-                                    value: ''
-                                }, selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) { setSelectedUser(value); } }))),
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) : (React.createElement("div", null,
+                            React.createElement(formik_1.Form, null,
+                                React.createElement("div", { className: 'py-4' },
+                                    React.createElement(Select_1.Select, { initialData: {
+                                            label: 'Entre com as iniciais...',
+                                            value: ''
+                                        }, selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
+                                            setFieldValue('id_user', value === null || value === void 0 ? void 0 : value.value);
+                                            setSelectedUser(value);
+                                        } }))))),
                         session &&
                             (React.createElement("div", null,
                                 React.createElement("div", { className: 'py-4' },
                                     React.createElement(Select_1.Select, { initialData: {
                                             label: 'Entre com as iniciais...',
                                             value: ''
-                                        }, selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", callback: function (value) { setSelectedRole(value); } }))))))));
+                                        }, selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", callback: function (value) {
+                                            setFieldValue('id_role', value === null || value === void 0 ? void 0 : value.value);
+                                            setSelectedRole(value);
+                                        } }))))))));
         })));
 });

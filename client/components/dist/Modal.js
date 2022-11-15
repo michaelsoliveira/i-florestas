@@ -23,13 +23,13 @@ function Modal(props) {
     }, [hideModal, onKeyDown]);
     var cancelButtonRef = react_1.useRef(null);
     return (React.createElement(react_2.Transition.Root, { show: visible || false, as: react_1.Fragment },
-        React.createElement(react_2.Dialog, { as: "div", className: classNames_1["default"]("fixed z-50 inset-0 overflow-y-auto text-sm", className), initialFocus: cancelButtonRef, onClose: hideModal },
+        React.createElement(react_2.Dialog, { as: "div", className: classNames_1["default"]("fixed z-10 inset-0 overflow-y-auto text-sm", className), initialFocus: cancelButtonRef, onClose: hideModal },
             React.createElement("div", { className: "flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full" },
                 React.createElement(react_2.Transition.Child, { as: react_1.Fragment, enter: "ease-out duration-300", enterFrom: "opacity-0", enterTo: "opacity-100", leave: "ease-in duration-200", leaveFrom: "opacity-100", leaveTo: "opacity-0" },
                     React.createElement(react_2.Dialog.Overlay, { className: "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" })),
                 React.createElement("span", { className: "hidden sm:inline-block sm:align-middle sm:h-screen", "aria-hidden": "true" }, "\u200B"),
                 React.createElement(react_2.Transition.Child, { as: react_1.Fragment, enter: "ease-out duration-300", enterFrom: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95", enterTo: "opacity-100 translate-y-0 sm:scale-100", leave: "ease-in duration-200", leaveFrom: "opacity-100 translate-y-0 sm:scale-100", leaveTo: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" },
-                    React.createElement("div", { className: classNames_1["default"]('w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle', size ? size : 'sm:max-w-md') },
+                    React.createElement("div", { className: classNames_1["default"]('w-full inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle', size ? size : 'sm:max-w-md') },
                         React.createElement("div", null,
                             React.createElement("div", { className: "bg-white px-4" },
                                 React.createElement("div", { className: "sm:flex sm:items-center py-2 space-x-2" },

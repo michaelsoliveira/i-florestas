@@ -97,8 +97,8 @@ export class RoleController {
     async search(request: Request, response: Response) {
         const { nome } = request.query
         
-        const roles = nome ? await roleService.search(nome, request.user?.id) : await roleService.getAll(request.user?.id)
-
+        const roles = nome ? await roleService.search(nome, request.user?.id) : await roleService.getAll(request.user?.id, request.query)
+        
         return response.json(roles)
     }
 

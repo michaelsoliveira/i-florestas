@@ -18,7 +18,7 @@ exports.Select = function (_a) {
     var label = _a.label, callback = _a.callback, options = _a.options, defaultOptions = _a.defaultOptions, initialData = _a.initialData, selectedValue = _a.selectedValue;
     return (react_1["default"].createElement("div", null,
         react_1["default"].createElement("label", { className: "text-sm", htmlFor: "" }, label),
-        react_1["default"].createElement(async_1["default"], { cacheOptions: true, loadOptions: options, className: "text-sm", defaultOptions: defaultOptions, value: typeof (selectedValue === null || selectedValue === void 0 ? void 0 : selectedValue.value) !== typeof undefined ? selectedValue : initialData, onChange: callback, id: "category-select", instanceId: "category-select", theme: function (theme) { return (__assign(__assign({}, theme), { 
+        react_1["default"].createElement(async_1["default"], { loadOptions: options, className: "text-sm origin-top-right absolute right-0", defaultOptions: defaultOptions, value: typeof (selectedValue === null || selectedValue === void 0 ? void 0 : selectedValue.value) !== typeof undefined ? selectedValue : initialData, onChange: callback, id: "category-select", instanceId: "category-select", theme: function (theme) { return (__assign(__assign({}, theme), { 
                 // borderRadius: 0,
                 colors: __assign(__assign({}, theme.colors), { primary: 'rgb(21 128 61)', primary75: 'rgb(22 163 74)', primary50: 'rgb(21 128 61)', primary25: 'rgb(229 231 235)' }) })); } })));
 };

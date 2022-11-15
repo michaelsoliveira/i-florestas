@@ -25,6 +25,7 @@ routes.get('/users/:projetoId/:userId', Authentication(), new UserController().f
 routes.get('/users/provider/find-by-email', Authentication(), new UserController().findByEmail)
 routes.post('/users/create', new UserController().store)
 routes.put('/users/:id', Authentication(), new UserController().update)
+routes.get('/users/search', Authentication(), new UserController().search)
 routes.delete('/users/:id', Authentication(), new UserController().delete)
 routes.post('/users/create-role', Authentication(), new UserController().createRole)
 routes.post('/users/create-permission', Authentication(), new UserController().createPermission)
@@ -115,9 +116,9 @@ routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeContro
 
 //Role
 routes.post('/role/', Authentication(), new RoleController().store)
-routes.get('/role/', new RoleController().findAll)
+routes.get('/role', new RoleController().findAll)
+routes.get('/role/search', Authentication(), new RoleController().search)
 routes.get('/role/:id', Authentication(), new RoleController().findOne)
-routes.get('/role/search/q', Authentication(), new RoleController().search)
 routes.put('/role/:id', Authentication(), new RoleController().update)
 routes.delete('/role/single/:id', Authentication(), new RoleController().delete)
 routes.delete('/role/multiples', Authentication(), new RoleController().deleteAll)

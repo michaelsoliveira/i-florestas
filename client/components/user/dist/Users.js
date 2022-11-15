@@ -74,7 +74,19 @@ var Users = function (_a) {
         return currentUsers.find(function (user) { return user.id === id; });
     };
     var formSubmit = function () {
-        if (formRef.current) {
+        var _a = formRef.current, errors = _a.errors, values = _a.values;
+        var option = values.option;
+        if (option === 0) {
+            console.log(errors);
+            if (!formRef.current.isValid) {
+                alert_1["default"].warn('Existe erro no preenchimento, corrija-o e tente novamente!');
+            }
+            else {
+                formRef.current.handleSubmit();
+                hideModal();
+            }
+        }
+        else {
             formRef.current.handleSubmit();
             hideModal();
         }
@@ -104,7 +116,7 @@ var Users = function (_a) {
         var data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get('users')];
+                case 0: return [4 /*yield*/, client.get('/users/search')];
                 case 1:
                     data = (_a.sent()).data;
                     setUsers(data);

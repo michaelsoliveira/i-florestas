@@ -24,6 +24,7 @@ routes.get('/users/:projetoId/:userId', auth_middleware_1.Authentication(), new 
 routes.get('/users/provider/find-by-email', auth_middleware_1.Authentication(), new UserController_1.UserController().findByEmail);
 routes.post('/users/create', new UserController_1.UserController().store);
 routes.put('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
+routes.get('/users/search', auth_middleware_1.Authentication(), new UserController_1.UserController().search);
 routes["delete"]('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController()["delete"]);
 routes.post('/users/create-role', auth_middleware_1.Authentication(), new UserController_1.UserController().createRole);
 routes.post('/users/create-permission', auth_middleware_1.Authentication(), new UserController_1.UserController().createPermission);
@@ -103,9 +104,9 @@ routes.put('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolu
 routes["delete"]('/eq-volume/single/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController()["delete"]);
 //Role
 routes.post('/role/', auth_middleware_1.Authentication(), new RoleController_1.RoleController().store);
-routes.get('/role/', new RoleController_1.RoleController().findAll);
+routes.get('/role', new RoleController_1.RoleController().findAll);
+routes.get('/role/search', auth_middleware_1.Authentication(), new RoleController_1.RoleController().search);
 routes.get('/role/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController().findOne);
-routes.get('/role/search/q', auth_middleware_1.Authentication(), new RoleController_1.RoleController().search);
 routes.put('/role/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController().update);
 routes["delete"]('/role/single/:id', auth_middleware_1.Authentication(), new RoleController_1.RoleController()["delete"]);
 routes["delete"]('/role/multiples', auth_middleware_1.Authentication(), new RoleController_1.RoleController().deleteAll);

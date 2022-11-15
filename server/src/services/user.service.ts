@@ -3,7 +3,7 @@ import { getRepository } from "typeorm"
 import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
-import { User as UserPrisma } from "@prisma/client"
+import { Prisma, User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,
@@ -12,8 +12,7 @@ export interface UserRequest {
 
 class UserService {
 
-    async create(data: any, userId?: string): Promise<UserPrisma> {
-        console.log(userId)
+    async create(data: any): Promise<UserPrisma> {
         const userExists = await prismaClient.user.findFirst({
             where: {
                 email: data?.email,
@@ -35,11 +34,9 @@ class UserService {
             id_provider: data?.id_provider ? data?.id_provider : ''
         }
 
-        const user = !data?.id_projeto ? await prismaClient.user.create({
-            data: dataRequest
-        }) : await prismaClient.user.create({
+        const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
-                ...dataRequest, 
+                ...dataRequest,
                 projeto_users: {
                     create: {
                         id_projeto: data?.id_projeto,
@@ -47,6 +44,22 @@ class UserService {
                     }
                 }
             }
+        }) : await prismaClient.user.update({
+            where: {
+                id: data?.id_user
+            },
+            data: {
+                projeto_users: {
+                    create: {
+                        id_projeto: data?.id_projeto,
+                        id_role: data?.id_role
+                    }
+                }
+            }
+            // data: {
+            //     ...dataRequest, 
+                
+            // }
         })
 
         return user
@@ -132,7 +145,7 @@ class UserService {
         return this.findOne(id)
     }
 
-    async getAll(): Promise<any[]> {
+    async getAllByProjeto(): Promise<any[]> {
         const users = await prismaClient.user.findMany({
             where: {
                 projeto_users: {
@@ -145,6 +158,12 @@ class UserService {
  
         return users;
     };
+
+    async getAll(): Promise<any[]> {
+        const users = await prismaClient.user.findMany()
+
+        return users
+    }
 
     async findOne(id: string, projetoId?: string | undefined): Promise<any> {
 
@@ -303,6 +322,27 @@ class UserService {
         }
     });
 
+    }
+
+    async search(text: any, userId?: string) {
+        const users = await prismaClient.user.findMany({
+            where: {
+                // AND: {
+                    OR: [{username: { mode: Prisma.QueryMode.insensitive, contains: text }}, {email: { mode: Prisma.QueryMode.insensitive, contains: text }}],
+                //     users_roles: {
+                //         some: {
+                //             user_id: userId
+                //         }
+                //     }
+                // }
+                
+            },
+            orderBy: {
+                username:   'asc'
+            },
+        })
+
+        return users
     }
 
     async findWithPassword(id: string) {

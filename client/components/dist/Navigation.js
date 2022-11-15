@@ -53,19 +53,41 @@ var react_1 = require("react");
 var react_2 = require("@headlessui/react");
 var Link_1 = require("./Link");
 var Logo_1 = require("./Logo");
+var react_3 = require("next-auth/react");
 var outline_1 = require("@heroicons/react/outline");
 var solid_1 = require("@heroicons/react/solid");
 var router_1 = require("next/router");
 var classnames_1 = require("classnames");
-// function classNames(...classes: any[]) {
-//   return classes.filter(Boolean).join(' ')
-// }
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var AuthContext_1 = require("contexts/AuthContext");
 function Navigation(_a) {
-    var session = _a.session, defaultNavigation = _a.defaultNavigation, userNavigation = _a.userNavigation;
-    // const { data: session, status } = useSession()
+    var defaultNavigation = _a.defaultNavigation, userNavigation = _a.userNavigation;
+    var session = react_3.useSession().data;
+    var _b = react_1.useContext(ProjetoContext_1.ProjetoContext), projeto = _b.projeto, setProjeto = _b.setProjeto;
+    var client = react_1.useContext(AuthContext_1.AuthContext).client;
+    react_1.useEffect(function () {
+        function loadProjeto() {
+            return __awaiter(this, void 0, void 0, function () {
+                var data;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!(session && !projeto)) return [3 /*break*/, 2];
+                            return [4 /*yield*/, client.get("/projeto/active/get")];
+                        case 1:
+                            data = (_a.sent()).data;
+                            setProjeto(data);
+                            _a.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        loadProjeto();
+    }, [session, client, setProjeto, projeto]);
     var router = router_1.useRouter();
-    var _b = react_1.useState(defaultNavigation), navigation = _b[0], setNavigation = _b[1];
-    var _c = react_1.useState(false), sticky = _c[0], setSticky = _c[1];
+    var _c = react_1.useState(defaultNavigation), navigation = _c[0], setNavigation = _c[1];
+    var _d = react_1.useState(false), sticky = _d[0], setSticky = _d[1];
     var handleScroll = function () {
         if (scrollY > 72) {
             setSticky(true);
@@ -118,17 +140,17 @@ function Navigation(_a) {
             });
         }
         loadNavigation();
-    }, [checkCurrentNavigation, defaultNavigation, router.pathname, session]);
-    return (React.createElement(react_2.Disclosure, { as: "nav", className: classnames_1["default"]("lg:absolute items-center w-full opacity-100 z-50") }, function (_a) {
+    }, [session, checkCurrentNavigation, defaultNavigation, router.pathname]);
+    return (React.createElement(react_2.Disclosure, { as: "nav", className: classnames_1["default"]("lg:absolute items-center w-full opacity-100 z-40") }, function (_a) {
         var _b, _c, _d, _e, _f, _g;
         var open = _a.open;
         return (React.createElement(React.Fragment, null,
-            React.createElement("div", { className: classnames_1["default"]("px-4 sm:px-6 lg:px-8 bg-gray-50 shadow z-50", sticky ? 'lg:fixed w-full opacity-100 transition transition-ease duration-500 translate-y-0' : '') },
+            React.createElement("div", { className: classnames_1["default"]("px-4 sm:px-6 lg:px-8 bg-gray-50 shadow z-40", sticky ? 'lg:fixed w-full opacity-100 transition transition-ease duration-500 translate-y-0' : '') },
                 React.createElement("div", { className: "flex items-center justify-between h-16" },
                     React.createElement("div", { className: classnames_1["default"]("flex items-center justify-between max-w-full w-full") },
-                        React.createElement("div", { className: "flex-shrink-0 lg:-mr-16" },
-                            React.createElement(Link_1.Link, { href: "/" },
-                                React.createElement(Logo_1["default"], { width: 'w-10', height: 'h-10' }))),
+                        React.createElement("div", { className: "flex-shrink-0 lg:-mr-16" }, open ? (React.createElement(react_2.Disclosure.Button, { as: Link_1.Link, href: "/" },
+                            React.createElement(Logo_1["default"], { width: 'w-10', height: 'h-10' }))) : (React.createElement(Link_1.Link, { href: "/" },
+                            React.createElement(Logo_1["default"], { width: 'w-10', height: 'h-10' })))),
                         React.createElement("div", { className: "hidden md:block" },
                             React.createElement("div", { className: "ml-10 flex items-baseline space-x-4" }, navigation === null || navigation === void 0 ? void 0 : navigation.map(function (item, key) { return (item.visible && (!item.subMenu ?
                                 (React.createElement("a", { key: key, href: item.href, onClick: function (evt) {
@@ -165,9 +187,9 @@ function Navigation(_a) {
                                                     (React.createElement("div", { key: key },
                                                         React.createElement(react_2.Menu, null,
                                                             React.createElement("div", { className: 'px-2 py-2 w-full' },
-                                                                React.createElement(react_2.Menu.Button, { className: classnames_1["default"](!subMenu.icon ? 'text-sm px-14' : '', "inline-flex w-full rounded-md px-4 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-100") },
+                                                                React.createElement(react_2.Menu.Button, { className: classnames_1["default"](!subMenu.icon ? 'text-sm px-14' : '', "inline-flex w-full rounded-md px-2 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-100") },
                                                                     (subMenu === null || subMenu === void 0 ? void 0 : subMenu.icon) && (React.createElement(subMenu.icon, { className: "flex-shrink-0 h-6 w-6 text-green-700", "aria-hidden": "true" })),
-                                                                    React.createElement("div", { className: "ml-2", "aria-hidden": "true" },
+                                                                    React.createElement("div", { className: "ml-4", "aria-hidden": "true" },
                                                                         React.createElement("p", { className: "text-base font-medium text-gray-900" }, subMenu.name)),
                                                                     React.createElement("div", { className: 'flex absolute right-0 mr-6' },
                                                                         React.createElement(solid_1.ChevronRightIcon, { className: classnames_1["default"](open ? 'text-green-700' : 'text-gray-400', 'w-5 h-5 ml-2 -mr-1'), "aria-hidden": "true" })))),
@@ -220,14 +242,27 @@ function Navigation(_a) {
                                         item.name,
                                         open ? (React.createElement(solid_1.ChevronUpIcon, { className: classnames_1["default"](open ? 'text-gray-400' : 'text-gray-400', 'w-5 h-5 ml-4 -mr-1'), "aria-hidden": "true" })) : (React.createElement(solid_1.ChevronDownIcon, { className: classnames_1["default"](open ? 'text-gray-400' : 'text-gray-400', 'w-5 h-5 ml-4 -mr-1'), "aria-hidden": "true" })))),
                                 React.createElement(react_2.Transition, { as: react_1.Fragment, enter: "transition ease-out duration-100", enterFrom: "transform opacity-0 scale-95", enterTo: "transform opacity-100 scale-100", leave: "transition ease-in duration-75", leaveFrom: "transform opacity-100 scale-100", leaveTo: "transform opacity-0 scale-95" },
-                                    React.createElement(react_2.Popover.Panel, { className: "z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" }, (_b = item.subMenuItems) === null || _b === void 0 ? void 0 : _b.map(function (subMenu, key) {
-                                        return (React.createElement("div", { className: 'px-2 py-2', key: key, "aria-hidden": "true" },
-                                            React.createElement(Link_1.Link, { href: subMenu.href, className: classnames_1["default"]('hover:bg-gray-100', 'group flex rounded-md items-center w-full px-2 py-2 text-sm'), "aria-hidden": "true" },
-                                                (subMenu === null || subMenu === void 0 ? void 0 : subMenu.icon) && (React.createElement(subMenu.icon, { className: "flex-shrink-0 h-6 w-6 text-green-700", "aria-hidden": "true" })),
-                                                React.createElement("div", { className: "ml-4" },
-                                                    React.createElement("p", { className: "text-base font-medium text-gray-900" }, subMenu.name),
-                                                    (subMenu === null || subMenu === void 0 ? void 0 : subMenu.description) && (React.createElement("p", { className: "mt-1 text-sm text-gray-500" }, subMenu === null || subMenu === void 0 ? void 0 : subMenu.description))))));
-                                    })))));
+                                    React.createElement(react_2.Popover.Panel, { className: "z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" }, (_b = item.subMenuItems) === null || _b === void 0 ? void 0 : _b.map(function (subMenu, subkey) { return (React.createElement("div", { className: 'px-2 py-2', key: subkey, "aria-hidden": "true" }, !subMenu.subMenuItems ? (React.createElement(react_2.Disclosure.Button, { as: Link_1.Link, href: subMenu.href, className: classnames_1["default"]('hover:bg-gray-100', 'group flex rounded-md items-center w-full px-2 py-2 text-sm'), "aria-hidden": "true" },
+                                        (subMenu === null || subMenu === void 0 ? void 0 : subMenu.icon) && (React.createElement(subMenu.icon, { className: "flex-shrink-0 h-6 w-6 text-green-700", "aria-hidden": "true" })),
+                                        React.createElement("div", { className: "ml-4" },
+                                            React.createElement("p", { className: "text-base font-medium text-gray-900" }, subMenu.name),
+                                            (subMenu === null || subMenu === void 0 ? void 0 : subMenu.description) && (React.createElement("p", { className: "mt-1 text-sm text-gray-500" }, subMenu === null || subMenu === void 0 ? void 0 : subMenu.description))))) : (React.createElement(react_2.Popover, { as: "div", className: "w-full", key: subkey }, function (_a) {
+                                        var _b;
+                                        var open = _a.open;
+                                        return (React.createElement(React.Fragment, null,
+                                            React.createElement("div", null,
+                                                React.createElement(react_2.Popover.Button, { className: "inline-flex w-full rounded-md px-2 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200" },
+                                                    (subMenu === null || subMenu === void 0 ? void 0 : subMenu.icon) && (React.createElement(subMenu.icon, { className: "flex-shrink-0 h-6 w-6 text-green-700", "aria-hidden": "true" })),
+                                                    React.createElement("div", { className: "ml-4" },
+                                                        React.createElement("span", { className: "text-base font-medium text-gray-900" }, subMenu.name)),
+                                                    open ? (React.createElement(solid_1.ChevronUpIcon, { className: classnames_1["default"](open ? 'text-gray-400' : 'text-gray-400', 'w-5 h-5 ml-4 -mr-1'), "aria-hidden": "true" })) : (React.createElement(solid_1.ChevronDownIcon, { className: classnames_1["default"](open ? 'text-gray-400' : 'text-gray-400', 'w-5 h-5 ml-4 -mr-1'), "aria-hidden": "true" })))),
+                                            React.createElement(react_2.Transition, { as: react_1.Fragment, enter: "transition ease-out duration-100", enterFrom: "transform opacity-0 scale-95", enterTo: "transform opacity-100 scale-100", leave: "transition ease-in duration-75", leaveFrom: "transform opacity-100 scale-100", leaveTo: "transform opacity-0 scale-95" },
+                                                React.createElement(react_2.Popover.Panel, { className: "z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" }, (_b = subMenu.subMenuItems) === null || _b === void 0 ? void 0 : _b.map(function (subsubMenu, subsubKey) { return (React.createElement(react_2.Disclosure.Button, { as: Link_1.Link, key: subsubKey, href: subsubMenu.href, className: classnames_1["default"]('hover:bg-gray-100 pl-8', 'group flex rounded-md items-center w-full px-2 py-2 text-sm'), "aria-hidden": "true" },
+                                                    (subsubMenu === null || subsubMenu === void 0 ? void 0 : subsubMenu.icon) && (React.createElement(subsubMenu.icon, { className: "flex-shrink-0 h-6 w-6 text-green-700", "aria-hidden": "true" })),
+                                                    React.createElement("div", { className: "ml-4" },
+                                                        React.createElement("p", { className: "text-base font-medium text-gray-900" }, subsubMenu.name),
+                                                        (subsubMenu === null || subsubMenu === void 0 ? void 0 : subsubMenu.description) && (React.createElement("p", { className: "mt-1 text-sm text-gray-500" }, subsubMenu === null || subsubMenu === void 0 ? void 0 : subsubMenu.description))))); })))));
+                                    })))); })))));
                         })))); })),
                 session ? (React.createElement("div", { className: "pt-4 pb-3 border-t border-gray-700" },
                     React.createElement("div", { className: "flex items-center px-5" },

@@ -36,7 +36,17 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     }
 
     const formSubmit = () => {
-        if (formRef.current){
+        const { errors, values } = formRef.current
+        const { option } = values
+        if (option === 0) {
+            console.log(errors)
+            if (!formRef.current.isValid) {
+                alertService.warn('Existe erro no preenchimento, corrija-o e tente novamente!')
+            } else {
+                formRef.current.handleSubmit()
+                hideModal()
+            }
+        } else {
             formRef.current.handleSubmit()
             hideModal()
         }
@@ -68,7 +78,8 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
 
     const getUsers = useCallback(async() => {
-        const { data } = await client.get('users')
+        const { data } = await client.get('/users/search')
+        
         setUsers(data)
     }, [client])
 

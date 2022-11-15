@@ -113,13 +113,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
 
     return (
         <Disclosure as="nav" className={classNames(
-                "lg:absolute items-center w-full opacity-100 z-50",
+                "lg:absolute items-center w-full opacity-100 z-40",
             )}
         >
           {({ open }) => (
             <>
               <div className={classNames(
-                "px-4 sm:px-6 lg:px-8 bg-gray-50 shadow z-50",
+                "px-4 sm:px-6 lg:px-8 bg-gray-50 shadow z-40",
                 sticky ? 'lg:fixed w-full opacity-100 transition transition-ease duration-500 translate-y-0' : ''
               )
                 }>

@@ -26,9 +26,8 @@ export const Select = ({ label, callback, options, defaultOptions, initialData, 
       <div>
         <label className="text-sm" htmlFor="">{ label }</label>
         <AsyncSelect
-            cacheOptions
             loadOptions={options}
-            className="text-sm"
+            className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}
             value={typeof selectedValue?.value !== typeof undefined ? selectedValue : initialData}
             onChange={callback}

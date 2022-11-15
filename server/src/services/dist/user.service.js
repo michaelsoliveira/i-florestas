@@ -52,21 +52,20 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("../entities/User");
 var nodemailer_1 = require("nodemailer");
 var prismaClient_1 = require("../database/prismaClient");
+var client_1 = require("@prisma/client");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
-    UserService.prototype.create = function (data, userId) {
+    UserService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
             var userExists, passwordHash, dataRequest, user, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0:
-                        console.log(userId);
-                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                                where: {
-                                    email: data === null || data === void 0 ? void 0 : data.email
-                                }
-                            })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                            where: {
+                                email: data === null || data === void 0 ? void 0 : data.email
+                            }
+                        })];
                     case 1:
                         userExists = _b.sent();
                         if (userExists) {
@@ -83,20 +82,33 @@ var UserService = /** @class */ (function () {
                             provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
                             id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
                         };
-                        if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 4];
+                        if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 4];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
-                                data: dataRequest
+                                data: __assign(__assign({}, dataRequest), { projeto_users: {
+                                        create: {
+                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
+                                            id_role: data === null || data === void 0 ? void 0 : data.id_role
+                                        }
+                                    } })
                             })];
                     case 3:
                         _a = _b.sent();
                         return [3 /*break*/, 6];
-                    case 4: return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
-                            data: __assign(__assign({}, dataRequest), { projeto_users: {
+                    case 4: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
+                            where: {
+                                id: data === null || data === void 0 ? void 0 : data.id_user
+                            },
+                            data: {
+                                projeto_users: {
                                     create: {
                                         id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
                                         id_role: data === null || data === void 0 ? void 0 : data.id_role
                                     }
-                                } })
+                                }
+                            }
+                            // data: {
+                            //     ...dataRequest, 
+                            // }
                         })];
                     case 5:
                         _a = _b.sent();
@@ -208,7 +220,7 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.getAll = function () {
+    UserService.prototype.getAllByProjeto = function () {
         return __awaiter(this, void 0, Promise, function () {
             var users;
             return __generator(this, function (_a) {
@@ -230,6 +242,19 @@ var UserService = /** @class */ (function () {
         });
     };
     ;
+    UserService.prototype.getAll = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var users;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findMany()];
+                    case 1:
+                        users = _a.sent();
+                        return [2 /*return*/, users];
+                }
+            });
+        });
+    };
     UserService.prototype.findOne = function (id, projetoId) {
         return __awaiter(this, void 0, Promise, function () {
             var user, data;
@@ -368,6 +393,27 @@ var UserService = /** @class */ (function () {
                     }
                 });
                 return [2 /*return*/];
+            });
+        });
+    };
+    UserService.prototype.search = function (text, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var users;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findMany({
+                            where: {
+                                // AND: {
+                                OR: [{ username: { mode: client_1.Prisma.QueryMode.insensitive, contains: text } }, { email: { mode: client_1.Prisma.QueryMode.insensitive, contains: text } }]
+                            },
+                            orderBy: {
+                                username: 'asc'
+                            }
+                        })];
+                    case 1:
+                        users = _a.sent();
+                        return [2 /*return*/, users];
+                }
             });
         });
     };

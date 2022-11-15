@@ -49,23 +49,50 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, user_service_1["default"].create(request.body)];
+                        console.log(request.body);
+                        _a.label = 1;
                     case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, user_service_1["default"].create(request.body)];
+                    case 2:
                         user = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 user: user,
                                 message: null
                             })];
-                    case 2:
+                    case 3:
                         error_1 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
                                 message: error_1.message
                             })];
-                    case 3: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UserController.prototype.search = function (request, response) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var nome, users, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        nome = request.query.nome;
+                        if (!nome) return [3 /*break*/, 2];
+                        return [4 /*yield*/, user_service_1["default"].search(nome, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                    case 1:
+                        _b = _c.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, user_service_1["default"].getAll()];
+                    case 3:
+                        _b = _c.sent();
+                        _c.label = 4;
+                    case 4:
+                        users = _b;
+                        return [2 /*return*/, response.json(users)];
                 }
             });
         });
@@ -320,7 +347,7 @@ var UserController = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, user_service_1["default"].getAll()];
+                        return [4 /*yield*/, user_service_1["default"].getAllByProjeto()];
                     case 1:
                         users = _a.sent();
                         return [2 /*return*/, response.json(users)];
