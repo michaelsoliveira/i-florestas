@@ -5,21 +5,12 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
-import { styles } from "../Utils/styles"
+import { styles, stylesForm } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
-
-const stylesForm = {
-    label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
-    field:
-    'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
-    button:
-    ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
-    errorMsg: 'text-red-500 text-sm',
-}
 
 const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
     
@@ -36,18 +27,8 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     }
 
     const formSubmit = () => {
-        const { errors, values } = formRef.current
-        const { option } = values
-        if (option === 0) {
-            console.log(errors)
-            if (!formRef.current.isValid) {
-                alertService.warn('Existe erro no preenchimento, corrija-o e tente novamente!')
-            } else {
-                formRef.current.handleSubmit()
-                hideModal()
-            }
-        } else {
-            formRef.current.handleSubmit()
+        formRef.current.handleSubmit()
+        if (formRef.current.isValid) {
             hideModal()
         }
     }
@@ -189,7 +170,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm text-gray-900 dark:text-gray-400">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -203,7 +184,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4">Pesquisar Usuário:</div>
+                        <div className="w-60 px-4 text-sm">Pesquisar Usuário:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Usuários"

@@ -123,17 +123,10 @@ export const AddEdit = forwardRef<any, AddEditType>(
             });
 
         async function handleRegister(data: any) {
-            // const preparedData = {
-            //     ...data,
-            //     id_user: selectedUser?.value,
-            //     id_role: selectedRole?.value,
-            //     id_projeto: projetoId
-            // }
-
             if (isAddMode) {
                 await dispatch(create(data))
                 .unwrap()
-                    .then(async (responseData) => {
+                    .then(async () => {
 
                         if (redirect) {
                             const { email, password } = data
@@ -305,8 +298,9 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </>
                                     )}
                              </Form>
-                            ) : (<div>
-                                    <Form>
+                            ) : 
+                            (<div>
+                                <Form>
                                     <div className='py-4'>
                                         <Select
                                             initialData={
@@ -325,32 +319,32 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                             }}
                                         />
                                     </div>
-                            </Form>
-                        </div>
+                                </Form>
+                            </div>
                         )}
                         {session && 
-                                    (<div>
-                                        <div className='py-4'>
-                                            <Select
-                                                initialData={
-                                                    {
-                                                        label: 'Entre com as iniciais...',
-                                                        value: ''
-                                                    }
-                                                }
-                                                selectedValue={selectedRole}
-                                                defaultOptions={getRolesDefaultOptions()}
-                                                options={loadRolesOptions}
-                                                label="Grupo de Usuário"
-                                                callback={(value) => { 
-                                                    setFieldValue('id_role', value?.value)
-                                                    setSelectedRole(value) 
-                                                }}
-                                            />
-                                        </div>
-                                        
-                                    </div>
-                                    ) }
+                        (<div>
+                            <div className='py-4'>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Entre com as iniciais...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedRole}
+                                    defaultOptions={getRolesDefaultOptions()}
+                                    options={loadRolesOptions}
+                                    label="Grupo de Usuário"
+                                    callback={(value) => { 
+                                        setFieldValue('id_role', value?.value)
+                                        setSelectedRole(value) 
+                                    }}
+                                />
+                            </div>
+                            
+                        </div>
+                        ) }
                     </div>
                 </div>
             </div>)}}

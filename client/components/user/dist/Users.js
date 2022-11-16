@@ -55,12 +55,6 @@ var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
 var solid_2 = require("@heroicons/react/solid");
-var stylesForm = {
-    label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
-    field: 'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
-    button: ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
-    errorMsg: 'text-red-500 text-sm'
-};
 var Users = function (_a) {
     var currentUsers = _a.currentUsers, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;
     var _b = react_1.useState(currentUsers), filteredUsers = _b[0], setFilteredUsers = _b[1];
@@ -74,20 +68,8 @@ var Users = function (_a) {
         return currentUsers.find(function (user) { return user.id === id; });
     };
     var formSubmit = function () {
-        var _a = formRef.current, errors = _a.errors, values = _a.values;
-        var option = values.option;
-        if (option === 0) {
-            console.log(errors);
-            if (!formRef.current.isValid) {
-                alert_1["default"].warn('Existe erro no preenchimento, corrija-o e tente novamente!');
-            }
-            else {
-                formRef.current.handleSubmit();
-                hideModal();
-            }
-        }
-        else {
-            formRef.current.handleSubmit();
+        formRef.current.handleSubmit();
+        if (formRef.current.isValid) {
             hideModal();
         }
     };
@@ -104,11 +86,11 @@ var Users = function (_a) {
         });
     };
     var updateUser = function (id) {
-        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var addUser = function () {
-        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
@@ -237,13 +219,13 @@ var Users = function (_a) {
             react_2["default"].createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
                 react_2["default"].createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },
                     react_2["default"].createElement("div", { className: "w-full" },
-                        react_2["default"].createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
+                        react_2["default"].createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
                     react_2["default"].createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
                         react_2["default"].createElement("option", { value: "10" }, "10"),
                         react_2["default"].createElement("option", { value: "20" }, "20"),
                         react_2["default"].createElement("option", { value: "50" }, "50"),
                         react_2["default"].createElement("option", { value: "100" }, "100"))),
-                react_2["default"].createElement("div", { className: "w-60 px-4" }, "Pesquisar Usu\u00E1rio:"),
+                react_2["default"].createElement("div", { className: "w-60 px-4 text-sm" }, "Pesquisar Usu\u00E1rio:"),
                 react_2["default"].createElement("div", { className: "w-full px-4" },
                     react_2["default"].createElement(input_1.Input, { label: "Pesquisar Usu\u00E1rios", id: "search", name: "search", 
                         // value={search}

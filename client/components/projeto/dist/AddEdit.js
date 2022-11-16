@@ -140,14 +140,15 @@ exports.AddEdit = function (_a) {
             });
         });
     }
-    return (React.createElement("form", { onSubmit: handleSubmit(onSubmit), id: "hook-form" },
-        React.createElement("div", { className: 'w-full' },
-            React.createElement(FormInput_1.FormInput, { id: "nome", name: "nome", label: "Nome", register: register, errors: errors, rules: {
-                    required: 'O campo nome é obrigatório',
-                    minLength: {
-                        value: 3,
-                        message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                    }
-                }, className: "lg:w-[50vh] pb-4" })),
-        React.createElement(FormInput_1.FormInput, { id: "active", name: "active", label: "Ativo?", type: "checkbox", register: register, errors: errors, className: "py-4 w-10" })));
+    return (React.createElement("div", { className: 'mt-4 p-4 border-gray-200 border rounded-md' },
+        React.createElement("form", { onSubmit: handleSubmit(onSubmit), id: "hook-form" },
+            React.createElement("div", { className: 'w-full' },
+                React.createElement(FormInput_1.FormInput, { layout: 'floatLabel', id: "nome", name: "nome", label: "Nome", register: register, errors: errors, rules: {
+                        required: 'O campo nome é obrigatório',
+                        minLength: {
+                            value: 3,
+                            message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
+                        }
+                    }, className: "lg:w-full pb-4" })),
+            React.createElement(FormInput_1.FormInput, { layout: 'floatLabel', id: "active", name: "active", label: "Ativo?", type: "checkbox", register: register, errors: errors, className: "w-full" }))));
 };

@@ -228,6 +228,8 @@ class ProjetoService {
                 }
             }
 
+            console.log(where)
+
         const [users, total] = await prismaClient.$transaction([
             prismaClient.user.findMany({
                 include: {

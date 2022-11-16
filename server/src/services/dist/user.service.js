@@ -58,7 +58,7 @@ var UserService = /** @class */ (function () {
     }
     UserService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, passwordHash, dataRequest, user, _a;
+            var userExists, passwordHash, dataRequest, user_1, user, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
@@ -82,7 +82,15 @@ var UserService = /** @class */ (function () {
                             provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
                             id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
                         };
-                        if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 4];
+                        if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
+                                data: dataRequest
+                            })];
+                    case 3:
+                        user_1 = _b.sent();
+                        return [2 /*return*/, user_1];
+                    case 4:
+                        if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 6];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { projeto_users: {
                                         create: {
@@ -91,10 +99,10 @@ var UserService = /** @class */ (function () {
                                         }
                                     } })
                             })];
-                    case 3:
+                    case 5:
                         _a = _b.sent();
-                        return [3 /*break*/, 6];
-                    case 4: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
+                        return [3 /*break*/, 8];
+                    case 6: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                             where: {
                                 id: data === null || data === void 0 ? void 0 : data.id_user
                             },
@@ -110,10 +118,10 @@ var UserService = /** @class */ (function () {
                             //     ...dataRequest, 
                             // }
                         })];
-                    case 5:
+                    case 7:
                         _a = _b.sent();
-                        _b.label = 6;
-                    case 6:
+                        _b.label = 8;
+                    case 8:
                         user = _a;
                         return [2 /*return*/, user];
                 }

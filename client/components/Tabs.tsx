@@ -3,18 +3,25 @@ import { Tab } from '@headlessui/react'
 import classNames from 'classnames';
 import Login from './Login'
 import { AddEdit } from './user/AddEdit'
+import React, { createRef } from 'react'
+import { UserAddIcon } from '@heroicons/react/outline';
 
 const styles = {
   label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
   field:
-    'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none',
+    'text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 w-[22.5em] appearance-none',
   button:
     ' bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-500',
   errorMsg: 'text-red-500 text-sm',
 }
 
 const Tabs = () => {
-  
+  const formRef = createRef<any>()
+
+  const submitForm = () => {
+    formRef.current.handleSubmit()
+  } 
+
   return (
     <div className="w-full py-4">
       <Tab.Group>
@@ -61,7 +68,24 @@ const Tabs = () => {
                 // 'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-green-600 ring-white ring-opacity-60'
               )}
             >
-              <AddEdit styles={styles} redirect/>
+              <div className="flex flex-col items-center justify-between w-full">
+              
+              <AddEdit ref={formRef} styles={styles} redirect/>
+              
+                <button
+                  onClick={submitForm}
+                  disabled={formRef.current?.isSubmitting}
+                  type="submit"
+                  className="my-4 group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                  </span>
+                  Cadastrar
+                </button>
+                </div>
+              
+              
             </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

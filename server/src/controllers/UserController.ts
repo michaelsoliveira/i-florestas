@@ -17,7 +17,6 @@ export interface BaseUser {
 
 export class UserController {
     async store(request : Request, response: Response) : Promise<Response> {
-        console.log(request.body)
         try {    
             const user = await userService.create(request.body)
             

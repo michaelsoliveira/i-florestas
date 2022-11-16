@@ -311,6 +311,7 @@ var ProjetoService = /** @class */ (function () {
                                 }
                             }
                         };
+                        console.log(where);
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.user.findMany({
                                     include: {

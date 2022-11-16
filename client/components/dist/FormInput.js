@@ -35,8 +35,8 @@ exports.FormInput = function (_a) {
     var errorMessages = lodash_get_1["default"](errors, name);
     var hasError = !!(errors && errorMessages);
     var inputRef = react_1.useRef(null);
-    return (react_1["default"].createElement("div", { className: classnames_1["default"]('flex justify-between items-center', layout === 'floatLabel' ? 'flex-row' : 'flex-col', className), "aria-live": "polite" },
-        react_1["default"].createElement("label", { htmlFor: label, className: 'text-primary placeholder-gray-gray4 pt-1.5 text-sm px-2' },
+    return (react_1["default"].createElement("div", { className: classnames_1["default"]('flex', layout === 'floatLabel' ? 'flex-row items-center' : 'flex-col', className), "aria-live": "polite" },
+        react_1["default"].createElement("label", { htmlFor: label, className: 'text-primary placeholder-gray-gray4 pt-1.5 text-sm py-1 w-2/5' },
             label,
             " ",
             (rules === null || rules === void 0 ? void 0 : rules.required) && react_1["default"].createElement("span", { className: 'text-red' }, "*")),

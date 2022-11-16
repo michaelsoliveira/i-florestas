@@ -160,7 +160,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                         if (!isAddMode) return [3 /*break*/, 2];
                         return [4 /*yield*/, dispatch(userSlice_1.create(data))
                                 .unwrap()
-                                .then(function (responseData) { return __awaiter(_this, void 0, void 0, function () {
+                                .then(function () { return __awaiter(_this, void 0, void 0, function () {
                                 var email, password, res;
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
@@ -287,16 +287,17 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "password" }, "Confirmar a Senha"),
                                     React.createElement(formik_1.Field, { type: "password", className: styles.field, id: "confirmPassword", name: "confirmPassword", placeholder: "******" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) : (React.createElement("div", null,
-                            React.createElement(formik_1.Form, null,
-                                React.createElement("div", { className: 'py-4' },
-                                    React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Entre com as iniciais...',
-                                            value: ''
-                                        }, selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
-                                            setFieldValue('id_user', value === null || value === void 0 ? void 0 : value.value);
-                                            setSelectedUser(value);
-                                        } }))))),
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) :
+                            (React.createElement("div", null,
+                                React.createElement(formik_1.Form, null,
+                                    React.createElement("div", { className: 'py-4' },
+                                        React.createElement(Select_1.Select, { initialData: {
+                                                label: 'Entre com as iniciais...',
+                                                value: ''
+                                            }, selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
+                                                setFieldValue('id_user', value === null || value === void 0 ? void 0 : value.value);
+                                                setSelectedUser(value);
+                                            } }))))),
                         session &&
                             (React.createElement("div", null,
                                 React.createElement("div", { className: 'py-4' },

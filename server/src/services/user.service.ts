@@ -33,6 +33,13 @@ class UserService {
             provider: data?.provider ? data?.provider : 'local',
             id_provider: data?.id_provider ? data?.id_provider : ''
         }
+        if (!data?.id_projeto) {
+            const user = await prismaClient.user.create({
+                data: dataRequest
+            })            
+
+            return user
+        }
 
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {

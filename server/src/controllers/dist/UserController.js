@@ -49,26 +49,23 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log(request.body);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
+                        _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, user_service_1["default"].create(request.body)];
-                    case 2:
+                    case 1:
                         user = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 user: user,
                                 message: null
                             })];
-                    case 3:
+                    case 2:
                         error_1 = _a.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 user: null,
                                 message: error_1.message
                             })];
-                    case 4: return [2 /*return*/];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
