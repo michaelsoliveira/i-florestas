@@ -13,7 +13,7 @@ const roles: Prisma.RoleCreateInput[] = [
     description: 'Gerente do Projeto'
   },
   {
-    name: 'Usuario',
+    name: 'Funcionário',
     description: 'Usuário Padrão'
   }
 ]
@@ -195,7 +195,6 @@ async function main() {
     console.log(`Created estado with id: ${estado.id}`)
   }
 
-  let dataRole = []
   for (const r of roles) {
     const role = await prisma.role.create({
       data: r

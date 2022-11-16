@@ -70,7 +70,7 @@ function can(permissionsRoutes) {
                     }
                     permissionExists = user === null || user === void 0 ? void 0 : user.users_permissions.map(function (permission) { return permission.permissions; }).some(function (permission) { return permissionsRoutes.includes(permission.name); });
                     if (!permissionExists) {
-                        return [2 /*return*/, response.status(401).end()];
+                        return [2 /*return*/, response.json("User does not have this permission").status(400).end()];
                     }
                     return [2 /*return*/, next()];
             }
@@ -91,7 +91,8 @@ function is(rolesRoutes) {
                                 id: id
                             },
                             select: {
-                                users_roles: {
+                                id: true,
+                                projeto_users: {
                                     select: {
                                         roles: {
                                             select: {
@@ -104,12 +105,12 @@ function is(rolesRoutes) {
                         })];
                 case 1:
                     user = _a.sent();
-                    if (!(user === null || user === void 0 ? void 0 : user.users_roles)) {
-                        return [2 /*return*/, response.status(401).json("User does not have this role")];
+                    if (!(user === null || user === void 0 ? void 0 : user.projeto_users)) {
+                        return [2 /*return*/, response.status(400).json("User does not have this role")];
                     }
-                    roleExists = user === null || user === void 0 ? void 0 : user.users_roles.map(function (role) { return role.roles; }).some(function (role) { return rolesRoutes.includes(role.name); });
+                    roleExists = user === null || user === void 0 ? void 0 : user.projeto_users.map(function (role) { return role.roles; }).some(function (role) { return rolesRoutes.includes(role.name.toLowerCase()); });
                     if (!roleExists) {
-                        return [2 /*return*/, response.status(401).json("User does not have this role").end()];
+                        return [2 /*return*/, response.status(405).json("Você não tem permissão para executar essa ação")];
                     }
                     return [2 /*return*/, next()];
             }

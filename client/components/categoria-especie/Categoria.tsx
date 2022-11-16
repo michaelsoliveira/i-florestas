@@ -48,7 +48,8 @@ const Categoria = ({ id }: any) => {
     }
 
     async function createCategoria(data: any) {
-        client.post('categoria', data)
+        try {
+            client.post('categoria', data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
@@ -57,7 +58,12 @@ const Categoria = ({ id }: any) => {
                 } else {
                     alertService.error(message)
                 }
-            }) 
+            }).catch((error: any) => {
+                alertService.error(error)
+            })
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     async function updateCategoria(id: string, data: any) {
@@ -76,7 +82,7 @@ const Categoria = ({ id }: any) => {
 
     return (
         <div>
-            <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
+            <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50 text-sm">
                 
                 <div className="relative py-3 w-11/12 max-w-none lg:max-w-2xl mx-auto">
                     <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
@@ -213,7 +219,7 @@ const Categoria = ({ id }: any) => {
                                     />
                                 </div>
                             </div>
-                            <div className='flex flex-row space-x-0 md:space-x-4'>
+                            <div className='flex flex-row justify-between md:justify-start space-x-4 md:space-x-4'>
                                 <div>
                                     <FormInput
                                         id="criterioAltura"
@@ -230,14 +236,14 @@ const Categoria = ({ id }: any) => {
                                                     message: 'Por favor entre com um valor numérico'
                                                 }
                                             }}
-                                        className="pb-4"
+                                        className="pb-4 w-full"
                                     />
                                 </div>
                                 <div>
                                     <FormInput
                                         id="criterioVolume"
                                         name="criterioVolume"
-                                        label="Volume máximo da árvore"
+                                        label="Vol. máximo da árvore"
                                         type="number"
                                         register={register}
                                         errors={errors}
@@ -261,12 +267,6 @@ const Categoria = ({ id }: any) => {
                                 className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="preservar"
                             /> Remanescente ?
                             </div>
-                            {/* <div>
-                                <div className="relative">
-                                    <input id="email" name="email" type="text" className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-600" placeholder="john@doe.com" />
-                                    <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email address</label>
-                                </div>
-                            </div> */}
                             <div className='flex items-center justify-between pt-4'>
                                 <Link href="/categoria-especie" className="text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
                                 <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>

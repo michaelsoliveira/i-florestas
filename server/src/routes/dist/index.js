@@ -47,7 +47,7 @@ routes.get('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaContro
 routes.put('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().update);
 routes["delete"]('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController()["delete"]);
 //Categoria
-routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['admin', 'coordenador', 'engenheiro']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
+routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['gerente']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
 routes.get('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findAll);
 routes.get('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findOne);
 routes.get('/categoria/search/q', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().search);

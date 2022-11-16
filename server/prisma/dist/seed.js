@@ -60,7 +60,7 @@ var roles = [
         description: 'Gerente do Projeto'
     },
     {
-        name: 'Usuario',
+        name: 'Funcionário',
         description: 'Usuário Padrão'
     }
 ];
@@ -231,7 +231,7 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, dataRole, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, empresa, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
+        var _i, estados_1, e, estado, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, empresa, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
         return __generator(this, function (_h) {
             switch (_h.label) {
                 case 0:
@@ -252,7 +252,6 @@ function main() {
                     _i++;
                     return [3 /*break*/, 1];
                 case 4:
-                    dataRole = [];
                     _a = 0, roles_1 = roles;
                     _h.label = 5;
                 case 5:

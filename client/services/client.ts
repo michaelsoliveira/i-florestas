@@ -23,11 +23,14 @@ const useClient = (options?: any) => {
         return response
     }, error => {
         try {
-          const { status } = error.response
+          const { status, data } = error.response
         
           if (status === 401) {
               signOut()
               // return location.href = '/'
+          } else if (status === 405) {
+            return Promise.reject(data);
+            
           }
           return Promise.reject(error)
         } catch (e) {

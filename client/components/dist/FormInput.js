@@ -40,9 +40,9 @@ exports.FormInput = function (_a) {
             label,
             " ",
             (rules === null || rules === void 0 ? void 0 : rules.required) && react_1["default"].createElement("span", { className: 'text-red' }, "*")),
-        react_1["default"].createElement(input_1.Input, __assign({ label: label, name: name, "aria-invalid": hasError, ref: innerRef, className: classnames_1["default"]({
-                'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 border-red-600 hover:border-red-600 focus:border-red-600 focus:ring-red-600': hasError
-            }) }, props, (register && register(name, rules)))),
+        react_1["default"].createElement(input_1.Input, __assign({ label: label, name: name, "aria-invalid": hasError, ref: innerRef, className: classnames_1["default"]([{
+                    'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 border-red-600 hover:border-red-600 focus:border-red-600 focus:ring-red-600': hasError
+                }]) }, props, (register && register(name, rules)))),
         errors && (react_1["default"].createElement(error_message_1.ErrorMessage, { errors: errors, name: name, render: function (_a) {
                 var message = _a.message;
                 return (react_1["default"].createElement(form_error_message_1.FormErrorMessage, { className: "mt-1" }, message));

@@ -46,7 +46,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     })
 
     const updateUser = (id?: string) => {
-            showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
             content: <AddEdit users={users} roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
         })    
     }

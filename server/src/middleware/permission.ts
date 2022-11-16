@@ -49,7 +49,7 @@ export function is(rolesRoutes: string[]) {
        },
       select: {
         id: true,
-        users_roles: {
+        projeto_users: {
           select: {
             roles: {
               select: {
@@ -61,17 +61,18 @@ export function is(rolesRoutes: string[]) {
       }
     });
 
-    if (!user?.users_roles) {
+    if (!user?.projeto_users) {
       return response.status(400).json("User does not have this role");
     }
     
 
-    const roleExists = user?.users_roles
+    const roleExists = user?.projeto_users
       .map((role) => role.roles)
-      .some((role) => rolesRoutes.includes(role.name));
+      .some((role) => rolesRoutes.includes(role.name.toLowerCase()));
 
     if (!roleExists) {
-      return response.status(400).json("User does not have this role").end();
+      
+      return response.status(405).json("Você não tem permissão para executar essa ação");
     }
 
     return next();

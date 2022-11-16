@@ -87,7 +87,7 @@ var Users = function (_a) {
         });
     };
     var updateUser = function (id) {
-        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: styles_1.stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var addUser = function () {

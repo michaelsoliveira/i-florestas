@@ -20,18 +20,27 @@ var useClient = function (options) {
     // const handleError = useErrorHandler();
     return react_2.useMemo(function () {
         var api = axios_1["default"].create({
-            baseURL: 'http://localhost:3333',
+            baseURL: process.env.NEXT_PUBLIC_API_URL,
             headers: __assign({ Authorization: token ? "Bearer " + token : '' }, ((options === null || options === void 0 ? void 0 : options.headers) ? options.headers : {}))
         });
         api.interceptors.response.use(function (response) {
             return response;
         }, function (error) {
-            var status = error.response.status;
-            if (status === 401) {
-                react_1.signOut();
-                // return location.href = '/'
+            try {
+                var _a = error.response, status = _a.status, data = _a.data;
+                if (status === 401) {
+                    react_1.signOut();
+                    // return location.href = '/'
+                }
+                else if (status === 405) {
+                    return Promise.reject(data);
+                }
+                return Promise.reject(error);
             }
-            return Promise.reject(error);
+            catch (e) {
+                console.log(e);
+                return Promise.reject(error);
+            }
         });
         return api;
     }, [options, token]);
