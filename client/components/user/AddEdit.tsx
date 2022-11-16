@@ -11,6 +11,7 @@ import { AuthContext } from 'contexts/AuthContext';
 import { Select, OptionType } from '../Select';
 import RadioGroup from '../Form/RadioGroup';
 import Option from '../Form/Option';
+import FocusError from '../Form/FocusError';
 
 type AddEditType = {
     styles?: any;
@@ -124,7 +125,10 @@ export const AddEdit = forwardRef<any, AddEditType>(
                 .when('option', {
                     is: (option:any) => option===1,
                     then: Yup.string()
-                    .required('É necessário selecionar um usuário')
+                    .when('isAddMode', {
+                        is: true,
+                        then: Yup.string().required('É necessário selecionar um usuário')
+                    }) 
                 }),
             id_role: Yup.string()
                 .required('É necessário selecionar um grupo de usuário')
@@ -218,7 +222,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         handleRegister(values)
                     }}
                 >
-                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {
+                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched, values }) => {
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
@@ -230,21 +234,25 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                             value: data?.roles[0].id
                                         })
                                         const fields = ['username', 'email'];
+                                        setFieldValue('id_role', data?.roles[0].id)
+                                        setFieldValue('id_projeto', projetoId)
+                                        setFieldValue('id_user', data?.id)
+                                        setTouched({}, false)
                                         fields.forEach(field => setFieldValue(field, data[field], false));
                                     });
                             }
-                        }, [setFieldValue])
+                        }, [setFieldValue, setTouched])
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
-                            setFieldValue('id_projeto', projetoId)
                             loadUser()
-                        }, [loadUser, setFieldValue]);
+                        }, [loadUser, values]);
                         
                         return (
                             <div className="flex flex-col justify-center w-full">
                                 <div className="relative h-full mx-0">
                                     <div className="relative pt-3 px-4 w-full">
+                                        <Form>
                                         {session && isAddMode && (
                                             <div className="mx-auto px-5 py-4">
                                             <RadioGroup>
@@ -266,7 +274,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </div>
                                         )}
                             {(option === 0) ? (
-                                 <Form>
+                                 <div>
                                     <label className={styles.label} htmlFor="username">Nome</label>
                                     <Field className={styles.field} id="username" name="username" placeholder="Michael" />
                                     <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
@@ -306,10 +314,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                             </div>
                                         </>
                                     )}
-                             </Form>
+                                    
+                                    </div>
                             ) : 
                             (<div>
-                                <Form>
+                             
                                     <div className='py-4'>
                                         <Field name="id_user">
                                             {() => (
@@ -333,7 +342,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </Field>
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="id_user" component="div" />
                                     </div>
-                                </Form>
+                             
                             </div>
                         )}
                         {session && 
@@ -363,6 +372,8 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             </div>
                         </div>
                         ) }
+                        <FocusError />
+                        </Form>
                     </div>
                 </div>
             </div>)}}
