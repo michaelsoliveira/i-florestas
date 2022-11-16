@@ -167,8 +167,9 @@ var UserService = /** @class */ (function () {
                                                 }
                                             },
                                             where: {
-                                                id_projeto_id_user: {
+                                                id_projeto_id_user_id_role: {
                                                     id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
+                                                    id_role: data === null || data === void 0 ? void 0 : data.id_role,
                                                     id_user: id
                                                 }
                                             }

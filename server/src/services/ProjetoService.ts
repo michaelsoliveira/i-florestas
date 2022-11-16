@@ -85,9 +85,10 @@ class ProjetoService {
                             active: data?.active,
                         },
                         where: {
-                            id_projeto_id_user: {
+                            id_projeto_id_user_id_role: {
                                 id_projeto: id,
-                                id_user: data?.id_user ? data?.id_user : userId
+                                id_role: data?.id_role,
+                                id_user: data?.id_user
                             }
                         }
                     }
