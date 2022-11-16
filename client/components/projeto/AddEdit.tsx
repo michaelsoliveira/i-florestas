@@ -113,3 +113,5 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
         </div>
     )
 }
+
+export default AddEdit
