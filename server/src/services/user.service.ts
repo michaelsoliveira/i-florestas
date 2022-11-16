@@ -95,7 +95,30 @@ class UserService {
                 id
             },
             data: data?.id_role ? {
-                ...basicData
+                ...basicData,
+                projeto_users: {
+                    update: {
+                        data: {
+                            roles: {
+                                connect: {
+                                    id: data?.id_role
+                                }
+                            },
+                            projeto: {
+                                connect: {
+                                    id: data?.id_projeto
+                                }
+                            }
+                        },
+                        where: {
+                            id_projeto_id_user_id_role: {
+                                id_projeto: data?.id_projeto,
+                                id_role: data?.id_role,
+                                id_user: id
+                            }
+                        }
+                    }
+                }
             } : basicData
         })
 

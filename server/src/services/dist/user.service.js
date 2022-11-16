@@ -152,7 +152,28 @@ var UserService = /** @class */ (function () {
                                 where: {
                                     id: id
                                 },
-                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign({}, basicData) : basicData
+                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { projeto_users: {
+                                        update: {
+                                            data: {
+                                                roles: {
+                                                    connect: {
+                                                        id: data === null || data === void 0 ? void 0 : data.id_role
+                                                    }
+                                                },
+                                                projeto: {
+                                                    connect: {
+                                                        id: data === null || data === void 0 ? void 0 : data.id_projeto
+                                                    }
+                                                }
+                                            },
+                                            where: {
+                                                id_projeto_id_user: {
+                                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
+                                                    id_user: id
+                                                }
+                                            }
+                                        }
+                                    } }) : basicData
                             })];
                     case 2:
                         user = _a.sent();
