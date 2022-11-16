@@ -143,9 +143,10 @@ var ProjetoService = /** @class */ (function () {
                                             active: data === null || data === void 0 ? void 0 : data.active
                                         },
                                         where: {
-                                            id_projeto_id_user: {
+                                            id_projeto_id_user_id_role: {
                                                 id_projeto: id,
-                                                id_user: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
+                                                id_role: data === null || data === void 0 ? void 0 : data.id_role,
+                                                id_user: data === null || data === void 0 ? void 0 : data.id_user
                                             }
                                         }
                                     }

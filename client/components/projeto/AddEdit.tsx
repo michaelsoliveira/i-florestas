@@ -107,7 +107,7 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
                     type="checkbox"
                     register={register}
                     errors={errors}
-                    className="w-full"
+                    className="w-[10rem]"
                 />
             </form>
         </div>

@@ -42,7 +42,7 @@ const Projetos = () => {
     const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
     content: <AddEdit reloadData={loadProjetos} data={selectedProjeto} /> })
     const addModal = () => {
-        setSelectedProjeto(null)
+        // setSelectedProjeto(null)
         showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
         content: <AddEdit reloadData={loadProjetos} /> })
     }

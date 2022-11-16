@@ -36,7 +36,7 @@ exports.FormInput = function (_a) {
     var hasError = !!(errors && errorMessages);
     var inputRef = react_1.useRef(null);
     return (react_1["default"].createElement("div", { className: classnames_1["default"]('flex', layout === 'floatLabel' ? 'flex-row items-center' : 'flex-col', className), "aria-live": "polite" },
-        react_1["default"].createElement("label", { htmlFor: label, className: 'text-primary placeholder-gray-gray4 pt-1.5 text-sm py-1 w-2/5' },
+        react_1["default"].createElement("label", { htmlFor: label, className: 'text-primary placeholder-gray-gray4 pt-1.5 text-sm py-1 w-[10rem]' },
             label,
             " ",
             (rules === null || rules === void 0 ? void 0 : rules.required) && react_1["default"].createElement("span", { className: 'text-red' }, "*")),

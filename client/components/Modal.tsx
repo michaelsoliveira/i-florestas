@@ -66,7 +66,7 @@ export default function Modal(props: ModaType) {
     <Transition.Root show={visible || false} as={Fragment}>
       <Dialog
               as="div" className={
-              classNames("fixed z-10 inset-0 overflow-y-auto text-sm",
+              classNames("fixed z-40 inset-0 overflow-y-auto text-sm",
                       className
               )}
         initialFocus={cancelButtonRef} 
