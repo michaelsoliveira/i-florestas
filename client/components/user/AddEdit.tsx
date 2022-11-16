@@ -119,7 +119,15 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         if (password || isAddMode) return schema.required('A confirmação de senha é obrigatória')
                     })
                     .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
-                })
+                }),
+            id_user: Yup.string()
+                .when('option', {
+                    is: (option:any) => option===1,
+                    then: Yup.string()
+                    .required('É necessário selecionar um usuário')
+                }),
+            id_role: Yup.string()
+                .required('É necessário selecionar um grupo de usuário')
             });
 
         async function handleRegister(data: any) {
@@ -210,7 +218,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         handleRegister(values)
                     }}
                 >
-                    {({ errors, touched, isSubmitting, setFieldValue }) => {
+                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
@@ -246,6 +254,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                                         index={index}
                                                         selectedIndex={option}
                                                         onSelect={(index: any) => {
+                                                            setTouched({}, false)
                                                             setFieldValue('option', index)
                                                             onSelect(index)
                                                         }}
@@ -302,22 +311,27 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             (<div>
                                 <Form>
                                     <div className='py-4'>
-                                        <Select
-                                            initialData={
-                                                {
-                                                    label: 'Entre com as iniciais...',
-                                                    value: ''
-                                                }
-                                            }
-                                            selectedValue={selectedUser}
-                                            defaultOptions={getUsersDefaultOptions()}
-                                            options={loadUsersOptions}
-                                            label="Pesquisar Usuário"
-                                            callback={(value) => { 
-                                                setFieldValue('id_user', value?.value)
-                                                setSelectedUser(value) 
-                                            }}
-                                        />
+                                        <Field name="id_user">
+                                            {() => (
+                                                <Select
+                                                    initialData={
+                                                        {
+                                                            label: 'Entre com as iniciais...',
+                                                            value: ''
+                                                        }
+                                                    }
+                                                    selectedValue={selectedUser}
+                                                    defaultOptions={getUsersDefaultOptions()}
+                                                    options={loadUsersOptions}
+                                                    label="Pesquisar Usuário"
+                                                    callback={(value) => { 
+                                                        setFieldValue('id_user', value?.value)
+                                                        setSelectedUser(value) 
+                                                    }}
+                                                />
+                                            )}
+                                        </Field>
+                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="id_user" component="div" />
                                     </div>
                                 </Form>
                             </div>
@@ -325,24 +339,28 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         {session && 
                         (<div>
                             <div className='py-4'>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Entre com as iniciais...',
-                                            value: ''
+                                <Field name="id_user">
+                                                {() => (
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Entre com as iniciais...',
+                                                value: ''
+                                            }
                                         }
-                                    }
-                                    selectedValue={selectedRole}
-                                    defaultOptions={getRolesDefaultOptions()}
-                                    options={loadRolesOptions}
-                                    label="Grupo de Usuário"
-                                    callback={(value) => { 
-                                        setFieldValue('id_role', value?.value)
-                                        setSelectedRole(value) 
-                                    }}
-                                />
+                                        selectedValue={selectedRole}
+                                        defaultOptions={getRolesDefaultOptions()}
+                                        options={loadRolesOptions}
+                                        label="Grupo de Usuário"
+                                        callback={(value) => { 
+                                            setFieldValue('id_role', value?.value)
+                                            setSelectedRole(value) 
+                                        }}
+                                    />
+                                    )}
+                                </Field>
+                                <ErrorMessage className='text-sm text-red-500 mt-1' name="id_role" component="div" />
                             </div>
-                            
                         </div>
                         ) }
                     </div>
