@@ -274,20 +274,23 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </div>
                                         )}
                             {(option === 0) ? (
-                                 <div>
-                                    <label className={styles.label} htmlFor="username">Nome</label>
-                                    <Field className={styles.field} id="username" name="username" placeholder="Michael" />
-                                    <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
-
-                                    <label className={styles.label} htmlFor="emailRegister">Email</label>
-                                    <Field
-                                        className={styles.field}
-                                        id="emailRegister"
-                                        name="email"
-                                        placeholder="john@acme.com"
-                                        type="email"
-                                    />
-                                    <ErrorMessage className='text-sm text-red-500 mt-1' name="email" component="div" />
+                                 <div className='lg:grid lg:grid-cols-2 lg:gap-4'>
+                                    <div>
+                                        <label className={styles.label} htmlFor="username">Nome</label>
+                                        <Field className={styles.field} id="username" name="username" placeholder="Michael" />
+                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
+                                    </div>
+                                    <div>
+                                        <label className={styles.label} htmlFor="emailRegister">Email</label>
+                                        <Field
+                                            className={styles.field}
+                                            id="emailRegister"
+                                            name="email"
+                                            placeholder="john@acme.com"
+                                            type="email"
+                                        />
+                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="email" component="div" />
+                                    </div>
                                     {isAddMode && (
                                         <>
                                             <div>
@@ -346,7 +349,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             </div>
                         )}
                         {session && 
-                        (<div>
+                        (<div className='w-[18.5rem] '>
                             <div className='py-4'>
                                 <Field name="id_user">
                                                 {() => (

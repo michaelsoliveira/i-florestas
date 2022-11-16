@@ -288,13 +288,15 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                         setFieldValue('option', index);
                                         onSelect(index);
                                     } }, el)); })))),
-                            (option === 0) ? (React.createElement("div", null,
-                                React.createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
-                                React.createElement(formik_1.Field, { className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
-                                React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "username", component: "div" }),
-                                React.createElement("label", { className: styles.label, htmlFor: "emailRegister" }, "Email"),
-                                React.createElement(formik_1.Field, { className: styles.field, id: "emailRegister", name: "email", placeholder: "john@acme.com", type: "email" }),
-                                React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "email", component: "div" }),
+                            (option === 0) ? (React.createElement("div", { className: 'lg:grid lg:grid-cols-2 lg:gap-4' },
+                                React.createElement("div", null,
+                                    React.createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
+                                    React.createElement(formik_1.Field, { className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "username", component: "div" })),
+                                React.createElement("div", null,
+                                    React.createElement("label", { className: styles.label, htmlFor: "emailRegister" }, "Email"),
+                                    React.createElement(formik_1.Field, { className: styles.field, id: "emailRegister", name: "email", placeholder: "john@acme.com", type: "email" }),
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "email", component: "div" })),
                                 isAddMode && (React.createElement(React.Fragment, null,
                                     React.createElement("div", null,
                                         React.createElement("label", { className: styles.label, htmlFor: "password" }, "Senha"),
@@ -315,7 +317,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                             } })); }),
                                         React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_user", component: "div" })))),
                             session &&
-                                (React.createElement("div", null,
+                                (React.createElement("div", { className: 'w-[18.5rem] ' },
                                     React.createElement("div", { className: 'py-4' },
                                         React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { initialData: {
                                                 label: 'Entre com as iniciais...',

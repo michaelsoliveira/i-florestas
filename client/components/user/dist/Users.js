@@ -91,7 +91,7 @@ var Users = function (_a) {
         });
     };
     var addUser = function () {
-        showModal({ size: 'sm:max-w-md', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
