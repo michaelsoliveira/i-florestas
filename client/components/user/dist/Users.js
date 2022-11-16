@@ -69,6 +69,7 @@ var Users = function (_a) {
     };
     var formSubmit = function () {
         formRef.current.handleSubmit();
+        console.log(formRef.current.errors);
         if (formRef.current.isValid) {
             hideModal();
         }

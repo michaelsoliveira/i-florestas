@@ -235,18 +235,18 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         })
                                         const fields = ['username', 'email'];
                                         setFieldValue('id_role', data?.roles[0].id)
-                                        setFieldValue('id_projeto', projetoId)
                                         setFieldValue('id_user', data?.id)
-                                        setTouched({}, false)
+                                        
                                         fields.forEach(field => setFieldValue(field, data[field], false));
                                     });
                             }
-                        }, [setFieldValue, setTouched])
+                        }, [setFieldValue])
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
+                            setFieldValue('id_projeto', projetoId)
                             loadUser()
-                        }, [loadUser, values]);
+                        }, [loadUser, setFieldValue, values]);
                         
                         return (
                             <div className="flex flex-col justify-center w-full">

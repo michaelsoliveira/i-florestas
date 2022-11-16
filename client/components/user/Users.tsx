@@ -28,7 +28,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     const formSubmit = () => {
         formRef.current.handleSubmit()
-        console.log('submit', formRef.current.isValid)
+        console.log(formRef.current.errors)
         if (formRef.current.isValid) {
             hideModal()
         }
