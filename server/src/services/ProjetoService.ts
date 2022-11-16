@@ -1,5 +1,4 @@
 import { Prisma, Projeto } from "@prisma/client";
-import { Console } from "console";
 import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
@@ -228,8 +227,6 @@ class ProjetoService {
                     }
                 }
             }
-
-            console.log(where)
 
         const [users, total] = await prismaClient.$transaction([
             prismaClient.user.findMany({
