@@ -1,5 +1,4 @@
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/react"
 import withAuthentication from "components/withAuthentication"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -9,41 +8,39 @@ import { useRouter } from "next/router"
 import { RootState } from "store"
 import Users from "components/user/Users"
 import { Pagination } from "components/Pagination"
-import { UserType } from "types/IUserType"
 import { LoadingContext } from "contexts/LoadingContext"
 
-type ProjetoUserType = {
+type ProjetoEquacaoType = {
     projetoId: string;
-    roles: any
 }
 
-const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
+const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
 
     const { client } = useContext(AuthContext)
     const { loading, setLoading } = useContext(LoadingContext)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUsers, setCurrentUsers] = useState<UserType[]>([])
-    const [orderBy, setOrderBy] = useState('user.username')
+    const [currentEquacoes, setCurrentEquacoes] = useState<any[]>([])
+    const [orderBy, setOrderBy] = useState('nome')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const router = useRouter()
     
-    const loadUsers = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
+    const loadEquacoes = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
+        const { data } = await client.get(`/projeto/${projetoId}/equacao?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         setTotalItems(data?.count)
-        setCurrentUsers(data?.users)
+        setCurrentEquacoes(data?.users)
         setLoading(false)
     }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname, setLoading])
 
     useEffect(() => {  
-        loadUsers(itemsPerPage)
-    }, [itemsPerPage, loadUsers])
+        loadEquacoes(itemsPerPage)
+    }, [itemsPerPage, loadEquacoes])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -59,7 +56,7 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 
         if (search) {
             
-            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/projeto/${projetoId}/equacao?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -68,7 +65,7 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/projeto/${projetoId}/equacao?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -84,7 +81,7 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
         setOrderBy(orderBy)
         setOrder(order)
         setTotalItems(data?.count)
-        setCurrentUsers(data?.users)
+        setCurrentEquacoes(data?.users)
     }
 
     const changeItemsPerPage = (value: number) => {
@@ -100,9 +97,9 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
     return (
         <div>
             <Users
-                currentUsers={currentUsers}
+                currentEquacoes={currentEquacoes}
                 loading={loading}
-                loadUsers={loadUsers}
+                loadEquacoes={loadEquacoes}
                 currentPage={currentPage}
                 orderBy={orderBy}
                 order={order}
@@ -110,7 +107,6 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
                 projetoId={projetoId}
-                roles={roles}
             />
             <Pagination
                 perPage={itemsPerPage}
@@ -127,19 +123,12 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
     const projetoId = params?.projeto
-
-    const { roles } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
-        method: 'GET',
-    }).then((result: any) => {
-        return result.json()
-    })
   
     return {
         props: {
-            projetoId,
-            roles
+            projetoId
         }
     }
 }
 
-export default withAuthentication(ProjetoUsersIndex)
+export default withAuthentication(ProjetoEquacoesIndex)

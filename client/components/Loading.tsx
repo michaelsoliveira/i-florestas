@@ -9,8 +9,8 @@ export const Loading = () => {
             {loading && (
             <div className="absolute bg-white bg-opacity-60 z-30 h-full w-full flex items-center justify-center">
                 <div className="flex items-center">
-                    {/* <div aria-label="Loading..." role="status">
-                        <svg className="h-6 w-6 animate-spin stroke-indigo-500" viewBox="0 0 256 256">
+                    <div aria-label="Loading..." role="status">
+                        <svg className="h-10 w-10 animate-spin stroke-indigo-500" viewBox="0 0 256 256">
                         <line x1="128" y1="32" x2="128" y2="64" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
                         <line
                             x1="195.9"
@@ -48,8 +48,8 @@ export const Loading = () => {
                             strokeLinejoin="round"
                             strokeWidth="24"></line>
                         </svg>
-                    </div> */}
-                    <div aria-label="Loading..." role="status">
+                    </div>
+                    {/* <div aria-label="Loading..." role="status">
                         <svg className="h-10 w-10 animate-spin" viewBox="3 3 18 18">
                         <path
                             className="fill-indigo-200"
@@ -58,7 +58,7 @@ export const Loading = () => {
                             className="fill-indigo-800"
                             d="M16.9497 7.05015C14.2161 4.31648 9.78392 4.31648 7.05025 7.05015C6.65973 7.44067 6.02656 7.44067 5.63604 7.05015C5.24551 6.65962 5.24551 6.02646 5.63604 5.63593C9.15076 2.12121 14.8492 2.12121 18.364 5.63593C18.7545 6.02646 18.7545 6.65962 18.364 7.05015C17.9734 7.44067 17.3403 7.44067 16.9497 7.05015Z"></path>
                         </svg>
-                    </div>
+                    </div> */}
                 </div>    
             </div>
             )}

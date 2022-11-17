@@ -44,8 +44,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var Link_1 = require("../../components/Link");
-var input_1 = require("../../components/atoms/input");
+var Link_1 = require("../Link");
+var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
@@ -56,16 +56,16 @@ var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
 var solid_2 = require("@heroicons/react/solid");
 var Users = function (_a) {
-    var currentUsers = _a.currentUsers, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;
-    var _b = react_1.useState(currentUsers), filteredUsers = _b[0], setFilteredUsers = _b[1];
+    var currentEquacoes = _a.currentEquacoes, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadEquacoes = _a.loadEquacoes, eqModelos = _a.eqModelos;
+    var _b = react_1.useState(currentEquacoes), filteredUsers = _b[0], setFilteredUsers = _b[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _c = react_1.useState(false), sorted = _c[0], setSorted = _c[1];
     var _d = react_1.useState([]), checkedUsers = _d[0], setCheckedUsers = _d[1];
     var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
-    var _f = react_1.useState(), users = _f[0], setUsers = _f[1];
+    var _f = react_1.useState(), users = _f[0], setEquacoes = _f[1];
     var formRef = react_2.createRef();
-    var userById = function (id) {
-        return currentUsers.find(function (user) { return user.id === id; });
+    var equacaoById = function (id) {
+        return currentEquacoes.find(function (equacao) { return equacao.id === id; });
     };
     var formSubmit = function () {
         formRef.current.handleSubmit();
@@ -78,23 +78,23 @@ var Users = function (_a) {
         var _a;
         return showModal({
             size: 'max-w-lg',
-            title: 'Deletar Usuário',
+            title: 'Deletar Equação',
             onConfirm: function () { deleteUser(id); },
             styleButton: styles_1.styles.redButton,
             iconType: 'warn',
             confirmBtn: 'Deletar',
-            content: "Tem Certeza que deseja excluir o Usu\u00E1rio " + ((_a = userById(id)) === null || _a === void 0 ? void 0 : _a.username) + " ?"
+            content: "Tem Certeza que deseja excluir o Equa\u00E7\u00E3o " + ((_a = equacaoById(id)) === null || _a === void 0 ? void 0 : _a.nome) + " ?"
         });
     };
     var updateUser = function (id) {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: styles_1.stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { eqModelos: eqModelos, sendForm: function () { loadEquacoes(10); }, ref: formRef, projetoId: projetoId, equacaoId: id, styles: styles_1.stylesForm, redirect: false })
         });
     };
-    var addUser = function () {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
+    var addEquacao = function () {
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Equação', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { eqModelos: eqModelos, sendForm: function () { loadEquacoes(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
         });
     };
-    var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
+    var deleteMultModal = function () { return showModal({ title: 'Deletar Equações', onConfirm: deleteEquacoes, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os equações selecionados' }); };
     var getUsers = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var data;
         return __generator(this, function (_a) {
@@ -102,15 +102,15 @@ var Users = function (_a) {
                 case 0: return [4 /*yield*/, client.get('/users/search')];
                 case 1:
                     data = (_a.sent()).data;
-                    setUsers(data);
+                    setEquacoes(data);
                     return [2 /*return*/];
             }
         });
     }); }, [client]);
     react_1.useEffect(function () {
         getUsers();
-        setFilteredUsers(currentUsers);
-    }, [currentUsers, currentPage, getUsers]);
+        setFilteredUsers(currentEquacoes);
+    }, [currentEquacoes, currentPage, getUsers]);
     function deleteUser(id) {
         return __awaiter(this, void 0, void 0, function () {
             var error_1;
@@ -123,7 +123,7 @@ var Users = function (_a) {
                                 var _a = response.data, error = _a.error, message = _a.message;
                                 if (!error) {
                                     alert_1["default"].success(message);
-                                    loadUsers();
+                                    loadEquacoes();
                                     hideModal();
                                 }
                                 else {
@@ -183,8 +183,8 @@ var Users = function (_a) {
         }
     };
     var handleSelectAllUsers = function () {
-        if (checkedUsers.length < currentUsers.length) {
-            setCheckedUsers(currentUsers.map(function (_a) {
+        if (checkedUsers.length < currentEquacoes.length) {
+            setCheckedUsers(currentEquacoes.map(function (_a) {
                 var id = _a.id;
                 return id;
             }));
@@ -193,12 +193,12 @@ var Users = function (_a) {
             setCheckedUsers([]);
         }
     };
-    var deleteUsers = function () {
+    var deleteEquacoes = function () {
         try {
             client["delete"]('/users/multiples', { data: { ids: checkedUsers } })
                 .then(function () {
                 alert_1["default"].success('Os usuários foram deletadas com SUCESSO!!!');
-                loadUsers();
+                loadEquacoes();
             });
         }
         catch (error) {
@@ -212,7 +212,7 @@ var Users = function (_a) {
             react_2["default"].createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Usu\u00E1rios"),
             react_2["default"].createElement("button", { 
                 // disabled={formState.isSubmitting}
-                type: "submit", className: "flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", onClick: addUser },
+                type: "submit", className: "flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", onClick: addEquacao },
                 react_2["default"].createElement("span", { className: "flex items-center" },
                     react_2["default"].createElement(solid_2.UserAddIcon, { className: "h-5 w-5 text-green-200 group-hover:text-green-100", "aria-hidden": "true" })),
                 react_2["default"].createElement("div", null, "Novo"))),
@@ -240,7 +240,7 @@ var Users = function (_a) {
                             react_2["default"].createElement("tr", null,
                                 react_2["default"].createElement("th", null,
                                     react_2["default"].createElement("div", { className: "flex justify-center" },
-                                        react_2["default"].createElement("input", { checked: (checkedUsers === null || checkedUsers === void 0 ? void 0 : checkedUsers.length) === (currentUsers === null || currentUsers === void 0 ? void 0 : currentUsers.length), onChange: handleSelectAllUsers, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
+                                        react_2["default"].createElement("input", { checked: (checkedUsers === null || checkedUsers === void 0 ? void 0 : checkedUsers.length) === (currentEquacoes === null || currentEquacoes === void 0 ? void 0 : currentEquacoes.length), onChange: handleSelectAllUsers, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
                                 react_2["default"].createElement("th", { scope: "col", className: "w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortUsers('user.username'); } },
                                     react_2["default"].createElement("div", { className: "flex flex-row items-center" },
                                         "Nome",

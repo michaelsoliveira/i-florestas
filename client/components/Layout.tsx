@@ -13,12 +13,7 @@ export type props = {
 const Layout = ({ children }: props) => {
     const { data: session, status } = useSession()
     const user = session?.user
-    const { loading, setLoading } = useContext(LoadingContext)
-
-    // useEffect(() => {
-    //     setLoading(false)
-    // }, [setLoading])
-    
+    const { loading } = useContext(LoadingContext)
 
     const defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
@@ -38,15 +33,16 @@ const Layout = ({ children }: props) => {
     ]
 
     return (
-        <div className="relative">
-            {loading && (<Loading />)}
+        <div className="">
+            
             <div>
                 <Navigation
                     defaultNavigation={defaultNavigation}
                     userNavigation={userNavigation}
                 />
             </div>
-            <div className="lg:pt-14">
+            <div className="relative lg:pt-14">
+                {loading && (<Loading />)}
                 {children}
             </div>
             <div className="">

@@ -11,10 +11,7 @@ var Layout = function (_a) {
     var children = _a.children;
     var _b = react_2.useSession(), session = _b.data, status = _b.status;
     var user = session === null || session === void 0 ? void 0 : session.user;
-    var _c = react_1.useContext(LoadingContext_1.LoadingContext), loading = _c.loading, setLoading = _c.setLoading;
-    // useEffect(() => {
-    //     setLoading(false)
-    // }, [setLoading])
+    var loading = react_1.useContext(LoadingContext_1.LoadingContext).loading;
     var defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
         { name: 'Soluções', href: '#', current: false, visible: !session, subMenu: true, subMenuItems: Menus_1.solutions },
@@ -30,11 +27,12 @@ var Layout = function (_a) {
         { name: 'Alterar Senha', href: '/user/change-password' },
         { name: 'Logout', href: '#', click: function () { return react_2.signOut({ callbackUrl: "/" }); } },
     ];
-    return (React.createElement("div", { className: "relative" },
-        loading && (React.createElement(Loading_1.Loading, null)),
+    return (React.createElement("div", { className: "" },
         React.createElement("div", null,
             React.createElement(Navigation_1["default"], { defaultNavigation: defaultNavigation, userNavigation: userNavigation })),
-        React.createElement("div", { className: "lg:pt-14" }, children),
+        React.createElement("div", { className: "relative lg:pt-14" },
+            loading && (React.createElement(Loading_1.Loading, null)),
+            children),
         React.createElement("div", { className: "" },
             React.createElement(Footer_1["default"], null))));
 };

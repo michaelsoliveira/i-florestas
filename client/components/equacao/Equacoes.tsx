@@ -1,10 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from "react"
-import { Link } from "../../components/Link"
-import { Input } from "../../components/atoms/input"
+import { Link } from "../Link" 
+import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
-import { UserType } from "types/IUserType"
 import { styles, stylesForm } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
@@ -12,18 +11,18 @@ import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
 import { UserAddIcon } from '@heroicons/react/solid'
 
-const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
+const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes, eqModelos }: any) => {
     
-    const [filteredUsers, setFilteredUsers] = useState<UserType[]>(currentUsers)
+    const [filteredUsers, setFilteredUsers] = useState<any[]>(currentEquacoes)
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
-    const [users, setUsers] = useState<any>()
+    const [users, setEquacoes] = useState<any>()
     const formRef = createRef<any>()
     
-    const userById = (id?: string) => {
-        return currentUsers.find((user: UserType) => user.id === id)
+    const equacaoById = (id?: string) => {
+        return currentEquacoes.find((equacao: any) => equacao.id === id)
     }
 
     const formSubmit = () => {
@@ -37,38 +36,38 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     const deleteSingleModal = (id?: string) => 
         showModal({ 
             size: 'max-w-lg',
-            title: 'Deletar Usuário', 
+            title: 'Deletar Equação', 
             onConfirm: () => { deleteUser(id) }, 
             styleButton: styles.redButton, 
             iconType: 'warn', 
             confirmBtn: 'Deletar', 
-            content: `Tem Certeza que deseja excluir o Usuário ${userById(id)?.username} ?` 
+            content: `Tem Certeza que deseja excluir o Equação ${equacaoById(id)?.nome} ?` 
     })
 
     const updateUser = (id?: string) => {
-            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit users={users} roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} userId={id} styles={stylesForm} redirect={false} />
+            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projetoId} equacaoId={id} styles={stylesForm} redirect={false} />
         })    
     }
 
-    const addUser = () => {
-            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit users={users} roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
+    const addEquacao = () => {
+            showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
         })    
     }
     
-    const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
+    const deleteMultModal = () => showModal({ title: 'Deletar Equações', onConfirm: deleteEquacoes, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os equações selecionados' })
 
     const getUsers = useCallback(async() => {
         const { data } = await client.get('/users/search')
         
-        setUsers(data)
+        setEquacoes(data)
     }, [client])
 
     useEffect(() => {
         getUsers()
-        setFilteredUsers(currentUsers)
-    }, [currentUsers, currentPage, getUsers])
+        setFilteredUsers(currentEquacoes)
+    }, [currentEquacoes, currentPage, getUsers])
 
     async function deleteUser(id?: string) {
         try {
@@ -77,7 +76,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                     const { error, message } = response.data
                     if (!error) {
                         alertService.success(message)
-                        loadUsers()
+                        loadEquacoes()
                         hideModal()
                     } else {
                         alertService.error(message)
@@ -125,19 +124,19 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     }
 
     const handleSelectAllUsers = () => {
-        if (checkedUsers.length < currentUsers.length) {
-            setCheckedUsers(currentUsers.map(({ id }: any) => id));
+        if (checkedUsers.length < currentEquacoes.length) {
+            setCheckedUsers(currentEquacoes.map(({ id }: any) => id));
         } else {
             setCheckedUsers([]);
         }
     };
 
-    const deleteUsers = () => {
+    const deleteEquacoes = () => {
         try {
             client.delete('/users/multiples', { data: { ids: checkedUsers} })
                 .then(() => {
                     alertService.success('Os usuários foram deletadas com SUCESSO!!!')
-                    loadUsers()
+                    loadEquacoes()
                 })
         } catch (error) {
             console.log(error)
@@ -158,7 +157,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                 // disabled={formState.isSubmitting}
                 type="submit"
                 className="flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                onClick={addUser}
+                onClick={addEquacao}
               >
                 <span className="flex items-center">
                   <UserAddIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
@@ -217,7 +216,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                         <th>
                             <div className="flex justify-center">
                             <input  
-                                checked={checkedUsers?.length === currentUsers?.length}
+                                checked={checkedUsers?.length === currentEquacoes?.length}
                                 onChange={handleSelectAllUsers}                
                                 className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                             />
