@@ -22,7 +22,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
-    const { loading, setLoading } = useContext(LoadingContext)
+    const { setLoading } = useContext(LoadingContext)
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = useCallback((id?: string) => {
@@ -74,26 +74,30 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     }
 
     const handleImportEspecies = async (e: any) => {
-        if (e.target.files.length > 0) {
-            const formData = new FormData()
-            formData.append('file', e.target?.files[0])
-            setLoading(true)
-            await client.post('/especie/import', formData)
-                .then((response: any) => {
-                    const { error, message } = response.data
-
-                    if (!error) {
-                        alertService.success(message) 
-                        loadEspecies()
+        try {
+            if (e.target.files.length > 0) {
+                const formData = new FormData()
+                formData.append('file', e.target?.files[0])
+                setLoading(true)
+                await client.post('/especie/import', formData)
+                    .then((response: any) => {
+                        const { error, message } = response.data
+    
+                        if (!error) {
+                            alertService.success(message) 
+                            loadEspecies()
+                            setLoading(false)
+                        }
+                    }).catch(() => {
                         setLoading(false)
-                    }
-                }).catch(() => {
-                    setLoading(false)
-                })
-        } else {
-            setUploading(false)    
+                    })
+            } else {
+                setUploading(false)    
+            }
+            setUploading(false)
+        } catch(e) {
+            setLoading(false)
         }
-        setUploading(false)
     }
 
     const openFile = () => {

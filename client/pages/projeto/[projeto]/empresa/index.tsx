@@ -13,9 +13,6 @@ const EmpresaIndex = ({ projetoId }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
 
-    const { store } = useModalContext()
-    const { visible } = store
-
     const loadEmpresas = useCallback(async() => {
         try {
             setIsLoading(true)
@@ -33,7 +30,6 @@ const EmpresaIndex = ({ projetoId }: any) => {
 
     return (
         <div>
-            {visible && (<Modal />)}
             <ListEmpresas projetoId={projetoId} empresas={empresas} isLoading={isLoading} loadEmpresas={loadEmpresas}/>
         </div>
     )

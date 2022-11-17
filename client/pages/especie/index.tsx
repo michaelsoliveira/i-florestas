@@ -34,16 +34,22 @@ const EspecieIndex = () => {
         setCurrentPage(currentPagePagination)
 
         const { data } = await client.get(url)
-
+        
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
+
+        setTimeout(() => {
+            setLoading(false)
+        }, 500)
+        //setLoading(false)
         
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
 
     useEffect(() => {  
-        console.log(loading)
+        
         loadEspecies(itemsPerPage)
-    }, [itemsPerPage, loadEspecies, loading])
+
+    }, [loadEspecies, itemsPerPage])
 
     const onPageChanged = async (paginatedData: any) => {
         

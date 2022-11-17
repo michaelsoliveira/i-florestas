@@ -7,7 +7,7 @@ export const Loading = () => {
     return (
         <div className="">
             {loading && (
-            <div className="absolute bg-white bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
+            <div className="absolute bg-white bg-opacity-60 z-30 h-full w-full flex items-center justify-center">
                 <div className="flex items-center">
                     {/* <div aria-label="Loading..." role="status">
                         <svg className="h-6 w-6 animate-spin stroke-indigo-500" viewBox="0 0 256 256">

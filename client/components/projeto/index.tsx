@@ -16,6 +16,7 @@ import {
     UsersIcon
 } from '@heroicons/react/outline'
 import { AddEdit } from './AddEdit'
+import { LoadingContext } from 'contexts/LoadingContext'
 
 const Projetos = () => {
     
@@ -25,6 +26,7 @@ const Projetos = () => {
     const [ projetoLocal, setProjetoLocal ] = useState<any>()
     const [ projetos, setProjetos ] = useState<any>()
     const { data: session } = useSession()
+    const { setLoading } = useContext(LoadingContext)
 
     const { showModal, hideModal } = useModalContext()
 
@@ -68,7 +70,7 @@ const Projetos = () => {
     }
 
     const loadProjetos = useCallback(async () => {
-        
+        setLoading(true)
         if (typeof session !== typeof undefined){
             
             const response = await client.get(`/projeto`)
@@ -90,9 +92,11 @@ const Projetos = () => {
             }
             
             setProjetos(projetos)
-            
+            setTimeout(() => {
+                setLoading(false)
+            }, 500)
         }
-    }, [session, client, setProjeto])
+    }, [setLoading, session, client, setProjeto])
 
     useEffect(() => {
         
