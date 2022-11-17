@@ -27,9 +27,12 @@ var withAuthentication = function (WrappedComponent) {
             }
         }, [router, session]);
         // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator
-        return session ? React.createElement(WrappedComponent, __assign({}, props)) :
-            React.createElement("div", { className: "flex flex-row items-center justify-center w-full h-screen opacity-50 bg-gradient-to-b from-white via-green-100 to-green-800" },
-                React.createElement("h1", { className: "text-green-900 text-2xl" }, "Loading..."));
+        return session ? React.createElement(WrappedComponent, __assign({}, props)) : React.createElement("div", null);
+        // :
+        // <div className="flex flex-row items-center justify-center w-full h-screen opacity-50">
+        //     {/* <h1 className="text-green-900 text-2xl">Loading...</h1> */}
+        //     <Loading />
+        // </div>;
     };
     return RequiresAuthentication;
 };

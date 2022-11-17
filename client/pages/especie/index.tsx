@@ -99,33 +99,26 @@ const EspecieIndex = () => {
     }
 
     return (
-    <div>
-        {loading ? (
-            <div className="flex flex-row items-center justify-center h-full w-full"><Loading /></div>
-        ) : (
-            <div>
-                <Especies
-                    currentEspecies={currentEspecies}
-                    loadEspecies={loadEspecies}
-                    currentPage={currentPage}
-                    orderBy={orderBy}
-                    order={order}
-                    onPageChanged={onPageChanged}
-                    perPage={itemsPerPage}
-                    changeItemsPerPage={changeItemsPerPage}
-                    />
-                <Pagination
-                    perPage={itemsPerPage}
-                    totalItems={totalItems}
-                    orderBy={orderBy}
-                    order={order}
-                    currentPage={currentPage}
-                    onPageChanged={onPageChanged}    
-                    pageNeighbours={3}
+        <div>
+            <Especies
+                currentEspecies={currentEspecies}
+                loadEspecies={loadEspecies}
+                currentPage={currentPage}
+                orderBy={orderBy}
+                order={order}
+                onPageChanged={onPageChanged}
+                perPage={itemsPerPage}
+                changeItemsPerPage={changeItemsPerPage}
                 />
-            </div>
-        )}
-        
+            <Pagination
+                perPage={itemsPerPage}
+                totalItems={totalItems}
+                orderBy={orderBy}
+                order={order}
+                currentPage={currentPage}
+                onPageChanged={onPageChanged}    
+                pageNeighbours={3}
+            />
     </div>
     )
 }

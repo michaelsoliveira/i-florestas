@@ -27,7 +27,7 @@ const useClient = (options?: any) => {
         
           if (status === 401) {
               signOut()
-              // return location.href = '/'
+              return Promise.reject(data);
           } else if (status === 405) {
             return Promise.reject(data);
             

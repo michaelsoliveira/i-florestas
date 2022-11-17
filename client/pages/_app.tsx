@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app'
 import { AuthProvider } from 'contexts/AuthContext'
 import { ProjetoProvider } from "contexts/ProjetoContext"
 import { ModalProvider } from "contexts/ModalContext"
+import { LoadingProvider } from "contexts/LoadingContext"
 import { Provider } from 'react-redux'
 import { store } from 'store'
 import { saveState } from 'store/browser-storage'
@@ -31,12 +32,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           <ModalProvider>
             <ProjetoProvider>
               <AuthProvider>
-                <Layout>
-                <ToastContainer />
-                <NextNProgress />
-                  <Component {...pageProps} />  
-                  <Modal />
-                </Layout>
+                <LoadingProvider>
+                  <Layout>
+                  <ToastContainer />
+                  <NextNProgress />
+                    <Component {...pageProps} />  
+                    <Modal />
+                  </Layout>
+                </LoadingProvider>
               </AuthProvider>
             </ProjetoProvider>
           </ModalProvider>

@@ -14,10 +14,10 @@ type Props = {
     children: ReactNode
 }
 
-export const LoadingContext = createContext(initialState)
+export const LoadingContext = createContext({} as LoadingType)
 
 export function LoadingProvider({ children }: Props) {
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState<boolean>(false)
     
     return (
         <LoadingContext.Provider value={{ loading, setLoading }}>

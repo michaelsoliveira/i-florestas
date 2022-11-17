@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PropTypes from 'prop-types'
 import { useSession } from 'next-auth/react'
 import { useRouter } from "next/router";
+import { Loading } from "./Loading";
 
 const withAuthentication = (WrappedComponent: any) => {
   const RequiresAuthentication = (props: any) => {
@@ -20,10 +21,12 @@ const withAuthentication = (WrappedComponent: any) => {
       
 
      // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator
-      return session ? <WrappedComponent {...props} /> :
-          <div className="flex flex-row items-center justify-center w-full h-screen opacity-50 bg-gradient-to-b from-white via-green-100 to-green-800">
-              <h1 className="text-green-900 text-2xl">Loading...</h1>
-          </div>;
+      return session ? <WrappedComponent {...props} />  : <div></div>
+          // :
+          // <div className="flex flex-row items-center justify-center w-full h-screen opacity-50">
+          //     {/* <h1 className="text-green-900 text-2xl">Loading...</h1> */}
+          //     <Loading />
+          // </div>;
   };
 
   return RequiresAuthentication;

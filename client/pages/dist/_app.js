@@ -28,6 +28,7 @@ require("react-toastify/dist/ReactToastify.css");
 var AuthContext_1 = require("contexts/AuthContext");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
 var ModalContext_1 = require("contexts/ModalContext");
+var LoadingContext_1 = require("contexts/LoadingContext");
 var react_redux_1 = require("react-redux");
 var store_1 = require("store");
 var browser_storage_1 = require("store/browser-storage");
@@ -50,10 +51,11 @@ function MyApp(_a) {
             React.createElement(ModalContext_1.ModalProvider, null,
                 React.createElement(ProjetoContext_1.ProjetoProvider, null,
                     React.createElement(AuthContext_1.AuthProvider, null,
-                        React.createElement(Layout_1["default"], null,
-                            React.createElement(react_toastify_1.ToastContainer, null),
-                            React.createElement(nextjs_progressbar_1["default"], null),
-                            React.createElement(Component, __assign({}, pageProps)),
-                            React.createElement(Modal_1["default"], null))))))));
+                        React.createElement(LoadingContext_1.LoadingProvider, null,
+                            React.createElement(Layout_1["default"], null,
+                                React.createElement(react_toastify_1.ToastContainer, null),
+                                React.createElement(nextjs_progressbar_1["default"], null),
+                                React.createElement(Component, __assign({}, pageProps)),
+                                React.createElement(Modal_1["default"], null)))))))));
 }
 exports["default"] = MyApp;

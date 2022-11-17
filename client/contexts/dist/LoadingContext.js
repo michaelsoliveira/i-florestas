@@ -6,7 +6,7 @@ var initialState = {
     loading: false,
     setLoading: function () { }
 };
-exports.LoadingContext = react_1.createContext(initialState);
+exports.LoadingContext = react_1.createContext({});
 function LoadingProvider(_a) {
     var children = _a.children;
     var _b = react_1.useState(false), loading = _b[0], setLoading = _b[1];

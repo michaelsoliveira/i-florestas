@@ -49,62 +49,63 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var react_1 = require("react");
 var withAuthentication_1 = require("components/withAuthentication");
-var Especies_1 = require("components/especie/Especies");
 var Pagination_1 = require("components/Pagination");
 var AuthContext_1 = require("contexts/AuthContext");
 var hooks_1 = require("store/hooks");
 var paginationSlice_1 = require("store/paginationSlice");
 var router_1 = require("next/router");
+var Index_1 = require("components/umf/Index");
 var LoadingContext_1 = require("contexts/LoadingContext");
-var EspecieIndex = function () {
+var UmfIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _a = react_1.useContext(LoadingContext_1.LoadingContext), loading = _a.loading, setLoading = _a.setLoading;
     var _b = react_1.useState(1), currentPage = _b[0], setCurrentPage = _b[1];
     var _c = react_1.useState(10), itemsPerPage = _c[0], setItemsPerPage = _c[1];
     var _d = react_1.useState(0), totalItems = _d[0], setTotalItems = _d[1];
-    var _e = react_1.useState([]), currentEspecies = _e[0], setCurrentEspecies = _e[1];
+    var _e = react_1.useState([]), currentUmfs = _e[0], setCurrentUmfs = _e[1];
     var _f = react_1.useState(0), totalPages = _f[0], setTotalPages = _f[1];
-    var _g = react_1.useState('especie.nome'), orderBy = _g[0], setOrderBy = _g[1];
-    var _h = react_1.useState('ASC'), order = _h[0], setOrder = _h[1];
+    var _g = react_1.useState('nome'), orderBy = _g[0], setOrderBy = _g[1];
+    var _h = react_1.useState('asc'), order = _h[0], setOrder = _h[1];
     var pagination = hooks_1.useAppSelector(function (state) { return state.pagination; });
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
-    var loadEspecies = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
-        var currentPagePagination, perPage, url, data;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    var loadUmfs = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
+        var currentPagePagination, url, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     setLoading(true);
                     currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1;
-                    perPage = itemsPerPage ? itemsPerPage : pagination.perPage;
-                    url = "/especie?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + (itemsPerPage ? itemsPerPage : perPage) + "&orderBy=" + orderBy + "&order=" + order;
                     setCurrentPage(currentPagePagination);
+                    url = "/umf?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + pagination.perPage + "&orderBy=" + orderBy + "&order=" + order;
                     return [4 /*yield*/, client.get(url)];
                 case 1:
                     data = (_a.sent()).data;
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentEspecies(data === null || data === void 0 ? void 0 : data.especies);
+                    setCurrentUmfs(data === null || data === void 0 ? void 0 : data.umfs);
+                    setLoading(false);
                     return [2 /*return*/];
             }
         });
     }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading]);
     react_1.useEffect(function () {
-        console.log(loading);
-        loadEspecies(itemsPerPage);
-    }, [itemsPerPage, loadEspecies, loading]);
+        loadUmfs(itemsPerPage);
+    }, [itemsPerPage, loadUmfs]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
-        var name, currentPage, perPage, totalPages, orderBy, order, search, data, data;
+        var name, currentPage, perPage, totalPages, orderBy, order, search, url, data, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     name = paginatedData.name, currentPage = paginatedData.currentPage, perPage = paginatedData.perPage, totalPages = paginatedData.totalPages, orderBy = paginatedData.orderBy, order = paginatedData.order, search = paginatedData.search;
+                    url = "/umf?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&search=" + search;
                     if (!search) return [3 /*break*/, 2];
-                    return [4 /*yield*/, client.get("/especie?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&search=" + search.toLowerCase())];
+                    return [4 /*yield*/, client.get(url)];
                 case 1:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, client.get("/especie?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order)];
+                case 2: return [4 /*yield*/, client.get("/umf?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order)];
                 case 3:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
@@ -116,23 +117,23 @@ var EspecieIndex = function () {
                     setOrderBy(orderBy);
                     setOrder(order);
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentEspecies(data === null || data === void 0 ? void 0 : data.especies);
+                    setCurrentUmfs(data === null || data === void 0 ? void 0 : data.umfs);
                     setTotalPages(totalPages ? totalPages : Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage));
                     return [2 /*return*/];
             }
         });
     }); };
-    var changeItemsPerPage = function (evt) {
+    var changeItemsPerPage = function (value) {
         onPageChanged({
             name: router.pathname,
             currentPage: 1,
-            perPage: evt.target.value,
+            perPage: value,
             orderBy: orderBy,
             order: order
         });
     };
     return (React.createElement("div", null,
-        React.createElement(Especies_1["default"], { currentEspecies: currentEspecies, loadEspecies: loadEspecies, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
+        React.createElement(Index_1["default"], { currentUmfs: currentUmfs, loading: loading, loadUmfs: loadUmfs, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
         React.createElement(Pagination_1.Pagination, { perPage: itemsPerPage, totalItems: totalItems, orderBy: orderBy, order: order, currentPage: currentPage, onPageChanged: onPageChanged, pageNeighbours: 3 })));
 };
-exports["default"] = withAuthentication_1["default"](EspecieIndex);
+exports["default"] = withAuthentication_1["default"](UmfIndex);

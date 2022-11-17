@@ -8,10 +8,11 @@ import { useRouter } from "next/router"
 import { RootState } from "store"
 import Index from "components/umf/Index"
 import { UmfType } from "types/IUMFType"
+import { LoadingContext } from "contexts/LoadingContext"
 
 const UmfIndex = () => {
     const { client } = useContext(AuthContext)
-    const [loading, setLoading] = useState(false)
+    const { loading, setLoading } = useContext(LoadingContext)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
@@ -35,7 +36,7 @@ const UmfIndex = () => {
         setTotalItems(data?.count)
         setCurrentUmfs(data?.umfs)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
 
     useEffect(() => {  
         loadUmfs(itemsPerPage)

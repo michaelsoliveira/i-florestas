@@ -16,7 +16,7 @@ type ProjetoUserType = {
     roles: any
 }
 
-const EmpresaUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
+const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 
     const { client } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
@@ -141,4 +141,4 @@ export const getServerSideProps: GetServerSideProps = async ({params, req, res})
     }
 }
 
-export default withAuthentication(EmpresaUsersIndex)
+export default withAuthentication(ProjetoUsersIndex)

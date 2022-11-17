@@ -30,7 +30,7 @@ var useClient = function (options) {
                 var _a = error.response, status = _a.status, data = _a.data;
                 if (status === 401) {
                     react_1.signOut();
-                    // return location.href = '/'
+                    return Promise.reject(data);
                 }
                 else if (status === 405) {
                     return Promise.reject(data);

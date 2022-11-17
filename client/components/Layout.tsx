@@ -1,8 +1,10 @@
-import { ReactNode } from "react"
+import { ReactNode, useContext, useEffect } from "react"
 import Navigation from './Navigation'
 import Footer from './Footer'
 import { useSession, signOut } from "next-auth/react"
 import { custodia, estatistica, inventario, planejamento, reports, resources, solutions } from "./Menus"
+import { Loading } from "@/components/Loading"
+import { LoadingContext } from "contexts/LoadingContext"
 
 export type props = {
     children: ReactNode
@@ -11,6 +13,12 @@ export type props = {
 const Layout = ({ children }: props) => {
     const { data: session, status } = useSession()
     const user = session?.user
+    const { loading, setLoading } = useContext(LoadingContext)
+
+    // useEffect(() => {
+    //     setLoading(false)
+    // }, [setLoading])
+    
 
     const defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
@@ -30,14 +38,15 @@ const Layout = ({ children }: props) => {
     ]
 
     return (
-        <div className="">
+        <div className="relative">
+            {loading && (<Loading />)}
             <div>
                 <Navigation
                     defaultNavigation={defaultNavigation}
                     userNavigation={userNavigation}
                 />
             </div>
-            <div className="flex-auto lg:pt-14 h-full">
+            <div className="lg:pt-14">
                 {children}
             </div>
             <div className="">
