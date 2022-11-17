@@ -13,6 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import { SessionProvider } from 'next-auth/react'
 import { debounce } from "debounce"
 import Modal from "@/components/Modal"
+import NextNProgress from 'nextjs-progressbar'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   
@@ -32,6 +33,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
               <AuthProvider>
                 <Layout>
                 <ToastContainer />
+                <NextNProgress />
                   <Component {...pageProps} />  
                   <Modal />
                 </Layout>

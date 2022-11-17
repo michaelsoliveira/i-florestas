@@ -51,8 +51,9 @@ var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var ModalContext_1 = require("contexts/ModalContext");
 var Modal_1 = require("../Modal");
+var LoadingContext_1 = require("contexts/LoadingContext");
 var Especies = function (_a) {
-    var currentEspecies = _a.currentEspecies, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadEspecies = _a.loadEspecies;
+    var currentEspecies = _a.currentEspecies, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loadEspecies = _a.loadEspecies;
     var _b = react_1.useState(currentEspecies), filteredEspecies = _b[0], setFilteredEspecies = _b[1];
     var _c = react_1.useState(), selectedEspecie = _c[0], setSelectedEspecie = _c[1];
     var _d = react_1.useState(""), searchInput = _d[0], setSearchInput = _d[1];
@@ -63,6 +64,7 @@ var Especies = function (_a) {
     var _g = react_1.useState([]), checkedEspecies = _g[0], setCheckedEspecies = _g[1];
     var _h = ModalContext_1.useModalContext(), showModal = _h.showModal, hideModal = _h.hideModal, store = _h.store;
     var visible = store.visible;
+    var _j = react_1.useContext(LoadingContext_1.LoadingContext), loading = _j.loading, setLoading = _j.setLoading;
     var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
     var especieById = react_1.useCallback(function (id) {
         return currentEspecies.find(function (especie) { return especie.id === id; });
@@ -99,7 +101,10 @@ var Especies = function (_a) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    setLoading(true);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
                     return [4 /*yield*/, client["delete"]('/especie/multiples', { data: { ids: checkedEspecies } })
                             .then(function () {
                             setCheckedEspecies([]);
@@ -107,14 +112,15 @@ var Especies = function (_a) {
                             loadEspecies();
                             hideModal();
                         })];
-                case 1:
-                    _a.sent();
-                    return [3 /*break*/, 3];
                 case 2:
+                    _a.sent();
+                    setLoading(false);
+                    return [3 /*break*/, 4];
+                case 3:
                     error_1 = _a.sent();
                     console.log(error_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
@@ -127,19 +133,18 @@ var Especies = function (_a) {
                     if (!(e.target.files.length > 0)) return [3 /*break*/, 2];
                     formData = new FormData();
                     formData.append('file', (_a = e.target) === null || _a === void 0 ? void 0 : _a.files[0]);
+                    setLoading(true);
                     return [4 /*yield*/, client.post('/especie/import', formData)
-                            .then(function () { return __awaiter(void 0, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        alert_1["default"].success('Especies importadas com sucesso!!!');
-                                        return [4 /*yield*/, loadEspecies(10, 1)];
-                                    case 1:
-                                        _a.sent();
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); })];
+                            .then(function (response) {
+                            var _a = response.data, error = _a.error, message = _a.message;
+                            if (!error) {
+                                alert_1["default"].success(message);
+                                loadEspecies();
+                                setLoading(false);
+                            }
+                        })["catch"](function () {
+                            setLoading(false);
+                        })];
                 case 1:
                     _b.sent();
                     return [3 /*break*/, 3];
@@ -222,7 +227,7 @@ var Especies = function (_a) {
                     React.createElement("span", { className: "ml-2" }, uploading ? "Importando..." : "Importar Espécies")),
                 React.createElement("input", { disabled: uploading, onChange: function (e) { return handleImportEspecies(e); }, ref: fileRef, className: "cursor-pointer absolute block opacity-0 pin-r pin-t", type: "file", name: "fileRef" })),
             React.createElement(Link_1.Link, { href: '/especie/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
-        loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
+        React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
                 React.createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },
                     React.createElement("div", { className: "w-full" },
@@ -292,6 +297,6 @@ var Especies = function (_a) {
                                         React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                     React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(especie.id); } },
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
-                        })))))))));
+                        }))))))));
 };
 exports["default"] = Especies;

@@ -1,5 +1,6 @@
-import { ChangeEvent, ChangeEventHandler, FormEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../../components/Link"
+import { Loading } from "../../components/Loading"
 import { Input } from "../../components/atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
@@ -7,8 +8,9 @@ import { AuthContext } from "../../contexts/AuthContext"
 import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
+import { LoadingContext } from "contexts/LoadingContext"
 
-const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEspecies }: any) => {
+const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
@@ -20,6 +22,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
+    const { loading, setLoading } = useContext(LoadingContext)
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = useCallback((id?: string) => {
@@ -55,6 +58,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     }, [currentEspecies, currentPage])
 
     const deleteEspecies = async () => {
+        setLoading(true)
         try {
             await client.delete('/especie/multiples', { data: { ids: checkedEspecies} })
                 .then(() => {
@@ -63,6 +67,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                     loadEspecies()
                     hideModal()
                 })
+        setLoading(false)
         } catch (error) {
             console.log(error)
         }
@@ -72,12 +77,19 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         if (e.target.files.length > 0) {
             const formData = new FormData()
             formData.append('file', e.target?.files[0])
+            setLoading(true)
             await client.post('/especie/import', formData)
-                .then(async () => {
-                    alertService.success('Especies importadas com sucesso!!!')
-                    await loadEspecies(10, 1)
+                .then((response: any) => {
+                    const { error, message } = response.data
+
+                    if (!error) {
+                        alertService.success(message) 
+                        loadEspecies()
+                        setLoading(false)
+                    }
+                }).catch(() => {
+                    setLoading(false)
                 })
-            
         } else {
             setUploading(false)    
         }
@@ -172,7 +184,6 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                     Adicionar
                 </Link>
             </div>
-            {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
@@ -334,7 +345,6 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                 </div>
             </div>
         </div>
-        )}
             
     </div>
     )

@@ -1,6 +1,7 @@
 import { CategoriaEspecie } from "src/entities/CategoriaEspecie";
 import { Especie } from "../entities/Especie";
 import { getRepository, ILike } from "typeorm";
+import { prismaClient } from "../database/prismaClient";
 
 export interface EspecieType {
     nome: string;
@@ -10,16 +11,20 @@ export interface EspecieType {
 }
 
 class EspecieService {
-    async create(data: EspecieType): Promise<Especie> {
-        const repositoryEspecie = getRepository(Especie)
-        const especieExists = await repositoryEspecie.findOne({ where: { nome: data.nome } })
-
+    async create(data: any): Promise<any> {
+        const especieExists = await prismaClient.especie.findFirst({ where: { nome: data.nome } })
+        const { nome, nome_cientifico, nome_orgao } = data
         if (especieExists) {
             throw new Error('Já existe uma espécie cadastrada com este nome')
         }
 
-        const especie = repositoryEspecie.create(data)
-        await especie.save()
+        const especie = prismaClient.especie.create({
+            data: {
+                nome,
+                nome_cientifico,
+                nome_orgao
+            }
+        })
 
         return especie
     }

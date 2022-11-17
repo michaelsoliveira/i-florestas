@@ -85,7 +85,7 @@ const Categoria = ({ id }: any) => {
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50 text-sm">
                 
                 <div className="relative py-3 w-11/12 max-w-none lg:max-w-2xl mx-auto">
-                    <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row items-center justify-between shadow- border border-gray-400 bg-gray-100 py-4 rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/categoria-especie" className="flex flex-col relative left-0 ml-4" />
@@ -99,7 +99,7 @@ const Categoria = ({ id }: any) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl">
+                    <div className="relative p-8 bg-white shadow-sm border-x border-b border-gray-400 rounded-b-xl">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='w-full'>
                                 <FormInput

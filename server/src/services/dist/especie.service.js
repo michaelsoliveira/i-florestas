@@ -38,26 +38,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var Especie_1 = require("../entities/Especie");
 var typeorm_1 = require("typeorm");
+var prismaClient_1 = require("../database/prismaClient");
 var EspecieService = /** @class */ (function () {
     function EspecieService() {
     }
     EspecieService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var repositoryEspecie, especieExists, especie;
+            var especieExists, nome, nome_cientifico, nome_orgao, especie;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        repositoryEspecie = typeorm_1.getRepository(Especie_1.Especie);
-                        return [4 /*yield*/, repositoryEspecie.findOne({ where: { nome: data.nome } })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({ where: { nome: data.nome } })];
                     case 1:
                         especieExists = _a.sent();
+                        nome = data.nome, nome_cientifico = data.nome_cientifico, nome_orgao = data.nome_orgao;
                         if (especieExists) {
                             throw new Error('Já existe uma espécie cadastrada com este nome');
                         }
-                        especie = repositoryEspecie.create(data);
-                        return [4 /*yield*/, especie.save()];
-                    case 2:
-                        _a.sent();
+                        especie = prismaClient_1.prismaClient.especie.create({
+                            data: {
+                                nome: nome,
+                                nome_cientifico: nome_cientifico,
+                                nome_orgao: nome_orgao
+                            }
+                        });
                         return [2 /*return*/, especie];
                 }
             });
@@ -81,7 +84,7 @@ var EspecieService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, typeorm_1.getRepository(Especie_1.Especie)["delete"](id)
                             .then(function (response) {
-                            console.log(response);
+                            return response.affected;
                         })];
                     case 1:
                         _a.sent();
@@ -93,7 +96,6 @@ var EspecieService = /** @class */ (function () {
     EspecieService.prototype.deleteEspecies = function (ids) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log(ids);
                 ids.forEach(function (id) {
                     typeorm_1.getRepository(Especie_1.Especie)["delete"](id);
                 });
@@ -118,34 +120,9 @@ var EspecieService = /** @class */ (function () {
                                 nome: search ? typeorm_1.ILike("%" + search + "%") : typeorm_1.ILike('%%')
                             })
                                 .orderBy(orderBy, order ? order : 'ASC')
-                                .getManyAndCount()
-                            // const [data, total] = await getRepository(Especie).findAndCount({
-                            //     select: ['id', 'nome', 'nomeOrgao', 'nomeCientifico', 'categoria'],
-                            //     where: {
-                            //         nome: search ? ILike(`%${search}%`) : ILike('%%')
-                            //     },
-                            //     relations: ['categoria'],
-                            //     order: {
-                            //         [orderBy]: order ? order : 'ASC'
-                            //     },
-                            //     take: perPage,
-                            //     skip
-                            // })
-                        ];
+                                .getManyAndCount()];
                     case 1:
                         _a = _b.sent(), data = _a[0], total = _a[1];
-                        // const [data, total] = await getRepository(Especie).findAndCount({
-                        //     select: ['id', 'nome', 'nomeOrgao', 'nomeCientifico', 'categoria'],
-                        //     where: {
-                        //         nome: search ? ILike(`%${search}%`) : ILike('%%')
-                        //     },
-                        //     relations: ['categoria'],
-                        //     order: {
-                        //         [orderBy]: order ? order : 'ASC'
-                        //     },
-                        //     take: perPage,
-                        //     skip
-                        // })
                         return [2 /*return*/, {
                                 orderBy: orderBy,
                                 order: order,

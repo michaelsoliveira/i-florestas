@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import especieService, { EspecieType } from "../services/especie.service";
 import { Readable } from 'stream'
 import readline from "readline";
+import { prismaClient } from "../database/prismaClient";
 
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -111,7 +112,7 @@ export class EspecieController {
     }
 
     async importEspecie(request: Request, response: Response) {
-        const especies: EspecieType[] = []
+        const especies: any[] = []
 
         try {
             if (request?.file === undefined) {
@@ -128,22 +129,36 @@ export class EspecieController {
 
             for await (const line of especiesLine) {
                 const especieLineSplit = line.split(";")
-
+                
                 especies.push({
                     nome: especieLineSplit[0],
-                    nomeOrgao: especieLineSplit[1],
-                    nomeCientifico: especieLineSplit[2]
+                    nome_orgao: especieLineSplit[1],
+                    nome_cientifico: especieLineSplit[2]
                 })
             }
+
+            for await (let especie of especies) {
+                if (especies.indexOf(especie) > 0) await especieService.create(especie)
+            }
             
-            especies.forEach(async (data, index) => {
-                if (index > 0) {
-                    await especieService.create(data)
-                }
+            // especies.forEach(async (data, index) => {
+            //     if (index > 0) {
+            //         await especieService.create(data)
+            //     }
+            //     console.log(especies.length, index)
+            // })
+            
+            
+            // const data = await prismaClient.especie.findMany()
+
+            return response.json({
+                error: false,
+                especies,
+                message: 'Espécies importadas com sucesso!!!'
             })
+            
         } catch (error) {
             return response.json(error.message)
-        } 
-        return response.json('Espécies Importadas com Sucesso!!!')
+        }
     }
 }

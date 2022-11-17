@@ -8,10 +8,12 @@ import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import { EspecieType } from "types/IEspecieType"
+import { LoadingContext } from "contexts/LoadingContext"
+import { Loading } from "@/components/Loading"
 
 const EspecieIndex = () => {
     const { client } = useContext(AuthContext)
-    const [loading, setLoading] = useState(false)
+    const { loading, setLoading } = useContext(LoadingContext)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
@@ -35,12 +37,13 @@ const EspecieIndex = () => {
 
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
-        setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname])
+        
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
 
     useEffect(() => {  
+        console.log(loading)
         loadEspecies(itemsPerPage)
-    }, [itemsPerPage, loadEspecies])
+    }, [itemsPerPage, loadEspecies, loading])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -97,26 +100,32 @@ const EspecieIndex = () => {
 
     return (
     <div>
-        <Especies
-            currentEspecies={currentEspecies}
-            loading={loading}
-            loadEspecies={loadEspecies}
-            currentPage={currentPage}
-            orderBy={orderBy}
-            order={order}
-            onPageChanged={onPageChanged}
-            perPage={itemsPerPage}
-            changeItemsPerPage={changeItemsPerPage}
-            />
-        <Pagination
-            perPage={itemsPerPage}
-            totalItems={totalItems}
-            orderBy={orderBy}
-            order={order}
-            currentPage={currentPage}
-            onPageChanged={onPageChanged}    
-            pageNeighbours={3}
-        />
+        {loading ? (
+            <div className="flex flex-row items-center justify-center h-full w-full"><Loading /></div>
+        ) : (
+            <div>
+                <Especies
+                    currentEspecies={currentEspecies}
+                    loadEspecies={loadEspecies}
+                    currentPage={currentPage}
+                    orderBy={orderBy}
+                    order={order}
+                    onPageChanged={onPageChanged}
+                    perPage={itemsPerPage}
+                    changeItemsPerPage={changeItemsPerPage}
+                    />
+                <Pagination
+                    perPage={itemsPerPage}
+                    totalItems={totalItems}
+                    orderBy={orderBy}
+                    order={order}
+                    currentPage={currentPage}
+                    onPageChanged={onPageChanged}    
+                    pageNeighbours={3}
+                />
+            </div>
+        )}
+        
     </div>
     )
 }
