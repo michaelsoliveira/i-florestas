@@ -18,3 +18,5 @@ export const ListEqModelo = ({ items, callback }: any) => {
         </div>
     )
 }
+
+export default ListEqModelo
