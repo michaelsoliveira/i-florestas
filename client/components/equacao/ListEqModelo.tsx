@@ -3,7 +3,7 @@ export const ListEqModelo = ({ items, callback }: any) => {
         <div className="border border-gray-300 rounded-md w-full my-2 overflow-y-auto h-58">
             <ul role="list">
                 {items?.map((eqModelo: any, key: number) => (
-                    <li key={key} className="grid grid-flow-row lg:grid-cols-[220px_minmax(900px,_1fr)] items-center py-1 px-4 group/item hover:bg-slate-100 h-14 w-full hover:cursor-pointer" onClick={() => callback(eqModelo)}>
+                    <li key={key} className="grid grid-flow-row lg:grid-cols-[220px_minmax(300px,_1fr)] items-center py-1 px-4 group/item hover:bg-slate-100 h-14 w-full hover:cursor-pointer" onClick={() => callback(eqModelo)}>
                             <span className="text-xs font-semibold">{eqModelo.nome}</span>
                             <span className="text-xs">{eqModelo.expressao}</span>
                         
