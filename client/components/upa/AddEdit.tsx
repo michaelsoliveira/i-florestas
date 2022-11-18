@@ -11,6 +11,7 @@ import { Link } from '../Link'
 import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { RootState } from '../../store'
 import { setUpa } from "../../store/upaSlice"
+import { ProjetoContext } from 'contexts/ProjetoContext'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -19,6 +20,7 @@ const AddEdit = ({ id }: any) => {
     const [sysRef, setSysRef] = useState<OptionType>()
     const [sysRefs, setSysRefs] = useState<any>()
     const { client } = useContext(AuthContext)
+    const { projeto } = useContext(ProjetoContext)
     const umf = useAppSelector((state: RootState) => state.umf)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
@@ -26,10 +28,10 @@ const AddEdit = ({ id }: any) => {
     const isAddMode = !id
 
     const loadEquacoes = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/eq-volume/search/q?nome=${inputValue}`)
-        const data = response.data
-        
-        callback(data?.map((eqVolume: any) => ({
+        const response = await client.get(`/projeto/${projeto?.id}/eq-volume?search=${inputValue}`)
+        const { equacoes } = response.data
+        console.log(equacoes)
+        callback(equacoes?.map((eqVolume: any) => ({
             value: eqVolume.id,
             label: eqVolume.nome
         })))
@@ -88,9 +90,10 @@ const AddEdit = ({ id }: any) => {
     }, [session, isAddMode, client, id, setValue, setEquacao])
 
     useEffect(() => {
+        console.log(projeto)
         const defaultOptions = async () => {
             if (typeof session !== typeof undefined){
-                const eqResponse = await client.get(`/eq-volume?orderBy=nome&order=asc`)
+                const eqResponse = await client.get(`/projeto/${projeto?.id}/eq-volume?orderBy=nome&order=asc`)
                 const { equacoes } = eqResponse.data
 
                 const sysRefResponse = await client.get(`/sys-ref?orderBy=srtext&order=asc`)
@@ -103,7 +106,7 @@ const AddEdit = ({ id }: any) => {
         }
         defaultOptions()    
         
-    }, [session, client])
+    }, [session, client, projeto])
 
     const selectedEquacao = (data: any) => {
         setEquacao(data)

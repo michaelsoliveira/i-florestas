@@ -85,7 +85,7 @@ class EquacaoVolumeService {
             ? {
                 AND: {
                     OR: [
-                        {nome: {mode: Prisma.QueryMode.insensitive ,contains: search}}, 
+                        {nome: {mode: Prisma.QueryMode.insensitive, contains: search}}, 
                         {expressao: {mode: Prisma.QueryMode.insensitive, contains: search}}
                     ],
                     id_projeto: projetoId
@@ -138,13 +138,16 @@ class EquacaoVolumeService {
         
     }
 
-    async search(text: any) {
+    async search(text: any, projetoId?: string) {
         const eqVolumes = await prismaClient.equacaoVolume.findMany({
             where: {
-                OR: [
-                    {nome: {mode: Prisma.QueryMode.insensitive, contains: text}}, 
-                    {expressao: {mode: Prisma.QueryMode.insensitive, contains: text}}
-                ]
+                AND: {
+                    OR: [
+                        {nome: {mode: Prisma.QueryMode.insensitive, contains: text}}, 
+                        {expressao: {mode: Prisma.QueryMode.insensitive, contains: text}}
+                    ],
+                    id_projeto: projetoId
+                }
             },
             orderBy: {
                 nome:   'asc'

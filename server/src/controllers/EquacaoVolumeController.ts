@@ -108,8 +108,8 @@ export class EquacaoVolumeController {
 
     async search(request: Request, response: Response) {
         const { nome } = request.query
-        
-        const eqVolumes = nome ? await eqVolumeService.search(nome) : await eqVolumeService.getAll(request.query)
+        const { projetoId } = request.params
+        const eqVolumes = nome ? await eqVolumeService.search(nome, projetoId) : await eqVolumeService.getAll(request.query, projetoId)
         
         return response.json(eqVolumes)
     }
