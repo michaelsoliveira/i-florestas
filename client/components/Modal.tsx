@@ -102,20 +102,22 @@ export default function Modal(props: ModaType) {
                 size ? size : 'sm:max-w-md'
               )}>
                <div>
-                  <div className="bg-white px-4">
+                  <div className="bg-white px-4 rounded-full">
                     <div className="sm:flex sm:items-center py-2 space-x-2">
                       { (iconType === 'warn') && (
                         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                           <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
                         </div>
                       ) }
-                      <div className="pt-2 w-full">
-                        <div className='relative flex flex-row justify-between items-center'>
+                      <div className="relative pt-1 w-full">
+                        <div className=' flex flex-row justify-between items-center'>
                           <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                             {title}
                           </Dialog.Title>
                           {(type && type === 'submit') && (
-                            <div className='absolute right-0 hover:cursor-pointer' onClick={hideModal}>
+                            <div className={classNames('absolute -right-1 hover:cursor-pointer',
+                              !title && 'top-1'
+                            )} onClick={hideModal}>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                               </svg>
@@ -129,7 +131,7 @@ export default function Modal(props: ModaType) {
                     </div>
                   </div>
                   {options && (
-                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-full">
                       <button
                         type={type === "submit" ? 'submit' : 'button'}
                           className={classNames(
