@@ -32,7 +32,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['images.unsplash.com', 'placeimg.com'],
+    domains: ['images.unsplash.com', 'placeimg.com', 'www.revixpert.ch'],
   },
   output: 'standalone',
 }

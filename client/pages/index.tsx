@@ -3,6 +3,7 @@ import Tabs from 'components/Tabs'
 import { Carousel } from 'components/home/Carousel'
 import Hero from 'components/home/Hero'
 import { useSession } from 'next-auth/react'
+import Team from '@/components/home/Team'
 
 export default function Dashboard() {
   
@@ -34,6 +35,9 @@ export default function Dashboard() {
               Recursos
             </h2>
               <Carousel />              
+          </div>
+          <div className="text-center lg:flex lg:flex-col py-4">
+            <Team />
           </div>
           <div className='max-w-md lg:max-w-lg md:max-w-md sm:text-center mx-auto'>
               {!session && 

@@ -108,7 +108,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     then: Yup.string()
                     .when('isAddMode', {
                         is: true,
-                        then: Yup.string().required('Password is required').min(6, 'A senha deve possuir no mínimo 6 caracteres')
+                        then: Yup.string().required('Senha é obrigatória').min(6, 'A senha deve possuir no mínimo 6 caracteres')
                     })
                 }),
                 
@@ -131,7 +131,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     }) 
                 }),
             id_role: Yup.string()
-                .required('É necessário selecionar um grupo de usuário')
+                .when('id_projeto', {
+                    is: (projeto:string) => projeto === projetoId,
+                    then: Yup.string()
+                        .required('É necessário selecionar um grupo de usuário')
+                })
             });
 
         async function handleRegister(data: any) {
@@ -222,7 +226,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         handleRegister(values)
                     }}
                 >
-                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched, values }) => {
+                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
@@ -274,7 +278,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </div>
                                         )}
                             {(option === 0) ? (
-                                 <div className='lg:grid lg:grid-cols-2 lg:gap-4'>
+                                 <div className={session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col'}>
                                     <div>
                                         <label className={styles.label} htmlFor="username">Nome</label>
                                         <Field className={styles.field} id="username" name="username" placeholder="Michael" />

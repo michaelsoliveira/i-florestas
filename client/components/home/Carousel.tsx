@@ -139,18 +139,19 @@ export const Carousel = function Carousel() {
                   <a
                     href={resource.link}
                     className="aspect-square block bg-origin-padding bg-left-top bg-cover bg-no-repeat z-0"
-                    style={{ backgroundImage: `url(${resource.imageUrl || ''})` }}
                   >
                     <Image
                       src={resource.imageUrl || ''}
                       alt={resource.title}
-                      layout='fill'
+                      //layout='fill'
+                      width={400}
+                      height={400}
                       className="aspect-square hidden"
                     />
                   </a>
                   <a
                     href={resource.link}
-                    className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-100 bg-green-800/75 z-10"
+                    className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-70 bg-green-800/75 z-10"
                   >
                     <h3 className="text-white py-6 px-3 mx-auto text-center text-xl">
                       {resource.title}
