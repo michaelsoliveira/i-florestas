@@ -6,12 +6,14 @@ import { LockClosedIcon } from '@heroicons/react/solid'
 import AlertService from '../services/alert';
 import { signIn, useSession } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
+import { useModalContext } from 'contexts/ModalContext';
 
 // import { userService } from 'services';
 
 export default Login;
 
 function Login({ csrfToken }: any) {
+  const { hideModal } = useModalContext()
   const { data: session } = useSession()
     const router = useRouter();
 
@@ -47,6 +49,7 @@ function Login({ csrfToken }: any) {
             
             if (response.ok) {
               AlertService.success('Login realizado com sucesso')
+              hideModal()
               router.push('/')
             } else {
               AlertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')

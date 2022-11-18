@@ -1,4 +1,16 @@
+import { useModalContext } from "contexts/ModalContext"
+import Login from "../Login"
+import Tabs from "../Tabs"
+
 const Hero = ({ session }: any) => {
+    const { showModal } = useModalContext()
+
+    const showLogin = () => {
+        showModal({
+            type: 'submit', hookForm: 'hook-form', options: false, className: 'px-8', content: <div className="px-4"><Tabs /></div>
+        })
+    }
+
     return (
         <div className="container mx-auto px-6 py-8">
             <div>
@@ -18,6 +30,7 @@ const Hero = ({ session }: any) => {
                     <a
                         href="#"
                         className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
+                        onClick={showLogin}
                     >
                         Iniciar
                     </a>

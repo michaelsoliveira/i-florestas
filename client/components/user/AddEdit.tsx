@@ -12,6 +12,7 @@ import { Select, OptionType } from '../Select';
 import RadioGroup from '../Form/RadioGroup';
 import Option from '../Form/Option';
 import FocusError from '../Form/FocusError';
+import { useModalContext } from 'contexts/ModalContext';
 
 type AddEditType = {
     styles?: any;
@@ -36,6 +37,9 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const [selectedRole, setSelectedRole] = useState<any>()
         const [option, setOption] = useState<number | undefined>(0)
         const { data: session } = useSession()
+
+        const { hideModal } = useModalContext()
+
         function onSelect(index: number) {
             setOption(index)
         }
@@ -155,6 +159,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             }).then((response: any) => {
                                 if (response.ok) {
                                     alertService.success('Login realizado com sucesso')
+                                    hideModal()
                                     router.push('/')
                                 } else {
                                     alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')

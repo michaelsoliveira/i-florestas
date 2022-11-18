@@ -8,9 +8,9 @@ export const Team = () => {
                     <h1 className="text-3xl font-semibold text-center text-green-800 capitalize lg:text-4xl dark:text-white">Nosso Time</h1>
 
                     <div className="flex justify-center mx-auto mt-6">
-                        <span className="inline-block w-40 h-1 bg-blue-500 rounded-full"></span>
-                        <span className="inline-block w-3 h-1 mx-1 bg-blue-500 rounded-full"></span>
-                        <span className="inline-block w-1 h-1 bg-blue-500 rounded-full"></span>
+                        <span className="inline-block w-40 h-1 bg-green-700 rounded-full"></span>
+                        <span className="inline-block w-3 h-1 mx-1 bg-green-700 rounded-full"></span>
+                        <span className="inline-block w-1 h-1 bg-green-700 rounded-full"></span>
                     </div>
 
                     <p className="max-w-2xl mx-auto mt-6 text-center text-gray-500 dark:text-gray-300">
@@ -21,7 +21,7 @@ export const Team = () => {
 
             <div className="container px-6 py-10 mx-auto -mt-72 sm:-mt-80 md:-mt-96">
                 <div className="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-3">
-                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700">
+                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700 shadow-md">
                         <Image width="200" height="200" className="object-cover w-full rounded-xl aspect-square" src="https://www.revixpert.ch/app/uploads/portrait-placeholder.jpg" alt="" />
 
                         <h1 className="mt-4 text-2xl font-semibold text-gray-700 capitalize dark:text-white">Jóse Francisco Pereira</h1>
@@ -58,7 +58,7 @@ export const Team = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700">
+                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700 shadow-md">
                         <Image width="200" height="200" className="object-cover w-full rounded-xl aspect-square" src="/imgs/team_1.jpeg" alt="" />
 
                         <h1 className="mt-4 text-2xl font-semibold text-gray-700 capitalize dark:text-white">Michael Oliveira</h1>
@@ -95,8 +95,8 @@ export const Team = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700">
-                        <Image width="200" height="200"  className="object-cover w-full rounded-xl aspect-square" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="" />
+                    <div className="flex flex-col items-center p-4 border sm:p-6 rounded-xl dark:border-gray-700 shadow-md">
+                        <Image width="200" height="200"  className="object-cover w-full rounded-xl aspect-square" src="https://www.revixpert.ch/app/uploads/portrait-placeholder.jpg" alt="" />
 
                         <h1 className="mt-4 text-2xl font-semibold text-gray-700 capitalize dark:text-white">Bruno Merlin</h1>
 
