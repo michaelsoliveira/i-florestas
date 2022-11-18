@@ -47,7 +47,7 @@ routes.get('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaContro
 routes.put('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().update);
 routes["delete"]('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController()["delete"]);
 //Categoria
-routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['gerente']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
+routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['admin', 'gerente']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
 routes.get('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findAll);
 routes.get('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findOne);
 routes.get('/categoria/search/q', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().search);
@@ -66,6 +66,7 @@ routes["delete"]('/umf/multiples', auth_middleware_1.Authentication(), new UmfCo
 routes.post('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().store);
 routes.get('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findAll);
 routes.get('/projeto/:projetoId/users', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findUsers);
+routes.get('/projeto/:projetoId/eq-volume', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findEqVolumes);
 routes.get('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findOne);
 routes.get('/projeto/search/q', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().search);
 routes.get('/projeto/active/get', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().getActive);
@@ -102,6 +103,8 @@ routes.get('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolu
 routes.get('/eq-volume/search/q', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().search);
 routes.put('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().update);
 routes["delete"]('/eq-volume/single/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController()["delete"]);
+//Equação Modelo
+routes.get('/eq-modelo/:projetoId', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().getEqModelos);
 //Role
 routes.post('/role/', auth_middleware_1.Authentication(), new RoleController_1.RoleController().store);
 routes.get('/role', new RoleController_1.RoleController().findAll);

@@ -1,17 +1,11 @@
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import { useCallback, useContext, useEffect, forwardRef , useState } from 'react'
-import { useAppDispatch } from '../../store/hooks'
-import { create } from '../../store/userSlice'
 import * as Yup from 'yup'
 import 'react-toastify/dist/ReactToastify.css';
 import alertService from '../../services/alert'
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import { AuthContext } from 'contexts/AuthContext';
-import { Select, OptionType } from '../Select';
-import RadioGroup from '../Form/RadioGroup';
-import Option from '../Form/Option';
 import FocusError from '../Form/FocusError';
+import { ListEqModelo } from './ListEqModelo';
 
 type AddEditType = {
     styles?: any;
@@ -27,31 +21,8 @@ export const AddEdit = forwardRef<any, AddEditType>(
       { styles, equacaoId, sendForm, projetoId, eqModelos }, 
       ref
     ) {
-        const dispatch = useAppDispatch()
-        const router = useRouter()
         const isAddMode = !equacaoId
         const { client } = useContext(AuthContext)
-        const [selectedEqModelo, setSelectedEqModelo] = useState<any>()
-        const { data: session } = useSession()
-
-        const loadEqModelosOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-            const response = await client.get(`/eq-modelo/search?nome=${inputValue}`)
-            const json = response.data
-            
-            callback(json?.map((eqModelo: any) => ({
-                value: eqModelo.id,
-                label: eqModelo.nome
-            })))
-        }
-
-        function getEqModelosDefaultOptions() {
-            return eqModelos?.map((eqModelo: any) => {
-                return {
-                    label: eqModelo.nome,
-                    value: eqModelo.id
-                }
-            })
-        }
 
         const validationSchema = Yup.object().shape({
             isAddMode: Yup.boolean(),
@@ -112,7 +83,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
             observacao: string;
             isAddMode: boolean;
             id_projeto: string;
-            id_eqModelo: string;
         }
         
         return (
@@ -124,7 +94,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         expressao: '',
                         observacao: '',
                         isAddMode,
-                        id_eqModelo: '',
                         id_projeto: '',
                     }}
                     validationSchema={validationSchema}
@@ -135,41 +104,49 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         handleRegister(values)
                     }}
                 >
-                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched, values }) => {
+                    {({ errors, touched, isSubmitting, setValues, setFieldValue, setFieldTouched, setTouched, values }) => {
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadEquacao = useCallback(async () => {
                             if (!isAddMode) {
-                                
-                                await client.get(`/eq-modelo/${projetoId}/${equacaoId}`)
+                                await client.get(`/eq-volume/${equacaoId}`)
                                     .then(({ data }: any) => {
-                                        setSelectedEqModelo({
-                                            label: data?.nome,
-                                            value: data?.id
-                                        })
                                         const fields = ['nome', 'expressao', 'observacao'];
-                                        setFieldValue('id_eqModulo', data?.id)
-                                        
-                                        fields.forEach(field => setFieldValue(field, data[field], false));
+                                        fields.forEach(field => {
+                                            if (!!data[field]) setFieldValue(field, data[field], false)
+                                        });
                                     });
                             }
                         }, [setFieldValue])
+
+                        function callback(data?: any) {
+                            setFieldValue('expressao', data?.expressao)
+                        }
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
                             setFieldValue('id_projeto', projetoId)
                             loadEquacao()
-                        }, [loadEquacao, setFieldValue, values]);
+                        }, [loadEquacao, setFieldValue]);
                         
                         return (
                             <div className="flex flex-col justify-center w-full">
                                 <div className="relative h-full mx-0">
                                     <div className="relative pt-3 px-4 w-full">
+                                        <div className='w-full'>
+                                            <span className="text-md font-bold mb-2">Equações Modelo</span>
+                                            <div>
+                                                <ListEqModelo items={eqModelos} callback={callback} />
+                                            </div>
+                                        </div>
                                         <Form>
                                        
-                                 <div className='lg:grid lg:grid-cols-2 lg:gap-4'>
+                                 <div className='flex flex-col'>
                                     <div>
                                         <label className={styles.label} htmlFor="nome">Nome</label>
-                                        <Field className={styles.field} id="nome" name="nome" placeholder="Michael" />
+                                        <Field 
+                                            className={styles.field} 
+                                            id="nome" 
+                                            name="nome" placeholder="Michael" />
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="nome" component="div" />
                                     </div>
                                     <div>
@@ -184,45 +161,20 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                     <div>
                                         <label className={styles.label} htmlFor="observacao">Observação</label>
                                         <Field
+                                            component="textarea"
                                             className={styles.field}
                                             id="observacao"
                                             name="observacao"
                                         />
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="observacao" component="div" />
                                     </div>
-                             
-                                    <div className='py-4'>
-                                        <Field name="id_eqModelo">
-                                            {() => (
-                                                <Select
-                                                    initialData={
-                                                        {
-                                                            label: 'Entre com as iniciais...',
-                                                            value: ''
-                                                        }
-                                                    }
-                                                    selectedValue={selectedEqModelo}
-                                                    defaultOptions={getEqModelosDefaultOptions()}
-                                                    options={loadEqModelosOptions}
-                                                    label="Pesquisar Equação Modelo"
-                                                    callback={(value) => { 
-                                                        setFieldValue('id_eqModelo', value?.value)
-                                                        setSelectedEqModelo(value) 
-                                                    }}
-                                                />
-                                            )}
-                                        </Field>
-                                        <ErrorMessage className='text-sm text-red-500 mt-1' name="id_eqModelo" component="div" />
-                                    </div>
-                            
                             </div>
-                            
+                            <FocusError />
                         </Form>
-                        </div>
-                        </div>
-                        </div>)}}
+                    </div>
+                </div>
+            </div>)}}
         </Formik>
-            
         </div>
     )
 })

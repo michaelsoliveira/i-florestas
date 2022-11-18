@@ -9,17 +9,29 @@ import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { PlusIcon } from "@heroicons/react/outline"
 
-const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes, eqModelos }: any) => {
+const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
     
-    const [filteredUsers, setFilteredUsers] = useState<any[]>(currentEquacoes)
+    const [filteredEquacoes, setFilteredEquacoes] = useState<any[]>(currentEquacoes)
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
-    const [checkedUsers, setCheckedUsers] = useState<any>([])
-    const { showModal, hideModal, store } = useModalContext()
-    const [users, setEquacoes] = useState<any>()
+    const [checkedEquacoes, setCheckedEquacoes] = useState<any>([])
+    const [eqModelos, setEqModelos] = useState<any>()
+    const { showModal, hideModal } = useModalContext()
     const formRef = createRef<any>()
+
+    const loadEqModelos = useCallback(async () => {
+        const response = await client.get(`/eq-modelo/${projetoId}`)
+        const { data } = response.data
+        
+        setEqModelos(data)
+        
+    },[client, projetoId])
+
+    useEffect(() => {
+        loadEqModelos()
+    }, [loadEqModelos])
     
     const equacaoById = (id?: string) => {
         return currentEquacoes.find((equacao: any) => equacao.id === id)
@@ -37,14 +49,15 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
         showModal({ 
             size: 'max-w-lg',
             title: 'Deletar Equação', 
-            onConfirm: () => { deleteUser(id) }, 
+            onConfirm: () => { deleteEquacao(id) }, 
             styleButton: styles.redButton, 
             iconType: 'warn', 
             confirmBtn: 'Deletar', 
             content: `Tem Certeza que deseja excluir o Equação ${equacaoById(id)?.nome} ?` 
     })
 
-    const updateUser = (id?: string) => {
+    const updateEquacao = (id?: string) => {
+        console.log(id)
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
             content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projetoId} equacaoId={id} styles={stylesForm} redirect={false} />
         })    
@@ -58,20 +71,13 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
     
     const deleteMultModal = () => showModal({ title: 'Deletar Equações', onConfirm: deleteEquacoes, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os equações selecionados' })
 
-    const getUsers = useCallback(async() => {
-        const { data } = await client.get('/users/search')
-        
-        setEquacoes(data)
-    }, [client])
-
     useEffect(() => {
-        getUsers()
-        setFilteredUsers(currentEquacoes)
-    }, [currentEquacoes, currentPage, getUsers])
+        setFilteredEquacoes(currentEquacoes)
+    }, [currentEquacoes, currentPage])
 
-    async function deleteUser(id?: string) {
+    async function deleteEquacao(id?: string) {
         try {
-            await client.delete(`/users/${id}`)
+            await client.delete(`/eq-volume/${id}`)
                 .then((response: any) => {
                     const { error, message } = response.data
                     if (!error) {
@@ -99,7 +105,7 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
         onPageChanged(paginatedData)
     }
 
-    const sortUsers = async (orderBy?: string) => {
+    const sortEquacoes = async (orderBy?: string) => {
         const paginatedData = {
             currentPage,
             perPage,
@@ -111,31 +117,31 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
         setSorted(!sorted)
     }
 
-    const handleSelectUsers = (evt: any) => {
-        const userId = evt.target.value
+    const handleSelectEquacoes = (evt: any) => {
+        const equacaoId = evt.target.value
 
-        if (!checkedUsers.includes(userId)) {
-            setCheckedUsers([...checkedUsers, userId])
+        if (!checkedEquacoes.includes(equacaoId)) {
+            setCheckedEquacoes([...checkedEquacoes, equacaoId])
         } else {
-            setCheckedUsers(checkedUsers.filter((checkedUserId: any) => {
-                return checkedUserId !== userId
+            setCheckedEquacoes(checkedEquacoes.filter((checkedEquacaoId: any) => {
+                return checkedEquacaoId !== equacaoId
             }))
         }
     }
 
-    const handleSelectAllUsers = () => {
-        if (checkedUsers.length < currentEquacoes.length) {
-            setCheckedUsers(currentEquacoes.map(({ id }: any) => id));
+    const handleSelectAllEquacoes = () => {
+        if (checkedEquacoes.length < currentEquacoes.length) {
+            setCheckedEquacoes(currentEquacoes.map(({ id }: any) => id));
         } else {
-            setCheckedUsers([]);
+            setCheckedEquacoes([]);
         }
     };
 
     const deleteEquacoes = () => {
         try {
-            client.delete('/users/multiples', { data: { ids: checkedUsers} })
+            client.delete('/eq-volume/multiples', { data: { ids: checkedEquacoes} })
                 .then(() => {
-                    alertService.success('Os usuários foram deletadas com SUCESSO!!!')
+                    alertService.success('As equações foram deletadas com SUCESSO!!!')
                     loadEquacoes()
                 })
         } catch (error) {
@@ -145,13 +151,13 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
 
     return (
         <div>
-            {/* {visible && type === 'updateUser' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
+            {/* {visible && type === 'updateEquacao' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
             
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <div>
                     <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
                 </div>
-                <h1 className="font-medium text-2xl font-roboto">Usuários</h1>
+                <h1 className="font-medium text-2xl font-roboto">Equações de Volume</h1>
                 
                 <button
                 // disabled={formState.isSubmitting}
@@ -160,7 +166,7 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                 onClick={addEquacao}
               >
                 <span className="flex items-center">
-                  <UserAddIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
+                  <PlusIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
                 </span>
                 <div>Novo</div>
               </button>
@@ -184,13 +190,12 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4 text-sm">Pesquisar Usuário:</div>
+                        <div className="w-60 px-4 text-sm">Pesquisar Equação:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Usuários"
+                                label="Pesquisar Equações"
                                 id="search"
                                 name="search"
-                                // value={search}
                                 onChange={(e: any) => handleSearch(e.target.value)}
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
@@ -200,7 +205,7 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                     </div>
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedUsers?.length > 0 && (
+                            {checkedEquacoes?.length > 0 && (
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
@@ -216,8 +221,8 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                         <th>
                             <div className="flex justify-center">
                             <input  
-                                checked={checkedUsers?.length === currentEquacoes?.length}
-                                onChange={handleSelectAllUsers}                
+                                checked={checkedEquacoes?.length === currentEquacoes?.length}
+                                onChange={handleSelectAllEquacoes}                
                                 className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                             />
                             </div>
@@ -225,7 +230,7 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                         <th
                             scope="col"
                             className="w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortUsers('user.username')}
+                            onClick={() => sortEquacoes('nome')}
                         >
                             <div className="flex flex-row items-center">
                                 Nome
@@ -238,21 +243,15 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                         <th
                             scope="col"
                             className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortUsers('user.email')}
+                            onClick={() => sortEquacoes('expressao')}
                         >
                             <div className="flex flex-row items-center">
-                                Email
+                                Expressão
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
                                 }
                             </div>                    
-                        </th>
-                        <th
-                            scope="col"
-                            className="w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                        Perfil
                         </th>
                         <th scope="col" className="relative w-1/12 px-6 py-3">
                             <span className="sr-only">Edit</span>
@@ -260,14 +259,14 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUsers?.map((user: any) => (
-                            <tr key={user.id}>
+                        {filteredEquacoes?.map((equacao: any) => (
+                            <tr key={equacao.id}>
                             <td className="flex justify-center">
                             <input                 
-                                    value={user?.id}
-                                    checked={checkedUsers.includes(user?.id)}
-                                    onChange={handleSelectUsers}
-                                    id="userId"
+                                    value={equacao?.id}
+                                    checked={checkedEquacoes.includes(equacao?.id)}
+                                    onChange={handleSelectEquacoes}
+                                    id="id_equacao"
                                     type="checkbox"
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 />    
@@ -275,22 +274,17 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
                             <td className="px-3 py-2 whitespace-nowrap">
                             <div className="flex flex-col items-starter">
                                 
-                                <div className="text-sm font-medium text-gray-900">{user?.username}</div>
+                                <div className="text-sm font-medium text-gray-900">{equacao?.nome}</div>
                             </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{user?.email}</div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{user.roles.length > 1 ? user.roles.map((role: any) => { role.name }).join(', ') : user.roles[0].name}</div>
-                            </span>
+                            <div className="text-sm text-gray-900">{equacao?.expressao}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href="#" onClick={() => updateUser(user.id)}>
+                            <Link href="#" onClick={() => updateEquacao(equacao.id)}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
-                            <Link href="#" onClick={() => deleteSingleModal(user.id)}>
+                            <Link href="#" onClick={() => deleteSingleModal(equacao.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                             </Link>
                             </td>

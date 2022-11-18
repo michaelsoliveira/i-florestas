@@ -59,6 +59,17 @@ export class EquacaoVolumeController {
         }
     }
 
+    async getEqModelos(request: Request, response: Response) {
+        const { projetoId } = request.params
+        const data = await eqVolumeService.getEqModelos(projetoId)
+
+        return response.json({
+            error: false,
+            data,
+            message: null
+        })
+    }
+
     async findAll(request: Request, response: Response) {
         try {
             const { data, perPage, page, orderBy, order, skip, count } = await eqVolumeService.getAll(request.query)

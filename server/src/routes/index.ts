@@ -73,6 +73,7 @@ routes.delete('/umf/multiples', Authentication(), new UmfController().deleteUmfs
 routes.post('/projeto/', Authentication(), new ProjetoController().store)
 routes.get('/projeto/', Authentication(), new ProjetoController().findAll)
 routes.get('/projeto/:projetoId/users', Authentication(), new ProjetoController().findUsers)
+routes.get('/projeto/:projetoId/eq-volume', Authentication(), new ProjetoController().findEqVolumes)
 routes.get('/projeto/:id', Authentication(), new ProjetoController().findOne)
 routes.get('/projeto/search/q', Authentication(), new ProjetoController().search)
 routes.get('/projeto/active/get', Authentication(), new ProjetoController().getActive)
@@ -113,6 +114,9 @@ routes.get('/eq-volume/:id', Authentication(), new EquacaoVolumeController().fin
 routes.get('/eq-volume/search/q', Authentication(), new EquacaoVolumeController().search)
 routes.put('/eq-volume/:id', Authentication(), new EquacaoVolumeController().update)
 routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeController().delete)
+
+//Equação Modelo
+routes.get('/eq-modelo/:projetoId', Authentication(), new EquacaoVolumeController().getEqModelos)
 
 //Role
 routes.post('/role/', Authentication(), new RoleController().store)

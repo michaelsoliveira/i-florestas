@@ -1,5 +1,5 @@
-// import { User } from "../entities/User"
 import { Request, Response } from "express";
+import equacaoVolumeService from "../services/equacaoVolume.service";
 import projetoService from "../services/ProjetoService";
 
 export class ProjetoController {
@@ -95,6 +95,31 @@ export class ProjetoController {
             message: 'Projetos deletadas com sucesso',
             error: false
         })   
+    }
+
+    async findEqVolumes(request: Request, response: Response) {
+        try {
+            const { projetoId } = request.params
+            const { data, perPage, orderBy, order, page, skip, count } = await equacaoVolumeService.getAll(request.query, projetoId)
+
+            return response.json({
+                error: false,
+                equacoes: data,
+                orderBy,
+                order,
+                perPage,
+                page,
+                skip,
+                count,
+                message: 'Equações carregados com sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                equacoes: [],
+                message: `Error: ${error.message}`
+            })
+        }
     }
 
     async findUsers(request: Request, response: Response) {

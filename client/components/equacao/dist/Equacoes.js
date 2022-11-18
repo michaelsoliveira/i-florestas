@@ -54,16 +54,32 @@ var ModalContext_1 = require("contexts/ModalContext");
 var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
-var solid_2 = require("@heroicons/react/solid");
+var outline_1 = require("@heroicons/react/outline");
 var Users = function (_a) {
-    var currentEquacoes = _a.currentEquacoes, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadEquacoes = _a.loadEquacoes, eqModelos = _a.eqModelos;
-    var _b = react_1.useState(currentEquacoes), filteredUsers = _b[0], setFilteredUsers = _b[1];
+    var currentEquacoes = _a.currentEquacoes, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadEquacoes = _a.loadEquacoes;
+    var _b = react_1.useState(currentEquacoes), filteredEquacoes = _b[0], setFilteredEquacoes = _b[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _c = react_1.useState(false), sorted = _c[0], setSorted = _c[1];
-    var _d = react_1.useState([]), checkedUsers = _d[0], setCheckedUsers = _d[1];
-    var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
-    var _f = react_1.useState(), users = _f[0], setEquacoes = _f[1];
+    var _d = react_1.useState([]), checkedEquacoes = _d[0], setCheckedEquacoes = _d[1];
+    var _e = react_1.useState(), eqModelos = _e[0], setEqModelos = _e[1];
+    var _f = ModalContext_1.useModalContext(), showModal = _f.showModal, hideModal = _f.hideModal;
     var formRef = react_2.createRef();
+    var loadEqModelos = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/eq-modelo/" + projetoId)];
+                case 1:
+                    response = _a.sent();
+                    data = response.data.data;
+                    setEqModelos(data);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, projetoId]);
+    react_1.useEffect(function () {
+        loadEqModelos();
+    }, [loadEqModelos]);
     var equacaoById = function (id) {
         return currentEquacoes.find(function (equacao) { return equacao.id === id; });
     };
@@ -79,14 +95,15 @@ var Users = function (_a) {
         return showModal({
             size: 'max-w-lg',
             title: 'Deletar Equação',
-            onConfirm: function () { deleteUser(id); },
+            onConfirm: function () { deleteEquacao(id); },
             styleButton: styles_1.styles.redButton,
             iconType: 'warn',
             confirmBtn: 'Deletar',
             content: "Tem Certeza que deseja excluir o Equa\u00E7\u00E3o " + ((_a = equacaoById(id)) === null || _a === void 0 ? void 0 : _a.nome) + " ?"
         });
     };
-    var updateUser = function (id) {
+    var updateEquacao = function (id) {
+        console.log(id);
         showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { eqModelos: eqModelos, sendForm: function () { loadEquacoes(10); }, ref: formRef, projetoId: projetoId, equacaoId: id, styles: styles_1.stylesForm, redirect: false })
         });
     };
@@ -95,30 +112,17 @@ var Users = function (_a) {
         });
     };
     var deleteMultModal = function () { return showModal({ title: 'Deletar Equações', onConfirm: deleteEquacoes, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os equações selecionados' }); };
-    var getUsers = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get('/users/search')];
-                case 1:
-                    data = (_a.sent()).data;
-                    setEquacoes(data);
-                    return [2 /*return*/];
-            }
-        });
-    }); }, [client]);
     react_1.useEffect(function () {
-        getUsers();
-        setFilteredUsers(currentEquacoes);
-    }, [currentEquacoes, currentPage, getUsers]);
-    function deleteUser(id) {
+        setFilteredEquacoes(currentEquacoes);
+    }, [currentEquacoes, currentPage]);
+    function deleteEquacao(id) {
         return __awaiter(this, void 0, void 0, function () {
             var error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, client["delete"]("/users/" + id)
+                        return [4 /*yield*/, client["delete"]("/eq-volume/" + id)
                                 .then(function (response) {
                                 var _a = response.data, error = _a.error, message = _a.message;
                                 if (!error) {
@@ -157,7 +161,7 @@ var Users = function (_a) {
             return [2 /*return*/];
         });
     }); };
-    var sortUsers = function (orderBy) { return __awaiter(void 0, void 0, void 0, function () {
+    var sortEquacoes = function (orderBy) { return __awaiter(void 0, void 0, void 0, function () {
         var paginatedData;
         return __generator(this, function (_a) {
             paginatedData = {
@@ -171,33 +175,33 @@ var Users = function (_a) {
             return [2 /*return*/];
         });
     }); };
-    var handleSelectUsers = function (evt) {
-        var userId = evt.target.value;
-        if (!checkedUsers.includes(userId)) {
-            setCheckedUsers(__spreadArrays(checkedUsers, [userId]));
+    var handleSelectEquacoes = function (evt) {
+        var equacaoId = evt.target.value;
+        if (!checkedEquacoes.includes(equacaoId)) {
+            setCheckedEquacoes(__spreadArrays(checkedEquacoes, [equacaoId]));
         }
         else {
-            setCheckedUsers(checkedUsers.filter(function (checkedUserId) {
-                return checkedUserId !== userId;
+            setCheckedEquacoes(checkedEquacoes.filter(function (checkedEquacaoId) {
+                return checkedEquacaoId !== equacaoId;
             }));
         }
     };
-    var handleSelectAllUsers = function () {
-        if (checkedUsers.length < currentEquacoes.length) {
-            setCheckedUsers(currentEquacoes.map(function (_a) {
+    var handleSelectAllEquacoes = function () {
+        if (checkedEquacoes.length < currentEquacoes.length) {
+            setCheckedEquacoes(currentEquacoes.map(function (_a) {
                 var id = _a.id;
                 return id;
             }));
         }
         else {
-            setCheckedUsers([]);
+            setCheckedEquacoes([]);
         }
     };
     var deleteEquacoes = function () {
         try {
-            client["delete"]('/users/multiples', { data: { ids: checkedUsers } })
+            client["delete"]('/eq-volume/multiples', { data: { ids: checkedEquacoes } })
                 .then(function () {
-                alert_1["default"].success('Os usuários foram deletadas com SUCESSO!!!');
+                alert_1["default"].success('As equações foram deletadas com SUCESSO!!!');
                 loadEquacoes();
             });
         }
@@ -209,12 +213,12 @@ var Users = function (_a) {
         react_2["default"].createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
             react_2["default"].createElement("div", null,
                 react_2["default"].createElement(LinkBack_1.LinkBack, { href: "/projeto", className: "flex flex-col relative left-0 ml-4" })),
-            react_2["default"].createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Usu\u00E1rios"),
+            react_2["default"].createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Equa\u00E7\u00F5es de Volume"),
             react_2["default"].createElement("button", { 
                 // disabled={formState.isSubmitting}
                 type: "submit", className: "flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500", onClick: addEquacao },
                 react_2["default"].createElement("span", { className: "flex items-center" },
-                    react_2["default"].createElement(solid_2.UserAddIcon, { className: "h-5 w-5 text-green-200 group-hover:text-green-100", "aria-hidden": "true" })),
+                    react_2["default"].createElement(outline_1.PlusIcon, { className: "h-5 w-5 text-green-200 group-hover:text-green-100", "aria-hidden": "true" })),
                 react_2["default"].createElement("div", null, "Novo"))),
         loading ? (react_2["default"].createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (react_2["default"].createElement("div", { className: "flex flex-col p-6" },
             react_2["default"].createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
@@ -226,51 +230,45 @@ var Users = function (_a) {
                         react_2["default"].createElement("option", { value: "20" }, "20"),
                         react_2["default"].createElement("option", { value: "50" }, "50"),
                         react_2["default"].createElement("option", { value: "100" }, "100"))),
-                react_2["default"].createElement("div", { className: "w-60 px-4 text-sm" }, "Pesquisar Usu\u00E1rio:"),
+                react_2["default"].createElement("div", { className: "w-60 px-4 text-sm" }, "Pesquisar Equa\u00E7\u00E3o:"),
                 react_2["default"].createElement("div", { className: "w-full px-4" },
-                    react_2["default"].createElement(input_1.Input, { label: "Pesquisar Usu\u00E1rios", id: "search", name: "search", 
-                        // value={search}
-                        onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50', autoFocus: true }))),
+                    react_2["default"].createElement(input_1.Input, { label: "Pesquisar Equa\u00E7\u00F5es", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50', autoFocus: true }))),
             react_2["default"].createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 react_2["default"].createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
-                    (checkedUsers === null || checkedUsers === void 0 ? void 0 : checkedUsers.length) > 0 && (react_2["default"].createElement("div", { className: "py-4" },
+                    (checkedEquacoes === null || checkedEquacoes === void 0 ? void 0 : checkedEquacoes.length) > 0 && (react_2["default"].createElement("div", { className: "py-4" },
                         react_2["default"].createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     react_2["default"].createElement("table", { className: "min-w-full divide-y divide-gray-200" },
                         react_2["default"].createElement("thead", { className: "bg-gray-50" },
                             react_2["default"].createElement("tr", null,
                                 react_2["default"].createElement("th", null,
                                     react_2["default"].createElement("div", { className: "flex justify-center" },
-                                        react_2["default"].createElement("input", { checked: (checkedUsers === null || checkedUsers === void 0 ? void 0 : checkedUsers.length) === (currentEquacoes === null || currentEquacoes === void 0 ? void 0 : currentEquacoes.length), onChange: handleSelectAllUsers, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
-                                react_2["default"].createElement("th", { scope: "col", className: "w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortUsers('user.username'); } },
+                                        react_2["default"].createElement("input", { checked: (checkedEquacoes === null || checkedEquacoes === void 0 ? void 0 : checkedEquacoes.length) === (currentEquacoes === null || currentEquacoes === void 0 ? void 0 : currentEquacoes.length), onChange: handleSelectAllEquacoes, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
+                                react_2["default"].createElement("th", { scope: "col", className: "w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEquacoes('nome'); } },
                                     react_2["default"].createElement("div", { className: "flex flex-row items-center" },
                                         "Nome",
                                         sorted
                                             ? (react_2["default"].createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (react_2["default"].createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                react_2["default"].createElement("th", { scope: "col", className: "items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortUsers('user.email'); } },
+                                react_2["default"].createElement("th", { scope: "col", className: "items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEquacoes('expressao'); } },
                                     react_2["default"].createElement("div", { className: "flex flex-row items-center" },
-                                        "Email",
+                                        "Express\u00E3o",
                                         sorted
                                             ? (react_2["default"].createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (react_2["default"].createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                react_2["default"].createElement("th", { scope: "col", className: "w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Perfil"),
                                 react_2["default"].createElement("th", { scope: "col", className: "relative w-1/12 px-6 py-3" },
                                     react_2["default"].createElement("span", { className: "sr-only" }, "Edit")))),
-                        react_2["default"].createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredUsers === null || filteredUsers === void 0 ? void 0 : filteredUsers.map(function (user) { return (react_2["default"].createElement("tr", { key: user.id },
+                        react_2["default"].createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredEquacoes === null || filteredEquacoes === void 0 ? void 0 : filteredEquacoes.map(function (equacao) { return (react_2["default"].createElement("tr", { key: equacao.id },
                             react_2["default"].createElement("td", { className: "flex justify-center" },
-                                react_2["default"].createElement("input", { value: user === null || user === void 0 ? void 0 : user.id, checked: checkedUsers.includes(user === null || user === void 0 ? void 0 : user.id), onChange: handleSelectUsers, id: "userId", type: "checkbox", className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" })),
+                                react_2["default"].createElement("input", { value: equacao === null || equacao === void 0 ? void 0 : equacao.id, checked: checkedEquacoes.includes(equacao === null || equacao === void 0 ? void 0 : equacao.id), onChange: handleSelectEquacoes, id: "id_equacao", type: "checkbox", className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" })),
                             react_2["default"].createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 react_2["default"].createElement("div", { className: "flex flex-col items-starter" },
-                                    react_2["default"].createElement("div", { className: "text-sm font-medium text-gray-900" }, user === null || user === void 0 ? void 0 : user.username))),
+                                    react_2["default"].createElement("div", { className: "text-sm font-medium text-gray-900" }, equacao === null || equacao === void 0 ? void 0 : equacao.nome))),
                             react_2["default"].createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                react_2["default"].createElement("div", { className: "text-sm text-gray-900" }, user === null || user === void 0 ? void 0 : user.email)),
-                            react_2["default"].createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                react_2["default"].createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    react_2["default"].createElement("div", { className: "text-sm text-gray-500" }, user.roles.length > 1 ? user.roles.map(function (role) { role.name; }).join(', ') : user.roles[0].name))),
+                                react_2["default"].createElement("div", { className: "text-sm text-gray-900" }, equacao === null || equacao === void 0 ? void 0 : equacao.expressao)),
                             react_2["default"].createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
-                                react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return updateUser(user.id); } },
+                                react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return updateEquacao(equacao.id); } },
                                     react_2["default"].createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
-                                react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(user.id); } },
+                                react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(equacao.id); } },
                                     react_2["default"].createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };
 exports["default"] = Users;

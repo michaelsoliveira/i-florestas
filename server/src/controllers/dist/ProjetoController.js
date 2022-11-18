@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.ProjetoController = void 0;
+var equacaoVolume_service_1 = require("../services/equacaoVolume.service");
 var ProjetoService_1 = require("../services/ProjetoService");
 var ProjetoController = /** @class */ (function () {
     function ProjetoController() {
@@ -182,9 +183,43 @@ var ProjetoController = /** @class */ (function () {
             });
         });
     };
-    ProjetoController.prototype.findUsers = function (request, response) {
+    ProjetoController.prototype.findEqVolumes = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var projetoId, _a, data, perPage, orderBy, order, page, skip, count, error_5;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        projetoId = request.params.projetoId;
+                        return [4 /*yield*/, equacaoVolume_service_1["default"].getAll(request.query, projetoId)];
+                    case 1:
+                        _a = _b.sent(), data = _a.data, perPage = _a.perPage, orderBy = _a.orderBy, order = _a.order, page = _a.page, skip = _a.skip, count = _a.count;
+                        return [2 /*return*/, response.json({
+                                error: false,
+                                equacoes: data,
+                                orderBy: orderBy,
+                                order: order,
+                                perPage: perPage,
+                                page: page,
+                                skip: skip,
+                                count: count,
+                                message: 'Equações carregados com sucesso!'
+                            })];
+                    case 2:
+                        error_5 = _b.sent();
+                        return [2 /*return*/, response.json({
+                                error: true,
+                                equacoes: [],
+                                message: "Error: " + error_5.message
+                            })];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    ProjetoController.prototype.findUsers = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var projetoId, _a, data, perPage, orderBy, order, page, skip, count, error_6;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -205,11 +240,11 @@ var ProjetoController = /** @class */ (function () {
                                 message: 'Usuários carregados com sucesso!'
                             })];
                     case 2:
-                        error_5 = _b.sent();
+                        error_6 = _b.sent();
                         return [2 /*return*/, response.json({
                                 error: true,
                                 users: [],
-                                message: "Error: " + error_5.message
+                                message: "Error: " + error_6.message
                             })];
                     case 3: return [2 /*return*/];
                 }
@@ -256,7 +291,7 @@ var ProjetoController = /** @class */ (function () {
     };
     ProjetoController.prototype.findOne = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, projeto, error_6;
+            var id, projeto, error_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -269,8 +304,8 @@ var ProjetoController = /** @class */ (function () {
                         projeto = _a.sent();
                         return [2 /*return*/, response.json(projeto)];
                     case 3:
-                        error_6 = _a.sent();
-                        return [2 /*return*/, response.json(error_6.message)];
+                        error_7 = _a.sent();
+                        return [2 /*return*/, response.json(error_7.message)];
                     case 4: return [2 /*return*/];
                 }
             });

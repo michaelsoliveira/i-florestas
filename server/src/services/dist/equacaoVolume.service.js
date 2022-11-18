@@ -47,13 +47,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var client_1 = require("@prisma/client");
 var prismaClient_1 = require("../database/prismaClient");
 var EquacaoVolumeService = /** @class */ (function () {
     function EquacaoVolumeService() {
     }
     EquacaoVolumeService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var equacaoVolumeExists, empresa, eqVolume;
+            var equacaoVolumeExists, eqVolume;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findFirst({
@@ -69,32 +70,19 @@ var EquacaoVolumeService = /** @class */ (function () {
                         if (equacaoVolumeExists) {
                             throw new Error('Já existe uma Equação Volume cadastrada com este nome ou expressão');
                         }
-                        return [4 /*yield*/, prismaClient_1.prismaClient.empresa.findFirst({
-                                where: {
-                                    empresa_users: {
-                                        some: {
-                                            users: {
-                                                id: userId
-                                            }
-                                        }
-                                    }
-                                }
-                            })];
-                    case 2:
-                        empresa = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.create({
                                 data: {
                                     nome: data.nome,
                                     expressao: data.expressao,
                                     observacao: data === null || data === void 0 ? void 0 : data.observacao,
-                                    empresa: {
+                                    projeto: {
                                         connect: {
-                                            id: empresa === null || empresa === void 0 ? void 0 : empresa.id
+                                            id: data === null || data === void 0 ? void 0 : data.id_projeto
                                         }
                                     }
                                 }
                             })];
-                    case 3:
+                    case 2:
                         eqVolume = _a.sent();
                         return [2 /*return*/, eqVolume];
                 }
@@ -103,17 +91,22 @@ var EquacaoVolumeService = /** @class */ (function () {
     };
     EquacaoVolumeService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
+            var eqVolume;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.update({
                             where: {
                                 id: id
                             },
-                            data: data
+                            data: {
+                                nome: data === null || data === void 0 ? void 0 : data.nome,
+                                expressao: data === null || data === void 0 ? void 0 : data.expressao,
+                                observacao: data === null || data === void 0 ? void 0 : data.observacao
+                            }
                         })];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.findById(id)];
+                        eqVolume = _a.sent();
+                        return [2 /*return*/, eqVolume];
                 }
             });
         });
@@ -137,9 +130,26 @@ var EquacaoVolumeService = /** @class */ (function () {
             });
         });
     };
-    EquacaoVolumeService.prototype.getAll = function (query) {
+    EquacaoVolumeService.prototype.getEqModelos = function (projetoId) {
         return __awaiter(this, void 0, Promise, function () {
-            var perPage, page, search, orderBy, order, skip, orderByTerm, searchTermFilter, orderByElement, _a, eqVolumes, total;
+            var eqModelos;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.equacaoModelo.findMany({
+                            where: {
+                                id_projeto: projetoId
+                            }
+                        })];
+                    case 1:
+                        eqModelos = _a.sent();
+                        return [2 /*return*/, eqModelos];
+                }
+            });
+        });
+    };
+    EquacaoVolumeService.prototype.getAll = function (query, projetoId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var perPage, page, search, orderBy, order, skip, orderByTerm, where, orderByElement, _a, eqVolumes, total;
             var _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
@@ -147,10 +157,19 @@ var EquacaoVolumeService = /** @class */ (function () {
                         perPage = query.perPage, page = query.page, search = query.search, orderBy = query.orderBy, order = query.order;
                         skip = (page - 1) * perPage;
                         orderByTerm = {};
-                        searchTermFilter = search
-                            // ? {OR: [{nome: {contains: search}}, {email: {contains: search}}]}
-                            ? { OR: [{ nome: { contains: search } }, { expressao: { contains: search } }] }
-                            : {};
+                        where = search
+                            ? {
+                                AND: {
+                                    OR: [
+                                        { nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: search } },
+                                        { expressao: { mode: client_1.Prisma.QueryMode.insensitive, contains: search } }
+                                    ],
+                                    id_projeto: projetoId
+                                }
+                            }
+                            : {
+                                id_projeto: projetoId
+                            };
                         orderByElement = orderBy ? orderBy.split('.') : {};
                         if (orderByElement.length == 2) {
                             orderByTerm = (_b = {},
@@ -164,12 +183,12 @@ var EquacaoVolumeService = /** @class */ (function () {
                         }
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.equacaoVolume.findMany({
-                                    where: __assign({}, searchTermFilter),
+                                    where: where,
                                     take: perPage ? parseInt(perPage) : 50,
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm)
                                 }),
-                                prismaClient_1.prismaClient.equacaoVolume.count()
+                                prismaClient_1.prismaClient.equacaoVolume.count({ where: where })
                             ])];
                     case 1:
                         _a = _d.sent(), eqVolumes = _a[0], total = _a[1];
@@ -207,7 +226,10 @@ var EquacaoVolumeService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findMany({
                             where: {
-                                OR: [{ nome: { mode: 'insensitive', contains: text } }, { expressao: { mode: 'insensitive', contains: text } }]
+                                OR: [
+                                    { nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: text } },
+                                    { expressao: { mode: client_1.Prisma.QueryMode.insensitive, contains: text } }
+                                ]
                             },
                             orderBy: {
                                 nome: 'asc'

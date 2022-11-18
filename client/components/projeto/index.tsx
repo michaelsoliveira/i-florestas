@@ -13,7 +13,8 @@ import {
     PencilIcon,
     TrashIcon,
     InboxInIcon,
-    UsersIcon
+    UsersIcon,
+    CalculatorIcon
 } from '@heroicons/react/outline'
 import { AddEdit } from './AddEdit'
 import { LoadingContext } from 'contexts/LoadingContext'
@@ -185,6 +186,12 @@ const Projetos = () => {
                             <Link href={`/projeto/${selectedProjeto?.id}/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <UsersIcon className="h-5 w-5" />
+                                </div>
+                            </Link>
+
+                            <Link href={`/projeto/${selectedProjeto?.id}/equacao`} className="text-center w-auto hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                                <div className='flex flex-row items-center justify-center space-x-2'>
+                                    <CalculatorIcon className="h-5 w-5" />
                                 </div>
                             </Link>
                             

@@ -39,47 +39,17 @@ exports.__esModule = true;
 exports.AddEdit = void 0;
 var formik_1 = require("formik");
 var react_1 = require("react");
-var hooks_1 = require("../../store/hooks");
 var Yup = require("yup");
 require("react-toastify/dist/ReactToastify.css");
 var alert_1 = require("../../services/alert");
-var react_2 = require("next-auth/react");
-var router_1 = require("next/router");
 var AuthContext_1 = require("contexts/AuthContext");
-var Select_1 = require("../Select");
+var FocusError_1 = require("../Form/FocusError");
+var ListEqModelo_1 = require("./ListEqModelo");
 exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
     var styles = _a.styles, equacaoId = _a.equacaoId, sendForm = _a.sendForm, projetoId = _a.projetoId, eqModelos = _a.eqModelos;
-    var dispatch = hooks_1.useAppDispatch();
-    var router = router_1.useRouter();
     var isAddMode = !equacaoId;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var _b = react_1.useState(), selectedEqModelo = _b[0], setSelectedEqModelo = _b[1];
-    var session = react_2.useSession().data;
-    var loadEqModelosOptions = function (inputValue, callback) { return __awaiter(_this, void 0, void 0, function () {
-        var response, json;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/eq-modelo/search?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    json = response.data;
-                    callback(json === null || json === void 0 ? void 0 : json.map(function (eqModelo) { return ({
-                        value: eqModelo.id,
-                        label: eqModelo.nome
-                    }); }));
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    function getEqModelosDefaultOptions() {
-        return eqModelos === null || eqModelos === void 0 ? void 0 : eqModelos.map(function (eqModelo) {
-            return {
-                label: eqModelo.nome,
-                value: eqModelo.id
-            };
-        });
-    }
     var validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
         nome: Yup.string()
@@ -143,29 +113,26 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 expressao: '',
                 observacao: '',
                 isAddMode: isAddMode,
-                id_eqModelo: '',
                 id_projeto: ''
             }, validationSchema: validationSchema, onSubmit: function (values, _a) {
                 var setSubmitting = _a.setSubmitting;
                 handleRegister(values);
             } }, function (_a) {
-            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, setFieldTouched = _a.setFieldTouched, setTouched = _a.setTouched, values = _a.values;
+            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setValues = _a.setValues, setFieldValue = _a.setFieldValue, setFieldTouched = _a.setFieldTouched, setTouched = _a.setTouched, values = _a.values;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             var loadEquacao = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (!!isAddMode) return [3 /*break*/, 2];
-                            return [4 /*yield*/, client.get("/eq-modelo/" + projetoId + "/" + equacaoId)
+                            return [4 /*yield*/, client.get("/eq-volume/" + equacaoId)
                                     .then(function (_a) {
                                     var data = _a.data;
-                                    setSelectedEqModelo({
-                                        label: data === null || data === void 0 ? void 0 : data.nome,
-                                        value: data === null || data === void 0 ? void 0 : data.id
-                                    });
                                     var fields = ['nome', 'expressao', 'observacao'];
-                                    setFieldValue('id_eqModulo', data === null || data === void 0 ? void 0 : data.id);
-                                    fields.forEach(function (field) { return setFieldValue(field, data[field], false); });
+                                    fields.forEach(function (field) {
+                                        if (!!data[field])
+                                            setFieldValue(field, data[field], false);
+                                    });
                                 })];
                         case 1:
                             _a.sent();
@@ -174,16 +141,23 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                     }
                 });
             }); }, [setFieldValue]);
+            function callback(data) {
+                setFieldValue('expressao', data === null || data === void 0 ? void 0 : data.expressao);
+            }
             // eslint-disable-next-line react-hooks/rules-of-hooks
             react_1.useEffect(function () {
                 setFieldValue('id_projeto', projetoId);
                 loadEquacao();
-            }, [loadEquacao, setFieldValue, values]);
+            }, [loadEquacao, setFieldValue]);
             return (React.createElement("div", { className: "flex flex-col justify-center w-full" },
                 React.createElement("div", { className: "relative h-full mx-0" },
                     React.createElement("div", { className: "relative pt-3 px-4 w-full" },
+                        React.createElement("div", { className: 'w-full' },
+                            React.createElement("span", { className: "text-md font-bold mb-2" }, "Equa\u00E7\u00F5es Modelo"),
+                            React.createElement("div", null,
+                                React.createElement(ListEqModelo_1.ListEqModelo, { items: eqModelos, callback: callback }))),
                         React.createElement(formik_1.Form, null,
-                            React.createElement("div", { className: 'lg:grid lg:grid-cols-2 lg:gap-4' },
+                            React.createElement("div", { className: 'flex flex-col' },
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "nome" }, "Nome"),
                                     React.createElement(formik_1.Field, { className: styles.field, id: "nome", name: "nome", placeholder: "Michael" }),
@@ -194,16 +168,8 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                     React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "expressao", component: "div" })),
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "observacao" }, "Observa\u00E7\u00E3o"),
-                                    React.createElement(formik_1.Field, { className: styles.field, id: "observacao", name: "observacao" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "observacao", component: "div" })),
-                                React.createElement("div", { className: 'py-4' },
-                                    React.createElement(formik_1.Field, { name: "id_eqModelo" }, function () { return (React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Entre com as iniciais...',
-                                            value: ''
-                                        }, selectedValue: selectedEqModelo, defaultOptions: getEqModelosDefaultOptions(), options: loadEqModelosOptions, label: "Pesquisar Equa\u00E7\u00E3o Modelo", callback: function (value) {
-                                            setFieldValue('id_eqModelo', value === null || value === void 0 ? void 0 : value.value);
-                                            setSelectedEqModelo(value);
-                                        } })); }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_eqModelo", component: "div" }))))))));
+                                    React.createElement(formik_1.Field, { component: "textarea", className: styles.field, id: "observacao", name: "observacao" }),
+                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "observacao", component: "div" }))),
+                            React.createElement(FocusError_1["default"], null))))));
         })));
 });

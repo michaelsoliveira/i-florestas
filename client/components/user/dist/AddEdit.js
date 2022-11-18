@@ -277,7 +277,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             react_1.useEffect(function () {
                 setFieldValue('id_projeto', projetoId);
                 loadUser();
-            }, [loadUser, setFieldValue, values]);
+            }, [loadUser, setFieldValue]);
             return (React.createElement("div", { className: "flex flex-col justify-center w-full" },
                 React.createElement("div", { className: "relative h-full mx-0" },
                     React.createElement("div", { className: "relative pt-3 px-4 w-full" },

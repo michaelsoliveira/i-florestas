@@ -246,7 +246,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         useEffect(() => {
                             setFieldValue('id_projeto', projetoId)
                             loadUser()
-                        }, [loadUser, setFieldValue, values]);
+                        }, [loadUser, setFieldValue]);
                         
                         return (
                             <div className="flex flex-col justify-center w-full">

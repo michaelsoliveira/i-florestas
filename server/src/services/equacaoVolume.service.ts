@@ -1,10 +1,11 @@
-import { EquacaoVolume } from "@prisma/client";
+import { EquacaoModelo, EquacaoVolume, Prisma } from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface EquacaoVolumeType {
     nome: string;
     expressao: string;
     observacao: string;
+    id_projeto: string;
 }
 
 class EquacaoVolumeService {
@@ -24,16 +25,6 @@ class EquacaoVolumeService {
             throw new Error('Já existe uma Equação Volume cadastrada com este nome ou expressão')
         }
 
-        const projeto = await prismaClient.projeto.findFirst({
-            where: {
-                projeto_users: {
-                    some: {
-                        id_user: userId
-                    }
-                }
-            }
-        })
-
         const eqVolume = await prismaClient.equacaoVolume.create({
             data: {
                 nome: data.nome,
@@ -41,7 +32,7 @@ class EquacaoVolumeService {
                 observacao: data?.observacao,
                 projeto: {
                     connect: {
-                        id: projeto?.id
+                        id: data?.id_projeto
                     }
                 }
             }
@@ -51,14 +42,18 @@ class EquacaoVolumeService {
     }
 
     async update(id: string, data: EquacaoVolumeType): Promise<EquacaoVolume> {
-        await prismaClient.equacaoVolume.update({
+        const eqVolume = await prismaClient.equacaoVolume.update({
             where: {
                 id
             },
-            data
+            data: {
+                nome: data?.nome,
+                expressao: data?.expressao,
+                observacao: data?.observacao
+            }
         })
 
-        return this.findById(id)
+        return eqVolume
     }
 
     async delete(id: string): Promise<void> {
@@ -72,14 +67,33 @@ class EquacaoVolumeService {
         })
     }
 
-    async getAll(query?: any): Promise<any> {
+    async getEqModelos(projetoId?: string): Promise<EquacaoModelo[]> {
+        const eqModelos = await prismaClient.equacaoModelo.findMany({
+            where: {
+                id_projeto: projetoId
+            }
+        })
+
+        return eqModelos
+    }
+
+    async getAll(query?: any, projetoId?: string): Promise<any> {
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        const searchTermFilter = search
-            // ? {OR: [{nome: {contains: search}}, {email: {contains: search}}]}
-            ? {OR: [{nome: {contains: search}}, {expressao: {contains: search}}]}
-            : {};
+        const where = search
+            ? {
+                AND: {
+                    OR: [
+                        {nome: {mode: Prisma.QueryMode.insensitive ,contains: search}}, 
+                        {expressao: {mode: Prisma.QueryMode.insensitive, contains: search}}
+                    ],
+                    id_projeto: projetoId
+                }
+            }
+            : {
+                id_projeto: projetoId
+            };
         
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
@@ -95,17 +109,14 @@ class EquacaoVolumeService {
         
         const [eqVolumes, total] = await prismaClient.$transaction([
             prismaClient.equacaoVolume.findMany({
-                where: {
-                    // OR: [{nome: {mode: 'insensitive', contains: search}}, {uf: {mode: 'insensitive', contains: search}}]
-                    ...searchTermFilter
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 },
             }),
-            prismaClient.equacaoVolume.count()
+            prismaClient.equacaoVolume.count({where})
         ])
 
         return {
@@ -130,7 +141,10 @@ class EquacaoVolumeService {
     async search(text: any) {
         const eqVolumes = await prismaClient.equacaoVolume.findMany({
             where: {
-                OR: [{nome: {mode: 'insensitive', contains: text}}, {expressao: {mode: 'insensitive', contains: text}}]
+                OR: [
+                    {nome: {mode: Prisma.QueryMode.insensitive, contains: text}}, 
+                    {expressao: {mode: Prisma.QueryMode.insensitive, contains: text}}
+                ]
             },
             orderBy: {
                 nome:   'asc'

@@ -128,6 +128,25 @@ var EquacaoVolumeController = /** @class */ (function () {
             });
         });
     };
+    EquacaoVolumeController.prototype.getEqModelos = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var projetoId, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        projetoId = request.params.projetoId;
+                        return [4 /*yield*/, equacaoVolume_service_1["default"].getEqModelos(projetoId)];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, response.json({
+                                error: false,
+                                data: data,
+                                message: null
+                            })];
+                }
+            });
+        });
+    };
     EquacaoVolumeController.prototype.findAll = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, data, perPage, page, orderBy, order, skip, count, error_4;
