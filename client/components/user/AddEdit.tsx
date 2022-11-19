@@ -376,11 +376,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                                 {() => (
                                     <Select
                                         isMulti
-                                        // selectedValue={selectedRoles}
+                                        selectedValue={selectedRoles}
                                         defaultOptions={getRolesDefaultOptions()}
                                         loadOptions={loadRolesOptions}
                                         label="Grupo de Usuário"
-                                        options={selectedRoles}
+                                        // options={selectedRoles}
                                         callback={(value) => { 
                                             setFieldValue('roles_id', (old: any) => [...old, value])
                                             setSelectedRoles((old: any) => [...old, value]) 

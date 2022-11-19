@@ -23,19 +23,26 @@ export type SelectType = {
   isMulti?: boolean;
 }
 
-export const Select = ({ label, callback, loadOptions, defaultOptions, placeholder, selectedValue, isMulti = false, options }: SelectType) => {
+export const Select = ({ label, callback, options, defaultOptions, placeholder, selectedValue, isMulti = false }: SelectType) => {
 
     return (
       <div>
         <label className="text-sm" htmlFor="">{ label }</label>
         <AsyncSelect
             isMulti={isMulti}
-            // loadOptions={loadOptions}
+            loadOptions={options}
             className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}
             placeholder={placeholder}
-            value={typeof selectedValue?.value !== typeof undefined && selectedValue}
-            options={options}
+            value={typeof selectedValue?.value !== typeof undefined && selectedValue 
+              //   : selectedValue.map((data: any) => {
+              //   return {
+              //     label: data.label,
+              //     value: data.value
+              //   }
+              // })
+            }
+            // options={options}
             onChange={callback}
             id="category-select"
             instanceId="category-select"
