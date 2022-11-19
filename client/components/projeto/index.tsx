@@ -93,9 +93,9 @@ const Projetos = () => {
             }
             
             setProjetos(projetos)
-            setTimeout(() => {
-                setLoading(false)
-            }, 500)
+            
+            setLoading(false)
+            
         }
     }, [setLoading, session, client, setProjeto])
 
@@ -158,15 +158,10 @@ const Projetos = () => {
                     <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
                 <div className='pb-4'>
                     <Select
-                        initialData={
-                            {
-                                label: 'Entre com as iniciais...',
-                                value: ''
-                            }
-                        }
+                        placeholder='Entre com as iniciais...'
                         selectedValue={projetoLocal}
                         defaultOptions={getProjetosDefaultOptions()}
-                        options={loadOptions}
+                        loadOptions={loadOptions}
                         label="Localizar Projeto"
                         callback={selectProjeto}
                     />

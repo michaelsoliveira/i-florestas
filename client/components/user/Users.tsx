@@ -28,10 +28,6 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
 
     const formSubmit = () => {
         formRef.current.handleSubmit()
-        console.log(formRef.current.errors)
-        if (formRef.current.isValid) {
-            hideModal()
-        }
     }
 
     const deleteSingleModal = (id?: string) => 

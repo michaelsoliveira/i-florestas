@@ -1,6 +1,7 @@
 import React, { Component, useCallback, useContext, useEffect, useState } from 'react';
 
 import AsyncSelect from 'react-select/async';
+import { array } from 'yup';
 
 interface State {
     readonly inputValue: string;
@@ -13,25 +14,28 @@ export interface OptionType {
 
 export type SelectType = {
   label?: string;
-  options: any;
+  loadOptions: any;
   callback: (option: any) => void;
   defaultOptions?: OptionType[];
-  initialData?: OptionType;
-  selectedValue?: OptionType;
+  placeholder?: string;
+  selectedValue?: any;
+  options?: any;
   isMulti?: boolean;
 }
 
-export const Select = ({ label, callback, options, defaultOptions, initialData, selectedValue, isMulti = false }: SelectType) => {
+export const Select = ({ label, callback, loadOptions, defaultOptions, placeholder, selectedValue, isMulti = false, options }: SelectType) => {
 
     return (
       <div>
         <label className="text-sm" htmlFor="">{ label }</label>
         <AsyncSelect
             isMulti={isMulti}
-            loadOptions={options}
+            // loadOptions={loadOptions}
             className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}
-            value={typeof selectedValue?.value !== typeof undefined ? selectedValue : initialData}
+            placeholder={placeholder}
+            value={typeof selectedValue?.value !== typeof undefined && selectedValue}
+            options={options}
             onChange={callback}
             id="category-select"
             instanceId="category-select"

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs"
-import { getRepository } from "typeorm"
+import { getRepository, UsingJoinColumnIsNotAllowedError } from "typeorm"
 import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
@@ -96,28 +96,24 @@ class UserService {
             email: data?.email,
             image: data?.image ? data?.image : userExists?.image
         }
+        const roles = data?.roles_id && data?.roles_id.map((role: any) => {
+            return {
+                role_id: role.value
+            }
+        })
 
         const user = await prismaClient.user.update({
             where: 
             {
                 id
             },
-            data: data?.id_role ? {
+            data: data?.roles_id ? {
                 ...basicData,
                 users_roles: {
-                    update: {
-                        data: {
-                            roles: {
-                                connect: {
-                                    id: data?.id_role
-                                }
-                            },
-                        },
+                    updateMany: {
+                        data: roles,
                         where: {
-                            user_id_role_id: {
-                                role_id: data?.id_role,
-                                user_id: id
-                            }
+                            user_id: id
                         }
                     }
                 },
@@ -204,13 +200,29 @@ class UserService {
                                 id: projetoId
                             }
                         }
+                    },
+                    users_roles: {
+                        some: {
+                            user_id: id
+                        }
                     } 
                 }
             } ,
             include: {
-                users_roles: true
-            }
+                users_roles: {
+                    include: {
+                        roles: {
+                            select: {
+                                id: true,
+                                name: true
+                            }    
+                        }
+                    }
+                },
+            },
         })
+
+        console.log(user)
 
         const data = {
             id: user?.id,

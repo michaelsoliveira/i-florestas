@@ -34,7 +34,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const isAddMode = !userId
         const { client } = useContext(AuthContext)
         const [selectedUser, setSelectedUser] = useState<any>()
-        const [selectedRole, setSelectedRole] = useState<any>()
+        const [selectedRoles, setSelectedRoles] = useState<any>([])
         const [option, setOption] = useState<number | undefined>(0)
         const { data: session } = useSession()
 
@@ -134,12 +134,23 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         then: Yup.string().required('É necessário selecionar um usuário')
                     }) 
                 }),
-            id_role: Yup.string()
-                .when('id_projeto', {
-                    is: (projeto:string) => projeto === projetoId,
-                    then: Yup.string()
-                        .required('É necessário selecionar um grupo de usuário')
-                })
+            roles: Yup.array()
+                    .when('id_projeto', {
+                        is: (projeto:string) => projeto === projetoId,
+                        then: Yup.array()
+                            .of(
+                                Yup.object().shape({
+                                    id: Yup.string()
+                                    .ensure()
+                                    .required("Name is required"),
+                                    name: Yup.string()
+                                    .ensure()
+                                    .required("Name is required"),
+                                })
+                                )
+                    })
+                    
+                
             });
 
         async function handleRegister(data: any) {
@@ -186,7 +197,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         } else {
                             alertService.success(message)
                             sendForm()
-                            // hideModal()
+                            hideModal()
                         }
                     })
             }    
@@ -202,7 +213,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
             isAddMode: boolean;
             id_user: string;
             id_projeto: string;
-            id_role: string;
+            roles: any;
             option: number;
         }
         
@@ -220,7 +231,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         isAddMode,
                         id_user: '',
                         id_projeto: '',
-                        id_role: '',
+                        roles: [],
                         option: 0
                     }}
                     validationSchema={validationSchema}
@@ -235,18 +246,19 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
-                                
                                 await client.get(`/users/${projetoId}/${userId}`)
                                     .then(({ data }: any) => {
                                         if (data?.roles.length > 0) {
-                                            console.log(data?.roles[0])
-                                            setSelectedRole({
-                                                label: data?.roles[0].name,
-                                                value: data?.roles[0].id
-                                            })
-                                            setFieldValue('id_role', data?.roles[0].id)
-                                        }
 
+                                            data?.roles.map((role: any) => {
+                                                setSelectedRoles((old: any) => [...old, {
+                                                    label: role.name,
+                                                    value: role.id
+                                                }])    
+                                            })
+                                            setFieldValue('roles', data?.roles)
+                                        }
+                                        
                                         const fields = ['username', 'email'];
                                         setFieldValue('id_user', data?.id)
                                         
@@ -259,6 +271,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         useEffect(() => {
                             setFieldValue('id_projeto', projetoId)
                             loadUser()
+                            
                         }, [loadUser, setFieldValue]);
                         
                         return (
@@ -339,15 +352,10 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         <Field name="id_user">
                                             {() => (
                                                 <Select
-                                                    initialData={
-                                                        {
-                                                            label: 'Entre com as iniciais...',
-                                                            value: ''
-                                                        }
-                                                    }
+                                                    placeholder='Entre com as iniciais...'
                                                     selectedValue={selectedUser}
                                                     defaultOptions={getUsersDefaultOptions()}
-                                                    options={loadUsersOptions}
+                                                    loadOptions={loadUsersOptions}
                                                     label="Pesquisar Usuário"
                                                     callback={(value) => { 
                                                         setFieldValue('id_user', value?.value)
@@ -364,28 +372,24 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         {session && 
                         (<div className='w-full '>
                             <div className='py-4'>
-                                <Field name="id_user">
+                                <Field name="roles_id">
                                                 {() => (
                                     <Select
                                         isMulti
-                                        // initialData={
-                                        //     {
-                                        //         label: 'Entre com as iniciais...',
-                                        //         value: ''
-                                        //     }
-                                        // }
-                                        selectedValue={selectedRole}
+                                        // selectedValue={selectedRoles}
                                         defaultOptions={getRolesDefaultOptions()}
-                                        options={loadRolesOptions}
+                                        loadOptions={loadRolesOptions}
                                         label="Grupo de Usuário"
+                                        options={selectedRoles}
                                         callback={(value) => { 
-                                            setFieldValue('id_role', value?.value)
-                                            setSelectedRole(value) 
+                                            setFieldValue('roles_id', (old: any) => [...old, value])
+                                            setSelectedRoles((old: any) => [...old, value]) 
                                         }}
                                     />
                                     )}
                                 </Field>
-                                <ErrorMessage className='text-sm text-red-500 mt-1' name="id_role" component="div" />
+                                <ErrorMessage className='text-sm text-red-500 mt-1' name="roles_id" component="div" />
+                                {JSON.stringify(selectedRoles, null, 2)}
                             </div>
                         </div>
                         ) }
