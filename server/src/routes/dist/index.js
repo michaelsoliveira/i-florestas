@@ -100,7 +100,7 @@ routes["delete"]('/estado/single/:id', auth_middleware_1.Authentication(), new E
 routes.post('/eq-volume/', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().store);
 routes.get('/eq-volume/', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().findAll);
 routes.get('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().findOne);
-routes.get('/eq-volume/search/q', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().search);
+routes.get('/eq-volume/:projetoId/search/q', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().search);
 routes.put('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().update);
 routes["delete"]('/eq-volume/single/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController()["delete"]);
 //Equação Modelo

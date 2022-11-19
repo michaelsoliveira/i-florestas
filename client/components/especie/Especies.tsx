@@ -81,12 +81,15 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                 setLoading(true)
                 await client.post('/especie/import', formData)
                     .then((response: any) => {
+                        console.log(response)
                         const { error, message } = response.data
-    
+                        
                         if (!error) {
                             alertService.success(message) 
                             loadEspecies()
                             setLoading(false)
+                        } else {
+                            console.log(message)
                         }
                     }).catch(() => {
                         setLoading(false)
@@ -261,7 +264,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                         <th
                             scope="row"
                             className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('nomeOrgao')}
+                            onClick={() => sortEspecies('nome_orgao')}
                         >
                             <div className="flex flex-row w-full justify-between">
                                 Nome Vulgar
@@ -274,7 +277,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                         <th
                             scope="col"
                             className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('nomeCientifico')}
+                            onClick={() => sortEspecies('nome_cientifico')}
                         >
                             <div className="flex flex-row w-full justify-between">
                                 Nome Científico
@@ -287,7 +290,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('categoria.nome')}
+                            onClick={() => sortEspecies('categoria_especie.nome')}
                         >
                             <div className="flex flex-row w-full justify-between">
                                 Categoria
@@ -322,16 +325,16 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                             </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{especie.nomeOrgao}</div>
+                            <div className="text-sm text-gray-900">{especie.nome_orgao}</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{especie.nomeCientifico}</div>
+                                <div className="text-sm text-gray-500">{especie.nome_cientifico}</div>
                             </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{especie.categoria?.nome}</div>
+                                <div className="text-sm text-gray-500">{especie.categoria_especie?.nome}</div>
                             </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">

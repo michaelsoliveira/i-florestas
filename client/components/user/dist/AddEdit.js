@@ -51,6 +51,7 @@ var Select_1 = require("../Select");
 var RadioGroup_1 = require("../Form/RadioGroup");
 var Option_1 = require("../Form/Option");
 var FocusError_1 = require("../Form/FocusError");
+var ModalContext_1 = require("contexts/ModalContext");
 exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
     var styles = _a.styles, userId = _a.userId, sendForm = _a.sendForm, redirect = _a.redirect, projetoId = _a.projetoId, roles = _a.roles, users = _a.users;
@@ -62,6 +63,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _c = react_1.useState(), selectedRole = _c[0], setSelectedRole = _c[1];
     var _d = react_1.useState(0), option = _d[0], setOption = _d[1];
     var session = react_2.useSession().data;
+    var hideModal = ModalContext_1.useModalContext().hideModal;
     function onSelect(index) {
         setOption(index);
     }
@@ -138,7 +140,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             then: Yup.string()
                 .when('isAddMode', {
                 is: true,
-                then: Yup.string().required('Password is required').min(6, 'A senha deve possuir no mínimo 6 caracteres')
+                then: Yup.string().required('Senha é obrigatória').min(6, 'A senha deve possuir no mínimo 6 caracteres')
             })
         }),
         confirmPassword: Yup.string()
@@ -161,7 +163,11 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             })
         }),
         id_role: Yup.string()
-            .required('É necessário selecionar um grupo de usuário')
+            .when('id_projeto', {
+            is: function (projeto) { return projeto === projetoId; },
+            then: Yup.string()
+                .required('É necessário selecionar um grupo de usuário')
+        })
     });
     function handleRegister(data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -186,6 +192,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                                 }).then(function (response) {
                                                     if (response.ok) {
                                                         alert_1["default"].success('Login realizado com sucesso');
+                                                        hideModal();
                                                         router.push('/');
                                                     }
                                                     else {
@@ -247,7 +254,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 var setSubmitting = _a.setSubmitting;
                 handleRegister(values);
             } }, function (_a) {
-            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, setFieldTouched = _a.setFieldTouched, setTouched = _a.setTouched, values = _a.values;
+            var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, setFieldTouched = _a.setFieldTouched, setTouched = _a.setTouched;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             var loadUser = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
@@ -257,12 +264,15 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                             return [4 /*yield*/, client.get("/users/" + projetoId + "/" + userId)
                                     .then(function (_a) {
                                     var data = _a.data;
-                                    setSelectedRole({
-                                        label: data === null || data === void 0 ? void 0 : data.roles[0].name,
-                                        value: data === null || data === void 0 ? void 0 : data.roles[0].id
-                                    });
+                                    if ((data === null || data === void 0 ? void 0 : data.roles.length) > 0) {
+                                        console.log(data === null || data === void 0 ? void 0 : data.roles[0]);
+                                        setSelectedRole({
+                                            label: data === null || data === void 0 ? void 0 : data.roles[0].name,
+                                            value: data === null || data === void 0 ? void 0 : data.roles[0].id
+                                        });
+                                        setFieldValue('id_role', data === null || data === void 0 ? void 0 : data.roles[0].id);
+                                    }
                                     var fields = ['username', 'email'];
-                                    setFieldValue('id_role', data === null || data === void 0 ? void 0 : data.roles[0].id);
                                     setFieldValue('id_user', data === null || data === void 0 ? void 0 : data.id);
                                     fields.forEach(function (field) { return setFieldValue(field, data[field], false); });
                                 })];
@@ -288,7 +298,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                         setFieldValue('option', index);
                                         onSelect(index);
                                     } }, el)); })))),
-                            (option === 0) ? (React.createElement("div", { className: 'lg:grid lg:grid-cols-2 lg:gap-4' },
+                            (option === 0) ? (React.createElement("div", { className: session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col' },
                                 React.createElement("div", null,
                                     React.createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
                                     React.createElement(formik_1.Field, { className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
@@ -317,12 +327,16 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                             } })); }),
                                         React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_user", component: "div" })))),
                             session &&
-                                (React.createElement("div", { className: 'w-[18.5rem] ' },
+                                (React.createElement("div", { className: 'w-full ' },
                                     React.createElement("div", { className: 'py-4' },
-                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { initialData: {
-                                                label: 'Entre com as iniciais...',
-                                                value: ''
-                                            }, selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", callback: function (value) {
+                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { isMulti: true, 
+                                            // initialData={
+                                            //     {
+                                            //         label: 'Entre com as iniciais...',
+                                            //         value: ''
+                                            //     }
+                                            // }
+                                            selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", callback: function (value) {
                                                 setFieldValue('id_role', value === null || value === void 0 ? void 0 : value.value);
                                                 setSelectedRole(value);
                                             } })); }),

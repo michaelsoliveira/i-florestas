@@ -238,12 +238,16 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                 
                                 await client.get(`/users/${projetoId}/${userId}`)
                                     .then(({ data }: any) => {
-                                        setSelectedRole({
-                                            label: data?.roles[0].name,
-                                            value: data?.roles[0].id
-                                        })
+                                        if (data?.roles.length > 0) {
+                                            console.log(data?.roles[0])
+                                            setSelectedRole({
+                                                label: data?.roles[0].name,
+                                                value: data?.roles[0].id
+                                            })
+                                            setFieldValue('id_role', data?.roles[0].id)
+                                        }
+
                                         const fields = ['username', 'email'];
-                                        setFieldValue('id_role', data?.roles[0].id)
                                         setFieldValue('id_user', data?.id)
                                         
                                         fields.forEach(field => setFieldValue(field, data[field], false));
@@ -358,17 +362,18 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             </div>
                         )}
                         {session && 
-                        (<div className='w-[18.5rem] '>
+                        (<div className='w-full '>
                             <div className='py-4'>
                                 <Field name="id_user">
                                                 {() => (
                                     <Select
-                                        initialData={
-                                            {
-                                                label: 'Entre com as iniciais...',
-                                                value: ''
-                                            }
-                                        }
+                                        isMulti
+                                        // initialData={
+                                        //     {
+                                        //         label: 'Entre com as iniciais...',
+                                        //         value: ''
+                                        //     }
+                                        // }
                                         selectedValue={selectedRole}
                                         defaultOptions={getRolesDefaultOptions()}
                                         options={loadRolesOptions}

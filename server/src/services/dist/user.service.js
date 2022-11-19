@@ -94,8 +94,11 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { projeto_users: {
                                         create: {
-                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
-                                            id_role: data === null || data === void 0 ? void 0 : data.id_role
+                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                        }
+                                    }, users_roles: {
+                                        create: {
+                                            role_id: data === null || data === void 0 ? void 0 : data.id
                                         }
                                     } })
                             })];
@@ -109,8 +112,12 @@ var UserService = /** @class */ (function () {
                             data: {
                                 projeto_users: {
                                     create: {
-                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
-                                        id_role: data === null || data === void 0 ? void 0 : data.id_role
+                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                    }
+                                },
+                                users_roles: {
+                                    create: {
+                                        role_id: data === null || data === void 0 ? void 0 : data.id
                                     }
                                 }
                             }
@@ -152,14 +159,25 @@ var UserService = /** @class */ (function () {
                                 where: {
                                     id: id
                                 },
-                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { projeto_users: {
+                                data: (data === null || data === void 0 ? void 0 : data.id_role) ? __assign(__assign({}, basicData), { users_roles: {
                                         update: {
                                             data: {
                                                 roles: {
                                                     connect: {
                                                         id: data === null || data === void 0 ? void 0 : data.id_role
                                                     }
-                                                },
+                                                }
+                                            },
+                                            where: {
+                                                user_id_role_id: {
+                                                    role_id: data === null || data === void 0 ? void 0 : data.id_role,
+                                                    user_id: id
+                                                }
+                                            }
+                                        }
+                                    }, projeto_users: {
+                                        update: {
+                                            data: {
                                                 projeto: {
                                                     connect: {
                                                         id: data === null || data === void 0 ? void 0 : data.id_projeto
@@ -167,9 +185,8 @@ var UserService = /** @class */ (function () {
                                                 }
                                             },
                                             where: {
-                                                id_projeto_id_user_id_role: {
+                                                id_projeto_id_user: {
                                                     id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
-                                                    id_role: data === null || data === void 0 ? void 0 : data.id_role,
                                                     id_user: id
                                                 }
                                             }
@@ -270,26 +287,20 @@ var UserService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: { id: id },
-                            select: {
-                                id: true,
-                                email: true,
-                                username: true,
-                                projeto_users: {
-                                    select: {
-                                        roles: {
-                                            select: {
-                                                id: true,
-                                                name: true
+                            where: {
+                                AND: {
+                                    id: id,
+                                    projeto_users: {
+                                        some: {
+                                            projeto: {
+                                                id: projetoId
                                             }
-                                        }
-                                    },
-                                    where: {
-                                        projeto: {
-                                            id: projetoId
                                         }
                                     }
                                 }
+                            },
+                            include: {
+                                users_roles: true
                             }
                         })];
                     case 1:
@@ -298,7 +309,7 @@ var UserService = /** @class */ (function () {
                             id: user === null || user === void 0 ? void 0 : user.id,
                             email: user === null || user === void 0 ? void 0 : user.email,
                             username: user === null || user === void 0 ? void 0 : user.username,
-                            roles: user === null || user === void 0 ? void 0 : user.projeto_users.map(function (user_roles) {
+                            roles: user === null || user === void 0 ? void 0 : user.users_roles.map(function (user_roles) {
                                 return __assign({}, user_roles.roles);
                             })
                         };

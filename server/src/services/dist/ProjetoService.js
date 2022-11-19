@@ -109,11 +109,6 @@ var ProjetoService = /** @class */ (function () {
                                                     id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
                                                 }
                                             },
-                                            roles: {
-                                                connect: {
-                                                    id: (data === null || data === void 0 ? void 0 : data.id_role) ? data === null || data === void 0 ? void 0 : data.id_role : roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
-                                                }
-                                            },
                                             active: data === null || data === void 0 ? void 0 : data.active
                                         }
                                     }
@@ -143,10 +138,9 @@ var ProjetoService = /** @class */ (function () {
                                             active: data === null || data === void 0 ? void 0 : data.active
                                         },
                                         where: {
-                                            id_projeto_id_user_id_role: {
+                                            id_projeto_id_user: {
                                                 id_projeto: id,
-                                                id_role: data === null || data === void 0 ? void 0 : data.id_role,
-                                                id_user: data === null || data === void 0 ? void 0 : data.id_user
+                                                id_user: userId
                                             }
                                         }
                                     }
@@ -312,11 +306,10 @@ var ProjetoService = /** @class */ (function () {
                                 }
                             }
                         };
-                        console.log(where);
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.user.findMany({
                                     include: {
-                                        projeto_users: {
+                                        users_roles: {
                                             include: {
                                                 roles: {
                                                     select: {
@@ -324,9 +317,6 @@ var ProjetoService = /** @class */ (function () {
                                                         name: true
                                                     }
                                                 }
-                                            },
-                                            where: {
-                                                id_projeto: projetoId
                                             }
                                         }
                                     },
@@ -346,7 +336,7 @@ var ProjetoService = /** @class */ (function () {
                                 email: user.email,
                                 image: user.image,
                                 email_verified: user.email_verified,
-                                roles: user.projeto_users.map(function (user_roles) {
+                                roles: user.users_roles.map(function (user_roles) {
                                     return __assign({}, user_roles.roles);
                                 })
                             };

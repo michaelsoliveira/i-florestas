@@ -46,8 +46,12 @@ class UserService {
                 ...dataRequest,
                 projeto_users: {
                     create: {
-                        id_projeto: data?.id_projeto,
-                        id_role: data?.id_role
+                        id_projeto: data?.id_projeto
+                    }
+                },
+                users_roles: {
+                    create: {
+                        role_id: data?.id
                     }
                 }
             }
@@ -58,8 +62,12 @@ class UserService {
             data: {
                 projeto_users: {
                     create: {
-                        id_projeto: data?.id_projeto,
-                        id_role: data?.id_role
+                        id_projeto: data?.id_projeto
+                    }
+                },
+                users_roles: {
+                    create: {
+                        role_id: data?.id
                     }
                 }
             }
@@ -96,7 +104,7 @@ class UserService {
             },
             data: data?.id_role ? {
                 ...basicData,
-                projeto_users: {
+                users_roles: {
                     update: {
                         data: {
                             roles: {
@@ -104,16 +112,27 @@ class UserService {
                                     id: data?.id_role
                                 }
                             },
+                        },
+                        where: {
+                            user_id_role_id: {
+                                role_id: data?.id_role,
+                                user_id: id
+                            }
+                        }
+                    }
+                },
+                projeto_users: {
+                    update: {
+                        data: {
                             projeto: {
                                 connect: {
                                     id: data?.id_projeto
                                 }
-                            }
+                            },
                         },
                         where: {
-                            id_projeto_id_user_id_role: {
+                            id_projeto_id_user: {
                                 id_projeto: data?.id_projeto,
-                                id_role: data?.id_role,
                                 id_user: id
                             }
                         }
@@ -176,26 +195,20 @@ class UserService {
     async findOne(id: string, projetoId?: string | undefined): Promise<any> {
 
         const user = await prismaClient.user.findFirst({ 
-            where: { id } ,
-            select: {
-                id: true,
-                email: true,
-                username: true,
-                projeto_users: {
-                    select: {
-                        roles: {
-                            select: {
-                                id: true,
-                                name: true
+            where: { 
+                AND: {
+                    id,
+                    projeto_users: {
+                        some: {
+                            projeto: {
+                                id: projetoId
                             }
                         }
-                    },
-                    where: {
-                        projeto: {
-                            id: projetoId
-                        }
-                    }
+                    } 
                 }
+            } ,
+            include: {
+                users_roles: true
             }
         })
 
@@ -203,7 +216,7 @@ class UserService {
             id: user?.id,
             email: user?.email,
             username: user?.username,
-            roles: user?.projeto_users.map((user_roles: any) => {
+            roles: user?.users_roles.map((user_roles: any) => {
                 return {
                     ...user_roles.roles
                 }

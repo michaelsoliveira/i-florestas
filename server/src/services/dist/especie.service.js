@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,38 +50,74 @@ exports.__esModule = true;
 var Especie_1 = require("../entities/Especie");
 var typeorm_1 = require("typeorm");
 var prismaClient_1 = require("../database/prismaClient");
+var client_1 = require("@prisma/client");
 var EspecieService = /** @class */ (function () {
     function EspecieService() {
     }
-    EspecieService.prototype.create = function (data) {
+    EspecieService.prototype.create = function (dataRequest, projetoId) {
         return __awaiter(this, void 0, Promise, function () {
-            var especieExists, nome, nome_cientifico, nome_orgao, especie;
+            var nome, nome_cientifico, nome_orgao, id_projeto, especieExists, preparedData, data, especie;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({ where: { nome: data.nome } })];
+                    case 0:
+                        nome = dataRequest.nome, nome_cientifico = dataRequest.nome_cientifico, nome_orgao = dataRequest.nome_orgao, id_projeto = dataRequest.id_projeto;
+                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({
+                                where: {
+                                    AND: {
+                                        nome: dataRequest.nome,
+                                        id_projeto: id_projeto ? id_projeto : projetoId
+                                    }
+                                }
+                            })];
                     case 1:
                         especieExists = _a.sent();
-                        nome = data.nome, nome_cientifico = data.nome_cientifico, nome_orgao = data.nome_orgao;
                         if (especieExists) {
                             throw new Error('Já existe uma espécie cadastrada com este nome');
                         }
-                        especie = prismaClient_1.prismaClient.especie.create({
-                            data: {
-                                nome: nome,
-                                nome_cientifico: nome_cientifico,
-                                nome_orgao: nome_orgao
+                        preparedData = {
+                            nome: nome,
+                            nome_cientifico: nome_cientifico,
+                            nome_orgao: nome_orgao,
+                            projeto: {
+                                connect: {
+                                    id: id_projeto ? id_projeto : projetoId
+                                }
                             }
-                        });
+                        };
+                        data = (dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria) ? __assign(__assign({}, preparedData), { categoria_especie: {
+                                connect: {
+                                    id: dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria
+                                }
+                            } }) : preparedData;
+                        especie = prismaClient_1.prismaClient.especie.create({ data: data });
                         return [2 /*return*/, especie];
                 }
             });
         });
     };
-    EspecieService.prototype.update = function (id, data) {
+    EspecieService.prototype.update = function (id, dataRequest) {
         return __awaiter(this, void 0, Promise, function () {
+            var nome, nome_cientifico, nome_orgao, preparedData, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(Especie_1.Especie).update(id, data)];
+                    case 0:
+                        nome = dataRequest.nome, nome_cientifico = dataRequest.nome_cientifico, nome_orgao = dataRequest.nome_orgao;
+                        preparedData = {
+                            nome: nome,
+                            nome_cientifico: nome_cientifico,
+                            nome_orgao: nome_orgao
+                        };
+                        data = (dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria) ? __assign(__assign({}, preparedData), { categoria_especie: {
+                                connect: {
+                                    id: dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria
+                                }
+                            } }) : preparedData;
+                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.update({
+                                where: {
+                                    id: id
+                                },
+                                data: data
+                            })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, this.findById(id)];
@@ -103,26 +150,74 @@ var EspecieService = /** @class */ (function () {
             });
         });
     };
-    EspecieService.prototype.getAll = function (query) {
+    EspecieService.prototype.getAll = function (query, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var perPage, page, order, search, orderBy, skip, _a, data, total;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var perPage, page, order, search, orderBy, skip, orderByTerm, orderByElement, where, _a, data, total;
+            var _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         perPage = query.perPage, page = query.page, order = query.order, search = query.search, orderBy = query.orderBy;
                         skip = (page - 1) * perPage;
-                        return [4 /*yield*/, typeorm_1.getRepository(Especie_1.Especie).createQueryBuilder('especie')
-                                // .select(['especie.id', 'especie.nome', 'especie.nomeOrgao', 'especie.nomeCientifico', 'categoria.id as categoriaId', 'categoria.nome'])
-                                .leftJoinAndSelect('especie.categoria', 'categoria')
-                                .skip(skip)
-                                .take(perPage)
-                                .where({
-                                nome: search ? typeorm_1.ILike("%" + search + "%") : typeorm_1.ILike('%%')
-                            })
-                                .orderBy(orderBy, order ? order : 'ASC')
-                                .getManyAndCount()];
+                        orderByTerm = {};
+                        orderByElement = orderBy ? orderBy.split('.') : {};
+                        if (orderByElement.length == 2) {
+                            orderByTerm = (_b = {},
+                                _b[orderByElement[1]] = order,
+                                _b);
+                        }
+                        else {
+                            orderByTerm = (_c = {},
+                                _c[orderByElement] = order,
+                                _c);
+                        }
+                        where = search ?
+                            {
+                                AND: {
+                                    nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
+                                    projeto: {
+                                        projeto_users: {
+                                            some: {
+                                                id_user: userId,
+                                                active: true
+                                            }
+                                        }
+                                    }
+                                }
+                            } : {
+                            projeto: {
+                                projeto_users: {
+                                    some: {
+                                        id_user: userId,
+                                        active: true
+                                    }
+                                }
+                            }
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
+                                prismaClient_1.prismaClient.especie.findMany({
+                                    include: {
+                                        categoria_especie: {
+                                            select: {
+                                                id: true,
+                                                nome: true
+                                            }
+                                        }
+                                    },
+                                    where: where,
+                                    take: perPage ? parseInt(perPage) : 50,
+                                    skip: skip ? skip : 0,
+                                    orderBy: __assign({}, orderByTerm)
+                                }),
+                                prismaClient_1.prismaClient.especie.count({
+                                    where: where,
+                                    take: perPage ? parseInt(perPage) : 50,
+                                    skip: skip ? skip : 0,
+                                    orderBy: __assign({}, orderByTerm)
+                                })
+                            ])];
                     case 1:
-                        _a = _b.sent(), data = _a[0], total = _a[1];
+                        _a = _d.sent(), data = _a[0], total = _a[1];
                         return [2 /*return*/, {
                                 orderBy: orderBy,
                                 order: order,
@@ -151,8 +246,19 @@ var EspecieService = /** @class */ (function () {
             var especie;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, typeorm_1.getRepository(Especie_1.Especie).createQueryBuilder('especie')
-                            .leftJoinAndSelect('especie.categoria', 'categoria').where({ id: id }).getOne()];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.especie.findUnique({
+                            include: {
+                                categoria_especie: {
+                                    select: {
+                                        id: true,
+                                        nome: true
+                                    }
+                                }
+                            },
+                            where: {
+                                id: id
+                            }
+                        })];
                     case 1:
                         especie = _a.sent();
                         return [2 /*return*/, especie];

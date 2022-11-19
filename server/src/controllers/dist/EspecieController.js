@@ -47,6 +47,7 @@ exports.EspecieController = void 0;
 var especie_service_1 = require("../services/especie.service");
 var stream_1 = require("stream");
 var readline_1 = require("readline");
+var ProjetoService_1 = require("../services/ProjetoService");
 var EspecieController = /** @class */ (function () {
     function EspecieController() {
     }
@@ -153,15 +154,16 @@ var EspecieController = /** @class */ (function () {
         });
     };
     EspecieController.prototype.findAll = function (request, response) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _a, data, perPage, orderBy, order, page, skip, count, error_4;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _b, data, perPage, orderBy, order, page, skip, count, error_4;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, especie_service_1["default"].getAll(request.query)];
+                        _c.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, especie_service_1["default"].getAll(request.query, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
-                        _a = _b.sent(), data = _a.data, perPage = _a.perPage, orderBy = _a.orderBy, order = _a.order, page = _a.page, skip = _a.skip, count = _a.count;
+                        _b = _c.sent(), data = _b.data, perPage = _b.perPage, orderBy = _b.orderBy, order = _b.order, page = _b.page, skip = _b.skip, count = _b.count;
                         return [2 /*return*/, response.json({
                                 error: false,
                                 especies: data,
@@ -174,7 +176,7 @@ var EspecieController = /** @class */ (function () {
                                 message: null
                             })];
                     case 2:
-                        error_4 = _b.sent();
+                        error_4 = _c.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
                                 especies: [],
@@ -209,33 +211,37 @@ var EspecieController = /** @class */ (function () {
     };
     EspecieController.prototype.importEspecie = function (request, response) {
         var e_1, _a, e_2, _b;
-        var _c;
+        var _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var especies, readableFile, especiesLine, especiesLine_1, especiesLine_1_1, line, especieLineSplit, e_1_1, especies_1, especies_1_1, especie, e_2_1, error_6;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var especies, projeto, projetoId, readableFile, especiesLine, especiesLine_1, especiesLine_1_1, line, especieLineSplit, e_1_1, especies_1, especies_1_1, especie, e_2_1, error_6;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         especies = [];
-                        _d.label = 1;
+                        return [4 /*yield*/, ProjetoService_1.getProjeto((_c = request.user) === null || _c === void 0 ? void 0 : _c.id)];
                     case 1:
-                        _d.trys.push([1, 26, , 27]);
+                        projeto = _e.sent();
+                        projetoId = projeto ? projeto === null || projeto === void 0 ? void 0 : projeto.id : '';
+                        _e.label = 2;
+                    case 2:
+                        _e.trys.push([2, 27, , 28]);
                         if ((request === null || request === void 0 ? void 0 : request.file) === undefined) {
                             return [2 /*return*/, response.status(400).send("Please upload a CSV file!")];
                         }
                         readableFile = new stream_1.Readable().setEncoding('utf8');
-                        readableFile.push((_c = request.file) === null || _c === void 0 ? void 0 : _c.buffer);
+                        readableFile.push((_d = request.file) === null || _d === void 0 ? void 0 : _d.buffer);
                         readableFile.push(null);
                         especiesLine = readline_1["default"].createInterface({
                             input: readableFile
                         });
-                        _d.label = 2;
-                    case 2:
-                        _d.trys.push([2, 7, 8, 13]);
+                        _e.label = 3;
+                    case 3:
+                        _e.trys.push([3, 8, 9, 14]);
                         especiesLine_1 = __asyncValues(especiesLine);
-                        _d.label = 3;
-                    case 3: return [4 /*yield*/, especiesLine_1.next()];
-                    case 4:
-                        if (!(especiesLine_1_1 = _d.sent(), !especiesLine_1_1.done)) return [3 /*break*/, 6];
+                        _e.label = 4;
+                    case 4: return [4 /*yield*/, especiesLine_1.next()];
+                    case 5:
+                        if (!(especiesLine_1_1 = _e.sent(), !especiesLine_1_1.done)) return [3 /*break*/, 7];
                         line = especiesLine_1_1.value;
                         especieLineSplit = line.split(";");
                         especies.push({
@@ -243,73 +249,65 @@ var EspecieController = /** @class */ (function () {
                             nome_orgao: especieLineSplit[1],
                             nome_cientifico: especieLineSplit[2]
                         });
-                        _d.label = 5;
-                    case 5: return [3 /*break*/, 3];
-                    case 6: return [3 /*break*/, 13];
-                    case 7:
-                        e_1_1 = _d.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 13];
+                        _e.label = 6;
+                    case 6: return [3 /*break*/, 4];
+                    case 7: return [3 /*break*/, 14];
                     case 8:
-                        _d.trys.push([8, , 11, 12]);
-                        if (!(especiesLine_1_1 && !especiesLine_1_1.done && (_a = especiesLine_1["return"]))) return [3 /*break*/, 10];
-                        return [4 /*yield*/, _a.call(especiesLine_1)];
+                        e_1_1 = _e.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 14];
                     case 9:
-                        _d.sent();
-                        _d.label = 10;
-                    case 10: return [3 /*break*/, 12];
-                    case 11:
+                        _e.trys.push([9, , 12, 13]);
+                        if (!(especiesLine_1_1 && !especiesLine_1_1.done && (_a = especiesLine_1["return"]))) return [3 /*break*/, 11];
+                        return [4 /*yield*/, _a.call(especiesLine_1)];
+                    case 10:
+                        _e.sent();
+                        _e.label = 11;
+                    case 11: return [3 /*break*/, 13];
+                    case 12:
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
-                    case 12: return [7 /*endfinally*/];
-                    case 13:
-                        _d.trys.push([13, 19, 20, 25]);
+                    case 13: return [7 /*endfinally*/];
+                    case 14:
+                        _e.trys.push([14, 20, 21, 26]);
                         especies_1 = __asyncValues(especies);
-                        _d.label = 14;
-                    case 14: return [4 /*yield*/, especies_1.next()];
-                    case 15:
-                        if (!(especies_1_1 = _d.sent(), !especies_1_1.done)) return [3 /*break*/, 18];
-                        especie = especies_1_1.value;
-                        if (!(especies.indexOf(especie) > 0)) return [3 /*break*/, 17];
-                        return [4 /*yield*/, especie_service_1["default"].create(especie)];
+                        _e.label = 15;
+                    case 15: return [4 /*yield*/, especies_1.next()];
                     case 16:
-                        _d.sent();
-                        _d.label = 17;
-                    case 17: return [3 /*break*/, 14];
-                    case 18: return [3 /*break*/, 25];
-                    case 19:
-                        e_2_1 = _d.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3 /*break*/, 25];
+                        if (!(especies_1_1 = _e.sent(), !especies_1_1.done)) return [3 /*break*/, 19];
+                        especie = especies_1_1.value;
+                        if (!(especies.indexOf(especie) > 0)) return [3 /*break*/, 18];
+                        return [4 /*yield*/, especie_service_1["default"].create(especie, projetoId)];
+                    case 17:
+                        _e.sent();
+                        _e.label = 18;
+                    case 18: return [3 /*break*/, 15];
+                    case 19: return [3 /*break*/, 26];
                     case 20:
-                        _d.trys.push([20, , 23, 24]);
-                        if (!(especies_1_1 && !especies_1_1.done && (_b = especies_1["return"]))) return [3 /*break*/, 22];
-                        return [4 /*yield*/, _b.call(especies_1)];
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 26];
                     case 21:
-                        _d.sent();
-                        _d.label = 22;
-                    case 22: return [3 /*break*/, 24];
-                    case 23:
+                        _e.trys.push([21, , 24, 25]);
+                        if (!(especies_1_1 && !especies_1_1.done && (_b = especies_1["return"]))) return [3 /*break*/, 23];
+                        return [4 /*yield*/, _b.call(especies_1)];
+                    case 22:
+                        _e.sent();
+                        _e.label = 23;
+                    case 23: return [3 /*break*/, 25];
+                    case 24:
                         if (e_2) throw e_2.error;
                         return [7 /*endfinally*/];
-                    case 24: return [7 /*endfinally*/];
-                    case 25: 
-                    // especies.forEach(async (data, index) => {
-                    //     if (index > 0) {
-                    //         await especieService.create(data)
-                    //     }
-                    //     console.log(especies.length, index)
-                    // })
-                    // const data = await prismaClient.especie.findMany()
-                    return [2 /*return*/, response.json({
+                    case 25: return [7 /*endfinally*/];
+                    case 26: return [2 /*return*/, response.json({
                             error: false,
                             especies: especies,
                             message: 'Espécies importadas com sucesso!!!'
                         })];
-                    case 26:
-                        error_6 = _d.sent();
+                    case 27:
+                        error_6 = _e.sent();
                         return [2 /*return*/, response.json(error_6.message)];
-                    case 27: return [2 /*return*/];
+                    case 28: return [2 /*return*/];
                 }
             });
         });
