@@ -1,9 +1,9 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import especieService, { EspecieType } from "../services/especie.service";
+import especieService from "../services/especie.service";
 import { Readable } from 'stream'
 import readline from "readline";
-import { prismaClient } from "../database/prismaClient";
+import { getProjeto } from "../services/ProjetoService";
 
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -75,10 +75,8 @@ export class EspecieController {
     }
 
     async findAll(request: Request, response: Response) {
-        // const { search } = request.query
-        
         try {
-            const { data, perPage, orderBy, order, page, skip, count } = await especieService.getAll(request.query)
+            const { data, perPage, orderBy, order, page, skip, count } = await especieService.getAll(request.query, request.user?.id)
 
             return response.json({
                 error: false,
@@ -113,6 +111,8 @@ export class EspecieController {
 
     async importEspecie(request: Request, response: Response) {
         const especies: any[] = []
+        const projeto = await getProjeto(request.user?.id)
+        const projetoId = projeto ? projeto?.id : ''
 
         try {
             if (request?.file === undefined) {
@@ -138,18 +138,8 @@ export class EspecieController {
             }
 
             for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) await especieService.create(especie)
+                if (especies.indexOf(especie) > 0) await especieService.create(especie, projetoId)
             }
-            
-            // especies.forEach(async (data, index) => {
-            //     if (index > 0) {
-            //         await especieService.create(data)
-            //     }
-            //     console.log(especies.length, index)
-            // })
-            
-            
-            // const data = await prismaClient.especie.findMany()
 
             return response.json({
                 error: false,

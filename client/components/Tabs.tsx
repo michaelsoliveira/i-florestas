@@ -70,7 +70,7 @@ const Tabs = () => {
             >
               <div className="flex flex-col items-center justify-between w-full">
               
-              <AddEdit ref={formRef} styles={styles} redirect/>
+              <AddEdit ref={formRef} styles={styles} projetoId="" redirect/>
               
                 <button
                   onClick={submitForm}

@@ -65,7 +65,7 @@ var EspecieIndex = function () {
     var _e = react_1.useState([]), currentEspecies = _e[0], setCurrentEspecies = _e[1];
     var _f = react_1.useState(0), totalPages = _f[0], setTotalPages = _f[1];
     var _g = react_1.useState('especie.nome'), orderBy = _g[0], setOrderBy = _g[1];
-    var _h = react_1.useState('ASC'), order = _h[0], setOrder = _h[1];
+    var _h = react_1.useState('asc'), order = _h[0], setOrder = _h[1];
     var pagination = hooks_1.useAppSelector(function (state) { return state.pagination; });
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
@@ -84,14 +84,16 @@ var EspecieIndex = function () {
                     data = (_a.sent()).data;
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
                     setCurrentEspecies(data === null || data === void 0 ? void 0 : data.especies);
+                    setTimeout(function () {
+                        setLoading(false);
+                    }, 500);
                     return [2 /*return*/];
             }
         });
     }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading]);
     react_1.useEffect(function () {
-        console.log(loading);
         loadEspecies(itemsPerPage);
-    }, [itemsPerPage, loadEspecies, loading]);
+    }, [loadEspecies, itemsPerPage]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
         var name, currentPage, perPage, totalPages, orderBy, order, search, data, data;
         return __generator(this, function (_a) {

@@ -57,11 +57,6 @@ class ProjetoService {
                                 id: data?.id_user ? data?.id_user : userId
                             }
                         },
-                        roles: {
-                            connect: {
-                                id: data?.id_role ? data?.id_role : roleAdmin?.id
-                            }
-                        },
                         active: data?.active
                     }
                 }
@@ -72,6 +67,7 @@ class ProjetoService {
     }
 
     async update(id: string, data: ProjetoType, userId: string): Promise<Projeto> {
+        
         const projeto = await prismaClient.projeto.update({
             where: {
                 id
@@ -84,10 +80,9 @@ class ProjetoService {
                             active: data?.active,
                         },
                         where: {
-                            id_projeto_id_user_id_role: {
+                            id_projeto_id_user: {
                                 id_projeto: id,
-                                id_role: data?.id_role,
-                                id_user: data?.id_user
+                                id_user: userId
                             }
                         }
                     }
@@ -231,7 +226,7 @@ class ProjetoService {
         const [users, total] = await prismaClient.$transaction([
             prismaClient.user.findMany({
                 include: {
-                    projeto_users: {
+                    users_roles: {
                         include: {
                             roles: {
                                 select: {
@@ -239,9 +234,6 @@ class ProjetoService {
                                     name: true
                                 }    
                             }
-                        },
-                        where: {
-                            id_projeto: projetoId
                         }
                     },
                 },
@@ -262,7 +254,7 @@ class ProjetoService {
                 email: user.email,
                 image: user.image,
                 email_verified: user.email_verified,
-                roles: user.projeto_users.map((user_roles) => {
+                roles: user.users_roles.map((user_roles) => {
                     return {
                         ...user_roles.roles
                     }

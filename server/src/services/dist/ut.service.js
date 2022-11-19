@@ -52,16 +52,19 @@ var ProjetoService_1 = require("./ProjetoService");
 var UtService = /** @class */ (function () {
     function UtService() {
     }
-    UtService.prototype.create = function (data, userId) {
+    UtService.prototype.create = function (dataRequest, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, id_upa, projeto, utExists, ut;
+            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, latitude, longitude, id_upa, projeto, upa, utExists, preparedData, data, ut;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        numero_ut = data.numero_ut, area_util = data.area_util, area_total = data.area_total, quantidade_faixas = data.quantidade_faixas, comprimento_faixas = data.comprimento_faixas, largura_faixas = data.largura_faixas, latitude = data.latitude, longitude = data.longitude, id_upa = data.id_upa;
+                        numero_ut = dataRequest.numero_ut, area_util = dataRequest.area_util, area_total = dataRequest.area_total, quantidade_faixas = dataRequest.quantidade_faixas, comprimento_faixas = dataRequest.comprimento_faixas, largura_faixas = dataRequest.largura_faixas, latitude = dataRequest.latitude, longitude = dataRequest.longitude, id_upa = dataRequest.id_upa;
                         return [4 /*yield*/, ProjetoService_1.getProjeto(userId)];
                     case 1:
                         projeto = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({ where: { id: id_upa } })];
+                    case 2:
+                        upa = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
                                     AND: {
@@ -76,29 +79,26 @@ var UtService = /** @class */ (function () {
                                     }
                                 }
                             })];
-                    case 2:
+                    case 3:
                         utExists = _a.sent();
+                        preparedData = {
+                            numero_ut: parseInt(numero_ut),
+                            area_util: parseFloat(area_util),
+                            area_total: parseFloat(area_total),
+                            latitude: parseFloat(latitude),
+                            longitude: parseFloat(longitude),
+                            upa: {
+                                connect: {
+                                    id: id_upa
+                                }
+                            }
+                        };
+                        data = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 0 ? __assign(__assign({}, preparedData), { quantidade_faixas: parseInt(quantidade_faixas), comprimento_faixas: parseInt(comprimento_faixas), largura_faixas: parseInt(largura_faixas) }) : preparedData;
                         if (utExists) {
                             throw new Error('Já existe uma Ut cadastrada com este número');
                         }
-                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.create({
-                                data: {
-                                    numero_ut: parseInt(numero_ut),
-                                    area_util: parseFloat(area_util),
-                                    area_total: parseFloat(area_total),
-                                    quantidade_faixas: parseInt(quantidade_faixas),
-                                    comprimento_faixas: parseInt(comprimento_faixas),
-                                    largura_faixas: parseInt(largura_faixas),
-                                    latitude: parseFloat(latitude),
-                                    longitude: parseFloat(longitude),
-                                    upa: {
-                                        connect: {
-                                            id: id_upa
-                                        }
-                                    }
-                                }
-                            })];
-                    case 3:
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.create({ data: data })];
+                    case 4:
                         ut = _a.sent();
                         return [2 /*return*/, ut];
                 }

@@ -28,7 +28,7 @@ const SigupPage = () => {
           </div>
         </div>
         <div className='w-full pt-20'>
-          <AddEdit ref={formRef} styles={styles} redirect/>
+          <AddEdit projetoId='' ref={formRef} styles={styles} redirect/>
           <div className='mx-auto flex flex-row items-center justify-center py-4'>
             <button
                 // disabled={formState.isSubmitting}

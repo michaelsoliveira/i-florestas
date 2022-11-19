@@ -284,7 +284,7 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{user.roles.length > 1 ? user.roles.map((role: any) => { role.name }).join(', ') : user.roles[0].name}</div>
+                                <div className="text-sm text-gray-500">{user.roles && user.roles.map((role: any) => { return role ? role.name : '' }).join(', ')}</div>
                             </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">

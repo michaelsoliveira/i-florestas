@@ -64,7 +64,7 @@ var Especies = function (_a) {
     var _g = react_1.useState([]), checkedEspecies = _g[0], setCheckedEspecies = _g[1];
     var _h = ModalContext_1.useModalContext(), showModal = _h.showModal, hideModal = _h.hideModal, store = _h.store;
     var visible = store.visible;
-    var _j = react_1.useContext(LoadingContext_1.LoadingContext), loading = _j.loading, setLoading = _j.setLoading;
+    var setLoading = react_1.useContext(LoadingContext_1.LoadingContext).setLoading;
     var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
     var especieById = react_1.useCallback(function (id) {
         return currentEspecies.find(function (especie) { return especie.id === id; });
@@ -125,22 +125,27 @@ var Especies = function (_a) {
         });
     }); };
     var handleImportEspecies = function (e) { return __awaiter(void 0, void 0, void 0, function () {
-        var formData;
+        var formData, e_1;
         var _a;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
+                    _b.trys.push([0, 4, , 5]);
                     if (!(e.target.files.length > 0)) return [3 /*break*/, 2];
                     formData = new FormData();
                     formData.append('file', (_a = e.target) === null || _a === void 0 ? void 0 : _a.files[0]);
                     setLoading(true);
                     return [4 /*yield*/, client.post('/especie/import', formData)
                             .then(function (response) {
+                            console.log(response);
                             var _a = response.data, error = _a.error, message = _a.message;
                             if (!error) {
                                 alert_1["default"].success(message);
                                 loadEspecies();
                                 setLoading(false);
+                            }
+                            else {
+                                console.log(message);
                             }
                         })["catch"](function () {
                             setLoading(false);
@@ -153,7 +158,12 @@ var Especies = function (_a) {
                     _b.label = 3;
                 case 3:
                     setUploading(false);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    e_1 = _b.sent();
+                    setLoading(false);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     }); };
@@ -256,19 +266,19 @@ var Especies = function (_a) {
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('nomeOrgao'); } },
+                                React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('nome_orgao'); } },
                                     React.createElement("div", { className: "flex flex-row w-full justify-between" },
                                         "Nome Vulgar",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "col", className: "px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('nomeCientifico'); } },
+                                React.createElement("th", { scope: "col", className: "px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('nome_cientifico'); } },
                                     React.createElement("div", { className: "flex flex-row w-full justify-between" },
                                         "Nome Cient\u00EDfico",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "col", className: "flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('categoria.nome'); } },
+                                React.createElement("th", { scope: "col", className: "flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortEspecies('categoria_especie.nome'); } },
                                     React.createElement("div", { className: "flex flex-row w-full justify-between" },
                                         "Categoria",
                                         sorted
@@ -285,13 +295,13 @@ var Especies = function (_a) {
                                     React.createElement("div", { className: "flex flex-col items-starter" },
                                         React.createElement("div", { className: "text-sm font-medium text-gray-900" }, especie === null || especie === void 0 ? void 0 : especie.nome))),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                    React.createElement("div", { className: "text-sm text-gray-900" }, especie.nomeOrgao)),
+                                    React.createElement("div", { className: "text-sm text-gray-900" }, especie.nome_orgao)),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, especie.nomeCientifico))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, especie.nome_cientifico))),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, (_a = especie.categoria) === null || _a === void 0 ? void 0 : _a.nome))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, (_a = especie.categoria_especie) === null || _a === void 0 ? void 0 : _a.nome))),
                                 React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                     React.createElement(Link_1.Link, { href: "/especie/update/" + especie.id },
                                         React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),

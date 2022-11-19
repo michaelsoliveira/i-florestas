@@ -20,7 +20,7 @@ const EspecieIndex = () => {
     const [currentEspecies, setCurrentEspecies] = useState<EspecieType[]>([])
     const [totalPages, setTotalPages] = useState(0)
     const [orderBy, setOrderBy] = useState('especie.nome')
-    const [order, setOrder] = useState('ASC')
+    const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const router = useRouter()
@@ -34,7 +34,6 @@ const EspecieIndex = () => {
         setCurrentPage(currentPagePagination)
 
         const { data } = await client.get(url)
-        
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
 

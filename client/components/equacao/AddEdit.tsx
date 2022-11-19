@@ -146,7 +146,8 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         <Field 
                                             className={styles.field} 
                                             id="nome" 
-                                            name="nome" placeholder="Michael" />
+                                            name="nome" 
+                                            placeholder="Nome da Equação" />
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="nome" component="div" />
                                     </div>
                                     <div>
@@ -155,6 +156,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                             className={styles.field}
                                             id="expressao"
                                             name="expressao"
+                                            placeholder="0.7 * (3.141592 * (DAP ^ 2) / 40000 ) * ALTURA ..."
                                         />
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="expressao" component="div" />
                                     </div>

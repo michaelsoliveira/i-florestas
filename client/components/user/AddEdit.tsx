@@ -12,6 +12,7 @@ import { Select, OptionType } from '../Select';
 import RadioGroup from '../Form/RadioGroup';
 import Option from '../Form/Option';
 import FocusError from '../Form/FocusError';
+import { useModalContext } from 'contexts/ModalContext';
 
 type AddEditType = {
     styles?: any;
@@ -36,6 +37,9 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const [selectedRole, setSelectedRole] = useState<any>()
         const [option, setOption] = useState<number | undefined>(0)
         const { data: session } = useSession()
+
+        const { hideModal } = useModalContext()
+
         function onSelect(index: number) {
             setOption(index)
         }
@@ -108,7 +112,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     then: Yup.string()
                     .when('isAddMode', {
                         is: true,
-                        then: Yup.string().required('Password is required').min(6, 'A senha deve possuir no mínimo 6 caracteres')
+                        then: Yup.string().required('Senha é obrigatória').min(6, 'A senha deve possuir no mínimo 6 caracteres')
                     })
                 }),
                 
@@ -131,7 +135,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     }) 
                 }),
             id_role: Yup.string()
-                .required('É necessário selecionar um grupo de usuário')
+                .when('id_projeto', {
+                    is: (projeto:string) => projeto === projetoId,
+                    then: Yup.string()
+                        .required('É necessário selecionar um grupo de usuário')
+                })
             });
 
         async function handleRegister(data: any) {
@@ -151,6 +159,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             }).then((response: any) => {
                                 if (response.ok) {
                                     alertService.success('Login realizado com sucesso')
+                                    hideModal()
                                     router.push('/')
                                 } else {
                                     alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
@@ -222,19 +231,23 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         handleRegister(values)
                     }}
                 >
-                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched, values }) => {
+                    {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
                                 
                                 await client.get(`/users/${projetoId}/${userId}`)
                                     .then(({ data }: any) => {
-                                        setSelectedRole({
-                                            label: data?.roles[0].name,
-                                            value: data?.roles[0].id
-                                        })
+                                        if (data?.roles.length > 0) {
+                                            console.log(data?.roles[0])
+                                            setSelectedRole({
+                                                label: data?.roles[0].name,
+                                                value: data?.roles[0].id
+                                            })
+                                            setFieldValue('id_role', data?.roles[0].id)
+                                        }
+
                                         const fields = ['username', 'email'];
-                                        setFieldValue('id_role', data?.roles[0].id)
                                         setFieldValue('id_user', data?.id)
                                         
                                         fields.forEach(field => setFieldValue(field, data[field], false));
@@ -274,7 +287,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         </div>
                                         )}
                             {(option === 0) ? (
-                                 <div className='lg:grid lg:grid-cols-2 lg:gap-4'>
+                                 <div className={session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col'}>
                                     <div>
                                         <label className={styles.label} htmlFor="username">Nome</label>
                                         <Field className={styles.field} id="username" name="username" placeholder="Michael" />
@@ -349,17 +362,18 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             </div>
                         )}
                         {session && 
-                        (<div className='w-[18.5rem] '>
+                        (<div className='w-full '>
                             <div className='py-4'>
                                 <Field name="id_user">
                                                 {() => (
                                     <Select
-                                        initialData={
-                                            {
-                                                label: 'Entre com as iniciais...',
-                                                value: ''
-                                            }
-                                        }
+                                        isMulti
+                                        // initialData={
+                                        //     {
+                                        //         label: 'Entre com as iniciais...',
+                                        //         value: ''
+                                        //     }
+                                        // }
                                         selectedValue={selectedRole}
                                         defaultOptions={getRolesDefaultOptions()}
                                         options={loadRolesOptions}

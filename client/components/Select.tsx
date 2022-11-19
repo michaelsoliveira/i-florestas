@@ -18,14 +18,16 @@ export type SelectType = {
   defaultOptions?: OptionType[];
   initialData?: OptionType;
   selectedValue?: OptionType;
+  isMulti?: boolean;
 }
 
-export const Select = ({ label, callback, options, defaultOptions, initialData, selectedValue }: SelectType) => {
+export const Select = ({ label, callback, options, defaultOptions, initialData, selectedValue, isMulti = false }: SelectType) => {
 
     return (
       <div>
         <label className="text-sm" htmlFor="">{ label }</label>
         <AsyncSelect
+            isMulti={isMulti}
             loadOptions={options}
             className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}

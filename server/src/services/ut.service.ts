@@ -17,7 +17,7 @@ export interface UtType {
 }
 
 class UtService {
-    async create(data: any, userId: string): Promise<Ut> {
+    async create(dataRequest: any, userId: string): Promise<Ut> {
         
         const { 
             numero_ut, 
@@ -29,9 +29,11 @@ class UtService {
             latitude, 
             longitude,
             id_upa
-        } = data
+        } = dataRequest
 
         const projeto = await getProjeto(userId)
+
+        const upa = await prismaClient.upa.findUnique({where: { id: id_upa }})
         
         const utExists = await prismaClient.ut.findFirst({
             where: {
@@ -49,18 +51,11 @@ class UtService {
             }
         })
 
-        if (utExists) {
-            throw new Error('Já existe uma Ut cadastrada com este número')
-        }
-        
-        const ut = await prismaClient.ut.create({
-            data: {
+        const preparedData = 
+            {
                 numero_ut: parseInt(numero_ut), 
                 area_util: parseFloat(area_util), 
                 area_total: parseFloat(area_total), 
-                quantidade_faixas: parseInt(quantidade_faixas), 
-                comprimento_faixas: parseInt(comprimento_faixas), 
-                largura_faixas: parseInt(largura_faixas), 
                 latitude: parseFloat(latitude), 
                 longitude: parseFloat(longitude),
                 upa: {
@@ -69,7 +64,20 @@ class UtService {
                     }
                 }
             }
-        })
+        
+
+        const data = upa?.tipo === 0 ? { 
+            ...preparedData, 
+            quantidade_faixas: parseInt(quantidade_faixas), 
+            comprimento_faixas: parseInt(comprimento_faixas), 
+            largura_faixas: parseInt(largura_faixas)  
+        } : preparedData
+
+        if (utExists) {
+            throw new Error('Já existe uma Ut cadastrada com este número')
+        }
+        
+        const ut = await prismaClient.ut.create({data})
 
         return ut
     }

@@ -111,7 +111,7 @@ routes.delete('/estado/single/:id', Authentication(), new EstadoController().del
 routes.post('/eq-volume/', Authentication(), new EquacaoVolumeController().store)
 routes.get('/eq-volume/', Authentication(), new EquacaoVolumeController().findAll)
 routes.get('/eq-volume/:id', Authentication(), new EquacaoVolumeController().findOne)
-routes.get('/eq-volume/search/q', Authentication(), new EquacaoVolumeController().search)
+routes.get('/eq-volume/:projetoId/search/q', Authentication(), new EquacaoVolumeController().search)
 routes.put('/eq-volume/:id', Authentication(), new EquacaoVolumeController().update)
 routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeController().delete)
 

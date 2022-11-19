@@ -49,7 +49,7 @@ export function is(rolesRoutes: string[]) {
        },
       select: {
         id: true,
-        projeto_users: {
+        users_roles: {
           select: {
             roles: {
               select: {
@@ -61,12 +61,12 @@ export function is(rolesRoutes: string[]) {
       }
     });
 
-    if (!user?.projeto_users) {
+    if (!user?.users_roles) {
       return response.status(400).json("User does not have this role");
     }
     
 
-    const roleExists = user?.projeto_users
+    const roleExists = user?.users_roles
       .map((role) => role.roles)
       .some((role) => rolesRoutes.includes(role.name.toLowerCase()));
 

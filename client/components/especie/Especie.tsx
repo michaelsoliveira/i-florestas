@@ -8,11 +8,13 @@ import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
+import { ProjetoContext } from 'contexts/ProjetoContext'
 
 const Especie = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [categoria, setCategoria] = useState<OptionType>()
     const [categorias, setCategorias] = useState<any>()
+    const { projeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const router = useRouter()
@@ -36,8 +38,8 @@ const Especie = ({ id }: any) => {
                 const { data: especie } = await client.get(`/especie/${id}`)
                 
                 setCategoria({
-                    label: especie?.categoria?.nome,
-                    value: especie?.categoria?.id
+                    label: especie?.categoria_especie?.nome,
+                    value: especie?.categoria_especie?.id
                 })
                 for (const [key, value] of Object.entries(especie)) {
                     setValue(key, value, {
@@ -73,7 +75,8 @@ const Especie = ({ id }: any) => {
     async function onSubmit(data: any) {
         const preparedData = {
             ...data,
-            categoria: categoria?.value ?? categoria?.value
+            id_projeto: projeto?.id,
+            id_categoria: categoria?.value ?? categoria?.value
         }
         
         try {
@@ -81,6 +84,7 @@ const Especie = ({ id }: any) => {
                 ? createEspecie(preparedData)
                 : updateEspecie(id, preparedData)
         } catch (error: any) {
+            console.log(error.message)
             alertService.error(error.message);
         }
         
@@ -117,6 +121,7 @@ const Especie = ({ id }: any) => {
                     alertService.success(message);
                     router.push('/especie')
                 } else {
+                    console.log(message)
                     alertService.error(message)
                 }
             })
@@ -154,8 +159,8 @@ const Especie = ({ id }: any) => {
                                 className="pb-4"
                             />
                             <FormInput
-                                id="nomeOrgao"
-                                name="nomeOrgao"
+                                id="nome_orgao"
+                                name="nome_orgao"
                                 label="Nome Vulgar"
                                 register={register}
                                 errors={errors}
@@ -169,8 +174,8 @@ const Especie = ({ id }: any) => {
                                 className="pb-4"
                             />
                             <FormInput
-                                id="nomeCientifico"
-                                name="nomeCientifico"
+                                id="nome_cientifico"
+                                name="nome_cientifico"
                                 label="Nome Científico"
                                 register={register}
                                 errors={errors}

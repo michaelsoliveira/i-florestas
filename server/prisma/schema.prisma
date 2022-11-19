@@ -20,7 +20,9 @@ model CategoriaEspecie {
   preservar         Boolean?
   criterio_altura   Float?
   criterio_volume   Float?
+  id_projeto        String?   @db.Uuid
   especie           Especie[]
+  projeto           Projeto?           @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("categoria_especie")
 }
 
@@ -52,18 +54,15 @@ model Empresa {
 model ProjetoUser {
   id_projeto String  @db.Uuid
   id_user    String  @db.Uuid
-  id_role    String  @db.Uuid
   active     Boolean  @default(false)
   projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
   users      User   @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
-  roles      Role   @relation(fields: [id_role], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@id([id_projeto, id_user, id_role], map: "PK_57c5338b1a54ea499a79c1286f2")
+  @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
   @@index([id_projeto], map: "IDX_9197746d4fec9555520a45d1ad")
   @@index([id_user], map: "IDX_ea3cb7162981b687e4daa856bf")
-  @@index([id_role])
   @@map("projeto_users")
-  @@unique([id_projeto, id_user, id_role, active])
+  @@unique([id_projeto, id_user, active])
 }
 
 model Endereco {
@@ -88,7 +87,9 @@ model Especie {
   nome_orgao        String?            @db.VarChar(100)
   nome_cientifico   String?            @db.VarChar(200)
   id_categoria      String?            @db.Uuid
-  categoria_especie CategoriaEspecie? @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
+  id_projeto        String?            @db.Uuid
+  categoria_especie CategoriaEspecie?  @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
+  projeto           Projeto?           @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("especie")
 }
 
@@ -125,6 +126,8 @@ model Projeto {
   umf               Umf[]
   projeto_users     ProjetoUser[]
   empresa           Empresa[]
+  especie           Especie[]
+  categoria_especie CategoriaEspecie[]
   @@map("projeto")
 }
 
@@ -147,7 +150,6 @@ model Role {
   description       String              @db.VarChar
   permissions_roles PermissionRole[]
   users_roles       UserRole[]
-  projeto_roles     ProjetoUser[]
   @@map("roles")
 }
 

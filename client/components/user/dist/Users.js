@@ -266,7 +266,7 @@ var Users = function (_a) {
                                 react_2["default"].createElement("div", { className: "text-sm text-gray-900" }, user === null || user === void 0 ? void 0 : user.email)),
                             react_2["default"].createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 react_2["default"].createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    react_2["default"].createElement("div", { className: "text-sm text-gray-500" }, user.roles.length > 1 ? user.roles.map(function (role) { role.name; }).join(', ') : user.roles[0].name))),
+                                    react_2["default"].createElement("div", { className: "text-sm text-gray-500" }, user.roles && user.roles.map(function (role) { return role ? role.name : ''; }).join(', ')))),
                             react_2["default"].createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return updateUser(user.id); } },
                                     react_2["default"].createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),

@@ -92,7 +92,7 @@ function is(rolesRoutes) {
                             },
                             select: {
                                 id: true,
-                                projeto_users: {
+                                users_roles: {
                                     select: {
                                         roles: {
                                             select: {
@@ -105,10 +105,10 @@ function is(rolesRoutes) {
                         })];
                 case 1:
                     user = _a.sent();
-                    if (!(user === null || user === void 0 ? void 0 : user.projeto_users)) {
+                    if (!(user === null || user === void 0 ? void 0 : user.users_roles)) {
                         return [2 /*return*/, response.status(400).json("User does not have this role")];
                     }
-                    roleExists = user === null || user === void 0 ? void 0 : user.projeto_users.map(function (role) { return role.roles; }).some(function (role) { return rolesRoutes.includes(role.name.toLowerCase()); });
+                    roleExists = user === null || user === void 0 ? void 0 : user.users_roles.map(function (role) { return role.roles; }).some(function (role) { return rolesRoutes.includes(role.name.toLowerCase()); });
                     if (!roleExists) {
                         return [2 /*return*/, response.status(405).json("Você não tem permissão para executar essa ação")];
                     }
