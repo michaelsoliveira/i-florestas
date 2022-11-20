@@ -161,7 +161,7 @@ const Projetos = () => {
                         placeholder='Entre com as iniciais...'
                         selectedValue={projetoLocal}
                         defaultOptions={getProjetosDefaultOptions()}
-                        loadOptions={loadOptions}
+                        options={loadOptions}
                         label="Localizar Projeto"
                         callback={selectProjeto}
                     />

@@ -381,7 +381,10 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         options={loadRolesOptions}
                                         label="Grupo de Usuário"
                                         // options={selectedRoles}
-                                        callback={setSelectedRoles}
+                                        callback={(e) => {
+                                            setSelectedRoles(e)
+                                            setFieldValue('roles', e)
+                                        }}
                                     />
                                     )}
                                 </Field>
