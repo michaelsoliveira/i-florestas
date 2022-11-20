@@ -138,16 +138,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                     .when('id_projeto', {
                         is: (projeto:string) => projeto === projetoId,
                         then: Yup.array()
-                            .of(
-                                Yup.object().shape({
-                                    id: Yup.string()
-                                    .ensure()
-                                    .required("Name is required"),
-                                    name: Yup.string()
-                                    .ensure()
-                                    .required("Name is required"),
-                                })
-                                )
+                        .min(1, 'Selecione pelo menos 1 grupo de usuário')
                     })
                     
                 
@@ -231,7 +222,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         isAddMode,
                         id_user: '',
                         id_projeto: '',
-                        roles: [],
+                        roles: {},
                         option: 0
                     }}
                     validationSchema={validationSchema}
@@ -381,14 +372,14 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         options={loadRolesOptions}
                                         label="Grupo de Usuário"
                                         // options={selectedRoles}
-                                        callback={(e) => {
-                                            setSelectedRoles(e)
-                                            setFieldValue('roles', e)
+                                        callback={(data) => {
+                                            setSelectedRoles(data)
+                                            setFieldValue('roles', data)
                                         }}
                                     />
                                     )}
                                 </Field>
-                                <ErrorMessage className='text-sm text-red-500 mt-1' name="roles_id" component="div" />
+                                <ErrorMessage className='text-sm text-red-500 mt-1' name="roles" component="div" />
                             </div>
                         </div>
                         ) }

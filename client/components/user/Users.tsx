@@ -27,6 +27,8 @@ const Users = ({ currentUsers, projetoId, onPageChanged, orderBy, order, changeI
     }
 
     const formSubmit = () => {
+        console.log(formRef.current.values)
+        
         formRef.current.handleSubmit()
     }
 

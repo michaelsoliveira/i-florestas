@@ -25,6 +25,8 @@ class UserService {
 
         const passwordHash = await bcrypt.hash(data?.password, 10)
 
+        console.log(data)
+
         const dataRequest = {
             username: data?.username,
             email: data?.email,
@@ -50,9 +52,11 @@ class UserService {
                     }
                 },
                 users_roles: {
-                    create: {
-                        role_id: data?.id
-                    }
+                    createMany: data?.roles.map((role: any) => {
+                        return {
+                            role_id: role?.value
+                        }
+                    })
                 }
             }
         }) : await prismaClient.user.update({
@@ -66,9 +70,11 @@ class UserService {
                     }
                 },
                 users_roles: {
-                    create: {
-                        role_id: data?.id
-                    }
+                    createMany: data?.roles.map((role: any) => {
+                        return {
+                            role_id: role?.value
+                        }
+                    })
                 }
             }
             // data: {
