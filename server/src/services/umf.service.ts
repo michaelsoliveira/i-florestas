@@ -29,23 +29,26 @@ class UmfService {
         if (umfExists) {
             throw new Error('Já existe uma Umf cadastrada com este nome')
         }
-        
-        const umf = await prismaClient.umf.create({
-            data: {
+
+        const preparedData = {
                 nome: data.nome,
                 localizacao: data.localizacao,
                 municipio: data.municipio,
-                estado: {
-                    connect: {
-                        id: data.estado
-                    }
-                },
                 projeto: {
                     connect: {
                         id: projeto?.id
                     }
                 }
-                    
+        }
+        
+        const umf = await prismaClient.umf.create({
+            data: !data.estado ? preparedData : {
+                ...preparedData, 
+                estado: {
+                    connect: {
+                        id: data.estado
+                    }
+                }
             }
         })
 

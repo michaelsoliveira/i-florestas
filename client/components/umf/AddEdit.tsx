@@ -101,6 +101,7 @@ const Umf = ({ id }: any) => {
     async function createUmf(data: any) {
         await client.post('umf', data)
             .then((response: any) => {
+                console.log(response.data)
                 const { error, message, umf } = response.data
                 dispatch(setUmf({
                     id: umf.id,
@@ -196,7 +197,7 @@ const Umf = ({ id }: any) => {
                                         className="pb-4"
                                     />
                                 </div>
-                                <div className='w-4/12'>
+                                <div className='w-4/12 pt-1'>
                                 <Select
                                     initialData={
                                         {
