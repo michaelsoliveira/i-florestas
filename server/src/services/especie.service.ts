@@ -148,13 +148,7 @@ class EspecieService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.especie.count({
-                where,
-                take: perPage ? parseInt(perPage) : 50,
-                skip: skip ? skip : 0,
-                orderBy: {
-                    ...orderByTerm
-                }})
+            prismaClient.especie.count()
         ])
                         
         return {

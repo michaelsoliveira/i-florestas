@@ -137,8 +137,8 @@ export const AddEdit = forwardRef<any, AddEditType>(
             roles: Yup.array()
                     .when('id_projeto', {
                         is: (projeto:string) => projeto === projetoId,
-                        then: Yup.array()
-                        .min(1, 'Selecione pelo menos 1 grupo de usuário')
+                        then: Yup.array().required("É necessário pelo menos 1 grupo de usuário.").nullable()
+                        // .min(1, 'Selecione pelo menos 1 grupo de usuário')
                     })
                     
                 
