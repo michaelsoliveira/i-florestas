@@ -59,6 +59,7 @@ var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
 var upaSlice_1 = require("../../store/upaSlice");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
@@ -67,20 +68,22 @@ var AddEdit = function (_a) {
     var _e = react_1.useState(), sysRef = _e[0], setSysRef = _e[1];
     var _f = react_1.useState(), sysRefs = _f[0], setSysRefs = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var dispatch = hooks_1.useAppDispatch();
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
     var loadEquacoes = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var response, equacoes;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/eq-volume/search/q?nome=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/eq-volume?search=" + inputValue)];
                 case 1:
                     response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (eqVolume) { return ({
+                    equacoes = response.data.equacoes;
+                    console.log(equacoes);
+                    callback(equacoes === null || equacoes === void 0 ? void 0 : equacoes.map(function (eqVolume) { return ({
                         value: eqVolume.id,
                         label: eqVolume.nome
                     }); }));
@@ -156,13 +159,14 @@ var AddEdit = function (_a) {
         loadUpa();
     }, [session, isAddMode, client, id, setValue, setEquacao]);
     react_1.useEffect(function () {
+        console.log(projeto);
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
             var eqResponse, equacoes_1, sysRefResponse, sysRefs_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, client.get("/eq-volume?orderBy=nome&order=asc")];
+                        return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/eq-volume?orderBy=nome&order=asc")];
                     case 1:
                         eqResponse = _a.sent();
                         equacoes_1 = eqResponse.data.equacoes;
@@ -178,7 +182,7 @@ var AddEdit = function (_a) {
             });
         }); };
         defaultOptions();
-    }, [session, client]);
+    }, [session, client, projeto]);
     var selectedEquacao = function (data) {
         setEquacao(data);
         setValue('equacao_volume', data === null || data === void 0 ? void 0 : data.value);
@@ -301,17 +305,11 @@ var AddEdit = function (_a) {
                             React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
                                 React.createElement("span", { className: "text-gray-700 py-2" }, "Coordenadas"),
                                 React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Selecione o Sistema de Coordenadas',
-                                            value: ''
-                                        }, selectedValue: sysRef, defaultOptions: getSysRefDefaultOptions(), options: loadSysRefs, label: "Sistema de Coordenada", callback: selectedSysRef }))),
+                                    React.createElement(Select_1.Select, { placeholder: 'Selecione o Sistema de Coordenadas', selectedValue: sysRef, defaultOptions: getSysRefDefaultOptions(), options: loadSysRefs, label: "Sistema de Coordenada", callback: selectedSysRef }))),
                             React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
                                 React.createElement("span", { className: "text-gray-700 py-2" }, "Equa\u00E7\u00E3o"),
                                 React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(Select_1.Select, { initialData: {
-                                            label: 'Selecione uma Equacao',
-                                            value: ''
-                                        }, selectedValue: equacao_volume, defaultOptions: getEquacoesDefaultOptions(), options: loadEquacoes, label: "Volume da \u00C1rvore", callback: selectedEquacao })))),
+                                    React.createElement(Select_1.Select, { placeholder: 'Selecione uma Equacao', selectedValue: equacao_volume, defaultOptions: getEquacoesDefaultOptions(), options: loadEquacoes, label: "Volume da \u00C1rvore", callback: selectedEquacao })))),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
                             React.createElement(Link_1.Link, { href: "/upa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));

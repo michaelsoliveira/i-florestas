@@ -248,7 +248,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             if (!isAddMode) {
                                 await client.get(`/users/${projetoId}/${userId}`)
                                     .then(({ data }: any) => {
-                                        if (data?.roles.length > 0) {
+                                        if (data?.roles?.length > 0) {
 
                                             data?.roles.map((role: any) => {
                                                 setSelectedRoles((old: any) => [...old, {
@@ -355,7 +355,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                                     placeholder='Entre com as iniciais...'
                                                     selectedValue={selectedUser}
                                                     defaultOptions={getUsersDefaultOptions()}
-                                                    loadOptions={loadUsersOptions}
+                                                    options={loadUsersOptions}
                                                     label="Pesquisar Usuário"
                                                     callback={(value) => { 
                                                         setFieldValue('id_user', value?.value)
@@ -378,12 +378,13 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         isMulti
                                         selectedValue={selectedRoles}
                                         defaultOptions={getRolesDefaultOptions()}
-                                        loadOptions={loadRolesOptions}
+                                        options={loadRolesOptions}
                                         label="Grupo de Usuário"
                                         // options={selectedRoles}
                                         callback={(value) => { 
-                                            setFieldValue('roles_id', (old: any) => [...old, value])
-                                            setSelectedRoles((old: any) => [...old, value]) 
+                                            console.log(value)
+                                            // setFieldValue('roles_id', (old: any) => [...old, value])
+                                            setSelectedRoles(value) 
                                         }}
                                     />
                                     )}

@@ -263,12 +263,7 @@ const AddEdit = ({ id }: any) => {
                                     <span className="text-gray-700 py-2">Coordenadas</span>
                                         <div className='mt-2'>
                                             <Select
-                                                initialData={
-                                                    {
-                                                        label: 'Selecione o Sistema de Coordenadas',
-                                                        value: ''
-                                                    }
-                                                }
+                                                placeholder='Selecione o Sistema de Coordenadas'
                                                 selectedValue={sysRef}
                                                 defaultOptions={getSysRefDefaultOptions()}
                                                 options={loadSysRefs}
@@ -281,12 +276,7 @@ const AddEdit = ({ id }: any) => {
                                     <span className="text-gray-700 py-2">Equação</span>
                                     <div className='mt-2'>
                                         <Select
-                                            initialData={
-                                                {
-                                                    label: 'Selecione uma Equacao',
-                                                    value: ''
-                                                }
-                                            }
+                                            placeholder='Selecione uma Equacao'
                                             selectedValue={equacao_volume}
                                             defaultOptions={getEquacoesDefaultOptions()}
                                             options={loadEquacoes}

@@ -35,6 +35,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 exports.AddEdit = void 0;
 var formik_1 = require("formik");
@@ -60,7 +67,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var isAddMode = !userId;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _b = react_1.useState(), selectedUser = _b[0], setSelectedUser = _b[1];
-    var _c = react_1.useState(), selectedRole = _c[0], setSelectedRole = _c[1];
+    var _c = react_1.useState([]), selectedRoles = _c[0], setSelectedRoles = _c[1];
     var _d = react_1.useState(0), option = _d[0], setOption = _d[1];
     var session = react_2.useSession().data;
     var hideModal = ModalContext_1.useModalContext().hideModal;
@@ -162,11 +169,18 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 then: Yup.string().required('É necessário selecionar um usuário')
             })
         }),
-        id_role: Yup.string()
+        roles: Yup.array()
             .when('id_projeto', {
             is: function (projeto) { return projeto === projetoId; },
-            then: Yup.string()
-                .required('É necessário selecionar um grupo de usuário')
+            then: Yup.array()
+                .of(Yup.object().shape({
+                id: Yup.string()
+                    .ensure()
+                    .required("Name is required"),
+                name: Yup.string()
+                    .ensure()
+                    .required("Name is required")
+            }))
         })
     });
     function handleRegister(data) {
@@ -226,7 +240,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                             else {
                                 alert_1["default"].success(message);
                                 sendForm();
-                                // hideModal()
+                                hideModal();
                             }
                         })];
                     case 3:
@@ -248,7 +262,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 isAddMode: isAddMode,
                 id_user: '',
                 id_projeto: '',
-                id_role: '',
+                roles: [],
                 option: 0
             }, validationSchema: validationSchema, onSubmit: function (values, _a) {
                 var setSubmitting = _a.setSubmitting;
@@ -263,14 +277,16 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                             if (!!isAddMode) return [3 /*break*/, 2];
                             return [4 /*yield*/, client.get("/users/" + projetoId + "/" + userId)
                                     .then(function (_a) {
+                                    var _b;
                                     var data = _a.data;
-                                    if ((data === null || data === void 0 ? void 0 : data.roles.length) > 0) {
-                                        console.log(data === null || data === void 0 ? void 0 : data.roles[0]);
-                                        setSelectedRole({
-                                            label: data === null || data === void 0 ? void 0 : data.roles[0].name,
-                                            value: data === null || data === void 0 ? void 0 : data.roles[0].id
+                                    if (((_b = data === null || data === void 0 ? void 0 : data.roles) === null || _b === void 0 ? void 0 : _b.length) > 0) {
+                                        data === null || data === void 0 ? void 0 : data.roles.map(function (role) {
+                                            setSelectedRoles(function (old) { return __spreadArrays(old, [{
+                                                    label: role.name,
+                                                    value: role.id
+                                                }]); });
                                         });
-                                        setFieldValue('id_role', data === null || data === void 0 ? void 0 : data.roles[0].id);
+                                        setFieldValue('roles', data === null || data === void 0 ? void 0 : data.roles);
                                     }
                                     var fields = ['username', 'email'];
                                     setFieldValue('id_user', data === null || data === void 0 ? void 0 : data.id);
@@ -318,10 +334,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                         React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) :
                                 (React.createElement("div", null,
                                     React.createElement("div", { className: 'py-4' },
-                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { initialData: {
-                                                label: 'Entre com as iniciais...',
-                                                value: ''
-                                            }, selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
+                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { placeholder: 'Entre com as iniciais...', selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
                                                 setFieldValue('id_user', value === null || value === void 0 ? void 0 : value.value);
                                                 setSelectedUser(value);
                                             } })); }),
@@ -329,18 +342,15 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                             session &&
                                 (React.createElement("div", { className: 'w-full ' },
                                     React.createElement("div", { className: 'py-4' },
-                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { isMulti: true, 
-                                            // initialData={
-                                            //     {
-                                            //         label: 'Entre com as iniciais...',
-                                            //         value: ''
-                                            //     }
-                                            // }
-                                            selectedValue: selectedRole, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", callback: function (value) {
-                                                setFieldValue('id_role', value === null || value === void 0 ? void 0 : value.value);
-                                                setSelectedRole(value);
+                                        React.createElement(formik_1.Field, { name: "roles_id" }, function () { return (React.createElement(Select_1.Select, { isMulti: true, selectedValue: selectedRoles, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", 
+                                            // options={selectedRoles}
+                                            callback: function (value) {
+                                                console.log(value);
+                                                // setFieldValue('roles_id', (old: any) => [...old, value])
+                                                setSelectedRoles(value);
                                             } })); }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_role", component: "div" })))),
+                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "roles_id", component: "div" }),
+                                        JSON.stringify(selectedRoles, null, 2)))),
                             React.createElement(FocusError_1["default"], null))))));
         })));
 });

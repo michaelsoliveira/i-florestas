@@ -1,7 +1,6 @@
 import React, { Component, useCallback, useContext, useEffect, useState } from 'react';
 
 import AsyncSelect from 'react-select/async';
-import { array } from 'yup';
 
 interface State {
     readonly inputValue: string;
@@ -14,7 +13,6 @@ export interface OptionType {
 
 export type SelectType = {
   label?: string;
-  loadOptions: any;
   callback: (option: any) => void;
   defaultOptions?: OptionType[];
   placeholder?: string;
@@ -34,7 +32,13 @@ export const Select = ({ label, callback, options, defaultOptions, placeholder, 
             className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}
             placeholder={placeholder}
-            value={typeof selectedValue?.value !== typeof undefined && selectedValue 
+            value={typeof selectedValue?.value !== typeof undefined && !isMulti ? selectedValue  : 
+                selectedValue?.map((data: any) => {
+                  return {
+                    label: data.label,
+                    value: data.value
+                  }
+                })
               //   : selectedValue.map((data: any) => {
               //   return {
               //     label: data.label,
