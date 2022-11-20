@@ -46,6 +46,21 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         })))
     }
 
+    const umfExits = umfs?.length
+
+    const loadUmf = useCallback(() => {
+        
+        if (umf && umfExits > 0) {
+            setSelectedUmf({
+                value: umf?.id,
+                label: umf?.nome
+            })
+        } else {
+            setSelectedUmf({} as any)
+        }
+        
+    }, [umf, umfExits])
+
     useEffect(() => {
         async function defaultOptions() {
             const response = await client.get(`/umf?orderBy=nome&order=asc`)
@@ -53,25 +68,11 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                 setUmfs(umfs)
         }
 
-        const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
-
-        if (compareUmf) {
-            setSelectedUmf({
-                value: umf?.id,
-                label: umf?.nome
-            })
-        } else {
-            if (umfs) {
-                setSelectedUmf({
-                    value: umfs[0]?.id,
-                    label: umfs[0]?.nome
-                })
-            }
-        }
+        loadUmf()
         
         defaultOptions()
         setFilteredUpa(currentUpas)
-    }, [currentUpas, currentPage, client, umf, umfs])
+    }, [currentUpas, currentPage, client, umf, loadUmf])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -202,17 +203,16 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             <div className="w-3/12 flex items-center">UMF: </div>
                             <div className="w-9/12">
                                 <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione UMF...',
-                                            value: ''
-                                        }
-                                    }
+
+                                    placeholder='Selecione UMF...'
                                     selectedValue={selectedUmf}
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
                                     // label="Volume da Árvore"
                                     callback={selectUmf}
+                                    initialData={{
+                                        label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                    }}
                                 />
                             </div>
                         </div>

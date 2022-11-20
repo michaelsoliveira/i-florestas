@@ -89,7 +89,6 @@ export const Authentication = () => {
                 default: {
                     const verificationResponse = jwt.verify(token, config.server.JWT_SECRET) as User
                     const user = await userService.findOne(verificationResponse.id)
-                    
                     request.user = {
                         id: user.id,
                         email: user.email,

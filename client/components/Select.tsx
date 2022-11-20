@@ -19,10 +19,10 @@ export type SelectType = {
   selectedValue?: any;
   options?: any;
   isMulti?: boolean;
+  initialData?: any
 }
 
-export const Select = ({ label, callback, options, defaultOptions, placeholder, selectedValue, isMulti = false }: SelectType) => {
-
+export const Select = ({ label, callback, options, defaultOptions, placeholder, selectedValue, isMulti = false , initialData }: SelectType) => {
     return (
       <div>
         <label className="text-sm" htmlFor="">{ label }</label>
@@ -32,21 +32,17 @@ export const Select = ({ label, callback, options, defaultOptions, placeholder, 
             className="text-sm origin-top-right absolute right-0"
             defaultOptions={defaultOptions}
             placeholder={placeholder}
-            value={typeof selectedValue?.value !== typeof undefined && !isMulti ? selectedValue  : 
-                selectedValue?.map((data: any) => {
-                  return {
-                    label: data.label,
-                    value: data.value
-                  }
-                })
-              //   : selectedValue.map((data: any) => {
-              //   return {
-              //     label: data.label,
-              //     value: data.value
-              //   }
-              // })
+            value={typeof selectedValue !== typeof undefined ? (selectedValue?.length > 1 ? selectedValue?.map((data: any) => {
+              return {
+                label: data.label,
+                value: data.value
+              }
+            }) : 
+            selectedValue
+              ) : initialData
+              // : 
+                
             }
-            // options={options}
             onChange={callback}
             id="category-select"
             instanceId="category-select"

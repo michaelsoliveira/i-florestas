@@ -222,8 +222,6 @@ class UserService {
             },
         })
 
-        console.log(user)
-
         const data = {
             id: user?.id,
             email: user?.email,

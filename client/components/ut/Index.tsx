@@ -303,7 +303,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
                                     label="UMF:"
-                                    callback={selectUmf}
+                                    callback={setSelectedUmf}
                                 />
                             </div>
                             {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
@@ -319,7 +319,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     defaultOptions={getUpasDefaultOptions()}
                                     options={loadUpas}
                                     label="UPA:"
-                                    callback={selectUpa}
+                                    callback={setSelectedUpa}
                                 />
                             </div>
                         </div>
