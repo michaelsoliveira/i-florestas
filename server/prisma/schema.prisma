@@ -26,29 +26,80 @@ model CategoriaEspecie {
   @@map("categoria_especie")
 }
 
-model Empresa {
+enum TipoPessoa {
+  Fisica
+  Juridica
+}
+
+model Pessoa {
+  id                String        @id @default(dbgenerated("uuid_generate_v4"))  @db.Uuid
+  created_at        DateTime        @default(now()) @db.Timestamp(6)
+  updated_at        DateTime        @default(now()) @db.Timestamp(6)
+  tipo              TipoPessoa      @default(Fisica)
+  nome              String          @db.VarChar(100)
+  rg                String?         @db.VarChar(30)
+  cpf               String?         @db.VarChar(14)
+  reg_ambiental     String?         @db.VarChar(50)
+  PessoaFisica      PessoaFisica[]
+  PessoaJuridica    PessoaJuridica[]
+  resp_tecnico      ResponsavelTecnico[]
+  @@map("pessoa")
+}
+
+model ResponsavelTecnico {
+  id                         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  crea                       String?         @db.VarChar(50)
+  id_projeto                 String?   @db.Uuid
+  projeto                    Projeto?  @relation(fields: [id_projeto], references: [id])
+  id_pessoa                  String?   @db.Uuid
+  pessoa                     Pessoa?   @relation(fields: [id_pessoa], references: [id])
+  id_endereco                String?   @db.Uuid
+  endereco                   Endereco?  @relation(fields: [id_endereco], references: [id])
+  id_telefone                String?    @db.Uuid
+  telefone                   Telefone?   @relation(fields: [id_telefone], references: [id])
+  @@unique([id_projeto, id_pessoa, id_endereco])
+}
+
+model PessoaFisica {
+  id                         String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at                 DateTime        @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime        @default(now()) @db.Timestamp(6)
+  id_projeto                 String?    @db.Uuid
+  projeto                    Projeto?   @relation(fields: [id_projeto], references: [id])
+  id_pessoa                  String?    @db.Uuid
+  pessoa                     Pessoa? @relation(fields: [id_pessoa], references: [id])
+  endereco                   Endereco[]
+  id_telefone                String?    @db.Uuid
+  telefone                   Telefone?   @relation(fields: [id_telefone], references: [id])
+  @@unique([id_projeto, id_pessoa])
+  @@map("pessoa_fisica")
+}
+
+model Telefone {
+  id                         String          @id@default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at                 DateTime        @default(now()) @db.Timestamp(6)
+  updated_at                 DateTime        @default(now()) @db.Timestamp(6)
+  ddd                        String?
+  numero                     String?        @db.VarChar(10)
+  pessoa_fisica              PessoaFisica[]
+  pessoa_juridica            PessoaJuridica[]
+  resp_tecnico               ResponsavelTecnico[]
+}
+
+model PessoaJuridica {
   id                         String          @id(map: "PK_bee78e8f1760ccf9cff402118a6") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                 DateTime        @default(now()) @db.Timestamp(6)
   updated_at                 DateTime        @default(now()) @db.Timestamp(6)
-  razao_social               String          @db.VarChar(100)
-  nome_fantasia              String?         @db.VarChar(100)
-  cnpj                       String?         @db.VarChar(14)
-  reg_ambiental              String?         @db.VarChar(50)
-  telefone                   String?         @db.VarChar(10)
-  endereco                   String?         @db.VarChar(60)
-  complemento                String?         @db.VarChar(40)
-  cep                        String?         @db.VarChar(8)
-  municipio                  String?         @db.VarChar(30)
-  estado                     String?         @db.VarChar(2)
-  contato                    String?         @db.VarChar(50)
-  resp_tecnico               String?         @db.VarChar(50)
-  crea_resp                  String?         @db.VarChar(50)
-  dmin_relatorio             Int?
-  intervalo_dmin_relatorio   Int?
   id_projeto                 String?         @db.Uuid
-  empresa_endereco           Endereco[]
-  projeto                    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_5c89069177d3ac18f7e268e7b07")
-  @@map("empresa")
+  projeto                    Projeto? @relation(fields: [id_projeto], references: [id])
+  id_pessoa                  String?         @db.Uuid
+  pessoa                     Pessoa? @relation(fields: [id_pessoa], references: [id])
+  id_endereco                String @db.Uuid
+  endereco                   Endereco? @relation(fields: [id_endereco], references: [id])
+  id_telefone                String?    @db.Uuid
+  telefone                   Telefone?   @relation(fields: [id_telefone], references: [id])
+  @@unique([id_projeto, id_pessoa])
+  @@map("pessoa_juridica")
 }
 
 model ProjetoUser {
@@ -66,16 +117,17 @@ model ProjetoUser {
 }
 
 model Endereco {
-  id         String   @id(map: "PK_2a6880f71a7f8d1c677bb2a32a8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at DateTime @default(now()) @db.Timestamp(6)
-  updated_at DateTime @default(now()) @db.Timestamp(6)
-  cep        String?  @db.VarChar(8)
-  logradouro String?  @db.VarChar(60)
-  municipio  String?  @db.VarChar(30)
-  estado     String?  @db.VarChar(2)
-  bairro     String?  @db.VarChar(50)
-  id_empresa String?  @db.Uuid
-  empresa    Empresa? @relation(fields: [id_empresa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_a72fa0a052cd28afba4a0e776c5")
+  id                  String   @id(map: "PK_2a6880f71a7f8d1c677bb2a32a8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at          DateTime @default(now()) @db.Timestamp(6)
+  updated_at          DateTime @default(now()) @db.Timestamp(6)
+  cep                 String?  @db.VarChar(8)
+  logradouro          String?  @db.VarChar(60)
+  municipio           String?  @db.VarChar(30)
+  estado              String?  @db.VarChar(2)
+  bairro              String?  @db.VarChar(50)
+  pessoa_juridica     PessoaJuridica[]
+  pessoa_fisica       PessoaFisica[]
+  resp_tecnico        ResponsavelTecnico[]
   @@map("endereco")
 }
 
@@ -121,11 +173,16 @@ model Projeto {
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
   nome       String   @db.VarChar
+  reg_ambiental              String?         @db.VarChar(50)
+  dmin_relatorio             Int?
+  intervalo_dmin_relatorio   Int?
   equacao_modelo    EquacaoModelo[]
   equacao_Volume    EquacaoVolume[]
   umf               Umf[]
   projeto_users     ProjetoUser[]
-  empresa           Empresa[]
+  pessoa_fisica     PessoaFisica[]
+  pessoa_juridica   PessoaJuridica[]
+  resp_tecnico      ResponsavelTecnico[]
   especie           Especie[]
   categoria_especie CategoriaEspecie[]
   @@map("projeto")
