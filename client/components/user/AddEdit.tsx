@@ -173,6 +173,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         } else {
                             alertService.success('Usuário cadastrado com SUCESSO!')
                             sendForm()
+                            hideModal()
                         }
                 })
                 .catch((error: any) => {

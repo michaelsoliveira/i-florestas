@@ -3,7 +3,7 @@ import { getRepository, UsingJoinColumnIsNotAllowedError } from "typeorm"
 import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
-import { Prisma, User as UserPrisma } from "@prisma/client"
+import { prisma, Prisma, User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,
@@ -43,6 +43,12 @@ class UserService {
             return user
         }
 
+        const roles = data.roles?.map((role: any) => {
+            return {
+                role_id: role.value
+            }
+        })
+
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
                 ...dataRequest,
@@ -52,11 +58,9 @@ class UserService {
                     }
                 },
                 users_roles: {
-                    createMany: data?.roles.map((role: any) => {
-                        return {
-                            role_id: role?.value
-                        }
-                    })
+                    createMany: {
+                        data: roles
+                    }
                 }
             }
         }) : await prismaClient.user.update({
@@ -70,17 +74,11 @@ class UserService {
                     }
                 },
                 users_roles: {
-                    createMany: data?.roles.map((role: any) => {
-                        return {
-                            role_id: role?.value
-                        }
-                    })
+                    createMany: {
+                        data: roles
+                    }
                 }
             }
-            // data: {
-            //     ...dataRequest, 
-                
-            // }
         })
 
         return user
@@ -102,46 +100,33 @@ class UserService {
             email: data?.email,
             image: data?.image ? data?.image : userExists?.image
         }
-        const roles = data?.roles_id && data?.roles_id.map((role: any) => {
+        const roles = data?.roles && data?.roles.map((role: any) => {
             return {
                 role_id: role.value
             }
         })
 
-        const user = await prismaClient.user.update({
-            where: 
-            {
-                id
-            },
-            data: data?.roles_id ? {
-                ...basicData,
-                users_roles: {
-                    updateMany: {
-                        data: roles,
-                        where: {
-                            user_id: id
-                        }
-                    }
-                },
-                projeto_users: {
-                    update: {
-                        data: {
-                            projeto: {
-                                connect: {
-                                    id: data?.id_projeto
-                                }
-                            },
-                        },
-                        where: {
-                            id_projeto_id_user: {
-                                id_projeto: data?.id_projeto,
-                                id_user: id
-                            }
-                        }
-                    }
+        const [deleted, user] = await prismaClient.$transaction([
+            prismaClient.userRole.deleteMany({
+                where: {
+                    user_id: id
                 }
-            } : basicData
-        })
+            }),
+            prismaClient.user.update({
+                where: 
+                {
+                    id
+                },
+                data: data?.roles ? {
+                    ...basicData,
+                    users_roles: {
+                        createMany: {
+                            data: roles
+                        }
+                    }
+                } : basicData
+            })
+        ])
 
         return user
     }
