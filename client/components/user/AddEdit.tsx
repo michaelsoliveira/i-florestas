@@ -89,11 +89,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
                 is: (option:any) => option===0,
                 then: Yup.string().test(
                     "len",
-                    "O nome de usuário tem que ter entre 3 e 20 caracteres.",
+                    "O nome de usuário tem que ter entre 3 e 40 caracteres.",
                     (val: any) =>
                     val &&
                     val.toString().length >= 3 &&
-                    val.toString().length <= 20
+                    val.toString().length <= 40
                 )
                 .required("Campo obrigatório!")
             })
