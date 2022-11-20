@@ -1,58 +1,115 @@
-import { CategoriaEspecie } from "../entities/CategoriaEspecie";
+// import { CategoriaEspecie } from "../entities/CategoriaEspecie";
 import { getRepository, ILike } from "typeorm";
+import { prismaClient } from "../database/prismaClient";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { CategoriaEspecie } from "@prisma/client";
 
 export interface CategoriaType {
     nome: string;
-    criterioFuste?: number;
-    criterioDminc?: number;
-    criterioDmaxc?: number;
-    criterioNMin?: number;
-    criterioPercMin?: number;
+    criterio_fuste?: number;
+    criterio_dminc?: number;
+    criterio_dmaxc?: number;
+    criterio_n_min?: number;
+    criterio_perc_min?: number;
     preservar?: boolean;
-    criterioAltura?: number;
-    criterioVolume?: number;
+    criterio_ltura?: number;
+    criterio_volume?: number;
+    id_projeto: string;
 }
 
 class CategoriaService {
     async create(data: CategoriaType): Promise<CategoriaEspecie> {
-        const repositoryCategoria = getRepository(CategoriaEspecie)
-        const categoriaExists = await repositoryCategoria.findOne({ where: { nome: data.nome } })
+        const categoriaExists = await prismaClient.categoriaEspecie.findFirst({ 
+            where: { 
+                AND: {
+                    nome: data.nome,
+                    id_projeto: data?.id_projeto
+                }
+            } 
+        })
 
         if (categoriaExists) {
             throw new Error('Já existe uma categoria cadastrada com este nome')
         }
 
-        const categoria = repositoryCategoria.create(data)
-        await categoria.save()
+        console.log(data)
+
+        const categoria = await prismaClient.categoriaEspecie.create({
+            data
+        })
 
         return categoria
     }
 
     async update(id: string, data: CategoriaType): Promise<CategoriaEspecie> {
-        await getRepository(CategoriaEspecie).update(id, data)
+        const categoria = await prismaClient.categoriaEspecie.update({
+            data,
+            where: {
+                id
+            }
+        })
 
-        return this.findById(id)
+        return categoria
     }
 
     async delete(id: string): Promise<void> {
-        await getRepository(CategoriaEspecie).delete(id)
+        await prismaClient.categoriaEspecie.delete({
+            where: { id }
+        })
             .then(response => {
                 console.log(response)
             })
     }
 
-    async getAll(query?: any): Promise<any> {
-        const { perPage, page, search } = query
+    async getAll(userId: string, query?: any): Promise<any> {
+        const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
-        const [data, total] = await getRepository(CategoriaEspecie).findAndCount({
-            where: {
-                nome: search ? ILike(`%${search}%`) : ILike('%%')
-            },
-            order: { nome: 'ASC' },
-            take: perPage,
-            skip
-        })
-                        
+        let orderByTerm = {}
+        
+        const orderByElement = orderBy ? orderBy.split('.') : {}
+        
+        if (orderByElement.length == 2) {
+            orderByTerm = {
+                [orderByElement[1]]: order
+            }
+        } else {
+            orderByTerm = {
+                [orderByElement]: order
+            }
+        }
+        const where = search ?
+            {
+                AND: {
+                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                    projeto: {
+                        projeto_users: {
+                            some: {
+                                active: true,
+                                id_user: userId
+                            }
+                        }
+                    }
+                }
+            } : {
+                projeto: {
+                    projeto_users: {
+                        some: {
+                            active: true,
+                            id_user: userId
+                        }
+                    }
+                }
+            }
+        const [data, total] = await prismaClient.$transaction([
+            prismaClient.categoriaEspecie.findMany({
+                where,
+                orderBy: orderByTerm,
+                take: perPage ? parseInt(perPage) : 50,
+                skip: skip ? skip : 0,
+            }),
+            prismaClient.categoriaEspecie.count()
+        ])
+
         return {
             data,
             perPage,
@@ -63,21 +120,34 @@ class CategoriaService {
     }
 
     async deleteCategorias(categorias: string[]) {
-        categorias.forEach(id => {
-            getRepository(CategoriaEspecie).delete(id)
-        })   
+        
+        await prismaClient.categoriaEspecie.deleteMany({
+            where: { id: { in: categorias} }
+        })
+         
     }
 
-    async search(q: any) {
-        const query = await getRepository(CategoriaEspecie)
-                .createQueryBuilder("CategoriaEspecie")
-                .where("CategoriaEspecie.nome ILIKE :q", { q: `%${q}%` })
-                .getMany()
-        return query
+    async search(q: any, userId?: string) {
+        const data = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                AND: {
+                    nome: { mode: Prisma.QueryMode.insensitive, contains: q },
+                    projeto: {
+                        projeto_users: {
+                            some: {
+                                id_user: userId,
+                                active: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        return data
     }
 
     async findById(id: string) : Promise<any> {
-        const categoria = await getRepository(CategoriaEspecie).findOne({ where: { id } })
+        const categoria = await prismaClient.categoriaEspecie.findUnique({ where: { id } })
 
         return categoria
     }

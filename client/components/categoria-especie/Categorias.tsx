@@ -252,26 +252,26 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{categoria?.criterioFuste}</div>
+                                <div className="text-sm text-gray-900">{categoria?.criterio_fuste}</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{categoria?.criterioDminc}</div>
+                                    <div className="text-sm text-gray-500">{categoria?.criterio_dminc}</div>
                                 </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{categoria?.criterioDmaxc}</div>
+                                    <div className="text-sm text-gray-500">{categoria?.criterio_dmaxc}</div>
                                 </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{categoria?.criterioAltura}</div>
+                                    <div className="text-sm text-gray-500">{categoria?.criterio_altura}</div>
                                 </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{categoria?.criterioVolume}</div>
+                                    <div className="text-sm text-gray-500">{categoria?.criterio_volume}</div>
                                 </span>
                             </td> 
                             <td className="px-3 py-2 whitespace-nowrap">

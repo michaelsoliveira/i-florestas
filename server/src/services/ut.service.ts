@@ -190,7 +190,7 @@ class UtService {
                     upa: false
                 }
             }),
-            prismaClient.ut.count({ where })
+            prismaClient.ut.count()
         ])
 
         return {

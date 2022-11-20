@@ -153,7 +153,7 @@ class UpaService {
                     umf: true
                 }
             }),
-            prismaClient.upa.count({ where })
+            prismaClient.upa.count()
         ])
 
         return {

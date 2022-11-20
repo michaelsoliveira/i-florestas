@@ -8,6 +8,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
+import { ProjetoContext } from 'contexts/ProjetoContext'
 
 const Categoria = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -15,6 +16,7 @@ const Categoria = ({ id }: any) => {
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
+    const { projeto } = useContext(ProjetoContext)
 
     useEffect(() => {        
         async function loadCategoria() {
@@ -37,10 +39,11 @@ const Categoria = ({ id }: any) => {
     }, [session, isAddMode, client, id, setValue])
 
     async function onSubmit(data: any) {
+        const preparedData = { ...data, id_projeto: projeto?.id }
         try {
             return isAddMode
-                ? createCategoria(data)
-                : updateCategoria(id, data)
+                ? createCategoria(preparedData)
+                : updateCategoria(id, preparedData)
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -123,8 +126,8 @@ const Categoria = ({ id }: any) => {
                             <div className='flex flex-col md:flex-row space-x-0 md:space-x-4'>
                                 <div>
                                     <FormInput
-                                        id="criterioFuste"
-                                        name="criterioFuste"
+                                        id="criterio_fuste"
+                                        name="criterio_fuste"
                                         label="Fuste"
                                         type="number"
                                         register={register}
@@ -133,8 +136,8 @@ const Categoria = ({ id }: any) => {
                                             {
                                                 valueAsNumber: true,
                                                 pattern: {
-                                                    value: /^[0-9]+$/,
-                                                    message: 'Por favor entre com um valor numérico'
+                                                    value: /^[0-3]+$/,
+                                                    message: 'Por favor entre com um valor numérico entre 1 e 3'
                                                 }
                                             }}
                                         className="pb-4"
@@ -142,8 +145,8 @@ const Categoria = ({ id }: any) => {
                                 </div>
                                 <div>
                                     <FormInput
-                                        id="criterioDminc"
-                                        name="criterioDminc"
+                                        id="criterio_dminc"
+                                        name="criterio_dminc"
                                         label="Diâmetro Minímo"
                                         type="number"
                                         register={register}
@@ -161,8 +164,8 @@ const Categoria = ({ id }: any) => {
                                 </div>
                                 <div>
                                     <FormInput
-                                        id="criterioDmaxc"
-                                        name="criterioDmaxc"
+                                        id="criterio_dmaxc"
+                                        name="criterio_dmaxc"
                                         label="Diâmetro Máximo"
                                         type="number"
                                         register={register}
@@ -182,8 +185,8 @@ const Categoria = ({ id }: any) => {
                             <div className='flex flex-col md:flex-row space-x-0 md:space-x-4'>
                                 <div>
                                     <FormInput
-                                        id="criterioNMin"
-                                        name="criterioNMin"
+                                        id="criterio_n_min"
+                                        name="criterio_n_min"
                                         label="Mínimo / 100ha"
                                         type="number"
                                         register={register}
@@ -201,8 +204,8 @@ const Categoria = ({ id }: any) => {
                                 </div>
                                 <div>
                                     <FormInput
-                                        id="criterioPercMin"
-                                        name="criterioPercMin"
+                                        id="criterio_perc_min"
+                                        name="criterio_perc_min"
                                         label="Percentual Explorável"
                                         type="number"
                                         register={register}
@@ -222,8 +225,8 @@ const Categoria = ({ id }: any) => {
                             <div className='flex flex-row justify-between md:justify-start space-x-4 md:space-x-4'>
                                 <div>
                                     <FormInput
-                                        id="criterioAltura"
-                                        name="criterioAltura"
+                                        id="criterio_altura"
+                                        name="criterio_altura"
                                         label="Altura máxima da árvore"
                                         type="number"
                                         register={register}
@@ -241,8 +244,8 @@ const Categoria = ({ id }: any) => {
                                 </div>
                                 <div>
                                     <FormInput
-                                        id="criterioVolume"
-                                        name="criterioVolume"
+                                        id="criterio_volume"
+                                        name="criterio_volume"
                                         label="Vol. máximo da árvore"
                                         type="number"
                                         register={register}

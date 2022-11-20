@@ -159,7 +159,7 @@ class ProjetoService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.projeto.count({where})
+            prismaClient.projeto.count()
         ])
 
         const data = projetos.map((projeto: any) => {
@@ -244,7 +244,7 @@ class ProjetoService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.user.count({where})
+            prismaClient.user.count()
         ])
 
         const data = users.map((user) => {
