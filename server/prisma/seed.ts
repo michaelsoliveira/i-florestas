@@ -239,41 +239,37 @@ async function main() {
                           id: user?.id
                       }
                   },
-                  roles: {
-                    connect: {
-                      id: roleAdmin?.id
-                    }
-                  }
               }
           ]
       }
       }
     })
 
-    const detentor = await prisma.pessoaJuridica.create({
+    const detentor = await prisma.pessoa.create({
         data: {
-            nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
-            razao_social: 'iFlorestas SA',
+          tipo: 'J',
+            nome: 'iFlorestas - Gerenciamento Florestal Sustentável',
             endereco: {
               create: {
-                data: {
-                  endereco: 'BR 210',
-                  municipio: 'Macapá',
-                }
+                logradouro: 'BR 210',
+                municipio: 'Macapá',
               }
             },
-            pessoa: {
-              tipo: 'Fisica'
+            pessoaJuridica: {
+              create: {
+                cnpj: '322390487',
+                razao_social: 'iFlorestal SA'
+              }
             },
             projeto: {
               connect: {
                 id: projeto?.id
               }
             }
-        }
+        },
     })
     
-    console.log(`Detentor ${detentor.nome_fantasia} criada com o id: ${detentor.id}`)
+    console.log(`Detentor ${detentor.nome} criada com o id: ${detentor.id}`)
 
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({
