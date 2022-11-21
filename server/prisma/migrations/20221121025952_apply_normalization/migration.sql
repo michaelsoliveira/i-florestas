@@ -27,14 +27,10 @@ DROP TABLE "empresa";
 
 -- CreateTable
 CREATE TABLE "pessoa" (
-    "id" UUID NOT NULL DEFAULT uuid_generate_v4,
+    "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "tipo" "TipoPessoa" NOT NULL DEFAULT E'Fisica',
-    "nome" VARCHAR(100) NOT NULL,
-    "rg" VARCHAR(30),
-    "cpf" VARCHAR(14),
-    "reg_ambiental" VARCHAR(50),
+    "tipo" "TipoPessoa" NOT NULL,
 
     CONSTRAINT "pessoa_pkey" PRIMARY KEY ("id")
 );
@@ -48,7 +44,7 @@ CREATE TABLE "ResponsavelTecnico" (
     "id_endereco" UUID,
     "id_telefone" UUID,
 
-    CONSTRAINT "ResponsavelTecnico_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PK_bee78e8f1760ccf9cff402118a7" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -56,6 +52,10 @@ CREATE TABLE "pessoa_fisica" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "nome" VARCHAR(100) NOT NULL,
+    "rg" VARCHAR(30),
+    "cpf" VARCHAR(14),
+    "data_nascimento" TIMESTAMP(3),
     "id_projeto" UUID,
     "id_pessoa" UUID,
     "id_telefone" UUID,
@@ -79,6 +79,12 @@ CREATE TABLE "pessoa_juridica" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "razao_social" VARCHAR(100) NOT NULL,
+    "nome_fantasia" VARCHAR(100),
+    "inscricao_estadual" VARCHAR(30),
+    "inscricao_federal" VARCHAR(30),
+    "cnpj" VARCHAR(14),
+    "data_constituicao" TIMESTAMP(3),
     "id_projeto" UUID,
     "id_pessoa" UUID,
     "id_endereco" UUID NOT NULL,
@@ -94,7 +100,7 @@ CREATE TABLE "_EnderecoToPessoaFisica" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ResponsavelTecnico_id_projeto_id_pessoa_id_endereco_key" ON "ResponsavelTecnico"("id_projeto", "id_pessoa", "id_endereco");
+CREATE UNIQUE INDEX "ResponsavelTecnico_id_projeto_id_pessoa_key" ON "ResponsavelTecnico"("id_projeto", "id_pessoa");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pessoa_fisica_id_projeto_id_pessoa_key" ON "pessoa_fisica"("id_projeto", "id_pessoa");
@@ -109,37 +115,37 @@ CREATE UNIQUE INDEX "_EnderecoToPessoaFisica_AB_unique" ON "_EnderecoToPessoaFis
 CREATE INDEX "_EnderecoToPessoaFisica_B_index" ON "_EnderecoToPessoaFisica"("B");
 
 -- AddForeignKey
-ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_endereco_fkey" FOREIGN KEY ("id_endereco") REFERENCES "endereco"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_endereco_fkey" FOREIGN KEY ("id_endereco") REFERENCES "endereco"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ResponsavelTecnico" ADD CONSTRAINT "ResponsavelTecnico_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_pessoa_fkey" FOREIGN KEY ("id_pessoa") REFERENCES "pessoa"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_telefone_fkey" FOREIGN KEY ("id_telefone") REFERENCES "Telefone"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_endereco_fkey" FOREIGN KEY ("id_endereco") REFERENCES "endereco"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_endereco_fkey" FOREIGN KEY ("id_endereco") REFERENCES "endereco"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_id_projeto_fkey" FOREIGN KEY ("id_projeto") REFERENCES "projeto"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "_EnderecoToPessoaFisica" ADD CONSTRAINT "_EnderecoToPessoaFisica_A_fkey" FOREIGN KEY ("A") REFERENCES "endereco"("id") ON DELETE CASCADE ON UPDATE CASCADE;

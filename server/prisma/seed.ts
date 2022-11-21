@@ -250,12 +250,21 @@ async function main() {
       }
     })
 
-    const empresa = await prisma.empresa.create({
+    const detentor = await prisma.pessoaJuridica.create({
         data: {
             nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
             razao_social: 'iFlorestas SA',
-            endereco: 'BR 210',
-            municipio: 'Macapá',
+            endereco: {
+              create: {
+                data: {
+                  endereco: 'BR 210',
+                  municipio: 'Macapá',
+                }
+              }
+            },
+            pessoa: {
+              tipo: 'Fisica'
+            },
             projeto: {
               connect: {
                 id: projeto?.id
@@ -264,7 +273,7 @@ async function main() {
         }
     })
     
-    console.log(`Empresa ${empresa.nome_fantasia} criada com o id: ${empresa.id}`)
+    console.log(`Detentor ${detentor.nome_fantasia} criada com o id: ${detentor.id}`)
 
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({
