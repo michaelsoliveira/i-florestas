@@ -1,4 +1,4 @@
-import { Prisma, Projeto } from "@prisma/client";
+import { Prisma, Projeto, ProjetoUser } from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
@@ -91,6 +91,25 @@ class ProjetoService {
         })
 
         return projeto
+    }
+
+    async changeActive(projetoId: string, userId: string): Promise<Projeto> {
+        const projetoUser = await prismaClient.projetoUser.update({
+            data: {
+                active: true
+            },
+            where: {
+                id_projeto_id_user: {
+                    id_projeto: projetoId,
+                    id_user: userId
+                }
+            },
+            include: {
+                projeto: true
+            }
+        })
+
+        return projetoUser.projeto
     }
 
     async delete(id: string): Promise<void> {

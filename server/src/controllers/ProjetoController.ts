@@ -22,10 +22,10 @@ export class ProjetoController {
         }
     }
 
-     async update(request : Request, response: Response) : Promise<Response> {
+    async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
 
-         try {    
+            try {    
             const projeto = await projetoService.update(id, request.body, request.user?.id)
             return response.json({
                 error: false,
@@ -40,7 +40,26 @@ export class ProjetoController {
                 message: error.message
             })
         }
-     }
+    }
+
+    async changeActive(request: Request, response: Response) : Promise<Response> {
+        const { projetoId } = request.params
+        try {
+            const projeto = await projetoService.changeActive(projetoId, request.user?.id)
+            return response.json({
+                error: false,
+                projeto,
+                message: 'Projeto Ativo alterado com Sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                projeto: null,
+                message: error.message
+            })
+        }
+        
+    }
     
     async delete(request: Request, response: Response): Promise<any> {
         const { id } = request.params

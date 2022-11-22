@@ -77,6 +77,7 @@ routes.get('/projeto/:projetoId/eq-volume', Authentication(), new ProjetoControl
 routes.get('/projeto/:id', Authentication(), new ProjetoController().findOne)
 routes.get('/projeto/search/q', Authentication(), new ProjetoController().search)
 routes.get('/projeto/active/get', Authentication(), new ProjetoController().getActive)
+routes.post('/projeto/active/:projetoId', Authentication(), new ProjetoController().changeActive)
 routes.put('/projeto/:id', Authentication(), new ProjetoController().update)
 routes.delete('/projeto/single/:id', Authentication(), new ProjetoController().delete)
 routes.delete('/projeto/multiples', Authentication(), new ProjetoController().deleteProjetos)
