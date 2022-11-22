@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import empresaService from "../services/empresa.service";
+import detentorService from "../services/DetentorService";
 
 export class EmpresaController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const empresa = await empresaService.create(request.body)
+            const empresa = await detentorService.create(request.body)
             return response.json({
                 error: false,
                 empresa,
@@ -23,7 +23,7 @@ export class EmpresaController {
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
          try {    
-             const empresa = await empresaService.update(id, request.body)
+             const empresa = await detentorService.update(id, request.body)
              
             return response.json({
                 error: false,
@@ -44,7 +44,7 @@ export class EmpresaController {
         const { id } = request.params
 
         try {
-            await empresaService.delete(id)
+            await detentorService.delete(id)
 
             return response.status(200).json({
                 error: false,
@@ -62,7 +62,7 @@ export class EmpresaController {
     async findAll(request: Request, response: Response) {
         const { projetoId } = request.params
         try {
-            const empresas = await empresaService.getAll(projetoId)
+            const empresas = await detentorService.getAll(projetoId)
 
             return response.json({
                 error: false,
@@ -81,7 +81,7 @@ export class EmpresaController {
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {
-            const empresa = await empresaService.findOne(id)
+            const empresa = await detentorService.findOne(id)
 
             return response.json(empresa)
         } catch(error) {

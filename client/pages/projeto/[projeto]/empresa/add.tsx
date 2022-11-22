@@ -1,4 +1,4 @@
-import AddEdit from "components/empresa/AddEdit";
+import AddEdit from "@/components/detentor/AddEdit";
 import withAuthentication from "components/withAuthentication";
 import { GetServerSideProps } from "next";
 
