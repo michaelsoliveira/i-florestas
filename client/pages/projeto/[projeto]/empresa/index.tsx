@@ -5,7 +5,7 @@ import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
 import { EmpresaType } from "types/IEmpresa"
 import { useModalContext } from "contexts/ModalContext"
-import ListEmpresas from "components/empresa"
+import ListEmpresas from "@/components/detentor"
 import { GetServerSideProps } from "next"
 
 const EmpresaIndex = ({ projetoId }: any) => {
