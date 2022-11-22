@@ -52,7 +52,7 @@ export const FormTextarea = <TFormValues extends Record<string, any>>({
         aria-label={label}
         aria-invalid={!!(errors && errorMessages)}
         className={classNames(
-          'block w-full appearance-none relative inline-flex p-3 text-base rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 bg-gray-50 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30 overflow-auto resize-none',
+          'block w-full appearance-none relative p-3 text-base rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 bg-gray-50 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30 overflow-auto resize-none',
           hasError
             ? 'focus:outline-none focus:ring-2 focus:ring-opacity-50 border-red-600 hover:border-red-600 focus:border-red-600 focus:ring-red-600'
             : ''

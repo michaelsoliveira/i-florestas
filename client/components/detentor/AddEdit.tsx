@@ -164,7 +164,7 @@ const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
                             </div>
                         </div>
                         <div className="flex flex-row items-center justify-between px-4 py-3 bg-gray-50 text-right sm:px-6">
-                            <Link href={`/projeto/${projetoId}/empresa`} className="text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md">Voltar</Link>
+                            <Link href={`/projeto`} className="text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md">Voltar</Link>
                             <button type="submit" className="inline-flex w-40 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease duration-200">
                                 Salvar
                             </button>

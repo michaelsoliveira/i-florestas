@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, SVGProps, useCallback, useContext, useEffect, useState } from 'react'
+import { createRef, Fragment, SVGProps, useCallback, useContext, useEffect, useState } from 'react'
 import { Disclosure, Menu, Transition, Popover } from '@headlessui/react'
 import { Link } from './Link'
 import Logo from './Logo'
@@ -11,6 +11,9 @@ import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import { ProjetoContext } from 'contexts/ProjetoContext'
 import { AuthContext } from 'contexts/AuthContext'
+import { useModalContext } from 'contexts/ModalContext'
+import { ChangeActive } from './projeto/ChangeActive'
+import { styles } from './Utils/styles'
 
 type SubMenuType = {
         name?: string,
@@ -31,13 +34,20 @@ type SubMenuType = {
 export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     const { projeto, setProjeto } = useContext(ProjetoContext)
+    const [selectedProjeto, setSelectedProjeto] = useState<any>()
+    const { showModal, hideModal } = useModalContext()
     const { client } = useContext(AuthContext)
+    const formRef = createRef<any>()
 
     useEffect(() => {
         async function loadProjeto() { 
           if (session && !projeto) {
               const { data } = await client.get(`/projeto/active/get`)
               setProjeto(data)
+              setSelectedProjeto({
+                label: data?.nome,
+                value: data?.id
+              })
           }     
         }    
         loadProjeto()
@@ -47,6 +57,21 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
 
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
     const [sticky, setSticky] = useState(false)
+
+    const projectCallback = (data: any) => {
+        console.log(data)
+        setSelectedProjeto(data)
+    }
+
+    const changeProjetoAtivo = async () => {
+        formRef.current.handleSubmit()
+        console.log(formRef.current.errors)
+    }
+
+    const changeProjetoModal = () => {
+        showModal({ title: 'Alterar Projeto Ativo', onConfirm: changeProjetoAtivo ,styleButton: styles.greenButton, confirmBtn: 'Alterar', 
+        content: <ChangeActive callback={projectCallback} ref={formRef} /> })
+    }
 
     const handleScroll = () => {
         if (scrollY > 72) {
@@ -334,11 +359,12 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             {session && (<div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
                     <button
-                    type="button"
-                    className="bg-gray-200 p-1 rounded-full text-gray-700 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                        type="button"
+                        className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                        onClick={changeProjetoModal}
                     >
-                    <span className="sr-only">View notifications</span>
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        <span className="sr-only">View notifications</span>
+                        <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
                     </button>
 
                     {/* Profile dropdown */}
@@ -566,10 +592,11 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                     </div>
                     <button
                     type="button"
-                    className="ml-auto bg-gray-800 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                    className="ml-auto bg-gray-300 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                    onClick={changeProjetoModal}
                     >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        <span className="sr-only">View notifications</span>
+                        <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
                     </button>
                 </div>
                 <div className="mt-3 px-2 space-y-1" aria-hidden="true">

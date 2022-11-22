@@ -45,7 +45,6 @@ const Projetos = () => {
     const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
     content: <AddEdit reloadData={loadProjetos} data={selectedProjeto} /> })
     const addModal = () => {
-        // setSelectedProjeto(null)
         showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
         content: <AddEdit reloadData={loadProjetos} /> })
     }
@@ -196,10 +195,10 @@ const Projetos = () => {
                                 </div>
                             </Link>
 
-                            <Link href={`/projeto/${selectedProjeto?.id}/empresa`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                            <Link href={`/projeto/${selectedProjeto?.id}/empresa/add`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <InboxInIcon className="h-5 w-5" />
-                                    <span>Empresas</span>
+                                    <span>Dados</span>
                                 </div>
                             </Link>
                         </div>

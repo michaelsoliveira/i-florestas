@@ -167,7 +167,6 @@ model Projeto {
   intervalo_dmin_relatorio  Int?
   excluido                  Boolean @default(false)
   data_exclusao             DateTime?
-  equacao_modelo            EquacaoModelo[]
   equacao_Volume            EquacaoVolume[]
   umf                       Umf[]
   projeto_users             ProjetoUser[]
@@ -372,8 +371,6 @@ model EquacaoModelo {
   id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome        String
   expressao   String    @db.VarChar(100)
-  id_projeto  String    @db.Uuid
-  projeto     Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("equacao_modelo")
 }
 
