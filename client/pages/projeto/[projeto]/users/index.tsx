@@ -11,13 +11,14 @@ import Users from "components/user/Users"
 import { Pagination } from "components/Pagination"
 import { UserType } from "types/IUserType"
 import { LoadingContext } from "contexts/LoadingContext"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
 type ProjetoUserType = {
     projetoId: string;
     roles: any
 }
 
-const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
+const ProjetoUsersIndex = ({ roles }: ProjetoUserType) => {
 
     const { client } = useContext(AuthContext)
     const { loading, setLoading } = useContext(LoadingContext)
@@ -30,19 +31,25 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const router = useRouter()
+    const { projeto } = useContext(ProjetoContext)
     
     const loadUsers = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
+        const { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, projeto?.id, router.pathname, setLoading])
 
     useEffect(() => {  
-        loadUsers(itemsPerPage)
+        let isLoaded = false
+        if (!isLoaded) loadUsers(itemsPerPage)
+
+        return () => {
+            isLoaded = true
+        }
     }, [itemsPerPage, loadUsers])
 
     const onPageChanged = async (paginatedData: any) => {
@@ -51,7 +58,6 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
             name,
             currentPage,
             perPage,
-            totalPages,
             orderBy,
             order,
             search
@@ -59,7 +65,7 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 
         if (search) {
             
-            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -68,7 +74,7 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/projeto/${projetoId}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -109,7 +115,6 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
                 onPageChanged={onPageChanged}
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
-                projetoId={projetoId}
                 roles={roles}
             />
             <Pagination
@@ -126,7 +131,6 @@ const ProjetoUsersIndex = ({ projetoId, roles }: ProjetoUserType) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
-    const projetoId = params?.projeto
 
     const { roles } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
         method: 'GET',
@@ -136,7 +140,6 @@ export const getServerSideProps: GetServerSideProps = async ({params, req, res})
   
     return {
         props: {
-            projetoId,
             roles
         }
     }

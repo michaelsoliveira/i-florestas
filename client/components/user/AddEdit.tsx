@@ -21,12 +21,11 @@ type AddEditType = {
     projetoId?: string;
     sendForm?: any;
     roles?: any[]
-    users?: any[]
 }
 
 export const AddEdit = forwardRef<any, AddEditType>(
     function AddEdit(
-      { styles, userId, sendForm, redirect, projetoId, roles, users}, 
+      { styles, userId, sendForm, redirect, projetoId, roles}, 
       ref
     ) {
         const dispatch = useAppDispatch()
@@ -37,12 +36,29 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const [selectedRoles, setSelectedRoles] = useState<any>([])
         const [option, setOption] = useState<number | undefined>(0)
         const { data: session } = useSession()
+        const [ users, setUsers ] = useState<any>()
 
         const { hideModal } = useModalContext()
 
         function onSelect(index: number) {
             setOption(index)
         }
+
+        const loadUsers = useCallback(async() => {
+            const { data } = await client.get('/users/search')
+            
+            setUsers(data)
+        }, [client])
+
+        useEffect(() => {
+            let isLoaded = false
+
+            if (!isLoaded) loadUsers()
+
+            return () => {
+                isLoaded = true
+            }
+        }, [loadUsers])
 
         const loadRolesOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
             const response = await client.get(`/role/search?nome=${inputValue}`)

@@ -15,21 +15,17 @@ import PessoaJuridica from "./PessoaJuridica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 
-type EmpresaIndex = {
-    projetoId: string;
-    id?: string;
-}
-
-const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
+const AddEdit = () => {
     const router = useRouter()
-    const isAddMode = !id
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
+    const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
+    const isAddMode = !projeto
 
     const validationSchema = Yup.object().shape({
-        razao_social:
+        "pessoaJuridica.razao_social":
         Yup.string().when('tipo', {
             is: (tipo:any) => tipo==='J',
             then: Yup.string()
@@ -44,50 +40,71 @@ const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
                 .transform(value => (!value ? null : value))
                 .min(3, "Nome deve ter no minimo 3 caracteres")
                 .max(100, "Nome deve ter no máximo 100 caracteres"),
-        resp_tecnico:
-            Yup.string()
-                .matches(
-                    /^[aA-zZ\s]+$/,
-                    "Somente letras são permitidas"
-                )
-                .nullable()
-                .transform(value => (!value ? null : value))
-                .min(3, "Responsável técnico deve ter no minimo 3 caracteres")
-                .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
+        //resp_tecnico:
+        //    Yup.string()
+        //        .matches(
+        //            /^[aA-zZ\s]+$/,
+        //            "Somente letras são permitidas"
+        //        )
+        //        .nullable()
+        //       .transform(value => (!value ? null : value))
+        //        .min(3, "Responsável técnico deve ter no minimo 3 caracteres")
+        //        .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
     })
 
     const formOptions = { resolver: yupResolver(validationSchema) }
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm(formOptions)
 
     function onSelect(index: number) {
-        console.log(index)
         setTipoPessoa(index)
     }
 
-    const loadEmpresa = useCallback(async () => {
+    const loadDetentor = useCallback(async () => {
             
         if (!isAddMode && typeof session !== typeof undefined) {
 
-            const { data } = await client.get(`/empresa/${id}`)
-            
+            const { data } = await client.get(`/detentor/${projeto?.id}`)
+            setDetentor(data)
+            if (data?.tipo === 'J') { 
+                setValue('tipo', 'J')
+                setTipoPessoa(1) 
+            } else {
+                setValue('tipo', 'F')
+                setTipoPessoa(0)
+            }
             for (const [key, value] of Object.entries(data)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                }) 
+                if (key === 'tipo' && value === 1) {
+                    setValue("pessoaJurica.".concat(key), value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    }) 
+                } else {
+                    setValue(key, value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    }) 
+                }
+                
             }
         }
-    }, [client, isAddMode, session, setValue, id])
+    }, [isAddMode, session, client, projeto, setValue])
     
-    useEffect(() => {        
-        loadEmpresa()
-    }, [loadEmpresa])
+    useEffect(() => {  
+        let isLoaded = false
+        
+        if (!isLoaded) loadDetentor()
+
+        return () => {
+            isLoaded = true
+        }
+    }, [loadDetentor])
 
     async function onSubmit(data: any) {
+        console.log(data)
         try {
             return isAddMode
-                ? createEmpresa({...data, id_projeto: projetoId})
-                : updateEmpresa(id, { ...data, id_projeto: projetoId})
+                ? createEmpresa({...data, id_projeto: projeto?.id})
+                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id})
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -95,7 +112,7 @@ const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
     }
 
     async function createEmpresa(data: any) {
-        await client.post('/empresa', data)
+        await client.post('/detentor', data)
             .then((response: any) => {
                 const { error, message } = response.data
 
@@ -105,18 +122,18 @@ const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
                     const { empresa } = response.data
                     
                     alertService.success(`Empresa ${empresa?.razao_social} cadastrada com SUCESSO!!!`);
-                    router.push(`/projeto/${projetoId}/empresa`)
+                    router.push(`/projeto/${projeto?.id}/detentor`)
                 }
             }) 
     }
 
-    async function updateEmpresa(id: string, data: any) {
+    async function updateDetentor(id: string, data: any) {
         
-        await client.put(`/empresa/${id}`, data)
+        await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
                 const empresa = response.data
                 alertService.success(`Empresa ${empresa?.razao_social} atualizada com SUCESSO!!!`);
-                router.push('/empresa')
+                router.push('/projeto')
             })
     }
     

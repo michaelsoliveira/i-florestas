@@ -16,9 +16,9 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) =>
 
     async function deleteEmpresa(id?: string) {
         try {
-            await client.delete(`/empresa/${id}`)
+            await client.delete(`/detentor/${id}`)
                 .then(() => {
-                    alertService.success('A empresa foi deletada com SUCESSO!!!')
+                    alertService.success('O detentor foi deletada com SUCESSO!!!')
                     loadEmpresas()
                     hideModal()
                 })
@@ -43,7 +43,7 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) =>
                 </div>
                 <h1 className="font-medium text-2xl font-roboto">Empresas</h1>
                 <Link
-                    href={`/projeto/${projetoId}/empresa/add`}
+                    href={`/projeto/${projetoId}/detentor/add`}
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
@@ -115,7 +115,7 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) =>
                                     </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                    <Link href={`/projeto/${projetoId}/empresa/update/${empresa.id}`}>
+                                    <Link href={`/projeto/${projetoId}/detentor/update/${empresa.id}`}>
                                         <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                     </Link>
                                     <Link href="#" onClick={() => deleteSingleModal(empresa.id)}>

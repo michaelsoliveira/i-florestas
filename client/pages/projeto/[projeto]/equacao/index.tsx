@@ -9,12 +9,9 @@ import { RootState } from "store"
 import Equacoes from "components/equacao/Equacoes"
 import { Pagination } from "components/Pagination"
 import { LoadingContext } from "contexts/LoadingContext"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
-type ProjetoEquacaoType = {
-    projetoId: string;
-}
-
-const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
+const ProjetoEquacoesIndex = () => {
 
     const { client } = useContext(AuthContext)
     const { loading, setLoading } = useContext(LoadingContext)
@@ -27,17 +24,18 @@ const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const router = useRouter()
+    const { projeto } = useContext(ProjetoContext)
     
     const loadEquacoes = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/projeto/${projetoId}/eq-volume?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
+        const { data } = await client.get(`/projeto/${projeto?.id}/eq-volume?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         console.log(data)
         setTotalItems(data?.count)
         setCurrentEquacoes(data?.equacoes)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, projetoId, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, projeto?.id, router.pathname, setLoading])
 
     useEffect(() => {  
         loadEquacoes(itemsPerPage)
@@ -56,7 +54,7 @@ const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
 
         if (search) {
             
-            var { data } = await client.get(`/projeto/${projetoId}/eq-volume?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/projeto/${projeto?.id}/eq-volume?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -65,7 +63,7 @@ const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/projeto/${projetoId}/eq-volume?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/projeto/${projeto?.id}/eq-volume?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -106,7 +104,6 @@ const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
                 onPageChanged={onPageChanged}
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
-                projetoId={projetoId}
             />
             <Pagination
                 perPage={itemsPerPage}
@@ -119,16 +116,6 @@ const ProjetoEquacoesIndex = ({ projetoId }: ProjetoEquacaoType) => {
             />
         </div>
     )
-}
-
-export const getServerSideProps: GetServerSideProps = async ({params, req, res}) => {
-    const projetoId = params?.projeto
-  
-    return {
-        props: {
-            projetoId
-        }
-    }
 }
 
 export default withAuthentication(ProjetoEquacoesIndex)

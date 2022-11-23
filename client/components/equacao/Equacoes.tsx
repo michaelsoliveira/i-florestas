@@ -10,8 +10,9 @@ import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
 import { PlusIcon } from "@heroicons/react/outline"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
+const Users = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
     
     const [filteredEquacoes, setFilteredEquacoes] = useState<any[]>(currentEquacoes)
     const { client } = useContext(AuthContext)
@@ -20,6 +21,7 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
     const [eqModelos, setEqModelos] = useState<any>()
     const { showModal, hideModal } = useModalContext()
     const formRef = createRef<any>()
+    const { projeto } = useContext(ProjetoContext)
 
     const loadEqModelos = useCallback(async () => {
         const response = await client.get(`/eq-modelo`)
@@ -59,13 +61,13 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
     const updateEquacao = (id?: string) => {
         console.log(id)
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projetoId} equacaoId={id} styles={stylesForm} redirect={false} />
+            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projeto?.id} equacaoId={id} styles={stylesForm} redirect={false} />
         })    
     }
 
     const addEquacao = () => {
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projetoId} styles={stylesForm} redirect={false} />
+            content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projeto?.id} styles={stylesForm} redirect={false} />
         })    
     }
     

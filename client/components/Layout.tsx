@@ -29,6 +29,7 @@ const Layout = ({ children }: props) => {
           }     
         }    
         loadProjeto()
+        
     }, [session, client, setProjeto, projeto])
 
     const withProjeto = projeto ? 

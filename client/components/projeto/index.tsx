@@ -155,7 +155,10 @@ const Projetos = () => {
                         </div>
                     </div>
                     <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
-                <div className='pb-4'>
+                    <div className='pb-4'>
+                        <span>Projeto Ativo: {projeto?.nome}</span>
+                    </div>
+                {/*<div className='pb-4'>
                     <Select
                         placeholder='Entre com as iniciais...'
                         selectedValue={projetoLocal}
@@ -165,6 +168,7 @@ const Projetos = () => {
                         callback={selectProjeto}
                     />
                 </div>
+                */}
                 { projetoLocal && (
                         <div className='flex flex-row items-center justify-between pt-5'>
                             <Link href={`/projeto/${selectedProjeto?.id}/detentor`} className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
