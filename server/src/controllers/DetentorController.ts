@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import detentorService from "../services/DetentorService";
 
-export class EmpresaController {
+export class DetentorController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
             const empresa = await detentorService.create(request.body)

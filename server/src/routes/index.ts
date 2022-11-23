@@ -3,7 +3,7 @@ import express from "express"
 import { UserController } from "../controllers/UserController"
 import { AuthController } from "../controllers/AuthController"
 import { Authentication } from "../middleware/auth.middleware"
-import { EmpresaController } from "../controllers/EmpresaController"
+import { DetentorController } from "../controllers/DetentorController"
 import { EspecieController } from "../controllers/EspecieController"
 import multer from 'multer'
 import { CategoriaEspecieController } from "../controllers/CategoriaEspecieController"
@@ -44,12 +44,12 @@ routes.get('/auth/me', Authentication(), new AuthController().getUserByToken)
 routes.post('/auth/refresh', new AuthController().refreshToken)
 routes.get('/auth/callback/github', new AuthController().signInCallback)
 
-//Empresa
-routes.post('/empresa', Authentication(), new EmpresaController().store)
-routes.get('/empresa/findAll/:projetoId', Authentication(), new EmpresaController().findAll)
-routes.get('/empresa/:id', Authentication(), new EmpresaController().findOne)
-routes.put('/empresa/:id', Authentication(), new EmpresaController().update)
-routes.delete('/empresa/:id', Authentication(), new EmpresaController().delete)
+//Detentor
+routes.post('/detentor', Authentication(), new DetentorController().store)
+routes.get('/detentor/findAll/:projetoId', Authentication(), new DetentorController().findAll)
+routes.get('/detentor/:id', Authentication(), new DetentorController().findOne)
+routes.put('/detentor/:id', Authentication(), new DetentorController().update)
+routes.delete('/detentor/:id', Authentication(), new DetentorController().delete)
 
 //Categoria
 routes.post('/categoria/', Authentication(), is(['admin', 'gerente']), new CategoriaEspecieController().store)

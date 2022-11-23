@@ -346,18 +346,11 @@ class UserService {
 
     }
 
-    async search(text: any, userId?: string) {
+    async search(text: any) {
         const users = await prismaClient.user.findMany({
             where: {
-                // AND: {
-                    OR: [{username: { mode: Prisma.QueryMode.insensitive, contains: text }}, {email: { mode: Prisma.QueryMode.insensitive, contains: text }}],
-                //     users_roles: {
-                //         some: {
-                //             user_id: userId
-                //         }
-                //     }
-                // }
-                
+
+                    OR: [{username: { mode: Prisma.QueryMode.insensitive, contains: text }}, {email: { mode: Prisma.QueryMode.insensitive, contains: text }}],  
             },
             orderBy: {
                 username:   'asc'

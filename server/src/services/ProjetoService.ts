@@ -227,7 +227,10 @@ class ProjetoService {
         const where = search ?
             {
                 AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                    OR: {
+                        username: { mode: Prisma.QueryMode.insensitive, contains: search },
+                        email: { mode: Prisma.QueryMode.insensitive, contains: search },
+                    },
                     projeto_users: {
                         some: {
                             id_projeto: projetoId

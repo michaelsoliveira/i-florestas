@@ -37,7 +37,7 @@ export class UserController {
 
     async search(request: Request, response: Response) {
         const { nome } = request.query
-        const users = nome ? await userService.search(nome, request.user?.id) : await userService.getAll()
+        const users = nome ? await userService.search(nome) : await userService.getAll()
         return response.json(users)
     }
 

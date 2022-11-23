@@ -170,13 +170,13 @@ class DetentorService {
     }
 
     async findOne(id: string): Promise<Pessoa> {
-        const detentor = await prismaClient.pessoa.findUnique({
+        const detentor = await prismaClient.pessoa.findFirst({
             include: {
                 pessoaFisica: true,
-                pessoaJuridica: true,
+                pessoaJuridica: true
             },
             where: {
-                id
+                id_projeto: id
             }
         })
         if (!detentor) throw new Error("Detentor não encontrada"); 
