@@ -13,6 +13,7 @@ import Option from "../Form/Option";
 import PessoaFisica from "./PessoaFisica";
 import PessoaJuridica from "./PessoaJuridica";
 import Endereco from "../endereco";
+import { ProjetoContext } from "contexts/ProjetoContext";
 
 type EmpresaIndex = {
     projetoId: string;
@@ -25,6 +26,7 @@ const AddEdit = ({ projetoId, id }: EmpresaIndex) => {
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
+    const { projeto } = useContext(ProjetoContext)
 
     const validationSchema = Yup.object().shape({
         razao_social:

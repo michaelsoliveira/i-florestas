@@ -117,7 +117,7 @@ routes.put('/eq-volume/:id', Authentication(), new EquacaoVolumeController().upd
 routes.delete('/eq-volume/single/:id', Authentication(), new EquacaoVolumeController().delete)
 
 //Equação Modelo
-routes.get('/eq-modelo/:projetoId', Authentication(), new EquacaoVolumeController().getEqModelos)
+routes.get('/eq-modelo', Authentication(), new EquacaoVolumeController().getEqModelos)
 
 //Role
 routes.post('/role/', Authentication(), new RoleController().store)

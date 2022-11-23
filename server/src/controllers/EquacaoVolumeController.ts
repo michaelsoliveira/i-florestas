@@ -60,8 +60,8 @@ export class EquacaoVolumeController {
     }
 
     async getEqModelos(request: Request, response: Response) {
-        const { projetoId } = request.params
-        const data = await eqVolumeService.getEqModelos(projetoId)
+
+        const data = await eqVolumeService.getEqModelos()
 
         return response.json({
             error: false,

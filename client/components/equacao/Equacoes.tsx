@@ -22,12 +22,12 @@ const Users = ({ currentEquacoes, projetoId, onPageChanged, orderBy, order, chan
     const formRef = createRef<any>()
 
     const loadEqModelos = useCallback(async () => {
-        const response = await client.get(`/eq-modelo/${projetoId}`)
+        const response = await client.get(`/eq-modelo`)
         const { data } = response.data
         
         setEqModelos(data)
         
-    },[client, projetoId])
+    },[client])
 
     useEffect(() => {
         loadEqModelos()

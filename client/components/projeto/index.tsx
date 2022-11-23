@@ -146,7 +146,7 @@ const Projetos = () => {
                             <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
-                            <h1 className='text-xl text-gray-800'>Gerenciar Projetos</h1>
+                            <h1 className='text-xl text-gray-800'>Gerenciar Projeto</h1>
                         </div>
                         <div className='flex items-center justify-center h-8 w-8 mr-4 bg-green-400 rounded-full'>
                         <Link href="#" className="" onClick={addModal}>
@@ -165,13 +165,9 @@ const Projetos = () => {
                         callback={selectProjeto}
                     />
                 </div>
-
-                <div>
-                    <span className='font-semibold'>Projeto Ativo: { projeto?.nome }</span>
-                </div>
                 { projetoLocal && (
                         <div className='flex flex-row items-center justify-between pt-5'>
-                            <Link href="#" className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={editModal}>
+                            <Link href={`/projeto/${selectedProjeto?.id}/detentor`} className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <PencilIcon className="h-5 w-5" />
                                 </div>
@@ -195,12 +191,12 @@ const Projetos = () => {
                                 </div>
                             </Link>
 
-                            <Link href={`/projeto/${selectedProjeto?.id}/empresa/add`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                            {/* <Link href={`/projeto/${selectedProjeto?.id}/empresa/add`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <InboxInIcon className="h-5 w-5" />
                                     <span>Dados</span>
                                 </div>
-                            </Link>
+                            </Link> */}
                         </div>
                         )}
                     </div>

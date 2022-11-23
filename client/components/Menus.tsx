@@ -16,18 +16,9 @@ import {
     MapIcon,
     BellIcon,
     TableIcon,
-    UserIcon,
-    UserGroupIcon,
-    ClipboardListIcon
 } from '@heroicons/react/outline'
 
 export const resources = [
-    {
-        name: 'Projeto',
-        description: 'Dados Gerais dos Projetos',
-        href: '/projeto',
-        icon: ClipboardListIcon,
-    },
     {
         name: 'UMF',
         description: 'Unidade de Manejo Florestal',
@@ -45,26 +36,6 @@ export const resources = [
         description: 'Unidade de Trabalho',
         href: '/ut',
         icon: CalendarIcon,
-    },
-    {
-        name: 'Segurança',
-        description: 'Gerenciar Acesso',
-        href: '#',
-        icon: CogIcon,
-        subMenuItems: [
-            {
-                name: 'Usuários',
-                description: 'Gerenciar Usuários',
-                href: '#',
-                icon: UserIcon,
-            },
-            {
-                name: 'Permissões',
-                description: 'Gerenciar Permissões',
-                href: '#',
-                icon: UserGroupIcon,
-            },
-        ]
     },
     {
         name: 'Especies',

@@ -67,12 +67,8 @@ class EquacaoVolumeService {
         })
     }
 
-    async getEqModelos(projetoId?: string): Promise<EquacaoModelo[]> {
-        const eqModelos = await prismaClient.equacaoModelo.findMany({
-            where: {
-                id_projeto: projetoId
-            }
-        })
+    async getEqModelos(): Promise<EquacaoModelo[]> {
+        const eqModelos = await prismaClient.equacaoModelo.findMany()
 
         return eqModelos
     }

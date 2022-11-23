@@ -7,6 +7,7 @@ import AlertService from '../services/alert';
 import { signIn, useSession } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
 import { useModalContext } from 'contexts/ModalContext';
+import { useEffect, useRef } from 'react';
 
 // import { userService } from 'services';
 
@@ -25,17 +26,21 @@ function Login({ csrfToken }: any) {
     const formOptions = { resolver: yupResolver(validationSchema) };
 
     // get functions to build form with useForm() hook
-    const { register, handleSubmit, setError, formState } = useForm(formOptions);
-    const { errors } = formState;
-
-  function signInProvider(provider: string) {
-    event?.preventDefault()
-    return signIn(provider, {
-        redirect: false,
-        callbackUrl: `${window.location.origin}`
-      })
+    const { register, handleSubmit, setError, formState, setFocus } = useForm(formOptions);
     
-  }
+
+    function signInProvider(provider: string) {
+      // event?.preventDefault()
+      return signIn(provider, {
+          redirect: false,
+          callbackUrl: `${window.location.origin}`
+        })
+      
+    }
+
+    useEffect(() => {
+      setFocus('email')
+    }, [setFocus])
 
     async function onSubmit({ email, password, csrfToken }: any) {
       try {

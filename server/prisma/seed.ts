@@ -274,12 +274,7 @@ async function main() {
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({
         data: {
-          ...eqModelo,
-          projeto: {
-            connect: {
-              id: projeto?.id
-            }
-          }
+          ...eqModelo
         },
       })
       console.log(`Created user Equação Modelo with id: ${equacaoModelo.id}`)
