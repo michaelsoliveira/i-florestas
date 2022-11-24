@@ -6,9 +6,11 @@ import React from 'react';
 
 import {styles} from 'components/helpers/defaultStyles'
 import { useModalContext } from 'contexts/ModalContext';
+import { useSession } from 'next-auth/react';
 
 const SigupPage = () => {
   const { hideModal } = useModalContext()
+  const { data: session } = useSession()
   const formRef = React.createRef<any>()
 
   const submitForm = () => {
@@ -24,7 +26,7 @@ const SigupPage = () => {
         <div className='flex bg-gray-50 border absolute top-20 border-green-700 justify-center items-center rounded-full shadow-lg w-36 h-36'>
         <div className='relative flex flex-col items-center justify-center'>
           <Logo width='w-16' height='h-16' />
-          <h1 className='font-roboto text-xl font-semibold text-green-700'>iFlorestal</h1>
+          <h1 className='font-roboto text-md font-semibold text-green-700'>BOManejoWeb</h1>
           </div>
         </div>
         <div className='w-full pt-20'>
@@ -48,9 +50,12 @@ const SigupPage = () => {
             Ao se cadastrar, você concordar com nossos Termos de Uso e com a Política de Privacidade
           </p>
         </div>
-        <p className='flex items-center text-center text-sm'>Já tem conta?&nbsp;
-          <span className='underline font-bold text-green-700'> <Link href='/login'>Faça login</Link></span>
-        </p>
+        {!session && (
+          <p className='flex items-center text-center text-sm'>Já tem conta?&nbsp;
+            <span className='underline font-bold text-green-700'> <Link href='/login'>Faça login</Link></span>
+          </p>
+        )}
+        
         </div>
     </div>
   )

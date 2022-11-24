@@ -16,7 +16,7 @@ const Pagelogin = ({ csrfToken }: any) => {
         <div className='bg-gray-50 border border-green-700 rounded-full shadow-lg w-36 h-36'>
         <div className='relative h-full flex flex-col items-center justify-center'>
           <Logo width='w-16' height='h-16' />
-          <h1 className='font-roboto text-xl font-semibold text-green-700'>iFlorestal</h1>
+          <h1 className='font-roboto text-md font-semibold text-green-700'>BOManejoWeb</h1>
           </div>
         </div>
         </div>
