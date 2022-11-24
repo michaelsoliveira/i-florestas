@@ -46,8 +46,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
         const loadUsers = useCallback(async() => {
             if (session) {
-                const { data } = await client.get('/users/search')
-            
+                const { data } = await client.get('/users')
                 setUsers(data)
             }
         }, [session, client])
