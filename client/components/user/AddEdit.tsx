@@ -45,10 +45,12 @@ export const AddEdit = forwardRef<any, AddEditType>(
         }
 
         const loadUsers = useCallback(async() => {
-            const { data } = await client.get('/users/search')
+            if (session) {
+                const { data } = await client.get('/users/search')
             
-            setUsers(data)
-        }, [client])
+                setUsers(data)
+            }
+        }, [session, client])
 
         useEffect(() => {
             let isLoaded = false
