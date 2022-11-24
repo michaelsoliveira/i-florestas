@@ -22,6 +22,7 @@ export class DetentorController {
 
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
+        console.log(id, request.body)
          try {    
              const empresa = await detentorService.update(id, request.body)
              

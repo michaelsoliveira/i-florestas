@@ -24,36 +24,37 @@ const AddEdit = () => {
     const { projeto } = useContext(ProjetoContext)
     const isAddMode = !projeto
 
-    const validationSchema = Yup.object().shape({
-        "pessoaJuridica.razao_social":
-        Yup.string().when('tipo', {
-            is: (tipo:any) => tipo==='J',
-            then: Yup.string()
-                .min(3, "Razão Social deve ter no minimo 3 caracteres")
-                .max(100, "Razão Social deve ter no máximo 100 caracteres")
-                .required('O campo Razão Social é obrigatório '),
-        }),
+    // const validationSchema = Yup.object().shape({
+        
+    //     "pessoaJuridica.razao_social":
+    //     Yup.string().when('tipo', {
+    //         is: (tipo:any) => tipo==='J',
+    //         then: Yup.string()
+    //             .min(3, "Razão Social deve ter no minimo 3 caracteres")
+    //             .max(100, "Razão Social deve ter no máximo 100 caracteres")
+    //             .required('O campo Razão Social é obrigatório '),
+    //     }),
             
-        nome:
-            Yup.string()
-                .nullable()
-                .transform(value => (!value ? null : value))
-                .min(3, "Nome deve ter no minimo 3 caracteres")
-                .max(100, "Nome deve ter no máximo 100 caracteres"),
-        //resp_tecnico:
-        //    Yup.string()
-        //        .matches(
-        //            /^[aA-zZ\s]+$/,
-        //            "Somente letras são permitidas"
-        //        )
-        //        .nullable()
-        //       .transform(value => (!value ? null : value))
-        //        .min(3, "Responsável técnico deve ter no minimo 3 caracteres")
-        //        .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
-    })
+    //     nome:
+    //         Yup.string()
+    //             .nullable()
+    //             .transform(value => (!value ? null : value))
+    //             .min(3, "Nome deve ter no minimo 3 caracteres")
+    //             .max(100, "Nome deve ter no máximo 100 caracteres"),
+    //     resp_tecnico:
+    //        Yup.string()
+    //            .matches(
+    //                /^[aA-zZ\s]+$/,
+    //                "Somente letras são permitidas"
+    //            )
+    //            .nullable()
+    //           .transform(value => (!value ? null : value))
+    //            .min(3, "Responsável técnico deve ter no minimo 3 caracteres")
+    //            .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
+    // })
 
-    const formOptions = { resolver: yupResolver(validationSchema) }
-    const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm(formOptions)
+    // const formOptions = { resolver: yupResolver(validationSchema) }
+    const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
     function onSelect(index: number) {
         setTipoPessoa(index)
@@ -66,9 +67,11 @@ const AddEdit = () => {
             const { data } = await client.get(`/detentor/${projeto?.id}`)
             setDetentor(data)
             if (data?.tipo === 'J') { 
+                setValue('pessoaJuridica.nome', data?.nome)
                 setValue('tipo', 'J')
                 setTipoPessoa(1) 
             } else {
+                setValue('pessoaFisica.nome', data?.nome)
                 setValue('tipo', 'F')
                 setTipoPessoa(0)
             }
@@ -90,17 +93,12 @@ const AddEdit = () => {
     }, [isAddMode, session, client, projeto, setValue])
     
     useEffect(() => {  
-        let isLoaded = false
-        
-        if (!isLoaded) loadDetentor()
 
-        return () => {
-            isLoaded = true
-        }
+        loadDetentor()
+
     }, [loadDetentor])
 
     async function onSubmit(data: any) {
-        console.log(data)
         try {
             return isAddMode
                 ? createEmpresa({...data, id_projeto: projeto?.id})
@@ -131,8 +129,9 @@ const AddEdit = () => {
         
         await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
-                const empresa = response.data
-                alertService.success(`Empresa ${empresa?.razao_social} atualizada com SUCESSO!!!`);
+                console.log(response)
+                const detentor = response.data
+                alertService.success(`Detentor ${detentor?.nome} atualizada com SUCESSO!!!`);
                 router.push('/projeto')
             })
     }
@@ -143,9 +142,9 @@ const AddEdit = () => {
                 <div className="md:grid md:grid-cols-3 md:gap-6">
                     <div className="md:col-span-1">
                         <div className="lg:p-6 p-4">
-                            <h3 className="text-lg font-medium leading-6 text-gray-900">{ isAddMode ? 'Cadastro ' : 'Atualização ' } da Empresa</h3>
+                            <h3 className="text-lg font-medium leading-6 text-gray-900">{ isAddMode ? 'Cadastro ' : 'Atualização ' } do Detentor</h3>
                             <p className="mt-1 text-sm text-gray-600">
-                                Entre com as informações iniciais de sua empresa para ter acesso ao BOManejo.
+                                Entre com as informações iniciais de seu projeto para ter acesso ao BOManejo.
                             </p>
                             
                         </div>
@@ -153,9 +152,9 @@ const AddEdit = () => {
                     <div className="mt-5 md:mt-0 md:col-span-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="shadow overflow-hidden sm:rounded-md">
-                        <div className="px-4 py-5 bg-white sm:p-6">
-                            <div className="grid grid-cols-6 gap-6">   
-                                <div className="col-span-6 w-96">
+                        <div className="px-4 py-5 bg-white sm:p-6 w-full">
+                            <div className="grid grid-cols-6 gap-6 w-full">   
+                                <div className="col-span-6 w-96 text-center">
                                     <div>
                                     <RadioGroup labelText="Tipo">
                                         {["Física", "Jurídica"].map((el, index) => (
@@ -174,12 +173,14 @@ const AddEdit = () => {
                                     </RadioGroup>
                                     </div>
                                 </div>   
+                                <div className="col-span-6">
                                 { tipoPessoa === 0 ? (
                                     <PessoaFisica register={register} styles={styles} errors={errors} />
                                 ) : (
                                     <PessoaJuridica register={register} styles={styles} errors={errors} />
                                 )}
                                 <Endereco register={register} styles={styles} errors={errors} />
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-row items-center justify-between px-4 py-3 bg-gray-50 text-right sm:px-6">

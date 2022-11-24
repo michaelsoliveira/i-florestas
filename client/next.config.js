@@ -1,12 +1,4 @@
 const nextConfig = {
-  publicRuntimeConfig: {
-    // remove private variables from processEnv
-    processEnv: Object.fromEntries(
-      Object.entries(process.env).filter(([key]) =>
-        key.includes('NEXT_PUBLIC_')
-      )
-    ),
-  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve = {
@@ -20,15 +12,6 @@ const nextConfig = {
         },
       }
     }
-    // config.module.rules = config.module.rules.filter(r => !r.oneOf);
-
-    // Add your own rules
-
-    // config.module.rules.push({
-    //   test: /\.scss$/i,
-    //   use: ['style-loader', 'css-loader'],
-    // })
-    
     return config;
   },
   images: {
