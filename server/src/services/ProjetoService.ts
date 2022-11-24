@@ -113,7 +113,10 @@ class ProjetoService {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.projeto.delete({
+        await prismaClient.projeto.update({
+            data: {
+                excluido: true
+            },
             where: {
                 id
             }
@@ -143,6 +146,7 @@ class ProjetoService {
             {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                    excluido: false,
                     projeto_users: {
                         some: {
                             id_user: id
@@ -150,6 +154,7 @@ class ProjetoService {
                     }
                 }
             } : {
+                excluido: false,
                 projeto_users: {
                     some: {
                         id_user: id
@@ -298,7 +303,10 @@ class ProjetoService {
     async search(text: any) {
         const projetos = await prismaClient.projeto.findMany({
             where: {
-                nome: { mode: Prisma.QueryMode.insensitive, contains: text }
+                AND: {
+                    excluido: false,
+                    nome: { mode: Prisma.QueryMode.insensitive, contains: text }
+                }
             },
             orderBy: {
                 nome:   'asc'

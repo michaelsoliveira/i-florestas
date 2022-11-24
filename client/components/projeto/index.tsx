@@ -23,9 +23,6 @@ const Projetos = () => {
     
     const { client } = useContext(AuthContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
-    const [ selectedProjeto, setSelectedProjeto ] = useState<any>()
-    const [ projetoLocal, setProjetoLocal ] = useState<any>()
-    const [ projetos, setProjetos ] = useState<any>()
     const { data: session } = useSession()
     const { setLoading } = useContext(LoadingContext)
 
@@ -35,38 +32,18 @@ const Projetos = () => {
         showModal({ 
             type: 'delete.projeto',
             title: 'Deletar Projeto', 
-            onConfirm: () => { deleteProjeto(selectedProjeto?.id) }, 
+            onConfirm: () => { deleteProjeto() }, 
             styleButton: styles.redButton, 
             iconType: 'warn', 
             confirmBtn: 'Deletar', 
-            content: `Tem Certeza que deseja excluir o Projeto ${selectedProjeto?.nome} ?` 
+            content: `Tem Certeza que deseja excluir o Projeto ${projeto?.nome} ?` 
         })
 
     const editModal = () => showModal({ title: 'Editar Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
-    content: <AddEdit reloadData={loadProjetos} data={selectedProjeto} /> })
+    content: <AddEdit reloadData={loadProjetos} data={projeto} /> })
     const addModal = () => {
         showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
         content: <AddEdit reloadData={loadProjetos} /> })
-    }
-        
-
-    const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/projeto/search/q?nome=${inputValue}`)
-        const json = response.data
-        
-        callback(json?.map((projeto: any) => ({
-            value: projeto.id,
-            label: projeto.nome
-        })))
-    };
-
-    function getProjetosDefaultOptions() {
-        return projetos?.map((projeto: any) => {
-            return {
-                label: projeto.nome,
-                value: projeto.id
-            }
-        })
     }
 
     const loadProjetos = useCallback(async () => {
@@ -78,20 +55,12 @@ const Projetos = () => {
             
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
 
-            setProjetoLocal({
-                label: projetoAtivo?.nome,
-                value: projetoAtivo?.id
-            })
-
-
-            setSelectedProjeto(projetoAtivo)
             setProjeto(projetoAtivo)
             
             if (error) {
                 console.log(message)
             }
-            
-            setProjetos(projetos)
+
             
             setLoading(false)
             
@@ -104,35 +73,20 @@ const Projetos = () => {
 
     }, [loadProjetos])
 
-    async function deleteProjeto(id?: string){
-        if (selectedProjeto?.active) {
-            alertService.warn('Este projeto está ativo, por favor ative outro projeto para poder excluir este!')
+    async function deleteProjeto(){
+        await client.put(`/projeto/single/${projeto?.id}`)
+        .then((response: any) => {
+            const { error, message } = response.data
+
+            if (error) {
+                alertService.error(message)
+            } else {
+                alertService.success(message)
+            }
+            
             hideModal()
-        } else {
-            await client.delete(`/projeto/single/${id}`)
-            .then((response: any) => {
-                const { error, message } = response.data
-
-                if (error) {
-                    alertService.error(message)
-                } else {
-                    alertService.success(message)
-                }
-                
-                hideModal()
-                loadProjetos()
-                setProjetoLocal({
-                    value: projeto.id,
-                    label: projeto.nome
-                })
-            })
-        }
-    }
-
-    const selectProjeto = (data: any) => {
-        const selectedProjeto = projetos.find((projeto: any) => projeto.id === data.value)
-        setSelectedProjeto(selectedProjeto)
-        setProjetoLocal(data)
+            loadProjetos()
+        })
     }
 
     return (
@@ -155,35 +109,24 @@ const Projetos = () => {
                         </div>
                     </div>
                     <div className="relative p-8 bg-white shadow-sm rounded-b-xl border-x border-b border-gray-400">
-                    <div className='pb-4'>
-                        <span>Projeto Ativo: {projeto?.nome}</span>
+                    <div className='flex items-center justify-center bg-green-50 hover:bg-green-100 ease duration-300 transition-all py-2 rounded-lg'>
+                        <div className='textr-sm inline-block align-bottom'>Projeto Ativo: <span className='font-medium'>{projeto ? projeto?.nome : '<=== Nenhum ===>'}</span></div>
                     </div>
-                {/*<div className='pb-4'>
-                    <Select
-                        placeholder='Entre com as iniciais...'
-                        selectedValue={projetoLocal}
-                        defaultOptions={getProjetosDefaultOptions()}
-                        options={loadOptions}
-                        label="Localizar Projeto"
-                        callback={selectProjeto}
-                    />
-                </div>
-                */}
-                { projetoLocal && (
+                { projeto && (
                         <div className='flex flex-row items-center justify-between pt-5'>
-                            <Link href={`/projeto/${selectedProjeto?.id}/detentor`} className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                            <Link href={`/projeto/detentor`} className="text-center w-auto hover:bg-teal-600 bg-teal-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <PencilIcon className="h-5 w-5" />
                                 </div>
                             </Link>
 
-                            <Link href={`/projeto/${selectedProjeto?.id}/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                            <Link href={`/projeto/users`} className="text-center w-auto hover:bg-indigo-600 bg-indigo-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <UsersIcon className="h-5 w-5" />
                                 </div>
                             </Link>
 
-                            <Link href={`/projeto/${selectedProjeto?.id}/equacao`} className="text-center w-auto hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
+                            <Link href={`/projeto/equacao`} className="text-center w-auto hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
                                 <div className='flex flex-row items-center justify-center space-x-2'>
                                     <CalculatorIcon className="h-5 w-5" />
                                 </div>
@@ -194,13 +137,6 @@ const Projetos = () => {
                                     <TrashIcon className="h-5 w-5" />
                                 </div>
                             </Link>
-
-                            {/* <Link href={`/projeto/${selectedProjeto?.id}/empresa/add`} className="text-center w-32 hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
-                                <div className='flex flex-row items-center justify-center space-x-2'>
-                                    <InboxInIcon className="h-5 w-5" />
-                                    <span>Dados</span>
-                                </div>
-                            </Link> */}
                         </div>
                         )}
                     </div>

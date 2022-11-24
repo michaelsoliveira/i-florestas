@@ -13,6 +13,7 @@ import { RootState } from "../../store"
 import { UtType } from "types/IUtType"
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUts }: any) => {
     
@@ -26,8 +27,8 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
-    
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
+    const { projeto } = useContext(ProjetoContext)
 
     const dispatch = useAppDispatch()
 
@@ -63,12 +64,13 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     }
 
     const defaultUmfsOptions = useCallback(async() => {
-        const response = await client.get(`/umf?orderBy=nome&order=asc`)
+        const response = await client.get(`/umf/${projeto?.id}?orderBy=nome&order=asc`)
+        
             const { umfs } = response.data
             setUmfs(umfs)
 
             const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
-
+            
             if (compareUmf) {
                 setSelectedUmf({
                     value: umf?.id,
@@ -87,7 +89,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     label: umfs[0].nome
                 })                        
             }
-    }, [client, umf.id, umf?.nome])
+    }, [client, projeto?.id, umf.id, umf?.nome])
 
     const defaultUpasOptions = useCallback(async () => {
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)

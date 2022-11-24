@@ -43,13 +43,11 @@ export class UserController {
 
     async findByEmail(request: Request, response: Response) : Promise<Response> {
         const { email }: any = request.query
-        
+
         try {
-            const user = await prismaClient.user.findFirst({
+            const user = await prismaClient.user.findUnique({
                 where: {
-                    AND: {
-                        email
-                    }
+                    email
                 }
             })
 

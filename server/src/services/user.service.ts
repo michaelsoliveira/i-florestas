@@ -25,7 +25,11 @@ class UserService {
 
         const passwordHash = await bcrypt.hash(data?.password, 10)
 
-        console.log(data)
+        const roleAdmin = await prismaClient.role.findFirst({
+            where: {
+                name: { equals: 'Admin' }
+            }
+        })
 
         const dataRequest = {
             username: data?.username,
@@ -37,7 +41,14 @@ class UserService {
         }
         if (!data?.id_projeto) {
             const user = await prismaClient.user.create({
-                data: dataRequest
+                data: { 
+                    ...dataRequest,
+                    users_roles: {
+                        create: {
+                            role_id: roleAdmin ? roleAdmin?.id : ''
+                        }
+                    }
+                }
             })            
 
             return user
@@ -98,37 +109,52 @@ class UserService {
         const basicData = {
             username: data?.username,
             email: data?.email,
-            image: data?.image ? data?.image : userExists?.image
+            image: data?.image ? data?.image : userExists?.image,
+            provider: data?.provider && data?.provider,
+            id_provider: data?.id_provider && data?.id_provider
         }
+
         const roles = data?.roles && data?.roles.map((role: any) => {
             return {
                 role_id: role.value
             }
         })
 
-        const [deleted, user] = await prismaClient.$transaction([
-            prismaClient.userRole.deleteMany({
-                where: {
-                    user_id: id
-                }
-            }),
-            prismaClient.user.update({
+        if (data?.by_provider) {
+            const user = prismaClient.user.update({
                 where: 
                 {
                     id
                 },
-                data: data?.roles ? {
-                    ...basicData,
-                    users_roles: {
-                        createMany: {
-                            data: roles
-                        }
-                    }
-                } : basicData
+                data: basicData
             })
-        ])
 
-        return user
+            return user
+        } else {
+            const [deleted, user] = await prismaClient.$transaction([
+                prismaClient.userRole.deleteMany({
+                    where: {
+                        user_id: id
+                    }
+                }),
+                prismaClient.user.update({
+                    where: 
+                    {
+                        id
+                    },
+                    data: data?.roles ? {
+                        ...basicData,
+                        users_roles: {
+                            createMany: {
+                                data: roles
+                            }
+                        }
+                    } : basicData
+                })
+            ])
+    
+            return user
+        }
     }
 
     async delete(id: string) {

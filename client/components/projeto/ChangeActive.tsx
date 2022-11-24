@@ -35,16 +35,26 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 })
 
                 setProjetos(projetos)
-                
+                setProjeto(projetoAtivo)
                 if (error) {
                     console.log(message)
                 }
                 
             }
-        }, [session, client])
+        }, [session, client, setProjeto])
 
         useEffect(() => {
-            loadProjetos()    
+            let isLoaded = false
+            if (!isLoaded) {
+                loadProjetos()
+                    .then(() => {
+                        isLoaded = true
+                    })
+            }
+
+            return () => {
+                isLoaded = false
+            }
         }, [loadProjetos])
 
         const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {

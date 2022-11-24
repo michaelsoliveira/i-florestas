@@ -21,8 +21,8 @@ import { PermissionController } from "../controllers/PermissionController"
 const routes = express.Router()
 
 routes.get('/users', Authentication(), new UserController().findAll)
-routes.get('/users/:projetoId/:userId', Authentication(), new UserController().findOne)
 routes.get('/users/provider/find-by-email', Authentication(), new UserController().findByEmail)
+routes.get('/users/:projetoId/:userId', Authentication(), new UserController().findOne)
 routes.post('/users/create', new UserController().store)
 routes.put('/users/:id', Authentication(), new UserController().update)
 routes.get('/users/search', Authentication(), new UserController().search)
@@ -61,7 +61,7 @@ routes.delete('/categoria/:id', Authentication(), new CategoriaEspecieController
 
 //Umf
 routes.post('/umf/', Authentication(), new UmfController().store)
-routes.get('/umf/', Authentication(), new UmfController().findAll)
+routes.get('/umf/:projetoId', Authentication(), new UmfController().findAll)
 routes.get('/umf/get/', Authentication(), new UmfController().getUmf)
 routes.get('/umf/:id', Authentication(), new UmfController().findOne)
 routes.get('/umf/search/q', Authentication(), new UmfController().search)
@@ -79,7 +79,7 @@ routes.get('/projeto/search/q', Authentication(), new ProjetoController().search
 routes.get('/projeto/active/get', Authentication(), new ProjetoController().getActive)
 routes.post('/projeto/active/:projetoId', Authentication(), new ProjetoController().changeActive)
 routes.put('/projeto/:id', Authentication(), new ProjetoController().update)
-routes.delete('/projeto/single/:id', Authentication(), new ProjetoController().delete)
+routes.put('/projeto/single/:id', Authentication(), new ProjetoController().delete)
 routes.delete('/projeto/multiples', Authentication(), new ProjetoController().deleteProjetos)
 
 //Upa

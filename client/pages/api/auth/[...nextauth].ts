@@ -26,11 +26,11 @@ async function findProvider(token: any) {
         password: Math.random().toString(36).slice(-8),
         image: token?.picture,
         provider,
-        id_provider: token?.sub
+        id_provider: token?.sub,
+        by_provider: true
       }
       
       const userExists = await userService.findProvider(token)
-      console.log('USER EXISTS', userExists)
       
       if (userExists) {
         if (!userExists.provider || !userExists.id_provider)

@@ -148,7 +148,7 @@ class EspecieService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.especie.count()
+            prismaClient.especie.count({where})
         ])
                         
         return {

@@ -99,7 +99,7 @@ class UmfService {
         return umf
     }
 
-    async getAll(id: string, query?: any): Promise<any> {
+    async getAll(id: string, projetoId?: string, query?: any): Promise<any> {
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -130,7 +130,7 @@ class UmfService {
                 }
             },
             AND: {
-                id_projeto: projeto?.id
+                id_projeto: projetoId
             }   
         }
         

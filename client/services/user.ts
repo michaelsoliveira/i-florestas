@@ -41,7 +41,7 @@ export async function create(dataRequest: UserData) : Promise<ResponseData> {
 export async function update(id:string, dataRequest: UserData, token: string) : Promise<any> {
     
     const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${id}`
-
+    console.log(dataRequest)
     const response = await fetch(url, {
         method: "PUT",
         body: JSON.stringify({
@@ -102,7 +102,7 @@ export async function findProvider(token?: any): Promise<any> {
             } 
         })
         const data = await response.json()
-        console.log(data)
+
         return data.user
     } catch (error: any) {
         return false

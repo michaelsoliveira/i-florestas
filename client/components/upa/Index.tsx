@@ -13,6 +13,7 @@ import { UpaType } from "types/IUpaType"
 
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
     
@@ -24,6 +25,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     const umf = useAppSelector((state: RootState) => state.umf)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const dispatch = useAppDispatch()
+    const { projeto } = useContext(ProjetoContext)
 
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
@@ -63,7 +65,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     useEffect(() => {
         async function defaultOptions() {
-            const response = await client.get(`/umf?orderBy=nome&order=asc`)
+            const response = await client.get(`/umf/${projeto?.id}?orderBy=nome&order=asc`)
                 const { umfs } = response.data
                 setUmfs(umfs)
         }
@@ -72,7 +74,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         
         defaultOptions()
         setFilteredUpa(currentUpas)
-    }, [currentUpas, currentPage, client, umf, loadUmf])
+    }, [currentUpas, currentPage, client, umf, loadUmf, projeto?.id])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({

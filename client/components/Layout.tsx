@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useEffect, useState } from "react"
+import { ReactNode, useCallback, useContext, useEffect, useState, useLayoutEffect } from "react"
 import Navigation from './Navigation'
 import Footer from './Footer'
 import { useSession, signOut } from "next-auth/react"
@@ -21,16 +21,19 @@ const Layout = ({ children }: props) => {
     const { projeto, setProjeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
 
-    useEffect(() => {
-        async function loadProjeto() { 
-          if (session && !projeto) {
-              const { data } = await client.get(`/projeto/active/get`)
-              setProjeto(data)
-          }     
-        }    
-        loadProjeto()
+    const getProjetoAtivo = useCallback(async () => {
+        if (session) {
+            const { data } = await client.get(`/projeto/active/get`)
+            setProjeto(data)
+        }
+            
         
-    }, [session, client, setProjeto, projeto])
+    }, [session, client, setProjeto])
+
+    useEffect (() => {
+        getProjetoAtivo()
+        
+    }, [getProjetoAtivo])
 
     const withProjeto = projeto ? 
         [
@@ -43,21 +46,28 @@ const Layout = ({ children }: props) => {
             {
                 name: 'Detentor',
                 description: 'Gerenciar Detentor do Projeto',
-                href: `/projeto/${projeto?.id}/detentor`,
+                href: `/projeto/detentor`,
             },
             {
                 name: 'Usuários',
                 description: 'Gerenciar Permissões',
-                href: `/projeto/${projeto?.id}/users`,
+                href: `/projeto/users`,
                 icon: UserGroupIcon
             },
             {
                 name: 'Equações',
                 description: 'Gerenciar Equações',
-                href: `/projeto/${projeto?.id}/equacao`,
+                href: `/projeto/equacao`,
             },
         ]
-     : []
+     : [
+        {
+            name: 'Geral',
+            description: 'Gerenciar Informações do Projeto',
+            href: `/projeto`,
+            icon: CogIcon
+        }
+     ]
 
     const menuProjeto = {
         name: 'Projeto',

@@ -29,21 +29,21 @@ export const AddEdit = forwardRef<any, AddEditType>(
             nome: Yup.string()
                     .test(
                     "len",
-                    "O nome tem que ter entre 3 e 20 caracteres.",
+                    "O nome tem que ter entre 3 e 40 caracteres.",
                     (val: any) =>
                     val &&
                     val.toString().length >= 3 &&
-                    val.toString().length <= 20
+                    val.toString().length <= 40
                 )
                 .required("Campo obrigatório!"),
             expressao: Yup.string()
                     .test(
                         "len",
-                        "A expressão tem que ter entre 3 e 40 caracteres.",
+                        "A expressão tem que ter entre 3 e 80 caracteres.",
                         (val: any) =>
                         val &&
                         val.toString().length >= 3 &&
-                        val.toString().length <= 20
+                        val.toString().length <= 80
                     )
                     .required("Campo obrigatório!")
             });
@@ -52,6 +52,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
             if (isAddMode) {
                 await client.post(`/eq-volume`, data)
                     .then((response: any) => {
+                        console.log(response)
                         const { error, message } = response.data
                         
                         if (error) {
