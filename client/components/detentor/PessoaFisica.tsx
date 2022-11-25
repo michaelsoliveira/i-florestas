@@ -1,6 +1,6 @@
 import { FormInput } from "../FormInput"
 
-const PessoaFisica = ({register, styles, errors}: any) => {
+const PessoaFisica = ({register, errors}: any) => {
     return (<div className="grid grid-cols-6 gap-4">
                 <div className="col-span-6 md:col-span-4">     
                     <FormInput

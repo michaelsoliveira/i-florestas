@@ -22,7 +22,7 @@ const AddEdit = () => {
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
     const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
-    const isAddMode = !projeto
+    const isAddMode = !projeto.pessoa
 
     // const validationSchema = Yup.object().shape({
         
@@ -101,7 +101,7 @@ const AddEdit = () => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createEmpresa({...data, id_projeto: projeto?.id})
+                ? createDetentor({...data, id_projeto: projeto?.id})
                 : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id})
         } catch (error: any) {
             alertService.error(error.message);
@@ -109,7 +109,7 @@ const AddEdit = () => {
         
     }
 
-    async function createEmpresa(data: any) {
+    async function createDetentor(data: any) {
         await client.post('/detentor', data)
             .then((response: any) => {
                 const { error, message } = response.data
@@ -117,10 +117,10 @@ const AddEdit = () => {
                 if (error) {
                     alertService.error(message)
                 } else {
-                    const { empresa } = response.data
+                    const detentor = response.data
                     
-                    alertService.success(`Empresa ${empresa?.razao_social} cadastrada com SUCESSO!!!`);
-                    router.push(`/projeto/${projeto?.id}/detentor`)
+                    alertService.success(`Detentor ${detentor?.nome} cadastrada com SUCESSO!!!`);
+                    router.push(`/projeto`)
                 }
             }) 
     }
@@ -129,7 +129,7 @@ const AddEdit = () => {
         
         await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
-                console.log(response)
+
                 const detentor = response.data
                 alertService.success(`Detentor ${detentor?.nome} atualizada com SUCESSO!!!`);
                 router.push('/projeto')
@@ -175,9 +175,9 @@ const AddEdit = () => {
                                 </div>   
                                 <div className="col-span-6">
                                 { tipoPessoa === 0 ? (
-                                    <PessoaFisica register={register} styles={styles} errors={errors} />
+                                    <PessoaFisica register={register} errors={errors} />
                                 ) : (
-                                    <PessoaJuridica register={register} styles={styles} errors={errors} />
+                                    <PessoaJuridica register={register} errors={errors} />
                                 )}
                                 <Endereco register={register} styles={styles} errors={errors} />
                                 </div>
