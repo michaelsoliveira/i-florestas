@@ -22,7 +22,7 @@ const AddEdit = () => {
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
     const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
-    const isAddMode = !projeto.pessoa
+    const isAddMode = !projeto?.pessoa
 
     // const validationSchema = Yup.object().shape({
         
@@ -93,7 +93,6 @@ const AddEdit = () => {
     }, [isAddMode, session, client, projeto, setValue])
     
     useEffect(() => {  
-
         loadDetentor()
 
     }, [loadDetentor])
@@ -101,7 +100,7 @@ const AddEdit = () => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createDetentor({...data, id_projeto: projeto?.id})
+                ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa})
                 : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id})
         } catch (error: any) {
             alertService.error(error.message);
@@ -110,14 +109,14 @@ const AddEdit = () => {
     }
 
     async function createDetentor(data: any) {
+        // console.log(data)
         await client.post('/detentor', data)
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, detentor, message } = response.data
 
                 if (error) {
                     alertService.error(message)
                 } else {
-                    const detentor = response.data
                     
                     alertService.success(`Detentor ${detentor?.nome} cadastrada com SUCESSO!!!`);
                     router.push(`/projeto`)
@@ -151,7 +150,7 @@ const AddEdit = () => {
                     </div>
                     <div className="mt-5 md:mt-0 md:col-span-2">
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="shadow overflow-hidden sm:rounded-md">
+                        <div className="shadow sm:rounded-md">
                         <div className="px-4 py-5 bg-white sm:p-6 w-full">
                             <div className="grid grid-cols-6 gap-6 w-full">   
                                 <div className="col-span-6 w-96 text-center">
@@ -179,7 +178,7 @@ const AddEdit = () => {
                                 ) : (
                                     <PessoaJuridica register={register} errors={errors} />
                                 )}
-                                <Endereco register={register} styles={styles} errors={errors} />
+                                <Endereco setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>
                         </div>

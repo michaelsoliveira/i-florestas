@@ -61,9 +61,9 @@ routes.delete('/categoria/:id', Authentication(), new CategoriaEspecieController
 
 //Umf
 routes.post('/umf/', Authentication(), new UmfController().store)
-routes.get('/umf/:projetoId', Authentication(), new UmfController().findAll)
-routes.get('/umf/get/', Authentication(), new UmfController().getUmf)
 routes.get('/umf/:id', Authentication(), new UmfController().findOne)
+routes.get('/umf/find-by-projeto/:projetoId', Authentication(), new UmfController().findAll)
+routes.get('/umf/get/', Authentication(), new UmfController().getUmf)
 routes.get('/umf/search/q', Authentication(), new UmfController().search)
 routes.put('/umf/:id', Authentication(), new UmfController().update)
 routes.delete('/umf/single/:id', Authentication(), new UmfController().delete)

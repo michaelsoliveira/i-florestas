@@ -4,17 +4,17 @@ import detentorService from "../services/DetentorService";
 export class DetentorController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const empresa = await detentorService.create(request.body)
+            const detentor = await detentorService.create(request.body)
             return response.json({
                 error: false,
-                empresa,
+                detentor,
                 message: null
             })
 
         } catch (error) {
             return response.json({
                 error: true,
-                empresa: null,
+                detentor: null,
                 message: error.message
             })
         }
@@ -22,13 +22,13 @@ export class DetentorController {
 
      async update(request : Request, response: Response) : Promise<Response> {
         const { id } = request.params
-        console.log(id, request.body)
+        
          try {    
-             const empresa = await detentorService.update(id, request.body)
+             const detentor = await detentorService.update(id, request.body)
              
             return response.json({
                 error: false,
-                empresa,
+                detentor,
                 message: null
             })
 

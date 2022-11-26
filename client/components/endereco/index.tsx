@@ -1,46 +1,63 @@
-const Endereco = ({register, styles, errors}: any) => {
-    return (<>
-        <div className="col-span-6 w-48 lg:w-48">
-            <label htmlFor="CEP" className={styles.fieldLabel}>CEP</label>
-            <input
-                {...register('cep')}
-                type="text" name="cep" id="cep" className={styles.fieldText} />
-        </div>
+import { useState } from "react"
+import { FormInput } from "../FormInput"
+import { OptionType } from "../Select"
+import SelectEstado from "../Utils/SelectEstado"
+import { useForm } from 'react-hook-form'
 
-        <div className="col-span-4">
-            <label htmlFor="street_address" className={styles.fieldLabel}>Endereço</label>
-            <input
-                {...register('endereco')}
-                type="text" name="endereco" id="endereco" className={styles.fieldText} />
-        </div>
-        
-        <div className="col-span-2 sm:col-span-2">
-            <label htmlFor="country" className={styles.fieldLabel}>Estado</label>
-                <select 
-                    {...register('estado')}
-                    id="estado" name="estado" className="mt-1 relative flex w-24 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
-                    <option>AP</option>
-                    <option>BA</option>
-                    <option>PA</option>
-                    <option>MA</option>
-                </select>
-                <p className='text-sm text-red-500 mt-1'>{errors.estado?.message}</p>
-        </div>
+const Endereco = ({register, setValue, errors}: any) => {
+    const [estado, setEstado] = useState<OptionType>()
 
-        <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-            <label htmlFor="municipio" className={styles.fieldLabel}>Cidade</label>
-            <input
-                {...register('municipio')}
-                type="text" name="municipio" id="municipio" className={styles.fieldText} />
-        </div>
+    const selectedEstado = (data: any) => {
+        setValue('endereco.id_estado', data?.value)
+        setEstado(data)
+    }
 
-        <div className="col-span-6 sm:col-span-3 lg:col-span-3">
-            <label htmlFor="complemento" className={styles.fieldLabel}>Complemento</label>
-            <input
-                {...register('complemento')}
-                type="text" name="complemento" id="complemento" className={styles.fieldText} />
-        </div>
-    </>)
+    return (<div className="grid grid-cols-6 gap-4">
+    <div className="col-span-4 md:col-span-6 w-48">     
+        <FormInput
+            name="endereco.cep"
+            label="CEP"
+            register={register}
+            errors={errors}
+            rules={ {required: 'O campo nome social é obrigatório'} }
+            id="cep"
+            className="pb-4"
+        />
+    </div> 
+    <div className="col-span-6 md:col-span-3">     
+        <FormInput
+            name="endereco.logradouro"
+            label="Localidade"
+            register={register}
+            errors={errors}
+            id="localidade"
+            className="pb-4"
+        />
+    </div> 
+    <div className="col-span-6 md:col-span-3">     
+        <FormInput
+            name="endereco.bairro"
+            label="Complemento"
+            register={register}
+            errors={errors}
+            id="bairro"
+            className="pb-4"
+        />
+    </div> 
+    <div className="col-span-4 md:col-span-4">     
+        <FormInput
+            name="endereco.municipio"
+            label="Município"
+            register={register}
+            errors={errors}
+            id="municipio"
+            className="pb-4"
+        />
+    </div>
+    <div className="col-span-2 md:col-span-2 pt-1 relative">
+    <SelectEstado value={estado?.value && estado} callback={selectedEstado} />
+    </div> 
+</div>)
 }
 
 export default Endereco

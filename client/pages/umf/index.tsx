@@ -31,7 +31,7 @@ const UmfIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const url = `/umf/${projeto?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}`
         
         const { data } = await client.get(url)
         
@@ -55,7 +55,7 @@ const UmfIndex = () => {
             order,
             search
         } = paginatedData
-        const url = `/umf/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`
+        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`
 
         if (search) {
             
@@ -68,7 +68,7 @@ const UmfIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/umf/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,

@@ -40,8 +40,6 @@ export const Select = ({ label, callback, options, defaultOptions, placeholder, 
             }) : 
             selectedValue
               ) : initialData
-              // : 
-                
             }
             onChange={callback}
             id="category-select"

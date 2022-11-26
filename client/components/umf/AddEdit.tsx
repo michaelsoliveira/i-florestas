@@ -10,26 +10,16 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { useAppDispatch } from 'store/hooks'
 import { setUmf } from 'store/umfSlice'
+import SelectEstado from '../Utils/SelectEstado'
 
 const Umf = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
-    const [estados, setEstados] = useState<any>()
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
     const dispatch = useAppDispatch()
-
-    const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/estado/search/q?nome=${inputValue}`)
-        const data = response.data
-        
-        callback(data?.map((estado: any) => ({
-            value: estado.id,
-            label: estado.nome
-        })))
-    };
 
     useEffect(() => {        
         async function loadUmf() {
@@ -37,7 +27,7 @@ const Umf = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: umf } = await client.get(`/umf/${id}`)
-
+                console.log(umf)
                 setEstado({
                     label: umf?.estado?.nome,
                     value: umf?.estado?.id
@@ -60,20 +50,8 @@ const Umf = ({ id }: any) => {
 
     }, [session, isAddMode, client, id, setValue, setEstado])
 
-    useEffect(() => {
-        const defaultOptions = async () => {
-            if (typeof session !== typeof undefined){
-                const response = await client.get(`/estado?orderBy=nome&order=asc`)
-                const { estados } = response.data
-
-                setEstados(estados)
-            }
-        }
-        defaultOptions()    
-        
-    }, [session, client])
-
     const selectedEstado = (data: any) => {
+        console.log(data)
         setEstado(data)
         setValue('estado', data?.value)
     }
@@ -87,15 +65,6 @@ const Umf = ({ id }: any) => {
             alertService.error(error.message);
         }
         
-    }
-
-    function getEstadosDefaultOptions() {
-        return estados?.map((estado: any) => {
-            return {
-                label: estado.nome,
-                value: estado.id
-            }
-        })
     }
 
     async function createUmf(data: any) {
@@ -198,19 +167,7 @@ const Umf = ({ id }: any) => {
                                     />
                                 </div>
                                 <div className='w-4/12 pt-1'>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione um Estado',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={estado}
-                                    defaultOptions={getEstadosDefaultOptions()}
-                                    options={loadOptions}
-                                    label="Estado"
-                                    callback={selectedEstado}
-                                />
+                                    <SelectEstado value={estado?.value && estado} callback={selectedEstado} />
                                 </div>
                             </div>
                             <div className='flex items-center justify-between pt-4'>

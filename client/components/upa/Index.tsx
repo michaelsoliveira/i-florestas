@@ -65,7 +65,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     useEffect(() => {
         async function defaultOptions() {
-            const response = await client.get(`/umf/${projeto?.id}?orderBy=nome&order=asc`)
+            const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
                 const { umfs } = response.data
                 setUmfs(umfs)
         }

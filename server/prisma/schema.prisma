@@ -21,133 +21,134 @@ model CategoriaEspecie {
   criterio_altura   Float?
   criterio_volume   Float?
   id_projeto        String?   @db.Uuid
+  projeto           Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   especie           Especie[]
-  projeto           Projeto?           @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
   @@map("categoria_especie")
 }
 
-enum TipoPessoa {
-  F
-  J
-}
-
 model Pessoa {
-  id                String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime        @default(now()) @db.Timestamp(6)
-  updated_at        DateTime        @default(now()) @db.Timestamp(6)
-  tipo              TipoPessoa      @default(F)
-  nome              String          @db.VarChar(100)
-  pessoaFisica      PessoaFisica?
-  pessoaJuridica    PessoaJuridica?
-  id_projeto                String?    @db.Uuid
-  projeto                   Projeto?   @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_endereco               String?    @db.Uuid
-  endereco                  Endereco?   @relation(fields: [id_endereco], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  id_telefone               String?    @db.Uuid
-  telefone                  Telefone?   @relation(fields: [id_telefone], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at     DateTime        @default(now()) @db.Timestamp(6)
+  updated_at     DateTime        @default(now()) @db.Timestamp(6)
+  tipo           TipoPessoa      @default(F)
+  nome           String          @db.VarChar(100)
+  id_projeto     String?         @db.Uuid
+  id_endereco    String?         @db.Uuid
+  id_telefone    String?         @db.Uuid
+  endereco       Endereco?       @relation(fields: [id_endereco], references: [id], onDelete: Cascade)
+  projeto        Projeto?        @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  telefone       Telefone?       @relation(fields: [id_telefone], references: [id], onDelete: Cascade)
+  pessoaFisica   PessoaFisica?
+  pessoaJuridica PessoaJuridica?
+
   @@map("pessoa")
 }
 
 model ResponsavelTecnico {
-  id                         String    @id(map: "PK_bee78e8f1760ccf9cff402118a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome              String          @db.VarChar(100)
-  crea                       String?   @db.VarChar(50)
-  id_projeto                 String?   @db.Uuid
-  projeto                    Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id         String   @id(map: "PK_bee78e8f1760ccf9cff402118a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome       String   @db.VarChar(100)
+  crea       String?  @db.VarChar(50)
+  id_projeto String?  @db.Uuid
+  projeto    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model PessoaFisica {
-  id                        String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at                DateTime        @default(now()) @db.Timestamp(6)
-  updated_at                DateTime        @default(now()) @db.Timestamp(6)
-  rg                        String?         @db.VarChar(30)
-  cpf                       String?         @db.VarChar(14)
-  data_nascimento           DateTime?
-  id_pessoa                 String?    @db.Uuid
-  pessoa                    Pessoa?    @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction) 
-  @@unique([id_pessoa])
+  id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at      DateTime  @default(now()) @db.Timestamp(6)
+  updated_at      DateTime  @default(now()) @db.Timestamp(6)
+  rg              String?   @db.VarChar(30)
+  cpf             String?   @db.VarChar(14)
+  data_nascimento DateTime?
+  id_pessoa       String?   @unique @db.Uuid
+  pessoa          Pessoa?   @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
   @@map("pessoa_fisica")
 }
 
 model Telefone {
-  id                         String          @id@default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at                 DateTime        @default(now()) @db.Timestamp(6)
-  updated_at                 DateTime        @default(now()) @db.Timestamp(6)
-  ddd                        String?
-  numero                     String?        @db.VarChar(10)
-  pessoa              Pessoa[]
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  ddd        String?
+  numero     String?  @db.VarChar(10)
+  pessoa     Pessoa[]
 }
 
 model PessoaJuridica {
-  id                         String          @id(map: "PK_bee78e8f1760ccf9cff402118a6") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at                 DateTime        @default(now()) @db.Timestamp(6)
-  updated_at                 DateTime        @default(now()) @db.Timestamp(6)
-  razao_social               String          @db.VarChar(100)
-  inscricao_estadual         String?         @db.VarChar(30)
-  inscricao_federal          String?         @db.VarChar(30)
-  cnpj                       String?         @db.VarChar(14)
-  data_constituicao          DateTime?
-  id_pessoa                  String?         @db.Uuid
-  pessoa                     Pessoa? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  @@unique([id_pessoa])
+  id                 String    @id(map: "PK_bee78e8f1760ccf9cff402118a6") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at         DateTime  @default(now()) @db.Timestamp(6)
+  updated_at         DateTime  @default(now()) @db.Timestamp(6)
+  razao_social       String    @db.VarChar(100)
+  inscricao_estadual String?   @db.VarChar(30)
+  inscricao_federal  String?   @db.VarChar(30)
+  cnpj               String?   @db.VarChar(14)
+  data_constituicao  DateTime?
+  id_pessoa          String?   @unique @db.Uuid
+  pessoa             Pessoa?   @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
   @@map("pessoa_juridica")
 }
 
 model ProjetoUser {
   id_projeto String  @db.Uuid
   id_user    String  @db.Uuid
-  active     Boolean  @default(false)
+  active     Boolean @default(false)
   projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
-  users      User   @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
+  users      User    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
 
   @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
+  @@unique([id_projeto, id_user, active])
   @@index([id_projeto], map: "IDX_9197746d4fec9555520a45d1ad")
   @@index([id_user], map: "IDX_ea3cb7162981b687e4daa856bf")
   @@map("projeto_users")
-  @@unique([id_projeto, id_user, active])
 }
 
 model Endereco {
-  id                  String   @id(map: "PK_2a6880f71a7f8d1c677bb2a32a8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at          DateTime @default(now()) @db.Timestamp(6)
-  updated_at          DateTime @default(now()) @db.Timestamp(6)
-  cep                 String?  @db.VarChar(8)
-  logradouro          String?  @db.VarChar(60)
-  municipio           String?  @db.VarChar(30)
-  estado              String?  @db.VarChar(2)
-  bairro              String?  @db.VarChar(50)
-  pessoa              Pessoa[]
+  id         String   @id(map: "PK_2a6880f71a7f8d1c677bb2a32a8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  cep        String?  @db.VarChar(8)
+  logradouro String?  @db.VarChar(60)
+  municipio  String?  @db.VarChar(30)
+  bairro     String?  @db.VarChar(50)
+  id_estado  String?  @db.Uuid
+  estado     Estado?  @relation(fields: [id_estado], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pessoa     Pessoa[]
+
   @@map("endereco")
 }
 
 model Especie {
-  id                String             @id(map: "PK_07fb45be286aefa181943248b21") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime           @default(now()) @db.Timestamp(6)
-  updated_at        DateTime           @default(now()) @db.Timestamp(6)
-  nome              String?            @db.VarChar(100)
-  nome_orgao        String?            @db.VarChar(100)
-  nome_cientifico   String?            @db.VarChar(200)
-  id_categoria      String?            @db.Uuid
-  id_projeto        String?            @db.Uuid
-  categoria_especie CategoriaEspecie?  @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
-  projeto           Projeto?           @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String            @id(map: "PK_07fb45be286aefa181943248b21") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at        DateTime          @default(now()) @db.Timestamp(6)
+  updated_at        DateTime          @default(now()) @db.Timestamp(6)
+  nome              String?           @db.VarChar(100)
+  nome_orgao        String?           @db.VarChar(100)
+  nome_cientifico   String?           @db.VarChar(200)
+  id_categoria      String?           @db.Uuid
+  id_projeto        String?           @db.Uuid
+  categoria_especie CategoriaEspecie? @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
+  projeto           Projeto?          @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
   @@map("especie")
 }
 
 model Permission {
-  id                String              @id(map: "PK_920331560282b8bd21bb02290df") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime            @default(now()) @db.Timestamp(6)
-  updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  name              String              @db.VarChar
-  description       String              @db.VarChar
+  id                String           @id(map: "PK_920331560282b8bd21bb02290df") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at        DateTime         @default(now()) @db.Timestamp(6)
+  updated_at        DateTime         @default(now()) @db.Timestamp(6)
+  name              String           @db.VarChar
+  description       String           @db.VarChar
   permissions_roles PermissionRole[]
   users_permissions UserPermission[]
+
   @@map("permissions")
 }
 
 model PermissionRole {
-  role_id       String      @db.Uuid
-  permission_id String      @db.Uuid
+  role_id       String     @db.Uuid
+  permission_id String     @db.Uuid
   permissions   Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade, map: "FK_3309f5fa8d95935f0701027f2bd")
   roles         Role       @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "FK_e08f6859eaac8cbf7f087f64e2b")
 
@@ -158,22 +159,23 @@ model PermissionRole {
 }
 
 model Projeto {
-  id                        String   @id(map: "PK_87de7c3af72f824a860298c3c3e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at                DateTime @default(now()) @db.Timestamp(6)
-  updated_at                DateTime @default(now()) @db.Timestamp(6)
-  nome                      String   @db.VarChar
-  reg_ambiental             String?  @db.VarChar(50)
-  dmin_relatorio            Int?
-  intervalo_dmin_relatorio  Int?
-  excluido                  Boolean @default(false)
-  data_exclusao             DateTime?
-  equacao_Volume            EquacaoVolume[]
-  umf                       Umf[]
-  projeto_users             ProjetoUser[]
-  pessoa                    Pessoa[]
-  resp_tecnico              ResponsavelTecnico[]
-  especie                   Especie[]
-  categoria_especie         CategoriaEspecie[]
+  id                       String               @id(map: "PK_87de7c3af72f824a860298c3c3e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at               DateTime             @default(now()) @db.Timestamp(6)
+  updated_at               DateTime             @default(now()) @db.Timestamp(6)
+  nome                     String               @db.VarChar
+  data_exclusao            DateTime?
+  dmin_relatorio           Int?
+  excluido                 Boolean              @default(false)
+  intervalo_dmin_relatorio Int?
+  reg_ambiental            String?              @db.VarChar(50)
+  resp_tecnico             ResponsavelTecnico[]
+  categoria_especie        CategoriaEspecie[]
+  equacao_Volume           EquacaoVolume[]
+  especie                  Especie[]
+  pessoa                   Pessoa[]
+  projeto_users            ProjetoUser[]
+  umf                      Umf[]
+
   @@map("projeto")
 }
 
@@ -184,18 +186,20 @@ model RefreshToken {
   expires_in Int
   token      String   @db.VarChar
   id_user    String?  @db.Uuid
-  users      User?   @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_fd79923e4359a26a971f841fb5e")
+  users      User?    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_fd79923e4359a26a971f841fb5e")
+
   @@map("refresh_token")
 }
 
 model Role {
-  id                String              @id(map: "PK_c1433d71a4838793a49dcad46ab") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime            @default(now()) @db.Timestamp(6)
-  updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  name              String              @db.VarChar
-  description       String              @db.VarChar
+  id                String           @id(map: "PK_c1433d71a4838793a49dcad46ab") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at        DateTime         @default(now()) @db.Timestamp(6)
+  updated_at        DateTime         @default(now()) @db.Timestamp(6)
+  name              String           @db.VarChar
+  description       String           @db.VarChar
   permissions_roles PermissionRole[]
   users_roles       UserRole[]
+
   @@map("roles")
 }
 
@@ -205,7 +209,8 @@ model SpatialRefSys {
   auth_srid Int?
   srtext    String? @db.VarChar(2048)
   proj4text String? @db.VarChar(2048)
-  upa         Upa[]
+  upa       Upa[]
+
   @@map("spatial_ref_sys")
 }
 
@@ -230,54 +235,55 @@ model Umf {
   localizacao String?  @db.VarChar(50)
   id_estado   String?  @db.Uuid
   id_projeto  String?  @db.Uuid
-  estado      Estado? @relation(fields: [id_estado], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  estado      Estado?  @relation(fields: [id_estado], references: [id], onDelete: NoAction, onUpdate: NoAction)
   projeto     Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   upa         Upa[]
+
   @@map("umf")
 }
 
 model Upa {
-  id                    String   @id(map: "PK_8beec4503af75eabc74b6f33c8e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at            DateTime @default(now()) @db.Timestamp(6)
-  updated_at            DateTime @default(now()) @db.Timestamp(6)
-  ano                   Int
-  descricao             String?  @db.VarChar(50)
-  id_equacao_volume     String?  @db.Uuid
-  tipo                  Int?
-  srid                  Int?
-  id_umf                String?  @db.Uuid
-  umf                   Umf?     @relation(fields: [id_umf], references: [id], onDelete: Cascade, map: "FK_b88118f4ad5bc32837c3873a56f")
-  ut                    Ut[]
-  spatial_ref_sys       SpatialRefSys? @relation(fields: [srid], references: [srid], onDelete: NoAction)
-  equacao_volume        EquacaoVolume? @relation(fields: [id_equacao_volume], references: [id], onDelete: NoAction)
+  id                String         @id(map: "PK_8beec4503af75eabc74b6f33c8e") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at        DateTime       @default(now()) @db.Timestamp(6)
+  updated_at        DateTime       @default(now()) @db.Timestamp(6)
+  ano               Int
+  descricao         String?        @db.VarChar(50)
+  tipo              Int?
+  id_umf            String?        @db.Uuid
+  srid              Int?
+  id_equacao_volume String?        @db.Uuid
+  equacao_volume    EquacaoVolume? @relation(fields: [id_equacao_volume], references: [id], onDelete: NoAction)
+  umf               Umf?           @relation(fields: [id_umf], references: [id], onDelete: Cascade, map: "FK_b88118f4ad5bc32837c3873a56f")
+  spatial_ref_sys   SpatialRefSys? @relation(fields: [srid], references: [srid], onDelete: NoAction)
+  ut                Ut[]
+
   @@map("upa")
 }
 
 model User {
-  id                String              @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime            @default(now()) @db.Timestamp(6)
-  updated_at        DateTime            @default(now()) @db.Timestamp(6)
-  username          String              @db.VarChar
-  email             String              @db.VarChar
-  password          String              @db.VarChar
-  provider          String?             @db.VarChar
-  id_provider       String?             @db.VarChar
-  image             String?             @db.VarChar
+  id                String           @id(map: "PK_a3ffb1c0c8416b9fc6f907b7433") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at        DateTime         @default(now()) @db.Timestamp(6)
+  updated_at        DateTime         @default(now()) @db.Timestamp(6)
+  username          String           @db.VarChar
+  email             String           @unique @db.VarChar
+  password          String           @db.VarChar
+  provider          String?          @db.VarChar
+  id_provider       String?          @db.VarChar
+  image             String?          @db.VarChar
   email_verified    DateTime?
+  accounts          Account[]
   projeto_users     ProjetoUser[]
   refresh_token     RefreshToken[]
+  sessions          Session[]
   users_permissions UserPermission[]
   users_roles       UserRole[]
-  accounts          Account[]
-  sessions          Session[]
 
-  @@unique([email])
   @@map("users")
 }
 
 model UserPermission {
-  user_id       String      @db.Uuid
-  permission_id String      @db.Uuid
+  user_id       String     @db.Uuid
+  permission_id String     @db.Uuid
   permissions   Permission @relation(fields: [permission_id], references: [id], onDelete: Cascade, map: "FK_b09b9a210c60f41ec7b453758e9")
   users         User       @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_4de7d0b175f702be3be55270023")
 
@@ -290,8 +296,8 @@ model UserPermission {
 model UserRole {
   user_id String @db.Uuid
   role_id String @db.Uuid
-  roles   Role  @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "FK_1cf664021f00b9cc1ff95e17de4")
-  users   User  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_e4435209df12bc1f001e5360174")
+  roles   Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "FK_1cf664021f00b9cc1ff95e17de4")
+  users   User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_e4435209df12bc1f001e5360174")
 
   @@id([user_id, role_id], map: "PK_c525e9373d63035b9919e578a9c")
   @@index([role_id], map: "IDX_1cf664021f00b9cc1ff95e17de")
@@ -317,6 +323,7 @@ model Ut {
   origem             Unsupported("geometry")?
   id_upa             String?                  @db.Uuid
   upa                Upa?                     @relation(fields: [id_upa], references: [id], onDelete: Cascade, map: "FK_cb45ccb0356c31c3bf2f00b0086")
+
   @@map("ut")
 }
 
@@ -330,20 +337,19 @@ model VerificationToken {
 }
 
 model Account {
-  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId             String   @db.Uuid
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -355,32 +361,42 @@ model Session {
   userId       String   @db.Uuid
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("sessions")
 }
 
 model Estado {
-  id      String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  uf      String
-  nome    String
-  ddd     Int?      @db.SmallInt 
-  umf     Umf[]
+  id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  uf       String
+  nome     String
+  ddd      Int?       @db.SmallInt
+  endereco Endereco[]
+  umf      Umf[]
+
   @@map("estado")
 }
 
 model EquacaoModelo {
-  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome        String
-  expressao   String    @db.VarChar(100)
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome      String
+  expressao String @db.VarChar(100)
+
   @@map("equacao_modelo")
 }
 
 model EquacaoVolume {
-  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome        String
-  expressao   String @db.VarChar(100)
-  id_projeto  String     @db.Uuid
-  observacao  String?
-  projeto     Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  upa         Upa[]
+  id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome       String
+  expressao  String  @db.VarChar(100)
+  observacao String?
+  id_projeto String  @db.Uuid
+  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  upa        Upa[]
+
   @@map("equacao_volume")
+}
+
+enum TipoPessoa {
+  F
+  J
 }

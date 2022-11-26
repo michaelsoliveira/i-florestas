@@ -23,12 +23,13 @@ interface EmpresaRequest {
 }
 
 class DetentorService {
-    async create(data: EmpresaRequest): Promise<Pessoa> {        
-
-        const empresaExists = await prismaClient.pessoa.findFirst({
+    async create(data: any): Promise<Pessoa> {        
+        const nome = data?.tipo === 0 ? data?.pessoaFisica.nome : data?.pessoaJuridica.nome
+        const { pessoaFisica, pessoaJuridica, endereco } = data
+        const detentorExists = await prismaClient.pessoa.findFirst({
             where: {
                 AND: {
-                    nome: data?.nome,
+                    nome,
                     projeto: {
                         id: data?.id_projeto
                     }
@@ -36,24 +37,29 @@ class DetentorService {
             }
         })
         
-        if (empresaExists) {
+        if (detentorExists) {
             throw new Error("Já existe uma empresa cadastrado com estas informações")
         }
 
         const basicData = {
-            nome: data?.nome,
-            telefone: {
-                create: {
-                    numero: data?.telefone
-                }                    
-            },
+            nome,
+            tipo: data?.tipo === 0 ? TipoPessoa.F : TipoPessoa.J,
+            // telefone: {
+            //     create: {
+            //         numero: data?.telefone
+            //     }                    
+            // },
             endereco: {
                 create:{
-                    logradouro: data?.logradouro,
-                    municipio: data?.municipio,
-                    bairro: data?.complemento,
-                    estado: data?.estado,
-                    cep: data?.cep
+                    cep: endereco?.cep,
+                    logradouro: endereco?.logradouro,
+                    bairro: endereco?.bairro,
+                    municipio: endereco?.municipio,
+                    estado: {
+                        connect: {
+                            id: endereco?.id_estado
+                        }
+                    }
                 }
             },
             projeto: {
@@ -63,32 +69,32 @@ class DetentorService {
             }
         }
 
-        const preparedData = data?.tipo === 'F' ? {
+        const preparedData = data?.tipo === 0 ? {
             pessoaFisica: {
                 create: {
-                    rg: data?.rg_inscricao,
-                    cpf: data?.cpf_cnpj
+                    rg: pessoaFisica?.rg,
+                    cpf: pessoaFisica?.cpf
                 }
             }
         } : {
             pessoaJuridica: {
                 create: {
-                    razao_social: data?.razao_social,
-                    inscricao_estadual: data?.rg_inscricao,
-                    cnpj: data?.cpf_cnpj,
-                    inscricao_federal: data?.inscricao_federal
+                    razao_social: pessoaJuridica?.razao_social,
+                    cnpj: pessoaJuridica?.cnpj,
+                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
+                    inscricao_federal: pessoaJuridica?.inscricao_federal
                 }
             }
         }
         
-        const empresa = await prismaClient.pessoa.create({
+        const detentor = await prismaClient.pessoa.create({
             data: {
                 ...basicData,
                 ...preparedData
             },
         })
         
-        return empresa
+        return detentor
     }
 
     async update(id: string, data: any): Promise<any> {

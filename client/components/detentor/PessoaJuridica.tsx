@@ -25,7 +25,7 @@ const PessoaJuridica = ({register, errors}: any) => {
                 </div>    
                 <div className="col-span-3 md:col-span-2">
                     <FormInput
-                        name="cpnj"
+                        name="pessoaJuridica.cpnj"
                         label="CNPJ"
                         register={register}
                         errors={errors}
@@ -35,7 +35,7 @@ const PessoaJuridica = ({register, errors}: any) => {
                 </div>   
                 <div className="col-span-3 md:col-span-2">
                     <FormInput
-                        name="inscricao_estadual"
+                        name="pessoaJuridica.inscricao_estadual"
                         label="Inscrição Estadual"
                         register={register}
                         errors={errors}
@@ -45,7 +45,7 @@ const PessoaJuridica = ({register, errors}: any) => {
                 </div> 
                 <div className="col-span-3 md:col-span-2">
                     <FormInput
-                        name="inscricao_federal"
+                        name="pessoaJuridica.inscricao_federal"
                         label="Inscrição Federal"
                         register={register}
                         errors={errors}
