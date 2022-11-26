@@ -90,7 +90,12 @@ class DetentorService {
         const detentor = await prismaClient.pessoa.create({
             data: {
                 ...basicData,
-                ...preparedData
+                pessoaFisica: {
+                    create: {
+                        rg: pessoaFisica?.rg,
+                        cpf: pessoaFisica?.cpf
+                    }
+                }
             },
         })
         
