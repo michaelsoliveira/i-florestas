@@ -40,7 +40,7 @@ const equacoesModelo: Prisma.EquacaoModeloCreateInput[] = [
 const equacoesVolume: Prisma.EquacaoVolumeCreateInput[] = [
   {
     nome: 'Fator de forma',
-    expressao: '0.7 * (3.141592 * (DAP ^ 2) / 40000 ) * ALTURA'
+    expressao: '0.7 * (3.141592 * (DAP ^ 2) / 40000 ) * ALTURA',
   },
   {
     nome: 'Equação de Volume Flona Tapajós',

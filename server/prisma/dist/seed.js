@@ -231,7 +231,7 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, empresa, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
+        var _i, estados_1, e, estado, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
         return __generator(this, function (_h) {
             switch (_h.label) {
                 case 0:
@@ -308,11 +308,6 @@ function main() {
                                                 connect: {
                                                     id: user === null || user === void 0 ? void 0 : user.id
                                                 }
-                                            },
-                                            roles: {
-                                                connect: {
-                                                    id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
-                                                }
                                             }
                                         }
                                     ]
@@ -321,12 +316,22 @@ function main() {
                         })];
                 case 12:
                     projeto = _h.sent();
-                    return [4 /*yield*/, prisma.empresa.create({
+                    return [4 /*yield*/, prisma.pessoa.create({
                             data: {
-                                nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
-                                razao_social: 'iFlorestas SA',
-                                endereco: 'BR 210',
-                                municipio: 'Macapá',
+                                tipo: 'J',
+                                nome: 'iFlorestas - Gerenciamento Florestal Sustentável',
+                                endereco: {
+                                    create: {
+                                        logradouro: 'BR 210',
+                                        municipio: 'Macapá'
+                                    }
+                                },
+                                pessoaJuridica: {
+                                    create: {
+                                        cnpj: '322390487',
+                                        razao_social: 'iFlorestal SA'
+                                    }
+                                },
                                 projeto: {
                                     connect: {
                                         id: projeto === null || projeto === void 0 ? void 0 : projeto.id
@@ -335,19 +340,15 @@ function main() {
                             }
                         })];
                 case 13:
-                    empresa = _h.sent();
-                    console.log("Empresa " + empresa.nome_fantasia + " criada com o id: " + empresa.id);
+                    detentor = _h.sent();
+                    console.log("Detentor " + detentor.nome + " criada com o id: " + detentor.id);
                     _f = 0, equacoesModelo_1 = equacoesModelo;
                     _h.label = 14;
                 case 14:
                     if (!(_f < equacoesModelo_1.length)) return [3 /*break*/, 17];
                     eqModelo = equacoesModelo_1[_f];
                     return [4 /*yield*/, prisma.equacaoModelo.create({
-                            data: __assign(__assign({}, eqModelo), { projeto: {
-                                    connect: {
-                                        id: projeto === null || projeto === void 0 ? void 0 : projeto.id
-                                    }
-                                } })
+                            data: __assign({}, eqModelo)
                         })];
                 case 15:
                     equacaoModelo = _h.sent();

@@ -23,7 +23,8 @@ interface EmpresaRequest {
 }
 
 class DetentorService {
-    async create(data: any): Promise<Pessoa> {        
+    async create(data: any): Promise<Pessoa> {     
+        console.log(data)   
         const nome = data?.tipo === 0 ? data?.pessoaFisica.nome : data?.pessoaJuridica.nome
         const { pessoaFisica, pessoaJuridica, endereco } = data
         const detentorExists = await prismaClient.pessoa.findFirst({
@@ -90,12 +91,7 @@ class DetentorService {
         const detentor = await prismaClient.pessoa.create({
             data: {
                 ...basicData,
-                pessoaFisica: {
-                    create: {
-                        rg: pessoaFisica?.rg,
-                        cpf: pessoaFisica?.cpf
-                    }
-                }
+                ...preparedData
             },
         })
         
@@ -103,20 +99,27 @@ class DetentorService {
     }
 
     async update(id: string, data: any): Promise<any> {
+        const { pessoaFisica, pessoaJuridica, endereco } = data
+        console.log(id, data)
         const basicData = {
-            nome: data?.nome,
-            telefone: {
-                update: {
-                    numero: data?.telefone
-                }                    
-            },
+            tipo: data?.tipo === 0 ? TipoPessoa.F : TipoPessoa.J,
+            nome: data?.tipo === 0 ? pessoaFisica?.nome : pessoaJuridica?.nome_fantasia,
+            // telefone: {
+            //     update: {
+            //         numero: data?.telefone
+            //     }                    
+            // },
             endereco: {
-                update:{
-                    logradouro: data?.logradouro,
-                    municipio: data?.municipio,
-                    bairro: data?.complemento,
-                    estado: data?.estado,
-                    cep: data?.cep
+                create:{
+                    cep: endereco?.cep,
+                    logradouro: endereco?.logradouro,
+                    bairro: endereco?.bairro,
+                    municipio: endereco?.municipio,
+                    estado: {
+                        connect: {
+                            id: endereco?.id_estado
+                        }
+                    }
                 }
             },
             projeto: {
@@ -126,34 +129,34 @@ class DetentorService {
             }
         }
 
-        const preparedData = data?.tipo === 'F' ? {
+        const preparedData = data?.tipo === 0 ? {
             pessoaFisica: {
-                update: {
-                    rg: data?.rg_inscricao,
-                    cpf: data?.cpf_cnpj
+                create: {
+                    rg: pessoaFisica?.rg,
+                    cpf: pessoaFisica?.cpf
                 }
             }
         } : {
             pessoaJuridica: {
-                update: {
-                    razao_social: data?.razao_social,
-                    inscricao_estadual: data?.rg_inscricao,
-                    cnpj: data?.cpf_cnpj,
-                    inscricao_federal: data?.inscricao_federal
+                create: {
+                    razao_social: pessoaJuridica?.razao_social,
+                    cnpj: pessoaJuridica?.cnpj,
+                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
+                    inscricao_federal: pessoaJuridica?.inscricao_federal
                 }
             }
         }
         
-        const empresa = await prismaClient.pessoa.update({
+        const detentor = await prismaClient.pessoa.update({
             data: {
                 ...basicData,
                 ...preparedData
             },
             where: {
-                id
+                id_projeto: data?.id_projeto
             }
         })
-        return empresa
+        return detentor
     }
 
     async delete(id: string): Promise<void> {

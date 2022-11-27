@@ -40,9 +40,9 @@ model Pessoa {
   projeto               Projeto?        @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   telefone              Telefone?       @relation(fields: [id_telefone], references: [id], onDelete: Cascade, onUpdate: NoAction)
   id_pessoa_fisica      String?         @db.Uuid
-  pessoaFisica          PessoaFisica?   @relation(fields: [id_pessoa_fisica], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pessoaFisica          PessoaFisica?   @relation(fields: [id_pessoa_fisica], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_pessoa_juridica    String?         @db.Uuid
-  pessoaJuridica        PessoaJuridica?  @relation(fields: [id_pessoa_juridica], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pessoaJuridica        PessoaJuridica?  @relation(fields: [id_pessoa_juridica], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("pessoa")
 }
 
@@ -84,7 +84,6 @@ model PessoaJuridica {
   inscricao_federal  String?   @db.VarChar(30)
   cnpj               String?   @db.VarChar(14)
   data_constituicao  DateTime?
-  id_pessoa          String?   @unique @db.Uuid
   pessoa             Pessoa[]
 
   @@map("pessoa_juridica")
@@ -389,8 +388,8 @@ model EquacaoVolume {
   nome       String
   expressao  String  @db.VarChar(100)
   observacao String?
-  id_projeto String  @db.Uuid
-  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_projeto String?  @db.Uuid
+  projeto    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   upa        Upa[]
 
   @@map("equacao_volume")
