@@ -22,36 +22,6 @@ const AddEdit = () => {
     const [estado, setEstado] = useState<any>()
     const isAddMode = !projeto?.pessoa
 
-    // const validationSchema = Yup.object().shape({
-        
-    //     "pessoaJuridica.razao_social":
-    //     Yup.string().when('tipo', {
-    //         is: (tipo:any) => tipo==='J',
-    //         then: Yup.string()
-    //             .min(3, "Razão Social deve ter no minimo 3 caracteres")
-    //             .max(100, "Razão Social deve ter no máximo 100 caracteres")
-    //             .required('O campo Razão Social é obrigatório '),
-    //     }),
-            
-    //     nome:
-    //         Yup.string()
-    //             .nullable()
-    //             .transform(value => (!value ? null : value))
-    //             .min(3, "Nome deve ter no minimo 3 caracteres")
-    //             .max(100, "Nome deve ter no máximo 100 caracteres"),
-    //     resp_tecnico:
-    //        Yup.string()
-    //            .matches(
-    //                /^[aA-zZ\s]+$/,
-    //                "Somente letras são permitidas"
-    //            )
-    //            .nullable()
-    //           .transform(value => (!value ? null : value))
-    //            .min(3, "Responsável técnico deve ter no minimo 3 caracteres")
-    //            .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
-    // })
-
-    // const formOptions = { resolver: yupResolver(validationSchema) }
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
     function onSelect(index: number) {
@@ -59,9 +29,8 @@ const AddEdit = () => {
     }
 
     const loadDetentor = useCallback(async () => {
-        if (!!projeto?.pessoa && typeof session !== typeof undefined) {
+
             const { data } = await client.get(`/detentor/${projeto?.id}`)
-            console.log(data)
             setDetentor(data)
             if (data?.tipo === 'J') { 
                 setTipoPessoa(1) 
@@ -94,12 +63,12 @@ const AddEdit = () => {
                 }
                 
             }
-        }
-    }, [projeto?.pessoa, projeto?.id, session, client, setValue])
+        
+    }, [projeto, client, setValue])
     
     useEffect(() => {  
         loadDetentor()
-    }, [projeto, loadDetentor])
+    }, [loadDetentor])
 
     async function onSubmit(data: any) {
         try {
@@ -113,15 +82,12 @@ const AddEdit = () => {
     }
 
     async function createDetentor(data: any) {
-        // console.log(data)
         await client.post('/detentor', data)
             .then((response: any) => {
                 const { error, detentor, message } = response.data
-                console.log(detentor)
                 if (error) {
                     alertService.error(message)
                 } else {
-                    
                     alertService.success(`Detentor cadastrada com SUCESSO!!!`);
                     router.push(`/projeto`)
                 }
@@ -132,7 +98,6 @@ const AddEdit = () => {
         
         await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
-                
                 const detentor = response.data
                 alertService.success(`Detentor atualizada com SUCESSO!!!`);
                 router.push('/projeto')

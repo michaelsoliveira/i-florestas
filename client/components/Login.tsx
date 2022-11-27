@@ -76,21 +76,21 @@ function Login({ csrfToken }: any) {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6" method='POST'>
           <input type="hidden" name="csrfToken" value={csrfToken} />
             <input type="hidden" name="remember" defaultValue="true" />
-            <div className="rounded-md">
-              <div className="relative">
+            <div className="rounded-md flex flex-col">
+                <div className="relative">
                     <input
                       autoFocus
                       {...register('email')}
                       id="emailLogin" name="email" type="email" className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600" placeholder="michaelsoliveira@gmail.com" />
                       <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email</label>
-                  </div>
+                </div>
               
                 <div className="mt-10 relative">
                     <input
                       {...register('password')}
                       id="passwordLogin" name="password" type="password" className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600" placeholder="michaelsoliveira@gmail.com" />
                       <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Senha</label>
-                  </div>
+                </div>
               
             </div>
 
