@@ -1,23 +1,26 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types'
 import { useSession } from 'next-auth/react'
 import { useRouter } from "next/router";
 import { Loading } from "./Loading";
+import { ProjetoContext } from "contexts/ProjetoContext";
 
 const withAuthentication = (WrappedComponent: any) => {
   const RequiresAuthentication = (props: any) => {
       
       const { data: session, status } = useSession()
+      const { projeto } = useContext(ProjetoContext)
       
       const router = useRouter()
       
       useEffect(() => {
         if (typeof session !== typeof undefined) {
+            console.log(projeto)
             if (!session) {
                 router.push('/login')
             }
         }
-      }, [router, session]);
+      }, [projeto, router, session]);
       
 
      // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator

@@ -50,7 +50,7 @@ const Projetos = () => {
         setLoading(true)
         if (typeof session !== typeof undefined){
             
-            const response = await client.get(`/projeto`)
+            const response = await client.get(`projeto`)
             const { projetos, error, message } = response.data
             
             const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}

@@ -2,6 +2,7 @@
 import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
 import { Pessoa, TipoPessoa, User } from "@prisma/client"
+import { Console } from "console";
 
 interface EmpresaRequest {
     razao_social: string,
@@ -25,17 +26,31 @@ interface EmpresaRequest {
 class DetentorService {
     async create(data: any): Promise<Pessoa> {     
         console.log(data)   
-        const nome = data?.tipo === 0 ? data?.pessoaFisica.nome : data?.pessoaJuridica.nome
+        const nome = data?.tipo === 'F' ? data?.pessoaFisica.nome : data?.pessoaJuridica.nome_fantasia
         const { pessoaFisica, pessoaJuridica, endereco } = data
-        const detentorExists = await prismaClient.pessoa.findFirst({
-            where: {
-                AND: {
-                    nome,
-                    projeto: {
-                        id: data?.id_projeto
-                    }
+
+        const where = data?.tipo === 'F' ? {
+            AND: {
+                pessoaFisica: {
+                    nome
+                },
+                projeto: {
+                    id: data?.id_projeto
                 }
             }
+        } : {
+            AND: {
+                pessoaJuridica: {
+                    nome_fantasia: nome
+                },
+                projeto: {
+                    id: data?.id_projeto
+                }
+            }
+        }
+
+        const detentorExists = await prismaClient.pessoa.findFirst({
+            where
         })
         
         if (detentorExists) {
@@ -43,8 +58,7 @@ class DetentorService {
         }
 
         const basicData = {
-            nome,
-            tipo: data?.tipo === 0 ? TipoPessoa.F : TipoPessoa.J,
+            tipo: data?.tipo === 'F' ? TipoPessoa.F : TipoPessoa.J,
             // telefone: {
             //     create: {
             //         numero: data?.telefone
@@ -70,9 +84,10 @@ class DetentorService {
             }
         }
 
-        const preparedData = data?.tipo === 0 ? {
+        const preparedData = data?.tipo === 'F' ? {
             pessoaFisica: {
                 create: {
+                    nome: pessoaFisica?.nome,
                     rg: pessoaFisica?.rg,
                     cpf: pessoaFisica?.cpf
                 }
@@ -80,6 +95,7 @@ class DetentorService {
         } : {
             pessoaJuridica: {
                 create: {
+                    nome_fantasia: pessoaJuridica?.nome_fantasia,
                     razao_social: pessoaJuridica?.razao_social,
                     cnpj: pessoaJuridica?.cnpj,
                     inscricao_estadual: pessoaJuridica?.inscricao_estadual,
@@ -99,18 +115,17 @@ class DetentorService {
     }
 
     async update(id: string, data: any): Promise<any> {
+        console.log(data)
         const { pessoaFisica, pessoaJuridica, endereco } = data
-        console.log(id, data)
         const basicData = {
-            tipo: data?.tipo === 0 ? TipoPessoa.F : TipoPessoa.J,
-            nome: data?.tipo === 0 ? pessoaFisica?.nome : pessoaJuridica?.nome_fantasia,
+            tipo: data?.tipo,
             // telefone: {
             //     update: {
             //         numero: data?.telefone
             //     }                    
             // },
             endereco: {
-                create:{
+                update:{
                     cep: endereco?.cep,
                     logradouro: endereco?.logradouro,
                     bairro: endereco?.bairro,
@@ -129,21 +144,40 @@ class DetentorService {
             }
         }
 
-        const preparedData = data?.tipo === 0 ? {
+        const preparedData = data?.tipo === 'F' ? {
             pessoaFisica: {
-                create: {
-                    rg: pessoaFisica?.rg,
-                    cpf: pessoaFisica?.cpf
+                upsert: {
+                    update: {
+                        nome: pessoaFisica?.nome,
+                        rg: pessoaFisica?.rg,
+                        cpf: pessoaFisica?.cpf
+                    },
+                    create: {
+                        nome: pessoaFisica?.nome,
+                        rg: pessoaFisica?.rg,
+                        cpf: pessoaFisica?.cpf
+                    }
                 }
             }
         } : {
             pessoaJuridica: {
-                create: {
-                    razao_social: pessoaJuridica?.razao_social,
-                    cnpj: pessoaJuridica?.cnpj,
-                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
-                    inscricao_federal: pessoaJuridica?.inscricao_federal
+                upsert: {
+                    update: {
+                        nome_fantasia: pessoaJuridica?.nome_fantasia,
+                        razao_social: pessoaJuridica?.razao_social,
+                        cnpj: pessoaJuridica?.cnpj,
+                        inscricao_estadual: pessoaJuridica?.inscricao_estadual,
+                        inscricao_federal: pessoaJuridica?.inscricao_federal
+                    },
+                    create: {
+                        nome_fantasia: pessoaJuridica?.nome_fantasia,
+                        razao_social: pessoaJuridica?.razao_social,
+                        cnpj: pessoaJuridica?.cnpj,
+                        inscricao_estadual: pessoaJuridica?.inscricao_estadual,
+                        inscricao_federal: pessoaJuridica?.inscricao_federal
+                    }
                 }
+                
             }
         }
         
@@ -153,7 +187,7 @@ class DetentorService {
                 ...preparedData
             },
             where: {
-                id_projeto: data?.id_projeto
+                id
             }
         })
         return detentor
@@ -187,7 +221,13 @@ class DetentorService {
         const detentor = await prismaClient.pessoa.findFirst({
             include: {
                 pessoaFisica: true,
-                pessoaJuridica: true
+                pessoaJuridica: true,
+                endereco: {
+                    include: {
+                        estado: true
+                    }
+                },
+                telefone: true
             },
             where: {
                 id_projeto: id

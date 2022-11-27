@@ -175,6 +175,7 @@ class ProjetoService {
                             id_user: id
                         }
                     },
+                    pessoa: true
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
@@ -190,7 +191,8 @@ class ProjetoService {
             return {
                 id: projeto?.id,
                 nome: projeto?.nome,
-                active: projeto?.projeto_users[0].active
+                active: projeto?.projeto_users[0].active,
+                pessoa: projeto?.pessoa[0]
             }
         })
 
@@ -324,6 +326,9 @@ class ProjetoService {
 
     async getActive(id: string): Promise<Projeto | null> {
         const projeto = await prismaClient.projeto.findFirst({
+            include: {
+                pessoa: true
+            },
             where: {
                 AND: {
                     projeto_users: {

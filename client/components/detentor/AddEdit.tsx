@@ -19,7 +19,8 @@ const AddEdit = () => {
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
     const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
-    const isAddMode = !!projeto?.pessoa
+    const [estado, setEstado] = useState<any>()
+    const isAddMode = !projeto?.pessoa
 
     // const validationSchema = Yup.object().shape({
         
@@ -58,26 +59,33 @@ const AddEdit = () => {
     }
 
     const loadDetentor = useCallback(async () => {
-        if (!isAddMode && typeof session !== typeof undefined) {
-
+        if (!!projeto?.pessoa && typeof session !== typeof undefined) {
             const { data } = await client.get(`/detentor/${projeto?.id}`)
-            
+            console.log(data)
             setDetentor(data)
             if (data?.tipo === 'J') { 
-                setValue('pessoaJuridica.nome', data?.nome)
-                setValue('tipo', 'J')
                 setTipoPessoa(1) 
             } else {
-                setValue('pessoaFisica.nome', data?.nome)
-                setValue('tipo', 'F')
                 setTipoPessoa(0)
             }
+
+            setEstado({
+                label: data?.endereco?.estado?.nome,
+                value: data?.endereco?.estado?.id
+            })
+
             for (const [key, value] of Object.entries(data)) {
-                if (key === 'tipo' && value === 1) {
-                    setValue("pessoaJurica.".concat(key), value, {
+                if (key === 'tipo' && value === 'F')
+                {
+                    setValue("pessoaFisica".concat(key), value, {
                         shouldValidate: true,
                         shouldDirty: true
-                    }) 
+                    })                     
+                } else if (key === 'tipo' && value === 'J') {
+                    setValue("pessoaJuridica".concat(key), value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })                     
                 } else {
                     setValue(key, value, {
                         shouldValidate: true,
@@ -87,18 +95,17 @@ const AddEdit = () => {
                 
             }
         }
-    }, [isAddMode, session, client, projeto, setValue])
+    }, [projeto?.pessoa, projeto?.id, session, client, setValue])
     
     useEffect(() => {  
         loadDetentor()
-
-    }, [loadDetentor])
+    }, [projeto, loadDetentor])
 
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa})
-                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id})
+                ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
+                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id })
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -110,12 +117,12 @@ const AddEdit = () => {
         await client.post('/detentor', data)
             .then((response: any) => {
                 const { error, detentor, message } = response.data
-
+                console.log(detentor)
                 if (error) {
                     alertService.error(message)
                 } else {
                     
-                    alertService.success(`Detentor ${detentor?.nome} cadastrada com SUCESSO!!!`);
+                    alertService.success(`Detentor cadastrada com SUCESSO!!!`);
                     router.push(`/projeto`)
                 }
             }) 
@@ -127,7 +134,7 @@ const AddEdit = () => {
             .then((response: any) => {
                 
                 const detentor = response.data
-                alertService.success(`Detentor ${detentor?.nome} atualizada com SUCESSO!!!`);
+                alertService.success(`Detentor atualizada com SUCESSO!!!`);
                 router.push('/projeto')
             })
     }
@@ -175,7 +182,7 @@ const AddEdit = () => {
                                 ) : (
                                     <PessoaJuridica register={register} errors={errors} />
                                 )}
-                                <Endereco setValue={setValue} register={register} errors={errors} />
+                                    <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>
                         </div>

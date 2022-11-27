@@ -246,9 +246,11 @@ async function main() {
     })
 
     const detentor = await prisma.pessoa.create({
+      include: {
+        pessoaJuridica: true
+      },
         data: {
           tipo: 'J',
-            nome: 'iFlorestas - Gerenciamento Florestal Sustentável',
             endereco: {
               create: {
                 logradouro: 'BR 210',
@@ -258,6 +260,7 @@ async function main() {
             pessoaJuridica: {
               create: {
                 cnpj: '322390487',
+                nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
                 razao_social: 'iFlorestal SA'
               }
             },
@@ -269,7 +272,7 @@ async function main() {
         },
     })
     
-    console.log(`Detentor ${detentor.nome} criada com o id: ${detentor.id}`)
+    console.log(`Detentor ${detentor.pessoaJuridica?.nome_fantasia} criada com o id: ${detentor.id}`)
 
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({

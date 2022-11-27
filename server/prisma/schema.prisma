@@ -32,17 +32,14 @@ model Pessoa {
   created_at            DateTime        @default(now()) @db.Timestamp(6)
   updated_at            DateTime        @default(now()) @db.Timestamp(6)
   tipo                  TipoPessoa      @default(F)
-  nome                  String          @db.VarChar(100)
   id_projeto            String?         @db.Uuid   @unique
   id_endereco           String?         @db.Uuid
   id_telefone           String?         @db.Uuid
   endereco              Endereco?       @relation(fields: [id_endereco], references: [id], onDelete: Cascade, onUpdate: Cascade)
   projeto               Projeto?        @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   telefone              Telefone?       @relation(fields: [id_telefone], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  id_pessoa_fisica      String?         @db.Uuid
-  pessoaFisica          PessoaFisica?   @relation(fields: [id_pessoa_fisica], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_pessoa_juridica    String?         @db.Uuid
-  pessoaJuridica        PessoaJuridica?  @relation(fields: [id_pessoa_juridica], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pessoaFisica          PessoaFisica?
+  pessoaJuridica        PessoaJuridica?
   @@map("pessoa")
 }
 
@@ -58,10 +55,12 @@ model PessoaFisica {
   id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at      DateTime  @default(now()) @db.Timestamp(6)
   updated_at      DateTime  @default(now()) @db.Timestamp(6)
+  nome            String?
   rg              String?   @db.VarChar(30)
   cpf             String?   @db.VarChar(14)
   data_nascimento DateTime?
-  pessoa          Pessoa[]
+  id_pessoa       String?   @db.Uuid
+  pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("pessoa_fisica")
 }
@@ -79,12 +78,14 @@ model PessoaJuridica {
   id                 String    @id(map: "PK_bee78e8f1760ccf9cff402118a6") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at         DateTime  @default(now()) @db.Timestamp(6)
   updated_at         DateTime  @default(now()) @db.Timestamp(6)
+  nome_fantasia      String    @db.VarChar(100)
   razao_social       String    @db.VarChar(100)
   inscricao_estadual String?   @db.VarChar(30)
   inscricao_federal  String?   @db.VarChar(30)
   cnpj               String?   @db.VarChar(14)
   data_constituicao  DateTime?
-  pessoa             Pessoa[]
+  id_pessoa       String?   @db.Uuid
+  pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("pessoa_juridica")
 }

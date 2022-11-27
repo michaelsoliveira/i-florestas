@@ -2,9 +2,8 @@ import { useState } from "react"
 import { FormInput } from "../FormInput"
 import { OptionType } from "../Select"
 import SelectEstado from "../Utils/SelectEstado"
-import { useForm } from 'react-hook-form'
 
-const Endereco = ({register, setValue, errors}: any) => {
+const Endereco = ({register, value, setValue, errors}: any) => {
     const [estado, setEstado] = useState<OptionType>()
 
     const selectedEstado = (data: any) => {
@@ -19,7 +18,6 @@ const Endereco = ({register, setValue, errors}: any) => {
             label="CEP"
             register={register}
             errors={errors}
-            rules={ {required: 'O campo nome social é obrigatório'} }
             id="cep"
             className="pb-4"
         />
@@ -55,7 +53,7 @@ const Endereco = ({register, setValue, errors}: any) => {
         />
     </div>
     <div className="col-span-2 md:col-span-2 pt-1 relative">
-    <SelectEstado value={estado?.value && estado} callback={selectedEstado} />
+        <SelectEstado value={estado?.value ? estado : value} callback={selectedEstado} />
     </div> 
 </div>)
 }
