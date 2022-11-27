@@ -1,12 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm, useFormState } from 'react-hook-form'
-import * as Yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from "next/router"
 import alertService from "../../services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
-import styles from 'styles/Empresa.module.scss'
 import { Link } from "../Link";
 import RadioGroup from "../Form/RadioGroup";
 import Option from "../Form/Option";
@@ -22,7 +19,7 @@ const AddEdit = () => {
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
     const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
-    const isAddMode = !projeto?.pessoa
+    const isAddMode = !!projeto?.pessoa
 
     // const validationSchema = Yup.object().shape({
         
@@ -61,10 +58,10 @@ const AddEdit = () => {
     }
 
     const loadDetentor = useCallback(async () => {
-            
         if (!isAddMode && typeof session !== typeof undefined) {
 
             const { data } = await client.get(`/detentor/${projeto?.id}`)
+            
             setDetentor(data)
             if (data?.tipo === 'J') { 
                 setValue('pessoaJuridica.nome', data?.nome)
@@ -128,7 +125,7 @@ const AddEdit = () => {
         
         await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
-
+                
                 const detentor = response.data
                 alertService.success(`Detentor ${detentor?.nome} atualizada com SUCESSO!!!`);
                 router.push('/projeto')
