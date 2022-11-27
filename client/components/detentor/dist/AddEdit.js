@@ -67,7 +67,8 @@ var AddEdit = function () {
     var _a = react_1.useState(0), tipoPessoa = _a[0], setTipoPessoa = _a[1];
     var _b = react_1.useState(), detentor = _b[0], setDetentor = _b[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
-    var isAddMode = !!(projeto === null || projeto === void 0 ? void 0 : projeto.pessoa);
+    var _c = react_1.useState(), estado = _c[0], setEstado = _c[1];
+    var isAddMode = !(projeto === null || projeto === void 0 ? void 0 : projeto.pessoa);
     // const validationSchema = Yup.object().shape({
     //     "pessoaJuridica.razao_social":
     //     Yup.string().when('tipo', {
@@ -95,34 +96,42 @@ var AddEdit = function () {
     //            .max(100, "Responsável técnico deve ter no máximo 100 caracteres")
     // })
     // const formOptions = { resolver: yupResolver(validationSchema) }
-    var _c = react_hook_form_1.useForm(), register = _c.register, handleSubmit = _c.handleSubmit, reset = _c.reset, errors = _c.formState.errors, setValue = _c.setValue;
+    var _d = react_hook_form_1.useForm(), register = _d.register, handleSubmit = _d.handleSubmit, reset = _d.reset, errors = _d.formState.errors, setValue = _d.setValue;
     function onSelect(index) {
         setTipoPessoa(index);
     }
     var loadDetentor = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var data, _i, _a, _b, key, value;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var _c, _d, _e, _f;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
                 case 0:
-                    if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
+                    if (!(!!(projeto === null || projeto === void 0 ? void 0 : projeto.pessoa) && typeof session !== typeof undefined)) return [3 /*break*/, 2];
                     return [4 /*yield*/, client.get("/detentor/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id))];
                 case 1:
-                    data = (_c.sent()).data;
+                    data = (_g.sent()).data;
+                    console.log(data);
                     setDetentor(data);
                     if ((data === null || data === void 0 ? void 0 : data.tipo) === 'J') {
-                        setValue('pessoaJuridica.nome', data === null || data === void 0 ? void 0 : data.nome);
-                        setValue('tipo', 'J');
                         setTipoPessoa(1);
                     }
                     else {
-                        setValue('pessoaFisica.nome', data === null || data === void 0 ? void 0 : data.nome);
-                        setValue('tipo', 'F');
                         setTipoPessoa(0);
                     }
+                    setEstado({
+                        label: (_d = (_c = data === null || data === void 0 ? void 0 : data.endereco) === null || _c === void 0 ? void 0 : _c.estado) === null || _d === void 0 ? void 0 : _d.nome,
+                        value: (_f = (_e = data === null || data === void 0 ? void 0 : data.endereco) === null || _e === void 0 ? void 0 : _e.estado) === null || _f === void 0 ? void 0 : _f.id
+                    });
                     for (_i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
                         _b = _a[_i], key = _b[0], value = _b[1];
-                        if (key === 'tipo' && value === 1) {
-                            setValue("pessoaJurica.".concat(key), value, {
+                        if (key === 'tipo' && value === 'F') {
+                            setValue("pessoaFisica".concat(key), value, {
+                                shouldValidate: true,
+                                shouldDirty: true
+                            });
+                        }
+                        else if (key === 'tipo' && value === 'J') {
+                            setValue("pessoaJuridica".concat(key), value, {
                                 shouldValidate: true,
                                 shouldDirty: true
                             });
@@ -134,20 +143,20 @@ var AddEdit = function () {
                             });
                         }
                     }
-                    _c.label = 2;
+                    _g.label = 2;
                 case 2: return [2 /*return*/];
             }
         });
-    }); }, [isAddMode, session, client, projeto, setValue]);
+    }); }, [projeto === null || projeto === void 0 ? void 0 : projeto.pessoa, projeto === null || projeto === void 0 ? void 0 : projeto.id, session, client, setValue]);
     react_1.useEffect(function () {
         loadDetentor();
-    }, [loadDetentor]);
+    }, [projeto, loadDetentor]);
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 try {
                     return [2 /*return*/, isAddMode
-                            ? createDetentor(__assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id, tipo: tipoPessoa }))
+                            ? createDetentor(__assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id, tipo: tipoPessoa === 0 ? 'F' : 'J' }))
                             : updateDetentor(detentor === null || detentor === void 0 ? void 0 : detentor.id, __assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id }))];
                 }
                 catch (error) {
@@ -166,11 +175,12 @@ var AddEdit = function () {
                     return [4 /*yield*/, client.post('/detentor', data)
                             .then(function (response) {
                             var _a = response.data, error = _a.error, detentor = _a.detentor, message = _a.message;
+                            console.log(detentor);
                             if (error) {
                                 alert_1["default"].error(message);
                             }
                             else {
-                                alert_1["default"].success("Detentor " + (detentor === null || detentor === void 0 ? void 0 : detentor.nome) + " cadastrada com SUCESSO!!!");
+                                alert_1["default"].success("Detentor cadastrada com SUCESSO!!!");
                                 router.push("/projeto");
                             }
                         })];
@@ -189,7 +199,7 @@ var AddEdit = function () {
                     case 0: return [4 /*yield*/, client.put("/detentor/" + id, data)
                             .then(function (response) {
                             var detentor = response.data;
-                            alert_1["default"].success("Detentor " + (detentor === null || detentor === void 0 ? void 0 : detentor.nome) + " atualizada com SUCESSO!!!");
+                            alert_1["default"].success("Detentor atualizada com SUCESSO!!!");
                             router.push('/projeto');
                         })];
                     case 1:
@@ -213,7 +223,7 @@ var AddEdit = function () {
                         React.createElement("div", { className: "shadow sm:rounded-md" },
                             React.createElement("div", { className: "px-4 py-5 bg-white sm:p-6 w-full" },
                                 React.createElement("div", { className: "grid grid-cols-6 gap-6 w-full" },
-                                    React.createElement("div", { className: "col-span-6 w-96 text-center" },
+                                    React.createElement("div", { className: "col-span-6 lg:col-span-3" },
                                         React.createElement("div", null,
                                             React.createElement(RadioGroup_1["default"], { labelText: "Tipo" }, ["Física", "Jurídica"].map(function (el, index) { return (React.createElement(Option_1["default"], { key: index, index: index, selectedIndex: tipoPessoa, onSelect: function (index) {
                                                     setValue('tipo', index === 0 ? 'F' : 'J');
@@ -221,7 +231,7 @@ var AddEdit = function () {
                                                 } }, el)); })))),
                                     React.createElement("div", { className: "col-span-6" },
                                         tipoPessoa === 0 ? (React.createElement(PessoaFisica_1["default"], { register: register, errors: errors })) : (React.createElement(PessoaJuridica_1["default"], { register: register, errors: errors })),
-                                        React.createElement(endereco_1["default"], { setValue: setValue, register: register, errors: errors })))),
+                                        React.createElement(endereco_1["default"], { value: estado, setValue: setValue, register: register, errors: errors })))),
                             React.createElement("div", { className: "flex flex-row items-center justify-between px-4 py-3 bg-gray-50 text-right sm:px-6" },
                                 React.createElement(Link_1.Link, { href: "/projeto", className: "text-center w-40 bg-gray-200 text-sm font-medium text-green-800 p-3 rounded-md" }, "Voltar"),
                                 React.createElement("button", { type: "submit", className: "inline-flex w-40 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease duration-200" }, "Salvar")))))))));

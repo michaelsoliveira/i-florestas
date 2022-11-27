@@ -53,32 +53,43 @@ var DetentorService = /** @class */ (function () {
     function DetentorService() {
     }
     DetentorService.prototype.create = function (data) {
+        var _a, _b;
         return __awaiter(this, void 0, Promise, function () {
-            var nome, pessoaFisica, pessoaJuridica, endereco, detentorExists, basicData, preparedData, detentor;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var nome, pessoaFisica, pessoaJuridica, endereco, where, detentorExists, basicData, preparedData, detentor;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        console.log(data);
-                        nome = (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? data === null || data === void 0 ? void 0 : data.pessoaFisica.nome : data === null || data === void 0 ? void 0 : data.pessoaJuridica.nome;
+                        nome = (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? (_a = data === null || data === void 0 ? void 0 : data.pessoaFisica) === null || _a === void 0 ? void 0 : _a.nome : (_b = data === null || data === void 0 ? void 0 : data.pessoaJuridica) === null || _b === void 0 ? void 0 : _b.nome_fantasia;
                         pessoaFisica = data.pessoaFisica, pessoaJuridica = data.pessoaJuridica, endereco = data.endereco;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.findFirst({
-                                where: {
-                                    AND: {
-                                        nome: nome,
-                                        projeto: {
-                                            id: data === null || data === void 0 ? void 0 : data.id_projeto
-                                        }
-                                    }
+                        where = (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? {
+                            AND: {
+                                pessoaFisica: {
+                                    nome: nome
+                                },
+                                projeto: {
+                                    id: data === null || data === void 0 ? void 0 : data.id_projeto
                                 }
+                            }
+                        } : {
+                            AND: {
+                                pessoaJuridica: {
+                                    nome_fantasia: nome
+                                },
+                                projeto: {
+                                    id: data === null || data === void 0 ? void 0 : data.id_projeto
+                                }
+                            }
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.findFirst({
+                                where: where
                             })];
                     case 1:
-                        detentorExists = _a.sent();
+                        detentorExists = _c.sent();
                         if (detentorExists) {
                             throw new Error("Já existe uma empresa cadastrado com estas informações");
                         }
                         basicData = {
-                            nome: nome,
-                            tipo: (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? client_1.TipoPessoa.F : client_1.TipoPessoa.J,
+                            tipo: (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? client_1.TipoPessoa.F : client_1.TipoPessoa.J,
                             // telefone: {
                             //     create: {
                             //         numero: data?.telefone
@@ -103,9 +114,10 @@ var DetentorService = /** @class */ (function () {
                                 }
                             }
                         };
-                        preparedData = (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? {
+                        preparedData = (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? {
                             pessoaFisica: {
                                 create: {
+                                    nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
                                     rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
                                     cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
                                 }
@@ -113,6 +125,7 @@ var DetentorService = /** @class */ (function () {
                         } : {
                             pessoaJuridica: {
                                 create: {
+                                    nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
                                     razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
                                     cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
                                     inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
@@ -124,7 +137,7 @@ var DetentorService = /** @class */ (function () {
                                 data: __assign(__assign({}, basicData), preparedData)
                             })];
                     case 2:
-                        detentor = _a.sent();
+                        detentor = _c.sent();
                         return [2 /*return*/, detentor];
                 }
             });
@@ -136,18 +149,17 @@ var DetentorService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        console.log(data);
                         pessoaFisica = data.pessoaFisica, pessoaJuridica = data.pessoaJuridica, endereco = data.endereco;
-                        console.log(id, data);
                         basicData = {
-                            tipo: (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? client_1.TipoPessoa.F : client_1.TipoPessoa.J,
-                            nome: (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome : pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
+                            tipo: data === null || data === void 0 ? void 0 : data.tipo,
                             // telefone: {
                             //     update: {
                             //         numero: data?.telefone
                             //     }                    
                             // },
                             endereco: {
-                                create: {
+                                update: {
                                     cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep,
                                     logradouro: endereco === null || endereco === void 0 ? void 0 : endereco.logradouro,
                                     bairro: endereco === null || endereco === void 0 ? void 0 : endereco.bairro,
@@ -165,27 +177,45 @@ var DetentorService = /** @class */ (function () {
                                 }
                             }
                         };
-                        preparedData = (data === null || data === void 0 ? void 0 : data.tipo) === 0 ? {
+                        preparedData = (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? {
                             pessoaFisica: {
-                                create: {
-                                    rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
-                                    cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
+                                upsert: {
+                                    update: {
+                                        nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
+                                        rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
+                                        cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
+                                    },
+                                    create: {
+                                        nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
+                                        rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
+                                        cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
+                                    }
                                 }
                             }
                         } : {
                             pessoaJuridica: {
-                                create: {
-                                    razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
-                                    cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
-                                    inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
-                                    inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
+                                upsert: {
+                                    update: {
+                                        nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
+                                        razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
+                                        cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
+                                        inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
+                                        inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
+                                    },
+                                    create: {
+                                        nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
+                                        razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
+                                        cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
+                                        inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
+                                        inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
+                                    }
                                 }
                             }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.update({
                                 data: __assign(__assign({}, basicData), preparedData),
                                 where: {
-                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                    id: id
                                 }
                             })];
                     case 1:
@@ -242,7 +272,13 @@ var DetentorService = /** @class */ (function () {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.findFirst({
                             include: {
                                 pessoaFisica: true,
-                                pessoaJuridica: true
+                                pessoaJuridica: true,
+                                endereco: {
+                                    include: {
+                                        estado: true
+                                    }
+                                },
+                                telefone: true
                             },
                             where: {
                                 id_projeto: id

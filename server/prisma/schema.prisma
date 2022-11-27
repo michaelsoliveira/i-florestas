@@ -59,7 +59,7 @@ model PessoaFisica {
   rg              String?   @db.VarChar(30)
   cpf             String?   @db.VarChar(14)
   data_nascimento DateTime?
-  id_pessoa       String?   @db.Uuid
+  id_pessoa       String?   @unique @db.Uuid
   pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("pessoa_fisica")
@@ -84,8 +84,8 @@ model PessoaJuridica {
   inscricao_federal  String?   @db.VarChar(30)
   cnpj               String?   @db.VarChar(14)
   data_constituicao  DateTime?
-  id_pessoa       String?   @db.Uuid
-  pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_pessoa          String?   @unique @db.Uuid
+  pessoa             Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@map("pessoa_juridica")
 }

@@ -157,23 +157,23 @@ const AddEdit = () => {
                         <div className="shadow sm:rounded-md">
                         <div className="px-4 py-5 bg-white sm:p-6 w-full">
                             <div className="grid grid-cols-6 gap-6 w-full">   
-                                <div className="col-span-6 w-96 text-center">
+                                <div className="col-span-6 lg:col-span-3">
                                     <div>
-                                    <RadioGroup labelText="Tipo">
-                                        {["Física", "Jurídica"].map((el, index) => (
-                                            <Option
-                                                key={index}
-                                                index={index}
-                                                selectedIndex={tipoPessoa}
-                                                onSelect={(index: any) => {
-                                                    setValue('tipo', index === 0 ? 'F' : 'J')
-                                                    onSelect(index)
-                                                }}
-                                            >
-                                                {el}
-                                            </Option> 
-                                        ))}
-                                    </RadioGroup>
+                                        <RadioGroup labelText="Tipo">
+                                            {["Física", "Jurídica"].map((el, index) => (
+                                                <Option
+                                                    key={index}
+                                                    index={index}
+                                                    selectedIndex={tipoPessoa}
+                                                    onSelect={(index: any) => {
+                                                        setValue('tipo', index === 0 ? 'F' : 'J')
+                                                        onSelect(index)
+                                                    }}
+                                                >
+                                                    {el}
+                                                </Option> 
+                                            ))}
+                                        </RadioGroup>
                                     </div>
                                 </div>   
                                 <div className="col-span-6">

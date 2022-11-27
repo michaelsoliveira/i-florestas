@@ -195,6 +195,14 @@ async function main() {
     console.log(`Created estado with id: ${estado.id}`)
   }
 
+  const ufAP = await prisma.estado.findFirst({
+    where: {
+      uf: {
+        equals: 'AP'
+      }
+    }
+  })
+
   for (const r of roles) {
     const role = await prisma.role.create({
       data: r
@@ -255,6 +263,11 @@ async function main() {
               create: {
                 logradouro: 'BR 210',
                 municipio: 'Macapá',
+                estado: {
+                  connect: {
+                    id: ufAP?.id
+                  }
+                }
               }
             },
             pessoaJuridica: {
@@ -272,7 +285,7 @@ async function main() {
         },
     })
     
-    console.log(`Detentor ${detentor.pessoaJuridica?.nome_fantasia} criada com o id: ${detentor.id}`)
+    console.log(`Detentor criada com o id: ${detentor.id}`)
 
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({
