@@ -25,8 +25,7 @@ interface EmpresaRequest {
 
 class DetentorService {
     async create(data: any): Promise<Pessoa> {     
-        console.log(data)   
-        const nome = data?.tipo === 'F' ? data?.pessoaFisica.nome : data?.pessoaJuridica.nome_fantasia
+        const nome = data?.tipo === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
         const { pessoaFisica, pessoaJuridica, endereco } = data
 
         const where = data?.tipo === 'F' ? {

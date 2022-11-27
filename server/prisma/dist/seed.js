@@ -231,7 +231,7 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
+        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
         return __generator(this, function (_h) {
             switch (_h.label) {
                 case 0:
@@ -251,30 +251,38 @@ function main() {
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
-                case 4:
-                    _a = 0, roles_1 = roles;
-                    _h.label = 5;
+                case 4: return [4 /*yield*/, prisma.estado.findFirst({
+                        where: {
+                            uf: {
+                                equals: 'AP'
+                            }
+                        }
+                    })];
                 case 5:
-                    if (!(_a < roles_1.length)) return [3 /*break*/, 8];
+                    ufAP = _h.sent();
+                    _a = 0, roles_1 = roles;
+                    _h.label = 6;
+                case 6:
+                    if (!(_a < roles_1.length)) return [3 /*break*/, 9];
                     r = roles_1[_a];
                     return [4 /*yield*/, prisma.role.create({
                             data: r
                         })];
-                case 6:
+                case 7:
                     role = _h.sent();
                     console.log("Created role with id: " + role.id);
-                    _h.label = 7;
-                case 7:
+                    _h.label = 8;
+                case 8:
                     _a++;
-                    return [3 /*break*/, 5];
-                case 8: return [4 /*yield*/, prisma.role.findFirst({
+                    return [3 /*break*/, 6];
+                case 9: return [4 /*yield*/, prisma.role.findFirst({
                         where: {
                             name: {
                                 equals: 'Admin'
                             }
                         }
                     })];
-                case 9:
+                case 10:
                     roleAdmin = _h.sent();
                     _c = (_b = prisma.user).create;
                     _d = {};
@@ -283,7 +291,7 @@ function main() {
                         email: 'michaelsoliveira@gmail.com'
                     };
                     return [4 /*yield*/, bcryptjs_1["default"].hash('Fms237691', 10)];
-                case 10: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _h.sent(),
+                case 11: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _h.sent(),
                             _e.users_roles = {
                                 create: {
                                     roles: {
@@ -295,7 +303,7 @@ function main() {
                             },
                             _e),
                             _d)])];
-                case 11:
+                case 12:
                     user = _h.sent();
                     console.log("Created user admin with id: " + user.id);
                     return [4 /*yield*/, prisma.projeto.create({
@@ -314,21 +322,29 @@ function main() {
                                 }
                             }
                         })];
-                case 12:
+                case 13:
                     projeto = _h.sent();
                     return [4 /*yield*/, prisma.pessoa.create({
+                            include: {
+                                pessoaJuridica: true
+                            },
                             data: {
                                 tipo: 'J',
-                                nome: 'iFlorestas - Gerenciamento Florestal Sustentável',
                                 endereco: {
                                     create: {
                                         logradouro: 'BR 210',
-                                        municipio: 'Macapá'
+                                        municipio: 'Macapá',
+                                        estado: {
+                                            connect: {
+                                                id: ufAP === null || ufAP === void 0 ? void 0 : ufAP.id
+                                            }
+                                        }
                                     }
                                 },
                                 pessoaJuridica: {
                                     create: {
                                         cnpj: '322390487',
+                                        nome_fantasia: 'iFlorestas - Gerenciamento Florestal Sustentável',
                                         razao_social: 'iFlorestal SA'
                                     }
                                 },
@@ -339,29 +355,29 @@ function main() {
                                 }
                             }
                         })];
-                case 13:
-                    detentor = _h.sent();
-                    console.log("Detentor " + detentor.nome + " criada com o id: " + detentor.id);
-                    _f = 0, equacoesModelo_1 = equacoesModelo;
-                    _h.label = 14;
                 case 14:
-                    if (!(_f < equacoesModelo_1.length)) return [3 /*break*/, 17];
+                    detentor = _h.sent();
+                    console.log("Detentor criada com o id: " + detentor.id);
+                    _f = 0, equacoesModelo_1 = equacoesModelo;
+                    _h.label = 15;
+                case 15:
+                    if (!(_f < equacoesModelo_1.length)) return [3 /*break*/, 18];
                     eqModelo = equacoesModelo_1[_f];
                     return [4 /*yield*/, prisma.equacaoModelo.create({
                             data: __assign({}, eqModelo)
                         })];
-                case 15:
+                case 16:
                     equacaoModelo = _h.sent();
                     console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
-                    _h.label = 16;
-                case 16:
-                    _f++;
-                    return [3 /*break*/, 14];
+                    _h.label = 17;
                 case 17:
-                    _g = 0, equacoesVolume_1 = equacoesVolume;
-                    _h.label = 18;
+                    _f++;
+                    return [3 /*break*/, 15];
                 case 18:
-                    if (!(_g < equacoesVolume_1.length)) return [3 /*break*/, 21];
+                    _g = 0, equacoesVolume_1 = equacoesVolume;
+                    _h.label = 19;
+                case 19:
+                    if (!(_g < equacoesVolume_1.length)) return [3 /*break*/, 22];
                     eqVolume = equacoesVolume_1[_g];
                     return [4 /*yield*/, prisma.equacaoVolume.create({
                             data: __assign(__assign({}, eqVolume), { projeto: {
@@ -370,14 +386,14 @@ function main() {
                                     }
                                 } })
                         })];
-                case 19:
+                case 20:
                     equacaoVolume = _h.sent();
                     console.log("Created user Equa\u00E7\u00E3o Volume with id: " + equacaoVolume.id);
-                    _h.label = 20;
-                case 20:
-                    _g++;
-                    return [3 /*break*/, 18];
+                    _h.label = 21;
                 case 21:
+                    _g++;
+                    return [3 /*break*/, 19];
+                case 22:
                     console.log("Seeding finished.");
                     return [2 /*return*/];
             }
