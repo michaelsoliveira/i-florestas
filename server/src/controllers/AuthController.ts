@@ -1,15 +1,7 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { User } from "src/entities/User";
-import { getRepository } from "typeorm";
 import authService from "../services/auth.service"
-const { OAuth2Client } = require('google-auth-library');
-const http = require('http');
-const url = require('url');
-import axios from 'axios'
+
 import { getDecodedOAuthJwtGoogle } from "../services/decodeJwtGoogle";
-// const open = require('open');
-// const destroyer = require('server-destroy');
 export interface BaseUser {
     email: string,
     password: string

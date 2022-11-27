@@ -1,6 +1,4 @@
 import { prismaClient } from "../database/prismaClient";
-import { Query } from "typeorm/driver/Query";
-import { Console } from "console";
 import { Ut } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 

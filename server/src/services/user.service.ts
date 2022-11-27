@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs"
 import { getRepository, UsingJoinColumnIsNotAllowedError } from "typeorm"
-import { User } from "../entities/User"
 import nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
 import { prisma, Prisma, User as UserPrisma } from "@prisma/client"
@@ -166,7 +165,6 @@ class UserService {
     }
 
     async updatePassword(id: string, oldPassword: string, newPassword: string) {
-        const userRepository = getRepository(User)
         const userData = await this.findWithPassword(id)
 
         if (!userData) {
@@ -180,7 +178,14 @@ class UserService {
 
         const passwordHash = await bcrypt.hash(newPassword, 10)
 
-        await userRepository.update(id, { password: passwordHash })
+        await prismaClient.user.update({ 
+            where: {
+                id
+            },
+            data: {
+                password: passwordHash 
+            }
+        })
 
         return this.findOne(id)
     }
@@ -253,14 +258,6 @@ class UserService {
         if (!user) throw new Error("User not Found 0")
 
         return data
-    }
-
-    async findByKey(key: string, value: string): Promise<User> {
-        const result = await getRepository(User).findOne({ where: { [key]: value } })
-
-        if (!result) throw new Error("User not found 1")
-
-        return result
     }
 
     async findProvider(provider?: any): Promise<any> {

@@ -9,18 +9,16 @@ const withAuthentication = (WrappedComponent: any) => {
   const RequiresAuthentication = (props: any) => {
       
       const { data: session, status } = useSession()
-      const { projeto } = useContext(ProjetoContext)
       
       const router = useRouter()
       
       useEffect(() => {
         if (typeof session !== typeof undefined) {
-            console.log(projeto)
             if (!session) {
                 router.push('/login')
             }
         }
-      }, [projeto, router, session]);
+      }, [router, session]);
       
 
      // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator

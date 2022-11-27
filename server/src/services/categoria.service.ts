@@ -1,5 +1,4 @@
 // import { CategoriaEspecie } from "../entities/CategoriaEspecie";
-import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { CategoriaEspecie } from "@prisma/client";

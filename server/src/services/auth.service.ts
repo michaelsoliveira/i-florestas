@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken"
-import { getRepository } from "typeorm"
-import { User } from "../entities/User"
+import { User } from "@prisma/client"
 import bcrypt from "bcryptjs"
-import { response } from "express"
-import { DataStoredInToken } from "src/interfaces/DataStoredInToken"
-import { RefreshToken } from "../entities/RefreshToken"
+import { DataStoredInToken } from "../interfaces/DataStoredInToken"
 import dayjs from "dayjs"
+import { prismaClient } from "../database/prismaClient"
 const config = require("../config")
 
 
@@ -24,23 +22,19 @@ class AuthService {
     public refreshTokens: string[]
     
     async execute({ email, password }: UserRequest) {
-        const userRepository = await getRepository(User).createQueryBuilder("users")
-        const user = await userRepository
-            .select([
-                "users.id",
-                "users.username",
-                "users.password",
-                "users.email",
-                "users.image",
-                "roles"
-            ])
-            .leftJoinAndSelect('users.roles', 'roles')
-            .where("users.email = :email", { email })
-            .getOne()
+        
+        const user = await prismaClient.user.findUnique({
+            include: {
+                users_roles: true
+            },
+            where: {
+                email: email
+            }
+        })
 
         if (!user) throw new Error("Usuário informado não existe na base de dados")
 
-        const passwordMatch = await bcrypt.compareSync(password, user.password)
+        const passwordMatch = await bcrypt.compareSync(password, user?.password)
 
         if (!passwordMatch) {
             throw new Error("A senha informada está incorreta")
@@ -51,13 +45,18 @@ class AuthService {
 
         const { access_token, expires_in } = token
 
-        const refreshToken = getRepository(RefreshToken).create({
-            user,
-            expiresIn: dayjs().add(config.server.jwtRefreshExpiration, "seconds").unix(),
-            token: refresh_token
+        const refreshToken = await prismaClient.refreshToken.create({
+            data: {
+                expires_in: dayjs().add(config.server.jwtRefreshExpiration, "seconds").unix(),
+                token: refresh_token,
+                users: {
+                    connect: {
+                        id: user?.id
+                    }
+                }
+            },
+            
         })
-
-        await refreshToken.save()
 
         return {
             user: {
@@ -65,7 +64,7 @@ class AuthService {
                 username: user.username,
                 email: user.email,
                 image: user.image,
-                roles: user.roles,
+                roles: user.users_roles,
                 access_token,
                 expires_in,
                 refresh_token
@@ -108,10 +107,14 @@ class AuthService {
 
     async handleRefreshToken(refreshToken: string) {
         
-        const query = getRepository(RefreshToken).createQueryBuilder('refreshToken')
-                .innerJoinAndSelect('refreshToken.user', 'user')
-                .where('refreshToken.token = :token', { token: refreshToken })
-        const refreshTokenExists = await query.getOne()
+        const refreshTokenExists = await prismaClient.refreshToken.findFirst({
+            include: {
+                users: true
+            },
+            where: {
+                token: refreshToken
+            }
+        })
 
         const secret = config.server.JWT_REFRESH
         const expiresIn = dayjs().add(config.server.jwtRefreshExpiration, "second").unix()
@@ -123,25 +126,34 @@ class AuthService {
         try {    
             // const user = jwt.verify(refreshToken, secret) as User   
             
-            if (!refreshTokenExists.user) {
+            if (!refreshTokenExists?.users) {
                 throw new Error("User is not Authenticated")    
             }
 
-            const newAccessToken = this.createToken(refreshTokenExists.user)
+            const newAccessToken = this.createToken(refreshTokenExists.users)
             const tokenExpired = this.verifyExpiration(refreshTokenExists)
 
             if (tokenExpired) {
                 console.log('Refresh Token Expirou')
-                const newRefreshToken = this.createRefreshToken(refreshTokenExists.user)
-                await getRepository(RefreshToken).delete(refreshTokenExists.id)
+                const newRefreshToken = this.createRefreshToken(refreshTokenExists.users)
+                await prismaClient.refreshToken.delete({
+                    where: {
+                        id: refreshTokenExists.id
+                    }
+                })
                 
-                const refreshTokenData = getRepository(RefreshToken).create({
-                    user: refreshTokenExists.user,
-                    expiresIn,
-                    token: newRefreshToken
+                await prismaClient.refreshToken.create({
+                    data: {
+                        users: {
+                            connect: {
+                                id: refreshTokenExists.users?.id
+                            }
+                        },
+                        expires_in: expiresIn,
+                        token: newRefreshToken
+                    }
                 })
                 console.log('Novo Refresh Token ', newRefreshToken)
-                await refreshTokenData.save()
 
                 return {
                     ...newAccessToken,
@@ -158,7 +170,7 @@ class AuthService {
     }
 
 
-    verifyExpiration(token: RefreshToken) {
+    verifyExpiration(token: any) {
         
         const expiredToken = dayjs().isAfter(dayjs.unix(token.expiresIn))
         return expiredToken
