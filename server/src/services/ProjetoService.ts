@@ -115,7 +115,8 @@ class ProjetoService {
     async getDefaultData(projetoId: string, userId: string) : Promise<any> {
         const data = await prismaClient.umf.findFirst({
             include: {
-                projeto: true
+                projeto: true,
+                upa: true
             },
             where: {
                 projeto: {

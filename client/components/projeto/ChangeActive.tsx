@@ -6,6 +6,9 @@ import { useModalContext } from 'contexts/ModalContext'
 import { OptionType, Select } from '../Select'
 import { useSession } from 'next-auth/react'
 import { ProjetoContext } from 'contexts/ProjetoContext'
+import { setUmf } from 'store/umfSlice';
+import { setUpa } from 'store/upaSlice';
+import { useAppDispatch } from 'store/hooks';
 import * as Yup from 'yup'
 
 type ChangeActiveType = {
@@ -15,11 +18,12 @@ type ChangeActiveType = {
 export const ChangeActive = forwardRef<any, ChangeActiveType>(
     function ChangeActive({ callback }, ref) {
         const { client } = useContext(AuthContext)
-        const { showModal, hideModal } = useModalContext()
+        const { hideModal } = useModalContext()
         const { data: session } = useSession()
         const [selectedProjeto, setSelectedProjeto] = useState<any>()
         const [projetos, setProjetos] = useState<any>()
         const { projeto, setProjeto } = useContext(ProjetoContext)
+        const dispath = useAppDispatch()
 
         const loadProjetos = useCallback(async () => {
             if (typeof session !== typeof undefined){
@@ -76,9 +80,23 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
             })
         }
 
-        async function handleRegister(dataRequest: any) {
-            const { data } = await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
-            setProjeto(data?.projeto)
+        async function handleSubmit(dataRequest: any) {
+            const { data: projetoResponse } = await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
+            const response = await client.get(`/projeto/${dataRequest?.projeto.value}/default-data`)
+            const { data } = response.data
+            dispath(setUmf({
+                id: data?.id,
+                nome: data?.nome
+            }))
+            console.log(data?.upa)
+            data?.upa &&
+            dispath(setUpa({
+                id: data?.upa[0].id,
+                descricao: data?.upa[0].descricao,
+                tipo: data?.upa[0].tipo
+            }))
+
+            setProjeto(projetoResponse?.projeto)
             hideModal()
         }
 
@@ -101,7 +119,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                         values: Values,
                         { setSubmitting }: FormikHelpers<Values>
                     ) => {
-                        handleRegister(values)
+                        handleSubmit(values)
                     }}
                 >
                     {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {

@@ -34,9 +34,7 @@ type SubMenuType = {
 export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     
-    const [selectedProjeto, setSelectedProjeto] = useState<any>()
     const { showModal, hideModal } = useModalContext()
-    const { client } = useContext(AuthContext)
     const formRef = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const [ menuOpened, setMenuOpened ] = useState(false)
@@ -53,24 +51,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
     const [sticky, setSticky] = useState(false)
 
-    useEffect(() => {
-        setSelectedProjeto({
-            label: projeto?.nome,
-            value: projeto?.id
-          })
-    }, [projeto])
-
-    const projectCallback = (data: any) => {
-        setSelectedProjeto(data)
-    }
-
     const changeProjetoAtivo = async () => {
         formRef.current.handleSubmit()
     }
 
     const changeProjetoModal = () => {
         showModal({ title: 'Alterar Projeto Ativo', onConfirm: changeProjetoAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Projeto', 
-        content: <ChangeActive callback={projectCallback} ref={formRef} /> })
+        content: <ChangeActive ref={formRef} /> })
     }
 
     const handleScroll = () => {
