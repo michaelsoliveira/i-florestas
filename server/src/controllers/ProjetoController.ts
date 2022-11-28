@@ -54,12 +54,35 @@ export class ProjetoController {
         } catch (error) {
             return response.json({
                 error: true,
-                projeto: null,
+                defaultData: null,
                 message: error.message
             })
         }
         
     }
+
+    async getDefaultData(request: Request, response: Response) : Promise<Response> {
+        const { projetoId } = request.params
+        try {
+            const defaultData = await projetoService.getDefaultData(projetoId, request.user?.id)
+        
+            return response.json({
+                error: false,
+                defaultData,
+                message: 'Dados retornados com sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                defaultData: null,
+                message: error.message
+            })
+        }
+        
+    }
+
+
+    
     
     async delete(request: Request, response: Response): Promise<any> {
         const { id } = request.params

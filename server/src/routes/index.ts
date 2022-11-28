@@ -72,6 +72,7 @@ routes.delete('/umf/multiples', Authentication(), new UmfController().deleteUmfs
 //Projeto
 routes.post('/projeto/', Authentication(), new ProjetoController().store)
 routes.get('/projeto/', Authentication(), new ProjetoController().findAll)
+routes.get('/projeto/:projetoId/default-data', Authentication(), new ProjetoController().getDefaultData)
 routes.get('/projeto/:projetoId/users', Authentication(), new ProjetoController().findUsers)
 routes.get('/projeto/:projetoId/eq-volume', Authentication(), new ProjetoController().findEqVolumes)
 routes.get('/projeto/:id', Authentication(), new ProjetoController().findOne)

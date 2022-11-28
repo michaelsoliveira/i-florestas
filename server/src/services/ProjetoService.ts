@@ -112,6 +112,28 @@ class ProjetoService {
         return projetoUser.projeto
     }
 
+    async getDefaultData(projetoId: string, userId: string) : Promise<any> {
+        const data = await prismaClient.umf.findFirst({
+            include: {
+                projeto: true
+            },
+            where: {
+                projeto: {
+                    id: projetoId,
+                    projeto_users: {
+                        some: {
+                            users: {
+                                id: userId
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        return data
+    }
+
     async delete(id: string): Promise<void> {
         await prismaClient.projeto.update({
             data: {
