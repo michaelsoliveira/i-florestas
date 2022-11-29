@@ -25,7 +25,7 @@ const PessoaJuridica = ({register, errors}: any) => {
                 </div>    
                 <div className="col-span-3 md:col-span-2">
                     <FormInput
-                        name="pessoaJuridica.cpnj"
+                        name="pessoaJuridica.cnpj"
                         label="CNPJ"
                         register={register}
                         errors={errors}
