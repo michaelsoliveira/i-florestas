@@ -23,6 +23,7 @@
     "embla-carousel": "^6.2.0",
     "formik": "^2.2.9",
     "lodash.get": "^4.4.2",
+    "mathjs": "^11.4.0",
     "next": "latest",
     "next-auth": "latest",
     "nextjs-progressbar": "^0.0.16",
