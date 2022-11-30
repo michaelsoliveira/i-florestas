@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import umfService from "../services/umf.service";
+import umfService from "../services/UmfService";
 
 export class UmfController {
     async store(request : Request, response: Response) : Promise<Response> {

@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import estadoService from "../services/estado.service";
+import estadoService from "../services/EstadoService";
 
 export class EstadoController {
     async store(request : Request, response: Response) : Promise<Response> {

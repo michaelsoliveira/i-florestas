@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import upaService from "../services/upa.service";
+import upaService from "../services/UpaService";
 
 export class UpaController {
     async store(request : Request, response: Response) : Promise<Response> {

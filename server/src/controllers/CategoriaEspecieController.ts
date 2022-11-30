@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import categoriaService from "../services/categoria.service";
+import categoriaService from "../services/CategoriaService";
 
 export class CategoriaEspecieController {
     async store(request : Request, response: Response) : Promise<Response> {

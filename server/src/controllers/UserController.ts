@@ -7,7 +7,7 @@ import {
     CreateRolePermissionService,
     CreateUserACLService
 } from "../services/UserAclService";
-import userService from "../services/user.service";
+import userService from "../services/UserService";
 
 export interface BaseUser {
     username: string,

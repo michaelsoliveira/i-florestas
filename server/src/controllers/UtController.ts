@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import utService from "../services/ut.service";
+import utService from "../services/UtService";
 
 export class UtController {
     async store(request : Request, response: Response) : Promise<Response> {

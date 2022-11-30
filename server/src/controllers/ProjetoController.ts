@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import equacaoVolumeService from "../services/equacaoVolume.service";
+import equacaoVolumeService from "../services/EquacaoVolumeService";
 import projetoService from "../services/ProjetoService";
 
 export class ProjetoController {

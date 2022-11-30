@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import eqVolumeService from "../services/equacaoVolume.service";
+import eqVolumeService from "../services/EquacaoVolumeService";
 
 export class EquacaoVolumeController {
     async store(request : Request, response: Response) : Promise<Response> {

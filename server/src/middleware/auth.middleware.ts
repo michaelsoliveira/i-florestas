@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { User } from "@prisma/client"
-import userService from "../services/user.service"
+import userService from "../services/UserService"
 import axios from 'axios'
-import { getDecodedOAuthJwtGoogle } from "../services/decodeJwtGoogle"
+import { getDecodedOAuthJwtGoogle } from "../services/DecodeJwtGoogle"
 const config = require("../config")
 
 export const Authentication = () => {

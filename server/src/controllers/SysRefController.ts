@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import sysRefService from "../services/sysRef.service";
+import sysRefService from "../services/SysRefService";
 
 export class SysRefController {
     async store(request : Request, response: Response) : Promise<Response> {

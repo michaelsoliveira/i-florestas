@@ -1,6 +1,6 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
-import especieService from "../services/especie.service";
+import especieService from "../services/EspecieService";
 import { Readable } from 'stream'
 import readline from "readline";
 import { getProjeto } from "../services/ProjetoService";
