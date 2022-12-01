@@ -75,7 +75,8 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
 
     const handleImportEspecies = async (e: any) => {
         try {
-            if (e.target.files.length > 0) {
+            window.removeEventListener('focus', handleFocusBack)
+            if (e.target?.value.length) {
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
@@ -89,23 +90,27 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                             loadEspecies()
                             setLoading(false)
                         } else {
+                            setLoading(false)
                             console.log(message)
                         }
                     }).catch(() => {
                         setLoading(false)
                     })
-            } else {
-                setUploading(false)    
             }
-            setUploading(false)
         } catch(e) {
             setLoading(false)
         }
     }
 
+    const handleFocusBack = () => {
+        setUploading(false)
+        window.removeEventListener('focus', handleFocusBack)
+    }
+
     const openFile = () => {
         fileRef.current?.click()
         setUploading(true)
+        window.addEventListener('focus', handleFocusBack)
     }
 
     const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
@@ -179,9 +184,11 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                     </button>
                     <input
                         disabled={uploading} 
-                        onChange={(e) => handleImportEspecies(e)}
+                        onChange={handleImportEspecies}
                         ref={fileRef}
-                        className="cursor-pointer absolute block opacity-0 pin-r pin-t" type="file" name="fileRef"
+                        type="file"
+                        className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
+                        name="fileRef"
                     />
                 </div>
                 <Link
