@@ -21,7 +21,7 @@ export const download = function (data: any) {
     a.click()
 }
  
-const csvmaker = function (data: any) {
+export const csvmaker = function (data: any) {
  
     // Empty array for storing the values
     let csvRows = [];
@@ -45,14 +45,14 @@ const csvmaker = function (data: any) {
     return csvRows.join('\n')
 }
  
-export const get = async function () {
+export const createCsv = async function (data: any) {
  
     // JavaScript object
-    const data = {
-        id: 1,
-        name: "Geeks",
-        profession: "developer"
-    }
+    // const data = {
+    //     id: 1,
+    //     name: "Geeks",
+    //     profession: "developer"
+    // }
  
     const csvdata = csvmaker(data);
     download(csvdata);
@@ -63,3 +63,5 @@ export const get = async function () {
 // button get pressed
 // const btn = document.getElementById('action');
 // btn.addEventListener('click', get);
+
+// export default createCsv
