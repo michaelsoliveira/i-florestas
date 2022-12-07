@@ -9,6 +9,7 @@ import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
+import { CsvDataService } from "services/create-csv"
 
 const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
@@ -23,6 +24,8 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
+
+    const ObjectsToCsv = require('objects-to-csv')
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = useCallback((id?: string) => {
@@ -71,6 +74,16 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const handleImportTemplate = async () => {
+        const data = [
+            { nome: 'Teste1', nome_vulgar: 'Teste1', nome_cientifico: 'Teste1' },
+            { nome: 'Teste2', nome_vulgar: 'Teste2', nome_cientifico: 'Teste2' },
+            { nome: 'Teste3', nome_vulgar: 'Teste3', nome_cientifico: 'Teste3' }
+        ]
+        
+        CsvDataService.exportToCsv('template_especie', data)
     }
 
     const handleImportEspecies = async (e: any) => {
@@ -170,18 +183,27 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
             {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
-                <div className="relative w-64">
-                    <button
+                <div className="flex flex-row">
+                    <a
                         onClick={openFile}
-                        disabled={uploading}
-                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center"
+                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center lg:w-96"
                     >
-                        <svg className="fill-green-700" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M0 0h24v24H0z" fill="none"/>
                             <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
                         </svg>
                         <span className="ml-2">{uploading ? "Importando..." : "Importar Espécies"}</span>
-                    </button>
+                    </a>
+                    <a
+                        onClick={handleImportTemplate}
+                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+
+                    <span className="ml-2">Modelo</span>
+                    </a>
                     <input
                         disabled={uploading} 
                         onChange={handleImportEspecies}
