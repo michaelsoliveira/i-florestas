@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../../components/Link"
-import { Loading } from "../../components/Loading"
-import { Input } from "../../components/atoms/input"
+import { Link } from "../Link"
+import { Loading } from "../Loading"
+import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
@@ -11,7 +11,7 @@ import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 
-const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
+const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
@@ -387,4 +387,4 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     )
 }
 
-export default Especies
+export default Index
