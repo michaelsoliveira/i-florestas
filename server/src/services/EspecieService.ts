@@ -79,15 +79,18 @@ class EspecieService {
     }
 
     async delete(id: string): Promise<void> {
-        await getRepository(Especie).delete(id)
-            .then(response => {
-                return response.affected
-            })
+        await prismaClient.especie.delete({
+            where: {
+                id
+            }
+        })
     }
 
     async deleteEspecies(ids: string[]) {
         ids.forEach(id => {
-            getRepository(Especie).delete(id)
+            prismaClient.especie.delete({
+                where: { id }
+            })
         })   
     }
 
@@ -160,13 +163,6 @@ class EspecieService {
             skip,
             count: total
         }
-    }
-
-    async getAllWithCategory(): Promise<Especie[]> {
-        const query = getRepository(Especie).createQueryBuilder('especie')
-        const especies = query.leftJoinAndSelect('especie.categoria', 'categoria').getMany()
-
-        return especies
     }
 
     async findById(id: string) : Promise<any> {
