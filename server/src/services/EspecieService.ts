@@ -79,10 +79,11 @@ class EspecieService {
     }
 
     async delete(id: string): Promise<void> {
-        await getRepository(Especie).delete(id)
-            .then(response => {
-                return response.affected
-            })
+        await prismaClient.especie.delete({
+            where: {
+                id
+            }
+        })
     }
 
     async deleteEspecies(ids: string[]) {
