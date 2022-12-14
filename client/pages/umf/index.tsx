@@ -42,7 +42,7 @@ const UmfIndex = () => {
 
     useEffect(() => {  
         loadUmfs(itemsPerPage)
-    }, [itemsPerPage, loadUmfs, projeto])
+    }, [itemsPerPage, projeto, loadUmfs])
 
     const onPageChanged = async (paginatedData: any) => {
         

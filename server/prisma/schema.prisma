@@ -23,7 +23,6 @@ model CategoriaEspecie {
   id_projeto        String?   @db.Uuid
   projeto           Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   especie           Especie[]
-
   @@map("categoria_especie")
 }
 
@@ -72,6 +71,7 @@ model Telefone {
   ddd        String?
   numero     String?  @db.VarChar(10)
   pessoa     Pessoa[]
+  @@map("telefone")
 }
 
 model PessoaJuridica {
