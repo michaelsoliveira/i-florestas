@@ -17,6 +17,7 @@ import { ProjetoController } from "../controllers/ProjetoController"
 import { can, is } from "../middleware/permission"
 import { RoleController } from "../controllers/RoleController"
 import { PermissionController } from "../controllers/PermissionController"
+import { ArvoreController } from "../controllers/ArvoreController"
 
 const routes = express.Router()
 
@@ -152,6 +153,15 @@ routes.put('/especie/:id', Authentication(), new EspecieController().update)
 routes.delete('/especie/single/:id', Authentication(), new EspecieController().delete)
 routes.delete('/especie/multiples', Authentication(), new EspecieController().deleteEspecies)
 routes.post('/especie/import', multerConfig.single('file'), new EspecieController().importEspecie)
+
+//Arvore
+routes.post('/arvore', Authentication(), new ArvoreController().store)
+routes.get('/arvore', Authentication(), new ArvoreController().findAll)
+routes.get('/arvore/:id', Authentication(), new ArvoreController().findOne)
+routes.put('/arvore/:id', Authentication(), new ArvoreController().update)
+routes.delete('/arvore/single/:id', Authentication(), new ArvoreController().delete)
+routes.delete('/arvore/multiples', Authentication(), new ArvoreController().deleteArvores)
+routes.post('/arvore/import', multerConfig.single('file'), new ArvoreController().importEspecie)
 
 
 export default routes;

@@ -31,8 +31,6 @@ class CategoriaService {
             throw new Error('Já existe uma categoria cadastrada com este nome')
         }
 
-        console.log(data)
-
         const categoria = await prismaClient.categoriaEspecie.create({
             data
         })

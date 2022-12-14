@@ -1,10 +1,9 @@
-// import { CategoriaEspecie } from "../entities/CategoriaEspecie";
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { CategoriaEspecie } from "@prisma/client";
+import { Arvore } from "@prisma/client";
+import { getProjeto } from "./ProjetoService";
 
-export interface CategoriaType {
-    nome: string;
+export interface ArvoreType {
+    numero_arvore: number;
     criterio_fuste?: number;
     criterio_dminc?: number;
     criterio_dmaxc?: number;
@@ -17,42 +16,48 @@ export interface CategoriaType {
 }
 
 class ArvoreService {
-    async create(data: CategoriaType): Promise<CategoriaEspecie> {
-        const categoriaExists = await prismaClient.categoriaEspecie.findFirst({ 
+    async create(data: ArvoreType, projetoId?: string): Promise<Arvore> {
+        const arvoreExists = await prismaClient.arvore.findFirst({ 
             where: { 
                 AND: {
-                    nome: data.nome,
-                    id_projeto: data?.id_projeto
+                    numero_arvore: data.numero_arvore,
+                    ut: {
+                        upa: {
+                            umf: {
+                                projeto: {
+                                    id: projetoId
+                                }
+                            }
+                        }
+                    }
                 }
             } 
         })
 
-        if (categoriaExists) {
-            throw new Error('Já existe uma categoria cadastrada com este nome')
+        if (arvoreExists) {
+            throw new Error('Já existe uma árvore cadastrada com este número')
         }
 
-        console.log(data)
-
-        const categoria = await prismaClient.categoriaEspecie.create({
+        const arvore = await prismaClient.arvore.create({
             data
         })
 
-        return categoria
+        return arvore
     }
 
-    async update(id: string, data: CategoriaType): Promise<CategoriaEspecie> {
-        const categoria = await prismaClient.categoriaEspecie.update({
+    async update(id: string, data: ArvoreType): Promise<Arvore> {
+        const arvore = await prismaClient.arvore.update({
             data,
             where: {
                 id
             }
         })
 
-        return categoria
+        return arvore
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.categoriaEspecie.delete({
+        await prismaClient.arvore.delete({
             where: { id }
         })
             .then(response => {
@@ -61,6 +66,7 @@ class ArvoreService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
+        const projeto = await getProjeto(userId)
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -79,34 +85,36 @@ class ArvoreService {
         const where = search ?
             {
                 AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    projeto: {
-                        projeto_users: {
-                            some: {
-                                active: true,
-                                id_user: userId
+                    numero_arvore: parseInt(search),
+                    ut: {
+                        upa: {
+                            umf: {
+                                projeto: {
+                                    id: projeto?.id
+                                }
                             }
                         }
                     }
                 }
             } : {
-                projeto: {
-                    projeto_users: {
-                        some: {
-                            active: true,
-                            id_user: userId
+                ut: {
+                    upa: {
+                        umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
                         }
                     }
                 }
             }
         const [data, total] = await prismaClient.$transaction([
-            prismaClient.categoriaEspecie.findMany({
+            prismaClient.arvore.findMany({
                 where,
                 orderBy: orderByTerm,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
             }),
-            prismaClient.categoriaEspecie.count()
+            prismaClient.arvore.count()
         ])
 
         return {
@@ -118,24 +126,26 @@ class ArvoreService {
         }
     }
 
-    async deleteCategorias(categorias: string[]) {
+    async deleteArvores(arvores: string[]) {
         
-        await prismaClient.categoriaEspecie.deleteMany({
-            where: { id: { in: categorias} }
+        await prismaClient.arvore.deleteMany({
+            where: { id: { in: arvores} }
         })
          
     }
 
-    async search(q: any, userId?: string) {
-        const data = await prismaClient.categoriaEspecie.findMany({
+    async search(q: any, userId: string) {
+        const projeto = await getProjeto(userId)
+        const data = await prismaClient.arvore.findMany({
             where: {
                 AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: q },
-                    projeto: {
-                        projeto_users: {
-                            some: {
-                                id_user: userId,
-                                active: true
+                    numero_arvore: parseInt(q),
+                    ut: {
+                        upa: {
+                            umf: {
+                                projeto: {
+                                    id: projeto?.id
+                                }
                             }
                         }
                     }
@@ -146,9 +156,9 @@ class ArvoreService {
     }
 
     async findById(id: string) : Promise<any> {
-        const categoria = await prismaClient.categoriaEspecie.findUnique({ where: { id } })
+        const arvore = await prismaClient.arvore.findUnique({ where: { id } })
 
-        return categoria
+        return arvore
     }
 }
 

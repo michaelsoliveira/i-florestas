@@ -5,66 +5,78 @@ import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
-import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
+import { useAppSelector } from "store/hooks"
+import { RootState } from "store"
+import { OptionType } from "../Select"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
+const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
-    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
-    const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
+    const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
+    const [selectedArvore, setSelectedArvore] = useState<any>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const fileRef = useRef(null) as any
     const [sorted, setSorted] = useState(false)
-    const [checkedEspecies, setCheckedEspecies] = useState<any>([])
+    const [checkedArvores, setCheckedArvores] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
+    const [umfs, setUmfs] = useState<any>()
+    const [upas, setUpas] = useState<any>()
+    const umf = useAppSelector((state: RootState) => state.umf)
+    const upa = useAppSelector((state: RootState) => state.upa)
+    const ut = useAppSelector((state: RootState) => state.ut)
+    const [selectedUmf, setSelectedUmf] = useState<OptionType>()
+    const [selectedUpa, setSelectedUpa] = useState<OptionType>()
+    const [selectedUt, setSelectedUt] = useState<OptionType>()
+    const { projeto } = useContext(ProjetoContext)
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-    const especieById = useCallback((id?: string) => {
-        return currentEspecies.find((especie: EspecieType) => especie.id === id)
-    }, [currentEspecies])
+    const arvoreById = useCallback((id?: string) => {
+        return currentArvores.find((arvore: any) => arvore.id === id)
+    }, [currentArvores])
 
-    const deleteEspecie = useCallback(async (id?: string) => {
+    const deleteArvore = useCallback(async (id?: string) => {
         try {
-            client.delete(`/especie/single/${id}`)
+            client.delete(`/arvore/single/${id}`)
                 .then((response: any) => {
                     const { error, message } = response.data
                     if (!error) {
                         alertService.success(message)
-                        loadEspecies()
+                        loadArvores()
                         hideModal()
                     }
                 })
         } catch (error) {
             console.log(error)
         }       
-    }, [client, hideModal, loadEspecies])
+    }, [client, hideModal, loadArvores])
     
     const deleteSingleModal = useCallback((id?: string) => {
-            const especie = especieById(id)
-            showModal({ title: 'Deletar Espécie', onConfirm: () => { deleteEspecie(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Espécie ${especie?.nome}?`})
-        }, [especieById, showModal, deleteEspecie])
+            const arvore = arvoreById(id)
+            showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número ${arvore?.numero_arvore}?`})
+        }, [arvoreById, showModal, deleteArvore])
         
-    const deleteMultModal = () => showModal({ title: 'Deletar Espécies', onConfirm: deleteEspecies, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Espécies Selecionadas?' })
+    const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
 
     useEffect(() => {
-        setFilteredEspecies(currentEspecies)
-    }, [currentEspecies, currentPage])
+        setFilteredArvores(currentArvores)
+    }, [currentArvores, currentPage])
 
-    const deleteEspecies = async () => {
+    const deleteArvores = async () => {
         setLoading(true)
         try {
-            await client.delete('/especie/multiples', { data: { ids: checkedEspecies} })
+            await client.delete('/arvore/multiples', { data: { ids: checkedArvores} })
                 .then(() => {
-                    setCheckedEspecies([])
+                    setCheckedArvores([])
                     alertService.success('As espécies foram deletadas com SUCESSO!!!')
-                    loadEspecies()
+                    loadArvores()
                     hideModal()
                 })
         setLoading(false)
@@ -75,29 +87,29 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     const handleImportTemplate = async () => {
         const data = [
-            { nome: 'Teste1', nome_vulgar: 'Teste1', nome_cientifico: 'Teste1' },
-            { nome: 'Teste2', nome_vulgar: 'Teste2', nome_cientifico: 'Teste2' },
-            { nome: 'Teste3', nome_vulgar: 'Teste3', nome_cientifico: 'Teste3' }
+            { ut: '1', faixa: '1', numero_arvore: '1', especie: 'Abiu', dap: 10, altura: 20, qf: 1, orientacao_x: 'D', coordenada_x: 2, coordenada_y: 4 },
+            { ut: '1', faixa: '1', numero_arvore: '2', especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orientacao_x: 'D', coordenada_x: 7, coordenada_y: 10 },
+            { ut: '1', faixa: '1', numero_arvore: '3', especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orientacao_x: 'D', coordenada_x: 21, coordenada_y: 20 },
         ]
         
-        CsvDataService.exportToCsv('template_especie', data)
+        CsvDataService.exportToCsv('template_inventario', data)
     }
 
-    const handleImportEspecies = async (e: any) => {
+    const handleImportArvores = async (e: any) => {
         try {
             window.removeEventListener('focus', handleFocusBack)
             if (e.target?.value.length) {
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
-                await client.post('/especie/import', formData)
+                await client.post('/arvore/import', formData)
                     .then((response: any) => {
                         console.log(response)
                         const { error, message } = response.data
                         
                         if (!error) {
                             alertService.success(message) 
-                            loadEspecies()
+                            loadArvores()
                             setLoading(false)
                         } else {
                             setLoading(false)
@@ -136,12 +148,12 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         onPageChanged(paginatedData)
     }
 
-    const sortEspecies = (sortBy: string) => {
+    const sortArvores = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
         const nElements = sortedBy.length
         
-        let sortedEspecies: any = []        
-        sortedEspecies = filteredEspecies.sort((a: any, b: any) => {
+        let sortedArvores: any = []        
+        sortedArvores = filteredArvores.sort((a: any, b: any) => {
             return  sorted
                 ? nElements > 1 
                     ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
@@ -152,26 +164,26 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         })
         
         setSorted(!sorted)
-        setFilteredEspecies(sortedEspecies)    
+        setFilteredArvores(sortedArvores)    
     }
 
-    const handleSelectEspecie = (evt: any) => {
-        const especieId = evt.target.value
+    const handleSelectArvore = (evt: any) => {
+        const arvoreId = evt.target.value
 
-        if (!checkedEspecies.includes(especieId)) {
-            setCheckedEspecies([...checkedEspecies, especieId])
+        if (!checkedArvores.includes(arvoreId)) {
+            setCheckedArvores([...checkedArvores, arvoreId])
         } else {
-            setCheckedEspecies(checkedEspecies.filter((checkedEspecieId: any) => {
-                return checkedEspecieId !== especieId
+            setCheckedArvores(checkedArvores.filter((checkedArvoreId: any) => {
+                return checkedArvoreId !== arvoreId
             }))
         }
     }
 
-    const handleSelectAllEspecies = () => {
-        if (checkedEspecies.length < currentEspecies.length) {
-            setCheckedEspecies(currentEspecies.map(({ id }: any) => id));
+    const handleSelectAllArvore = () => {
+        if (checkedArvores.length < currentArvores.length) {
+            setCheckedArvores(currentArvores.map(({ id }: any) => id));
         } else {
-            setCheckedEspecies([]);
+            setCheckedArvores([]);
         }
     };
 
@@ -179,7 +191,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         <div>
             {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
+                <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
                 <div className="flex flex-row">
        
                     <a
@@ -194,7 +206,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     </a>
                     <input
                         disabled={uploading} 
-                        onChange={handleImportEspecies}
+                        onChange={handleImportArvores}
                         ref={fileRef}
                         type="file"
                         className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
@@ -215,7 +227,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     </a>
                 </div>
                 <Link
-                    href='/especie/add'
+                    href='/arvore/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
@@ -239,10 +251,10 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4">Pesquisar Espécie:</div>
+                        <div className="w-60 px-4">Pesquisar Árvore:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Espécie"
+                                label="Pesquisar Árvore"
                                 id="search"
                                 name="search"
                                 value={searchInput}
@@ -256,7 +268,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     </div>
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedEspecies?.length > 0 && (
+                            {checkedArvores?.length > 0 && (
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
@@ -272,19 +284,45 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         <th>
                             <div className="flex justify-center">
                             <input  
-                                checked={checkedEspecies?.length === currentEspecies?.length}
-                                onChange={handleSelectAllEspecies}                
+                                checked={checkedArvores?.length === currentArvores?.length}
+                                onChange={handleSelectAllArvore}                
                                 className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                             />
                             </div>
                         </th>
                         <th
                             scope="col"
-                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('nome')}
+                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('numero_arvore')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Nome
+                                Número
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
+                        <th
+                            scope="row"
+                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('faixa')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                Faixa
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
+                        <th
+                            scope="col"
+                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('orient_x')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                Orientação X
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
@@ -294,10 +332,10 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         <th
                             scope="row"
                             className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('nome_orgao')}
+                            onClick={() => sortArvores('lat_x')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Nome Vulgar
+                                Coord. X
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
@@ -305,12 +343,12 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             </div>   
                         </th>
                         <th
-                            scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('nome_cientifico')}
+                            scope="row"
+                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('long_y')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Nome Científico
+                                Coord. Y
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
@@ -320,10 +358,10 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('categoria_especie.nome')}
+                            onClick={() => sortArvores('especie.nome')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Categoria
+                                Espécie
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
@@ -336,14 +374,14 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEspecies?.map((especie: any) => (
-                            <tr key={especie.id}>
+                        {filteredArvores?.map((arvore: any) => (
+                            <tr key={arvore.id}>
                             <td className="flex justify-center">
                             <input                 
-                                    value={especie?.id}
-                                    checked={checkedEspecies.includes(especie?.id)}
-                                    onChange={handleSelectEspecie}
-                                    id="especieId"
+                                    value={arvore?.id}
+                                    checked={checkedArvores.includes(arvore?.id)}
+                                    onChange={handleSelectArvore}
+                                    id="arvoreId"
                                     type="checkbox"
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 />    
@@ -351,27 +389,27 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             <td className="px-3 py-2 whitespace-nowrap">
                             <div className="flex flex-col items-starter">
                                 
-                                <div className="text-sm font-medium text-gray-900">{especie?.nome}</div>
+                                <div className="text-sm font-medium text-gray-900">{arvore?.nome}</div>
                             </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{especie.nome_orgao}</div>
+                            <div className="text-sm text-gray-900">{arvore.nome_orgao}</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{especie.nome_cientifico}</div>
+                                <div className="text-sm text-gray-500">{arvore.nome_cientifico}</div>
                             </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{especie.categoria_especie?.nome}</div>
+                                <div className="text-sm text-gray-500">{arvore.categoria_arvore?.nome}</div>
                             </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href={`/especie/update/${especie.id}`}>
+                            <Link href={`/arvore/update/${arvore.id}`}>
                                 <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
-                            <Link href="#" onClick={() => deleteSingleModal(especie.id)}>
+                            <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                             </Link>
                             </td>

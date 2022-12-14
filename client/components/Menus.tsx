@@ -115,7 +115,7 @@ export const inventario = [
     {
         name: 'Digitação de Arvores',
         description: 'Realizar cadastramento do invetário obtido em campo',
-        href: '#',
+        href: '/arvore',
         icon: ChartBarIcon,
     },
     {

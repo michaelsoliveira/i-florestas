@@ -48,6 +48,7 @@ model ResponsavelTecnico {
   crea       String?  @db.VarChar(50)
   id_projeto String?  @db.Uuid
   projeto    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@map("responsavel_tecnico")
 }
 
 model PessoaFisica {
