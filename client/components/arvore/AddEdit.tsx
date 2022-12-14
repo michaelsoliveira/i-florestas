@@ -9,39 +9,43 @@ import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
+import RadioGroup from '../Form/RadioGroup'
+import Option from "../Form/Option";
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [categoria, setCategoria] = useState<OptionType>()
-    const [categorias, setCategorias] = useState<any>()
+    const [observacao, setObservacao] = useState<OptionType>()
+    const [observacoes, setObservacoes] = useState<any>()
+    const [orient_x, setOrientX] = useState<any>()
+    const [medicao, setMedicao] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
 
-    const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/categoria/search/q?nome=${inputValue}`)
+    const loadObsOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/obs-arvore/search/q?nome=${inputValue}`)
         const json = response.data
         
-        callback(json?.map((category: any) => ({
-            value: category.id,
-            label: category.nome
+        callback(json?.map((observacao: any) => ({
+            value: observacao.id,
+            label: observacao.nome
         })))
     };
 
     useEffect(() => {        
-        async function loadEspecie() {
+        async function loadArvore() {
         
             if (!isAddMode && typeof session !== typeof undefined) {
                 
-                const { data: especie } = await client.get(`/especie/${id}`)
+                const { data: arvore } = await client.get(`/arvore/${id}`)
                 
-                setCategoria({
-                    label: especie?.categoria_especie?.nome,
-                    value: especie?.categoria_especie?.id
+                setObservacao({
+                    label: arvore?.observacao_arvore?.nome,
+                    value: arvore?.observacao_arvore?.id
                 })
-                for (const [key, value] of Object.entries(especie)) {
+                for (const [key, value] of Object.entries(arvore)) {
                     setValue(key, value, {
                         shouldValidate: true,
                         shouldDirty: true
@@ -50,39 +54,39 @@ const AddEdit = ({ id }: any) => {
             }
         }
         
-        loadEspecie()
+        loadArvore()
 
-    }, [session, isAddMode, client, id, setValue, setCategoria])
+    }, [session, isAddMode, client, id, setValue, setObservacao])
 
     useEffect(() => {
         const defaultOptions = async () => {
             if (typeof session !== typeof undefined){
                 const response = await client.get(`categoria`)
-                const { categorias } = response.data
+                const { observacoes } = response.data
 
-                setCategorias(categorias)
+                setObservacoes(observacoes)
             }
         }
         defaultOptions()    
         
     }, [session, client])
 
-    const selectedCategoria = (data: any) => {
-        setCategoria(data)
-        setValue('categoria', data?.value)
+    const selectedObservacao = (data: any) => {
+        setObservacao(data)
+        setValue('observacao_arvore', data?.value)
     }
 
     async function onSubmit(data: any) {
         const preparedData = {
             ...data,
             id_projeto: projeto?.id,
-            id_categoria: categoria?.value ?? categoria?.value
+            id_observacao: observacao?.value ?? observacao?.value
         }
         
         try {
             return isAddMode
-                ? createEspecie(preparedData)
-                : updateEspecie(id, preparedData)
+                ? createArvore(preparedData)
+                : updateArvore(id, preparedData)
         } catch (error: any) {
             console.log(error.message)
             alertService.error(error.message);
@@ -90,36 +94,36 @@ const AddEdit = ({ id }: any) => {
         
     }
 
-    async function createEspecie(data: any) {
-        client.post('especie', data)
+    async function createArvore(data: any) {
+        client.post('arvore', data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
                     alertService.success(message);
-                    router.push('/especie')
+                    router.push('/arvore')
                 } else {
                     alertService.error(message)
                 }
             }) 
     }
 
-    function getCategoriasDefaultOptions() {
-        return categorias?.map((categoria: any) => {
+    function getObservacoesDefaultOptions() {
+        return observacoes?.map((observacao: any) => {
             return {
-                label: categoria.nome,
-                value: categoria.id
+                label: observacao.nome,
+                value: observacao.id
             }
         })
     }
 
-    async function updateEspecie(id: string, data: any) {
+    async function updateArvore(id: string, data: any) {
         
-        client.put(`/especie/${id}`, data)
+        client.put(`/arvore/${id}`, data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
                     alertService.success(message);
-                    router.push('/especie')
+                    router.push('/arvore')
                 } else {
                     console.log(message)
                     alertService.error(message)
@@ -127,87 +131,131 @@ const AddEdit = ({ id }: any) => {
             })
     }
 
+    function onSelect(index: number) {
+        setMedicao(index)
+    }
+
     return (
         <div>
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
-                <div className="relative py-3 w-11/12 max-w-xl mx-auto">
+                <div className="relative py-3 lg:max-w-4xl mx-auto">
                     <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
                         
                         <div>
-                            <LinkBack href="/especie" className="flex flex-col relative left-0 ml-4" />
+                            <LinkBack href="/arvore" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
                             {isAddMode ? (
-                                <h1 className='text-xl text-gray-800'>Cadastro de Espécie</h1>
+                                <h1 className='text-xl text-gray-800'>Cadastro de Árvore</h1>
                             ): (
-                                <h1 className='text-xl text-gray-800'>Editar Espécie</h1>
+                                <h1 className='text-xl text-gray-800'>Editar Árvore</h1>
                             )}
                         </div>
                         <div></div>
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl">
                         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-                            
-                            <FormInput
-                                name="nome"
-                                label="Nome"
-                                register={register}
-                                errors={errors}
-                                rules={ {required: 'O campo nome é obrigatório'} }
-                                id="nome"
-                                className="pb-4"
-                            />
-                            <FormInput
-                                id="nome_orgao"
-                                name="nome_orgao"
-                                label="Nome Vulgar"
-                                register={register}
-                                errors={errors}
-                                rules={
-                                    {
-                                        minLength: {
-                                            value: 3,
-                                            message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
+                            <div className='grid grid-cols-5 gap-4'>
+                                <div className='col-span-5 w-48'>
+                                <RadioGroup labelText="Medição">
+                                    {["CAP", "DAP"].map((el, index) => (
+                                        <Option
+                                            key={index}
+                                            index={index}
+                                            selectedIndex={medicao ? medicao : 0}
+                                            onSelect={(index: any) => {
+                                                setValue('tipo', index === 0 ? 'F' : 'J')
+                                                onSelect(index)
+                                            }}
+                                        >
+                                            {el}
+                                        </Option> 
+                                    ))}
+                                </RadioGroup>
+                                </div>
+                                <div>
+                                    <FormInput
+                                        name="faixa"
+                                        label="Faixa"
+                                        register={register}
+                                        errors={errors}
+                                        rules={ {required: 'O campo nome é obrigatório'} }
+                                        id="faixa"
+                                        className="pb-4"
+                                    />
+                                </div>
+                                <div>
+                                    <FormInput
+                                        id="lat_x"
+                                        name="lat_x"
+                                        label="Coord. X"
+                                        register={register}
+                                        errors={errors}
+                                        rules={ {required: 'O campo nome é obrigatório'} }
+                                        className="pb-4"
+                                    />
+                                </div>
+                                <div>
+                                    <FormInput
+                                        id="long_y"
+                                        name="long_y"
+                                        label="Coord. Y"
+                                        register={register}
+                                        errors={errors}
+                                        rules={ {required: 'O campo nome é obrigatório'} }
+                                        className="pb-4"
+                                    />
+                                </div>
+                                <div>
+                                    <FormInput
+                                        id="nome_cientifico"
+                                        name="nome_cientifico"
+                                        label="Nome Científico"
+                                        register={register}
+                                        errors={errors}
+                                        rules={
+                                            {
+                                                minLength: {
+                                                    value: 3,
+                                                    message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
+                                                }
+                                            }}
+                                        className="pb-4"
+                                    />
+                                </div>
+                                <div>
+                                    <Select
+                                        selectedValue={orient_x}
+                                        defaultOptions={[
+                                            { label: 'D', value: 'DIR' },
+                                            { label: 'E', value: 'ESQ' }
+                                        ]}
+                                        label="DIR / ESQ"
+                                        callback={(e) => setOrientX(e)}
+                                    />
+                                </div>
+                                <div className='col-span-2 pb-4'>
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Selecione uma Observação',
+                                                value: ''
+                                            }
                                         }
-                                    }}
-                                className="pb-4"
-                            />
-                            <FormInput
-                                id="nome_cientifico"
-                                name="nome_cientifico"
-                                label="Nome Científico"
-                                register={register}
-                                errors={errors}
-                                rules={
-                                    {
-                                        minLength: {
-                                            value: 3,
-                                            message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                        }
-                                    }}
-                                className="pb-4"
-                            />
-
-                            <div className='pb-4'>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione uma Categoria',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={categoria}
-                                    defaultOptions={getCategoriasDefaultOptions()}
-                                    options={loadOptions}
-                                    label="Categoria"
-                                    callback={selectedCategoria}
-                                />
-                            </div>
-                            <div className='flex items-center justify-between pt-4'>
-                                <Link href="/especie" className="text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                                <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
-                            </div>
+                                        selectedValue={observacao}
+                                        defaultOptions={getObservacoesDefaultOptions()}
+                                        options={loadObsOptions}
+                                        label="Observação"
+                                        callback={selectedObservacao}
+                                    />
+                                </div>
+                                </div>
+                                <div className='flex items-center justify-between pt-4 w-full'>
+                                    <Link href="/arvore" className="text-center w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
+                                    <button className="w-1/6 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                </div>
+                        
                         </form>
                     </div>
                 </div>
