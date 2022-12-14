@@ -74,6 +74,63 @@ model Telefone {
   @@map("telefone")
 }
 
+model SituacaoArvore {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome      String?
+  arvore    Arvore?
+  @@map("situacao_arvore")
+}
+
+model MotivoPreservacao {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome      String?
+  arvore    Arvore?
+  @@map("motivo_preservacao")
+}
+
+model ObservacaoArvore {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome      String?
+  preservar Boolean @default(true)
+  arvore    Arvore?
+  @@map("observacao_arvore")
+}
+
+model Arvore {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+  numero_arvore     Int
+  dap             Float?
+  altura          Float?
+  fuste           Int?
+  area_basal      Float?
+  volume          Float?
+  comentario      String? @db.Text
+  orient_x        String? @db.Char(1)
+  lat_x           Float?
+  long_y          Float?
+  faixa           Int?
+  gps             Int?
+  derrubada       Boolean @default(false)
+  secoes          Int?
+  ponto_arvore    Unsupported("geometry")?
+  ponto_gps       Int?
+  lat             Float?
+  lng             Float?
+  id_ut           String?   @unique @db.Uuid
+  ut              Ut? @relation(fields: [id_ut], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_especie           String?   @unique @db.Uuid
+  especie              Especie? @relation(fields: [id_especie], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_situacao           String?   @unique @db.Uuid
+  situacao_arvore       SituacaoArvore? @relation(fields: [id_situacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_motivo_preservacao String?   @unique @db.Uuid
+  motivo_preservacao    MotivoPreservacao? @relation(fields: [id_motivo_preservacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_observacao String?   @unique @db.Uuid
+  observacao_arvore    ObservacaoArvore? @relation(fields: [id_observacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@map("arvore")
+}
+
 model PessoaJuridica {
   id                 String    @id(map: "PK_bee78e8f1760ccf9cff402118a6") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at         DateTime  @default(now()) @db.Timestamp(6)
@@ -130,7 +187,7 @@ model Especie {
   id_projeto        String?           @db.Uuid
   categoria_especie CategoriaEspecie? @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
   projeto           Projeto?          @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
+  arvore            Arvore[]
   @@map("especie")
 }
 
@@ -212,18 +269,6 @@ model SpatialRefSys {
   upa       Upa[]
 
   @@map("spatial_ref_sys")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model typeorm_metadata {
-  type     String  @db.VarChar
-  database String? @db.VarChar
-  schema   String? @db.VarChar
-  table    String? @db.VarChar
-  name     String? @db.VarChar
-  value    String?
-
-  @@ignore
 }
 
 model Umf {
@@ -323,7 +368,7 @@ model Ut {
   origem             Unsupported("geometry")?
   id_upa             String?                  @db.Uuid
   upa                Upa?                     @relation(fields: [id_upa], references: [id], onDelete: Cascade, map: "FK_cb45ccb0356c31c3bf2f00b0086")
-
+  arvore             Arvore[]
   @@map("ut")
 }
 
