@@ -11,6 +11,8 @@ import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
 import RadioGroup from '../Form/RadioGroup'
 import Option from "../Form/Option";
+import { useAppSelector } from 'store/hooks'
+import { RootState } from 'store'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -21,6 +23,8 @@ const AddEdit = ({ id }: any) => {
     const { projeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
+    const upa = useAppSelector((state: RootState) => state.upa)
+    const ut = useAppSelector((state: RootState) => state.ut)
     const router = useRouter()
     const isAddMode = !id
 
@@ -139,7 +143,7 @@ const AddEdit = ({ id }: any) => {
         <div>
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
-                <div className="relative py-3 lg:max-w-4xl mx-auto">
+                <div className="relative py-3 w-full px-4 lg:max-w-4xl mx-auto">
                     <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
                         
                         <div>
@@ -154,85 +158,159 @@ const AddEdit = ({ id }: any) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl">
+                    <div className="relative flex flex-ROW p-8 bg-white shadow-sm sm:rounded-b-xl">
                         <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-                            <div className='grid grid-cols-5 gap-4'>
-                                <div className='col-span-5 w-48'>
-                                <RadioGroup labelText="Medição">
-                                    {["CAP", "DAP"].map((el, index) => (
-                                        <Option
-                                            key={index}
-                                            index={index}
-                                            selectedIndex={medicao ? medicao : 0}
-                                            onSelect={(index: any) => {
-                                                setValue('tipo', index === 0 ? 'F' : 'J')
-                                                onSelect(index)
-                                            }}
-                                        >
-                                            {el}
-                                        </Option> 
-                                    ))}
-                                </RadioGroup>
+                            <div className='sm:grid sm:grid-cols-5 sm:gap-4'>
+                                <div className='sm:col-span-5 sm:w-1/4'>
+                                    <RadioGroup labelText="Medição">
+                                        {["CAP", "DAP"].map((el, index) => (
+                                            <Option
+                                                key={index}
+                                                index={index}
+                                                selectedIndex={medicao ? medicao : 0}
+                                                onSelect={(index: any) => {
+                                                    setValue('tipo', index === 0 ? 'F' : 'J')
+                                                    onSelect(index)
+                                                }}
+                                            >
+                                                {el}
+                                            </Option> 
+                                        ))}
+                                    </RadioGroup>
                                 </div>
                                 <div>
                                     <FormInput
-                                        name="faixa"
-                                        label="Faixa"
-                                        register={register}
-                                        errors={errors}
-                                        rules={ {required: 'O campo nome é obrigatório'} }
-                                        id="faixa"
-                                        className="pb-4"
-                                    />
-                                </div>
-                                <div>
-                                    <FormInput
-                                        id="lat_x"
-                                        name="lat_x"
-                                        label="Coord. X"
+                                        id="numero_arvore"
+                                        name="numero_arvore"
+                                        label="Nº Árvore"
                                         register={register}
                                         errors={errors}
                                         rules={ {required: 'O campo nome é obrigatório'} }
                                         className="pb-4"
                                     />
+                               
                                 </div>
+                                {
+                                    (upa.tipo === 0) ? (
+                                        <>
+                                            <div>
+                                                <FormInput
+                                                    name="faixa"
+                                                    label="Faixa"
+                                                    register={register}
+                                                    errors={errors}
+                                                    rules={ {required: 'O campo nome é obrigatório'} }
+                                                    id="faixa"
+                                                    className="pb-4"
+                                                />
+                                            </div>
+                                            <div>
+                                                <FormInput
+                                                    id="lat_x"
+                                                    name="lat_x"
+                                                    label="Coord. X"
+                                                    register={register}
+                                                    errors={errors}
+                                                    rules={ {required: 'O campo nome é obrigatório'} }
+                                                    className="pb-4"
+                                                />
+                                            </div>
+                                            <div className='pt-1'>
+                                                <Select
+                                                    selectedValue={orient_x ? orient_x : { label: 'DIR', value: 'D' }}
+                                                    defaultOptions={[
+                                                        { label: 'DIR', value: 'D' },
+                                                        { label: 'ESQ', value: 'E' }
+                                                    ]}
+                                                    label="DIR / ESQ"
+                                                    callback={(e) => setOrientX(e)}
+                                                />
+                                            </div>
+                                            <div>
+                                                <FormInput
+                                                    id="long_y"
+                                                    name="long_y"
+                                                    label="Coord. Y"
+                                                    register={register}
+                                                    errors={errors}
+                                                    rules={ {required: 'O campo nome é obrigatório'} }
+                                                    className="pb-4"
+                                                />
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className='lg:col-span-3'>
+                                                <FormInput
+                                                    name="ponto"
+                                                    label="Ponto"
+                                                    register={register}
+                                                    errors={errors}
+                                                    rules={ {required: 'O campo nome é obrigatório'} }
+                                                    id="ponto"
+                                                    className="pb-4"
+                                                />
+                                            </div>
+                                        </>
+                                    )
+                                }
+                                {
+                                    (medicao === 0) ? (
+                                        <>
+                                        <div>
+                                            <FormInput
+                                                name="cap"
+                                                label="CAP"
+                                                register={register}
+                                                errors={errors}
+                                                rules={ {required: 'O campo nome é obrigatório'} }
+                                                id="cap"
+                                                type='number'
+                                                step={0.01}
+                                                className="pb-4"
+                                            />
+                                        </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                        <div>
+                                            <FormInput
+                                                name="dap"
+                                                label="DAP"
+                                                register={register}
+                                                errors={errors}
+                                                rules={ {required: 'O campo nome é obrigatório'} }
+                                                id="dap"
+                                                type='number'
+                                                step={0.01}
+                                                className="pb-4"
+                                            />
+                                        </div>
+                                        </>
+                                    )
+                                }
                                 <div>
                                     <FormInput
-                                        id="long_y"
-                                        name="long_y"
-                                        label="Coord. Y"
+                                        name="altura"
+                                        label="Altura"
                                         register={register}
                                         errors={errors}
                                         rules={ {required: 'O campo nome é obrigatório'} }
+                                        id="altura"
+                                        type='number'
                                         className="pb-4"
                                     />
                                 </div>
-                                <div>
+                                <div className='col-span-3 w-1/5'>
                                     <FormInput
-                                        id="nome_cientifico"
-                                        name="nome_cientifico"
-                                        label="Nome Científico"
+                                        name="fuste"
+                                        label="Fuste"
                                         register={register}
                                         errors={errors}
-                                        rules={
-                                            {
-                                                minLength: {
-                                                    value: 3,
-                                                    message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                                }
-                                            }}
+                                        rules={ {required: 'O campo nome é obrigatório'} }
+                                        id="fuste"
+                                        type='number'
                                         className="pb-4"
-                                    />
-                                </div>
-                                <div>
-                                    <Select
-                                        selectedValue={orient_x}
-                                        defaultOptions={[
-                                            { label: 'D', value: 'DIR' },
-                                            { label: 'E', value: 'ESQ' }
-                                        ]}
-                                        label="DIR / ESQ"
-                                        callback={(e) => setOrientX(e)}
                                     />
                                 </div>
                                 <div className='col-span-2 pb-4'>
@@ -250,12 +328,13 @@ const AddEdit = ({ id }: any) => {
                                         callback={selectedObservacao}
                                     />
                                 </div>
+                                <div className='col-span-5'>
+                                    <div className='flex items-center justify-between pt-4 w-full'>
+                                        <Link href="/arvore" className="text-center w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
+                                        <button className="w-1/6 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                    </div>
                                 </div>
-                                <div className='flex items-center justify-between pt-4 w-full'>
-                                    <Link href="/arvore" className="text-center w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                                    <button className="w-1/6 bg-green-600 text-white p-3 rounded-md">Salvar</button>
-                                </div>
-                        
+                            </div>
                         </form>
                     </div>
                 </div>
