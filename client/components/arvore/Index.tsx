@@ -9,10 +9,13 @@ import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
-import { useAppSelector } from "store/hooks"
+import { useAppDispatch, useAppSelector } from "store/hooks"
 import { RootState } from "store"
-import { OptionType } from "../Select"
+import { OptionType, Select } from "../Select"
 import { ProjetoContext } from "contexts/ProjetoContext"
+import { setUmf, UmfType } from "../../store/umfSlice"
+import { setUpa } from "../../store/upaSlice"
+import { setUt } from "../../store/utSlice"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -37,10 +40,123 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
 
+    const dispatch = useAppDispatch()
+
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const arvoreById = useCallback((id?: string) => {
         return currentArvores.find((arvore: any) => arvore.id === id)
     }, [currentArvores])
+
+    const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((upa: any) => ({
+            value: upa.id,
+            label: upa.descricao
+        })))
+    }
+
+    const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/umf/search/q?nome=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((umf: any) => ({
+            value: umf.id,
+            label: umf.nome
+        })))
+    }
+
+    const defaultUmfsOptions = useCallback(async() => {
+        const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
+        
+            const { umfs } = response.data
+            setUmfs(umfs)
+
+            const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
+            
+            if (compareUmf) {
+                setSelectedUmf({
+                    value: umf?.id,
+                    label: umf?.nome
+                })
+            }
+
+            if (umfs.length === 0) {
+                setSelectedUmf({
+                    value: '0',
+                    label: 'Nenhuma UMF Cadastrada'
+                })
+            } 
+    }, [client, projeto?.id, umf.id, umf?.nome])
+
+    const defaultUpasOptions = useCallback(async () => {
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
+            const { upas } = response.data
+            setUpas(upas)
+            if (upas.length === 0) {
+                setSelectedUpa({
+                    value: '0',
+                    label: 'Nenhuma UPA Cadastrada'
+                })
+            }
+
+            const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
+
+            if (compareUpa) {
+                setSelectedUpa({
+                    value: upa?.id,
+                    label: upa?.descricao
+                })
+            }
+    }, [client, umf?.id, upa?.descricao, upa.id])
+
+    const selectUmf = async (umf: any) => {
+        dispatch(setUmf({
+            id: umf.value,
+            nome: umf.label
+        }))
+        setSelectedUmf(umf)
+
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
+        const { upas } = response.data
+        
+        setUpas(upas)
+    }
+
+    const selectUpa = async (upa: any) => {
+        const upaSelected = upas.find((u: any) => u.id === upa.value)
+        console.log(upaSelected)
+        
+        dispatch(setUpa({
+            id: upaSelected.id,
+            descricao: upaSelected.descricao,
+            tipo: Number.parseInt(upaSelected.tipo)
+        }))
+        setSelectedUpa(upa)
+        
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
+        const { uts } = response.data
+        
+    }
+
+    function getUmfsDefaultOptions() {
+        return umfs?.map((umf: any) => {
+            return {
+                label: umf.nome,
+                value: umf.id
+            }
+        })
+    }
+
+    function getUpasDefaultOptions() {
+        return upas?.map((upa: any) => {
+            return {
+                label: upa.descricao,
+                value: upa.id
+            }
+        })
+    }
 
     const deleteArvore = useCallback(async (id?: string) => {
         try {
@@ -66,8 +182,10 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
 
     useEffect(() => {
+        defaultUmfsOptions()
+        defaultUpasOptions()
         setFilteredArvores(currentArvores)
-    }, [currentArvores, currentPage])
+    }, [currentArvores, currentPage, defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
         setLoading(true)
@@ -235,15 +353,15 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             </div>
                 <div className="flex flex-col p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        <div className="flex flex-row w-2/12 px-2 items-center justify-between">
+                        <div className="flex flex-col px-4 w-auto">
                             <div className="w-full">
                                 <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
                             </div>
                             <select
                                 value={perPage}
-                                onChange={changeItemsPerPage}
+                                onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
                                 id="perPage" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                className="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
                                 <option value="10">10</option>
                                 <option value="20">20</option>
@@ -251,15 +369,47 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4">Pesquisar Árvore:</div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4">
+                            {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UMF...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUmf}
+                                    defaultOptions={getUmfsDefaultOptions()}
+                                    options={loadUmfs}
+                                    label="UMF:"
+                                    callback={setSelectedUmf}
+                                />
+                            </div>
+                            {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UPA...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUpa}
+                                    defaultOptions={getUpasDefaultOptions()}
+                                    options={loadUpas}
+                                    label="UPA:"
+                                    callback={(e) => {selectUpa(e)}}
+                                />
+                            </div>
+                        </div>
                         <div className="w-full px-4">
+                            <label htmlFor="procurar_ut">Pesquisar UT:</label>
                             <Input
-                                label="Pesquisar Árvore"
+                                label="Pesquisar UT"
                                 id="search"
                                 name="search"
-                                value={searchInput}
-                                onChange={handleSearch}
-                                autoFocus
+                                onChange={(e: any) => handleSearch(e.target.value)}
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
                                 

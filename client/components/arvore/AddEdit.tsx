@@ -158,10 +158,10 @@ const AddEdit = ({ id }: any) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative flex flex-ROW p-8 bg-white shadow-sm sm:rounded-b-xl">
-                        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-                            <div className='sm:grid sm:grid-cols-5 sm:gap-4'>
-                                <div className='sm:col-span-5 sm:w-1/4'>
+                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl">
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className='grid grid-cols-3 lg:grid-cols-5 gap-4'>
+                                <div className='col-span-3 lg:col-span-5 w-48'>
                                     <RadioGroup labelText="Medição">
                                         {["CAP", "DAP"].map((el, index) => (
                                             <Option
@@ -240,7 +240,7 @@ const AddEdit = ({ id }: any) => {
                                         </>
                                     ) : (
                                         <>
-                                            <div className='lg:col-span-3'>
+                                            <div className='lg:col-span-1 lg:w-full col-span-2 w-[7.5rem]'>
                                                 <FormInput
                                                     name="ponto"
                                                     label="Ponto"
@@ -301,7 +301,7 @@ const AddEdit = ({ id }: any) => {
                                         className="pb-4"
                                     />
                                 </div>
-                                <div className='col-span-3 w-1/5'>
+                                <div>
                                     <FormInput
                                         name="fuste"
                                         label="Fuste"
@@ -313,7 +313,7 @@ const AddEdit = ({ id }: any) => {
                                         className="pb-4"
                                     />
                                 </div>
-                                <div className='col-span-2 pb-4'>
+                                <div className='lg:col-span-2 col-span-3 pb-4'>
                                     <Select
                                         initialData={
                                             {
@@ -328,13 +328,14 @@ const AddEdit = ({ id }: any) => {
                                         callback={selectedObservacao}
                                     />
                                 </div>
-                                <div className='col-span-5'>
-                                    <div className='flex items-center justify-between pt-4 w-full'>
-                                        <Link href="/arvore" className="text-center w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                                        <button className="w-1/6 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                
+                            </div>
+                            <div>
+                                    <div className='flex flex-row items-center justify-between pt-4 w-full'>
+                                        <Link href="/arvore" className="text-center lg:w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
+                                        <button className="lg:w-1/6 bg-green-600 text-white p-3 rounded-md">Salvar</button>
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div>
                 </div>
