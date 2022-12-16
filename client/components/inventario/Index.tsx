@@ -203,6 +203,60 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         }
     }
 
+    const handleImportTemplate = async () => {
+        const data = upa.tipo === 1 ? [
+            { ut: '1', numero_arvore: '1', especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, ponto_gps: 1, latitude: 2.565, longitude: 0.56, obs: '', comentario: '' },
+            { ut: '1', numero_arvore: '2', especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, ponto_gps: 2, latitude: 7.544, longitude: 1.24, obs: '', comentario: '' },
+            { ut: '1', numero_arvore: '3', especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, ponto_gps: 3, latitude: 14.224, longitude: 4.67, obs: '', comentario: ''},
+        ] : [
+            { ut: 1, faixa: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, orient_x: 'D', coord_x: 6, coord_y: 10, obs: '', comentario: '' },
+            { ut: 1, faixa: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orient_x: 'D', coord_x: 12, coord_y: 10, obs: '', comentario: '' },
+            { ut: 1, faixa: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orient_x: 'D', coord_x: 18, coord_y: 10, obs: '', comentario: ''},
+        ]
+        
+        CsvDataService.exportToCsv('template_inventario', data)
+    }
+
+    const handleImportArvores = async (e: any) => {
+        try {
+            window.removeEventListener('focus', handleFocusBack)
+            if (e.target?.value.length) {
+                const formData = new FormData()
+                formData.append('file', e.target?.files[0])
+                setLoading(true)
+                await client.post('/arvore/import', formData)
+                    .then((response: any) => {
+                        console.log(response)
+                        const { error, message } = response.data
+                        
+                        if (!error) {
+                            alertService.success(message) 
+                            // loadArvores()
+                            setLoading(false)
+                        } else {
+                            setLoading(false)
+                            console.log(message)
+                        }
+                    }).catch(() => {
+                        setLoading(false)
+                    })
+            }
+        } catch(e) {
+            setLoading(false)
+        }
+    }
+
+    const handleFocusBack = () => {
+        setUploading(false)
+        window.removeEventListener('focus', handleFocusBack)
+    }
+
+    const openFile = () => {
+        fileRef.current?.click()
+        setUploading(true)
+        window.addEventListener('focus', handleFocusBack)
+    }
+
     const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
         const paginatedData = {
             currentPage: 1,
@@ -260,6 +314,39 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
+                <div className="flex flex-row">
+                    <a
+                        onClick={openFile}
+                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
+                    >
+                        <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                        </svg>
+                        <span className="ml-2">{uploading ? "Importando..." : "Importar"}</span>
+                    </a>
+                    <input
+                        disabled={uploading} 
+                        onChange={handleImportArvores}
+                        ref={fileRef}
+                        type="file"
+                        className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
+                        name="fileRef"
+                    />
+            
+                </div>
+                <div>
+                    <a
+                        onClick={handleImportTemplate}
+                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+
+                    <span className="ml-2">Modelo</span>
+                    </a>
+                </div>
                 <Link
                     href='/arvore/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"

@@ -114,7 +114,7 @@ export class ArvoreController {
         }
     }
 
-    async importEspecie(request: Request, response: Response) {
+    async importInventario(request: Request, response: Response) {
         const arvores: any[] = []
         const projeto = await getProjeto(request.user?.id)
         const projetoId = projeto ? projeto?.id : ''
@@ -136,19 +136,27 @@ export class ArvoreController {
                 const arvoreLineSplit = line.split(";")
                 
                 arvores.push({
-                    nome: arvoreLineSplit[0],
-                    nome_orgao: arvoreLineSplit[1],
-                    nome_cientifico: arvoreLineSplit[2]
+                    ut: arvoreLineSplit[0],
+                    numero_arvore: arvoreLineSplit[1],
+                    especie: arvoreLineSplit[2],
+                    dap: arvoreLineSplit[3],
+                    altura: arvoreLineSplit[4],
+                    fuste: arvoreLineSplit[5],
+                    ponto: arvoreLineSplit[6],
+                    latitude: arvoreLineSplit[7],
+                    longitude: arvoreLineSplit[8],
                 })
             }
 
-            for await (let arvore of arvores) {
-                if (arvores.indexOf(arvore) > 0) await arvoreService.create(arvore, projetoId)
-            }
+            console.log(arvores)
+
+            // for (let arvore of arvores) {
+            //     if (arvores.indexOf(arvore) > 0) await arvoreService.create(arvore, projetoId)
+            // }
 
             return response.json({
                 error: false,
-                arvores,
+                arvores: arvores.slice(1),
                 message: 'Árvores importadas com sucesso!!!'
             })
             

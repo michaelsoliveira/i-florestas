@@ -122,26 +122,12 @@ export const inventario = [
         name: 'Linkar GPS',
         description: 'Linka as posições do GPS com as árvores',
         href: '#',
-        icon: MapIcon,
-        subMenuItems: [
-            {
-                name: 'Cartesiano X e Y',
-                description: 'Usar Plano cartesiano',
-                href: '#',
-                icon: MapIcon,
-            },
-            {
-                name: 'GPS',
-                description: 'Linka as posições do GPS com as árvores',
-                href: '#',
-                icon: MapIcon,
-            },
-        ]
+        icon: MapIcon
     },
     {
         name: 'Importar Inventário',
         description: 'Realizar importação de inventário a partir de um dataset',
-        href: '#',
+        href: '/inventario',
         icon: MenuIcon,
     },
 ]

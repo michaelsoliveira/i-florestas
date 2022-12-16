@@ -161,7 +161,7 @@ routes.get('/arvore/:id', Authentication(), new ArvoreController().findOne)
 routes.put('/arvore/:id', Authentication(), new ArvoreController().update)
 routes.delete('/arvore/single/:id', Authentication(), new ArvoreController().delete)
 routes.delete('/arvore/multiples', Authentication(), new ArvoreController().deleteArvores)
-routes.post('/arvore/import', multerConfig.single('file'), new ArvoreController().importEspecie)
+routes.post('/arvore/import', multerConfig.single('file'), new ArvoreController().importInventario)
 
 
 export default routes;
