@@ -102,13 +102,9 @@ export class UtController {
     async search(request: Request, response: Response) : Promise<Response>{
         const { numero_ut } = request.query
         
-        const data = numero_ut ? await utService.search(numero_ut) : await utService.getAll(request.user?.id)
+        const uts = numero_ut ? await utService.search(request.user?.id, numero_ut) : await utService.getAll(request.user?.id)
 
-        return response.json({
-            error: false,
-            data,
-            message: ""
-        })
+        return response.json(uts)
     }
 
     async findOne(request: Request, response: Response) : Promise<Response>{

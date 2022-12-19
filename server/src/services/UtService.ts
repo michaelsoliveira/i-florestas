@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Ut } from "@prisma/client";
+import { Prisma, Ut } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface UtType {
@@ -212,10 +212,20 @@ class UtService {
         
     }
 
-    async search(q: any) : Promise<Ut[]> {
+    async search(userId: string, q: any) : Promise<Ut[]> {
+        const projeto = await getProjeto(userId)
         const uts = await prismaClient.ut.findMany({
             where: {
-                numero_ut: parseInt(q)
+                AND: {
+                    upa: {
+                        umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
+                        }
+                    },
+                    numero_ut: parseInt(q)
+                }
             }
         })
         return uts

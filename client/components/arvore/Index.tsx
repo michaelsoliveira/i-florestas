@@ -32,6 +32,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const { setLoading } = useContext(LoadingContext)
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
+    const [uts, setUts] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const ut = useAppSelector((state: RootState) => state.ut)
@@ -57,10 +58,20 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         })))
     }
 
+    const loadUts = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/ut/search/q?numero_ut=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((ut: any) => ({
+            value: ut.id,
+            label: ut.numero_ut
+        })))
+    }
+
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
         const data = response.data
-        
+        console.log(data)
         callback(data?.map((umf: any) => ({
             value: umf.id,
             label: umf.nome
@@ -111,6 +122,27 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             }
     }, [client, umf?.id, upa?.descricao, upa.id])
 
+    const defaultUtsOptions = useCallback(async () => {
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa?.id}`)
+        const { uts } = response.data
+            setUts(uts)
+            if (uts.length === 0) {
+                setSelectedUt({
+                    value: '0',
+                    label: 'Nenhuma UT Cadastrada'
+                })
+            }
+
+            const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
+
+            if (compareUt) {
+                setSelectedUpa({
+                    value: ut?.id,
+                    label: ut?.numero_ut.toString()
+                })
+            }
+    }, [client, upa?.id, ut.id, ut?.numero_ut])
+
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
             id: umf.value,
@@ -126,7 +158,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const selectUpa = async (upa: any) => {
         const upaSelected = upas.find((u: any) => u.id === upa.value)
-        console.log(upaSelected)
         
         dispatch(setUpa({
             id: upaSelected.id,
@@ -135,8 +166,18 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         }))
         setSelectedUpa(upa)
         
-        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
-        const { uts } = response.data
+    }
+
+    const selectUt = async (ut: any) => {
+        
+        const utSelected = uts.find((u: any) => u.id === ut.value)
+
+        dispatch(setUt({
+            id: utSelected.id,
+            numero_ut: utSelected.numero_ut,
+        }))
+        
+        setSelectedUt(ut)
         
     }
 
@@ -154,6 +195,15 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             return {
                 label: upa.descricao,
                 value: upa.id
+            }
+        })
+    }
+
+    function getUtsDefaultOptions() {
+        return uts?.map((ut: any) => {
+            return {
+                label: ut.numero_ut,
+                value: ut.id
             }
         })
     }
@@ -184,8 +234,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     useEffect(() => {
         defaultUmfsOptions()
         defaultUpasOptions()
+        defaultUtsOptions()
         setFilteredArvores(currentArvores)
-    }, [currentArvores, currentPage, defaultUmfsOptions, defaultUpasOptions])
+    }, [currentArvores, currentPage, defaultUmfsOptions, defaultUpasOptions, defaultUtsOptions])
 
     const deleteArvores = async () => {
         setLoading(true)
@@ -285,7 +336,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
                                 <Select
@@ -299,10 +350,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
                                     label="UMF:"
-                                    callback={setSelectedUmf}
+                                    callback={(e) => {selectUmf(e)}}
                                 />
                             </div>
-                            {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
                             <div>
                                 <Select
                                     initialData={
@@ -318,8 +368,23 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     callback={(e) => {selectUpa(e)}}
                                 />
                             </div>
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UT...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUt}
+                                    defaultOptions={getUtsDefaultOptions()}
+                                    options={loadUts}
+                                    label="UT:"
+                                    callback={(e) => {selectUt(e)}}
+                                />
+                            </div>
                         </div>
-                        <div className="w-full px-4">
+                        <div className="w-full px-4 pt-4 lg:pt-0">
                             <label htmlFor="procurar_ut">Pesquisar UT:</label>
                             <Input
                                 label="Pesquisar UT"
