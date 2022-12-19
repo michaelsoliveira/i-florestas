@@ -3,12 +3,13 @@ import { getProjeto } from "../services/ProjetoService";
 import { Readable } from "stream";
 import readline from "readline";
 import arvoreService from "../services/ArvoreService";
+import { prismaClient } from "src/database/prismaClient";
 
 export class ArvoreController {
-    async store(request : Request, response: Response) : Promise<Response> {
-        const projeto = await getProjeto(request.user?.id)
+    async store(request : Request, response: Response) : Promise<Response> { 
         try {    
-            const arvore = await arvoreService.create(request.body, projeto?.id)
+            const data = request.body
+            const arvore = await arvoreService.create(data)
             return response.json({
                 error: false,
                 arvore,
@@ -114,12 +115,10 @@ export class ArvoreController {
         }
     }
 
-    async importInventario(request: Request, response: Response) {
+    async loadCSV(request: Request, response: Response) {
         const arvores: any[] = []
-        const projeto = await getProjeto(request.user?.id)
-        const projetoId = projeto ? projeto?.id : ''
         const { tipoUpa } = request.query as any
-        console.log(tipoUpa)
+
         try {
             if (request?.file === undefined) {
                 return response.status(400).send("Please upload a CSV file!");
@@ -167,18 +166,47 @@ export class ArvoreController {
                     })
                 }
             }
-            // for (let arvore of arvores) {
-            //     if (arvores.indexOf(arvore) > 0) await arvoreService.create(arvore, projetoId)
-            // }
 
             return response.json({
                 error: false,
                 arvores,
-                message: 'Árvores importadas com sucesso!!!'
+                message: 'Árvores carregadas com sucesso!!!'
             })
             
         } catch (error) {
             return response.json(error.message)
         }
+    }
+
+    async importInventario(request: Request, response: Response) {
+        const data = request.body
+
+        try {
+            for (let arvore of data) {
+
+                if (data.indexOf(arvore) > 0) 
+                {
+                    await arvoreService.createByImport({
+                        numero_arvore: arvore.numero_arvore,
+                        faixa: arvore?.faixa,
+                        dap: arvore?.dap,
+                        altura: arvore?.altura,
+                        orient_x: arvore?.orient_x,
+                        lat_x: arvore?.coord_x,
+                        long_y: arvore?.coord_y,
+                        ut: arvore.ut,
+                        especie: arvore.especie,
+                    })
+                }
+            }
+
+            return response.json({
+                error: false,
+                message: 'Árvores importadas com sucesso!!!'
+            })
+        } catch (error) {
+            return response.json(error.message)
+        }
+
     }
 }

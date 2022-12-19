@@ -112,7 +112,6 @@ model Arvore {
   lat_x           Float?
   long_y          Float?
   faixa           Int?
-  gps             Int?
   derrubada       Boolean @default(false)
   secoes          Int?
   ponto_arvore    Unsupported("geometry")?

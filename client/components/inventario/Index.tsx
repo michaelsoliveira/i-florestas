@@ -219,22 +219,37 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         CsvDataService.exportToCsv('template_inventario', data)
     }
 
-    const handleImportArvores = async (e: any) => {
+    const handleImportInventario = async () => {
+        try {
+            setLoading(true)
+            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
+                .then((response: any) => {
+                    const { error, message } = response.data
+                    if (!error) {
+                        alertService.success(message)
+                    }
+                    setLoading(false)
+                    console.log(response)
+                })
+        } catch(e) {
+
+        }
+    }
+
+    const handleLoadInventario = async (e: any) => {
         try {
             window.removeEventListener('focus', handleFocusBack)
             if (e.target?.value.length) {
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
-                await client.post(`/arvore/import?tipoUpa=${upa?.tipo}`, formData)
+                await client.post(`/arvore/load-csv?tipoUpa=${upa?.tipo}`, formData)
                     .then((response: any) => {
                      
                         const { error, message, arvores } = response.data
                         if (!error) {
                             alertService.success(message) 
-                            // setInventario(arvores)
                             setFilteredArvores(arvores.slice(1))
-                            console.log(arvores.slice(1))
                             setLoading(false)
                         } else {
                             setLoading(false)
@@ -330,7 +345,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     </a>
                     <input
                         disabled={uploading} 
-                        onChange={handleImportArvores}
+                        onChange={handleLoadInventario}
                         ref={fileRef}
                         type="file"
                         className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
@@ -350,12 +365,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     <span className="ml-2">Modelo</span>
                     </a>
                 </div>
-                <Link
-                    href='/arvore/add'
+                <a
+                    onClick={handleImportInventario}
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Importar
-                </Link>
+                </a>
             </div>
                 <div className="flex flex-col p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">

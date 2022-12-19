@@ -313,7 +313,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>Cartesiano X Y</div>) : (<div>GPS</div>) }</div>
+                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>GPS</div>) : (<div>Cartesiano X Y</div>) }</div>
                                 </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">

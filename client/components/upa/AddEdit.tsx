@@ -245,16 +245,18 @@ const AddEdit = ({ id }: any) => {
                                 <span className="text-gray-700">Forma de Inventário</span>
                                 <div className="mt-2">
                                     <label className="inline-flex items-center">
-                                    <input 
-                                    {...register("tipo")}
-                                    type="radio" className="form-radio" name="tipo" value="0" />
-                                    <span className="ml-2">Cartesiano (X Y)</span>
+                                        <input 
+                                            {...register("tipo")}
+                                            type="radio" className="form-radio" name="tipo" value="0" 
+                                        />
+                                        <span className="ml-2">GPS</span>
                                     </label>
                                     <label className="inline-flex items-center ml-6">
-                                    <input 
-                                    {...register("tipo")}
-                                    type="radio" className="form-radio" name="tipo" value="1" />
-                                    <span className="ml-2">GPS</span>
+                                        <input 
+                                            {...register("tipo")}
+                                            type="radio" className="form-radio" name="tipo" value="1" 
+                                        />
+                                        <span className="ml-2">Cartesiano (X Y)</span>
                                     </label>
                                 </div>
                             </div>

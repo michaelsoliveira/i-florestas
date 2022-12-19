@@ -29,8 +29,6 @@ class UtService {
             id_upa
         } = dataRequest
 
-        const projeto = await getProjeto(userId)
-
         const upa = await prismaClient.upa.findUnique({where: { id: id_upa }})
         
         const utExists = await prismaClient.ut.findFirst({
@@ -38,16 +36,16 @@ class UtService {
                 AND: {
                     numero_ut: parseInt(numero_ut),
                     upa: {
-                        umf: {
-                            projeto: {
-                                id: projeto?.id
-                            }
-                        }
+                        id: id_upa
                     }
                 }
                 
             }
         })
+
+        if (utExists) {
+            throw new Error('Já existe uma Ut cadastrada com este número')
+        }
 
         const preparedData = 
             {
@@ -64,23 +62,19 @@ class UtService {
             }
         
 
-        const data = upa?.tipo === 0 ? { 
+        const data = upa?.tipo === 1 ? { 
             ...preparedData, 
             quantidade_faixas: parseInt(quantidade_faixas), 
             comprimento_faixas: parseInt(comprimento_faixas), 
             largura_faixas: parseInt(largura_faixas)  
         } : preparedData
-
-        if (utExists) {
-            throw new Error('Já existe uma Ut cadastrada com este número')
-        }
         
         const ut = await prismaClient.ut.create({data})
 
         return ut
     }
 
-    async update(id: string, data: UtType): Promise<Ut> {
+    async update(id: string, dataRequest: any): Promise<Ut> {
 
         const { 
             numero_ut, 
@@ -90,32 +84,41 @@ class UtService {
             comprimento_faixas, 
             largura_faixas, 
             latitude, 
-            longitude 
-        } = data
+            longitude,
+            id_upa
+        } = dataRequest
 
-        await prismaClient.ut.update({
+        const preparedData = 
+        {
+            numero_ut: parseInt(numero_ut), 
+            area_util: parseFloat(area_util), 
+            area_total: parseFloat(area_total), 
+            latitude: parseFloat(latitude), 
+            longitude: parseFloat(longitude),
+            upa: {
+                connect: {
+                    id: id_upa
+                }
+            }
+        }
+    
+        const upa = await prismaClient.upa.findUnique({where: { id: id_upa }})
+
+        const data = upa?.tipo === 1 ? { 
+            ...preparedData, 
+            quantidade_faixas: parseInt(quantidade_faixas), 
+            comprimento_faixas: parseInt(comprimento_faixas), 
+            largura_faixas: parseInt(largura_faixas)  
+        } : preparedData
+        
+        const ut = await prismaClient.ut.update({
             where: {
                 id
             },
-            data: {
-                numero_ut, 
-                area_util, 
-                area_total, 
-                quantidade_faixas, 
-                comprimento_faixas, 
-                largura_faixas, 
-                latitude, 
-                longitude,
-                upa: {
-                    connect: {
-                        id: data.upa
-                    }
-                }
-                    
-            }
+            data
         })
 
-        return this.findById(id)
+        return ut
     }
 
     async delete(id: string): Promise<void> {

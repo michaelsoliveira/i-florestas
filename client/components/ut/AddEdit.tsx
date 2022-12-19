@@ -209,7 +209,7 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                             </div>  
                             {
-                                (upa.tipo === 0) &&
+                                (upa.tipo === 1) &&
                                 (<div className="space-y-8">
                                     <div className="relative border border-gray-400 p-4 rounded-md">
                                         <span className="text-gray-700 absolute -top-3 bg-white px-2">Faixas</span>
@@ -242,6 +242,24 @@ const AddEdit = ({ id }: any) => {
                                                 className="pb-4"
                                             />
                                         </div>
+                                        <FormInput
+                                            name="azimute"
+                                            label="Azimute"
+                                            type="number"
+                                            register={register}
+                                            errors={errors}
+                                            id="azimute"
+                                            className="pb-4"
+                                        />
+                                        <FormInput
+                                            name="quadrante"
+                                            label="Quadrante"
+                                            type="number"
+                                            register={register}
+                                            errors={errors}
+                                            id="quadrante"
+                                            className="pb-4"
+                                        />
                                     </div>
                                 </div>)
                             }

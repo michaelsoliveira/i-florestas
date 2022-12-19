@@ -99,7 +99,7 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function createArvore(data: any) {
-        client.post('arvore', data)
+        client.post(`/arvore`, {upa: upa?.id, ut: ut?.id, ...data})
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
@@ -242,7 +242,7 @@ const AddEdit = ({ id }: any) => {
                                         <>
                                             <div className='lg:col-span-1 lg:w-full col-span-2 w-[7.5rem]'>
                                                 <FormInput
-                                                    name="ponto"
+                                                    name="ponto_gps"
                                                     label="Ponto"
                                                     register={register}
                                                     errors={errors}

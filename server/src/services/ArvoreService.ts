@@ -4,48 +4,170 @@ import { getProjeto } from "./ProjetoService";
 
 export interface ArvoreType {
     numero_arvore: number;
-    criterio_fuste?: number;
-    criterio_dminc?: number;
-    criterio_dmaxc?: number;
-    criterio_n_min?: number;
-    criterio_perc_min?: number;
-    preservar?: boolean;
-    criterio_ltura?: number;
-    criterio_volume?: number;
     id_projeto: string;
 }
 
 class ArvoreService {
-    async create(data: ArvoreType, projetoId?: string): Promise<Arvore> {
-        const arvoreExists = await prismaClient.arvore.findFirst({ 
-            where: { 
-                AND: {
-                    numero_arvore: data.numero_arvore,
-                    ut: {
-                        upa: {
-                            umf: {
-                                projeto: {
-                                    id: projetoId
-                                }
-                            }
+    async create(data: any): Promise<Arvore> {
+        try {
+            const ut = await prismaClient.ut.findUnique({
+                where: {
+                    id: data?.ut
+                }
+            }) as any
+
+            const upa = await prismaClient.upa.findUnique({
+                where: {
+                    id: ut?.id_upa
+                }
+            })
+
+            const arvoreExists = await prismaClient.arvore.findFirst({ 
+                where: { 
+                    AND: {
+                        numero_arvore: data.numero_arvore,
+                        ut: {
+                            id: data?.ut
                         }
                     }
+                } 
+            })
+    
+            if (arvoreExists) {
+                throw new Error('Já existe uma árvore cadastrada com este número')
+            }
+    
+            const especie = await prismaClient.especie.findUnique({
+                where: {
+                    id: data?.especie
                 }
-            } 
-        })
+            })
+    
+            const preparedData = upa?.tipo === 1 ? {
+                numero_arvore: data?.numero_arvore,
+                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
+                altura: data?.altura,
+                fuste: data?.fuste,
+                orient_x: data?.orient_x,
+                lat_x: data?.lat_x,
+                long_y: data?.long_y,
+                ut: {
+                    connect: {
+                        id: ut?.id
+                    }
+                },
+                especie: {
+                    connect: {
+                        id: especie?.id
+                    }
+                }
+            } : {
+                numero_arvore: data?.numero_arvore,
+                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
+                altura: data?.altura,
+                fuste: data?.fuste,
+                ut: {
+                    connect: {
+                        id: ut?.id
+                    }
+                },
+            }
 
-        if (arvoreExists) {
-            throw new Error('Já existe uma árvore cadastrada com este número')
+            console.log(preparedData)
+    
+            const arvore = await prismaClient.arvore.create({
+                data: preparedData
+            })
+    
+            return arvore
+        } catch(e) {
+            return e
         }
-
-        const arvore = await prismaClient.arvore.create({
-            data
-        })
-
-        return arvore
+        
     }
 
-    async update(id: string, data: ArvoreType): Promise<Arvore> {
+    async createByImport(data: any): Promise<Arvore> {
+        try {
+            const ut = await prismaClient.ut.findFirst({
+                where: {
+                    numero_ut: data?.numero_ut
+                }
+            }) as any
+
+            const upa = await prismaClient.upa.findUnique({
+                where: {
+                    id: ut?.id_upa
+                }
+            })
+
+            const arvoreExists = await prismaClient.arvore.findFirst({ 
+                where: { 
+                    AND: {
+                        numero_arvore: data.numero_arvore,
+                        ut: {
+                            id: ut?.id
+                        }
+                    }
+                } 
+            })
+    
+            if (arvoreExists) {
+                throw new Error('Já existe uma árvore cadastrada com este número')
+            }
+    
+            const especie = await prismaClient.especie.findFirst({
+                where: {
+                    nome_orgao: data?.especie
+                }
+            })
+    
+            const preparedData = upa?.tipo === 1 ? {
+                numero_arvore: data?.numero_arvore,
+                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
+                altura: data?.altura,
+                fuste: data?.fuste,
+                orient_x: data?.orient_x,
+                lat_x: data?.lat_x,
+                long_y: data?.long_y,
+                ut: {
+                    connect: {
+                        id: ut?.id
+                    }
+                },
+                especie: {
+                    connect: {
+                        id: especie?.id
+                    }
+                }
+            } : {
+                numero_arvore: data?.numero_arvore,
+                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
+                altura: data?.altura,
+                fuste: data?.fuste,
+                ut: {
+                    connect: {
+                        id: ut?.id
+                    }
+                },
+                especie: {
+                    connect: {
+                        id: especie?.id
+                    }
+                }
+            }
+    
+            const arvore = await prismaClient.arvore.create({
+                data: preparedData
+            })
+    
+            return arvore
+        } catch(e) {
+            return e
+        }
+        
+    }
+
+    async update(id: string, data: any): Promise<Arvore> {
         const arvore = await prismaClient.arvore.update({
             data,
             where: {
