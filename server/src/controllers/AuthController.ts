@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import authService from "../services/AuthService"
-
-import { getDecodedOAuthJwtGoogle } from "../services/DecodeJwtGoogle";
 export interface BaseUser {
     email: string,
     password: string
@@ -42,9 +40,7 @@ export class AuthController {
         const { authorization } = request.headers
         const token = authorization?.replace('Bearer', '').trim()
 
-        const userInfo = await getDecodedOAuthJwtGoogle(token)
         
-        return response.json(userInfo)
     }
 
     async getUserByToken(request: Request, response: Response): Promise<Response> {
