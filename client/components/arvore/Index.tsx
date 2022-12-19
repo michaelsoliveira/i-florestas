@@ -136,7 +136,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
 
             if (compareUt) {
-                setSelectedUpa({
+                setSelectedUt({
                     value: ut?.id,
                     label: ut?.numero_ut.toString()
                 })
@@ -489,7 +489,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('especie.nome')}
+                            onClick={() => sortArvores('especie')}
                         >
                             <div className="flex flex-row w-full justify-between">
                                 Espécie
@@ -520,16 +520,58 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             <td className="px-3 py-2 whitespace-nowrap">
                             <div className="flex flex-col items-starter">
                                 
-                                <div className="text-sm font-medium text-gray-900">{arvore?.nome}</div>
+                                <div className="text-sm font-medium text-gray-900">{arvore?.numero_arvore}</div>
                             </div>
                             </td>
+                            {(upa?.tipo === 1) ? (
+                                <>
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="text-sm text-gray-900">{arvore?.faixa}</div>
+                                    </td>
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.orient_x}</div>
+                                    </span>
+                                    </td>
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore.lat_x}</div>
+                                    </span>
+                                    </td>
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.long_y}</div>
+                                    </span>
+                                    </td>
+                                </>
+                            ) : (
+                                <>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.latitude}</div>
+                                    </span>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.longitude}</div>
+                                    </span>
+                                </td>
+                                </>
+                            )}
                             <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{arvore.nome_orgao}</div>
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore?.dap}</div>
+                                </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore.nome_cientifico}</div>
-                            </span>
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore?.altura}</div>
+                                </span>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore?.volume}</div>
+                                </span>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
