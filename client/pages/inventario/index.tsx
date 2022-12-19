@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
-import Inventario from "components/inventario/Index"
+import Inventario from "@/components/inventario/Index"
 import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"

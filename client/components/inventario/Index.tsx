@@ -16,6 +16,7 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 import { setUmf, UmfType } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
+import CSVTable from "../csv-table"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -39,6 +40,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
+    const [inventario, setInventario] = useState<any>()
 
     const dispatch = useAppDispatch()
 
@@ -184,7 +186,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     useEffect(() => {
         defaultUmfsOptions()
         defaultUpasOptions()
-        setFilteredArvores(currentArvores)
+        // setFilteredArvores(currentArvores)
     }, [currentArvores, currentPage, defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
@@ -209,9 +211,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             { ut: '1', numero_arvore: '2', especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, ponto_gps: 2, latitude: 7.544, longitude: 1.24, obs: '', comentario: '' },
             { ut: '1', numero_arvore: '3', especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, ponto_gps: 3, latitude: 14.224, longitude: 4.67, obs: '', comentario: ''},
         ] : [
-            { ut: 1, faixa: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, orient_x: 'D', coord_x: 6, coord_y: 10, obs: '', comentario: '' },
-            { ut: 1, faixa: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orient_x: 'D', coord_x: 12, coord_y: 10, obs: '', comentario: '' },
-            { ut: 1, faixa: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orient_x: 'D', coord_x: 18, coord_y: 10, obs: '', comentario: ''},
+            { ut: 1, faixa: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, orient_x: 'D', coord_x: 7.5, coord_y: 10, obs: '', comentario: '' },
+            { ut: 1, faixa: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orient_x: 'D', coord_x: 12.5, coord_y: 10, obs: '', comentario: '' },
+            { ut: 1, faixa: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orient_x: 'D', coord_x: 22.4, coord_y: 10, obs: '', comentario: ''},
         ]
         
         CsvDataService.exportToCsv('template_inventario', data)
@@ -224,14 +226,15 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
-                await client.post('/arvore/import', formData)
+                await client.post(`/arvore/import?tipoUpa=${upa?.tipo}`, formData)
                     .then((response: any) => {
-                        console.log(response)
-                        const { error, message } = response.data
-                        
+                     
+                        const { error, message, arvores } = response.data
                         if (!error) {
                             alertService.success(message) 
-                            // loadArvores()
+                            // setInventario(arvores)
+                            setFilteredArvores(arvores.slice(1))
+                            console.log(arvores.slice(1))
                             setLoading(false)
                         } else {
                             setLoading(false)
@@ -323,7 +326,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             <path d="M0 0h24v24H0z" fill="none"/>
                             <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
                         </svg>
-                        <span className="ml-2">{uploading ? "Importando..." : "Importar"}</span>
+                        <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
                     </a>
                     <input
                         disabled={uploading} 
@@ -351,7 +354,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     href='/arvore/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
-                    Adicionar
+                    Importar
                 </Link>
             </div>
                 <div className="flex flex-col p-6">
@@ -431,144 +434,170 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     </button>
                                 </div>
                             )}
-                    <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50 w-full">
-                        <tr>
-                        <th>
-                            <div className="flex justify-center">
-                            <input  
-                                checked={checkedArvores?.length === currentArvores?.length}
-                                onChange={handleSelectAllArvore}                
-                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                            />
-                            </div>
-                        </th>
-                        <th
-                            scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('numero_arvore')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Número
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('faixa')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Faixa
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="col"
-                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('orient_x')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Orientação X
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>                 
-                        </th>
-                        <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('lat_x')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Coord. X
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('long_y')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Coord. Y
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="col"
-                            className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('especie.nome')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Espécie
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th scope="col" className="relative w-1/12 px-6 py-3">
-                            <span className="sr-only">Edit</span>
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredArvores?.map((arvore: any) => (
-                            <tr key={arvore.id}>
-                            <td className="flex justify-center">
-                            <input                 
-                                    value={arvore?.id}
-                                    checked={checkedArvores.includes(arvore?.id)}
-                                    onChange={handleSelectArvore}
-                                    id="arvoreId"
-                                    type="checkbox"
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                />    
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="flex flex-col items-starter">
-                                
-                                <div className="text-sm font-medium text-gray-900">{arvore?.nome}</div>
-                            </div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{arvore.nome_orgao}</div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore.nome_cientifico}</div>
-                            </span>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore.categoria_arvore?.nome}</div>
-                            </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href={`/arvore/update/${arvore.id}`}>
-                                <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                            </Link>
-                            <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
-                                <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
-                            </Link>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
+                        <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50 w-full">
+                            <tr>
+                            <th>
+                                <div className="flex justify-center">
+                                <input  
+                                    checked={checkedArvores?.length === currentArvores?.length}
+                                    onChange={handleSelectAllArvore}                
+                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                />
+                                </div>
+                            </th>
+                            <th
+                                scope="col"
+                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('ut')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    UT
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('faixa')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Faixa
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="col"
+                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('numero_arvore')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Número
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="col"
+                                className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('especie')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Espécie
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="col"
+                                className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('orient_x')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Orientação X
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>                 
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('coord_x')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Coord. X
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('coord_y')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Coord. Y
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th scope="col" className="relative w-1/12 px-6 py-3">
+                                <span className="sr-only">Edit</span>
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredArvores?.map((arvore: any, key: any) => (
+                                <tr key={key}>
+                                <td className="flex justify-center">
+                                <input                 
+                                        value={arvore?.ut}
+                                        checked={checkedArvores.includes(arvore?.id)}
+                                        onChange={handleSelectArvore}
+                                        id="arvoreId"
+                                        type="checkbox"
+                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                    />    
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="text-sm text-gray-900">{arvore.ut}</div>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="flex flex-col items-starter">
+                                        
+                                        <div className="text-sm font-medium text-gray-900">{arvore?.faixa}</div>
+                                    </div>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="text-sm text-gray-900">{arvore.numero_arvore}</div>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.especie}</div>
+                                </span>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.orient_x}</div>
+                                </span>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.coord_x}</div>
+                                </span>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.coord_y}</div>
+                                </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                <Link href={`/arvore/update/${arvore.id}`}>
+                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                </Link>
+                                <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
+                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
+                                </Link>
+                                </td>
+                            </tr>
+                            ))}
+                        </tbody>
                     </table>
                 </div>
             </div>

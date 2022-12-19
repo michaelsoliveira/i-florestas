@@ -118,7 +118,8 @@ export class ArvoreController {
         const arvores: any[] = []
         const projeto = await getProjeto(request.user?.id)
         const projetoId = projeto ? projeto?.id : ''
-
+        const { tipoUpa } = request.query as any
+        console.log(tipoUpa)
         try {
             if (request?.file === undefined) {
                 return response.status(400).send("Please upload a CSV file!");
@@ -131,32 +132,48 @@ export class ArvoreController {
             const arvoresLine = readline.createInterface({
                 input: readableFile
             })
-
-            for await (const line of arvoresLine) {
-                const arvoreLineSplit = line.split(";")
-                
-                arvores.push({
-                    ut: arvoreLineSplit[0],
-                    numero_arvore: arvoreLineSplit[1],
-                    especie: arvoreLineSplit[2],
-                    dap: arvoreLineSplit[3],
-                    altura: arvoreLineSplit[4],
-                    fuste: arvoreLineSplit[5],
-                    ponto: arvoreLineSplit[6],
-                    latitude: arvoreLineSplit[7],
-                    longitude: arvoreLineSplit[8],
-                })
+            if (tipoUpa === 1) {
+                for await (const line of arvoresLine) {
+                    const arvoreLineSplit = line.split(";")
+                    
+                    arvores.push({
+                        ut: arvoreLineSplit[0],
+                        numero_arvore: arvoreLineSplit[1],
+                        especie: arvoreLineSplit[2],
+                        dap: arvoreLineSplit[3],
+                        altura: arvoreLineSplit[4],
+                        fuste: arvoreLineSplit[5],
+                        ponto: arvoreLineSplit[6],
+                        latitude: arvoreLineSplit[7],
+                        longitude: arvoreLineSplit[8],
+                    })
+                }
+            } else {
+                for await (const line of arvoresLine) {
+                    console.log(line)
+                    const arvoreLineSplit = line.split(";")
+                    
+                    arvores.push({
+                        ut: arvoreLineSplit[0],
+                        faixa: arvoreLineSplit[1],
+                        numero_arvore: arvoreLineSplit[2],
+                        especie: arvoreLineSplit[3],
+                        dap: arvoreLineSplit[4],
+                        altura: arvoreLineSplit[5],
+                        fuste: arvoreLineSplit[6],
+                        orient_x: arvoreLineSplit[7],
+                        coord_x: arvoreLineSplit[8],
+                        coord_y: arvoreLineSplit[9],
+                    })
+                }
             }
-
-            console.log(arvores)
-
             // for (let arvore of arvores) {
             //     if (arvores.indexOf(arvore) > 0) await arvoreService.create(arvore, projetoId)
             // }
 
             return response.json({
                 error: false,
-                arvores: arvores.slice(1),
+                arvores,
                 message: 'Árvores importadas com sucesso!!!'
             })
             
