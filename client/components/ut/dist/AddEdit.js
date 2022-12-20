@@ -181,7 +181,7 @@ var AddEdit = function (_a) {
         });
     }
     return (React.createElement("div", null,
-        React.createElement("div", { className: "text-sm py-4 flex flex-col justify-center sm:py-12 bg-gray-50" },
+        React.createElement("div", { className: "text-sm py-4 justify-center sm:py-12 bg-gray-50" },
             React.createElement("div", { className: "relative py-3 w-full max-w-none lg:max-w-5xl mx-auto" },
                 React.createElement("div", { className: 'flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl' },
                     React.createElement("div", null,
@@ -190,10 +190,10 @@ var AddEdit = function (_a) {
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'flex flex-col lg:flex-row lg:space-x-4 pb-6' },
-                            React.createElement("div", { className: "border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12" },
-                                React.createElement("span", { className: "text-gray-700 absolute top-9 bg-white px-2" }, "Dados b\u00E1sicos da UT"),
-                                React.createElement("div", null,
+                        React.createElement("div", { className: "grid grid-cols-2 gap-4" },
+                            React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md" },
+                                React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Dados b\u00E1sicos da UT"),
+                                React.createElement("div", { className: 'w-1/2' },
                                     React.createElement(FormInput_1.FormInput, { name: "numero_ut", label: "N\u00FAmero UT", type: "number", register: register, errors: errors, rules: {
                                             required: 'O campo nome é obrigatório'
                                         }, id: "numero_ut", className: "pb-4" })),
@@ -206,23 +206,27 @@ var AddEdit = function (_a) {
                                         React.createElement(FormInput_1.FormInput, { name: "area_total", label: "\u00C1rea Total", type: "number", register: register, errors: errors, rules: {
                                                 required: 'O campo nome é obrigatório'
                                             }, id: "area_total", className: "pb-4" })))),
-                            React.createElement("div", { className: "border border-gray-400 p-4 mt-4 rounded-md lg:w-6/12" },
-                                React.createElement("span", { className: "text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2" }, "Coordenadas"),
-                                React.createElement("div", { className: "flex flex-col" },
-                                    React.createElement(FormInput_1.FormInput, { id: "latitude", name: "latitude", label: "Latitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" }),
-                                    React.createElement(FormInput_1.FormInput, { id: "longitude", name: "longitude", label: "Longitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" })))),
-                        (upa.tipo === 0) &&
-                            (React.createElement("div", { className: "space-y-8" },
-                                React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md" },
-                                    React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Faixas"),
-                                    React.createElement("div", { className: "flex flex-row space-x-4" },
-                                        React.createElement(FormInput_1.FormInput, { name: "quantidade_faixas", label: "Quantidade", type: "number", register: register, errors: errors, id: "quantidade_faixas", className: "pb-4" }),
-                                        React.createElement(FormInput_1.FormInput, { name: "largura_faixas", label: "Largura", type: "number", register: register, errors: errors, id: "largura_faixas", className: "pb-4" }),
-                                        React.createElement(FormInput_1.FormInput, { name: "comprimento_faixas", label: "Comprimento", type: "number", register: register, errors: errors, id: "comprimento_faixas", className: "pb-4" }))))),
-                        React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md mt-6" },
-                            React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Localiza\u00E7\u00E3o da UT"),
-                            React.createElement("div", { className: 'flex flex-row items-center mx-auto' }, (!isLoaded) ? React.createElement("div", null, "Loading...") :
-                                (React.createElement(Map_1["default"], { setLocation: setLocation })))),
+                            (upa.tipo === 1) &&
+                                (React.createElement(React.Fragment, null,
+                                    React.createElement("div", { className: "relative border border-gray-400 p-4 rounded-md" },
+                                        React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Faixas"),
+                                        React.createElement("div", { className: "flex flex-col lg:flex-wrap" },
+                                            React.createElement(FormInput_1.FormInput, { name: "quantidade_faixas", label: "Quantidade", type: "number", register: register, errors: errors, id: "quantidade_faixas", className: "pb-4" }),
+                                            React.createElement(FormInput_1.FormInput, { name: "largura_faixas", label: "Largura", type: "number", register: register, errors: errors, id: "largura_faixas", className: "pb-4" }),
+                                            React.createElement(FormInput_1.FormInput, { name: "comprimento_faixas", label: "Comprimento", type: "number", register: register, errors: errors, id: "comprimento_faixas", className: "pb-4" }))),
+                                    React.createElement("div", { className: "border border-gray-400 p-4 mt-4 rounded-md" },
+                                        React.createElement("span", { className: "text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2" }, "Coordenadas"),
+                                        React.createElement("div", { className: "flex flex-col" },
+                                            React.createElement(FormInput_1.FormInput, { id: "latitude", name: "latitude", label: "Latitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" }),
+                                            React.createElement(FormInput_1.FormInput, { id: "longitude", name: "longitude", label: "Longitude", type: "number", register: register, errors: errors, className: "pb-4", step: "any" }),
+                                            React.createElement("div", { className: 'w-full lg:w-1/3' },
+                                                React.createElement(FormInput_1.FormInput, { name: "azimute", label: "Azimute", type: "number", register: register, errors: errors, id: "azimute", className: "pb-4" })),
+                                            React.createElement("div", { className: 'w-full lg:w-1/3' },
+                                                React.createElement(FormInput_1.FormInput, { name: "quadrante", label: "Quadrante", type: "number", register: register, errors: errors, id: "quadrante", className: "pb-4" })))))),
+                            React.createElement("div", { className: "col-span-2 relative border border-gray-400 p-4 rounded-md mt-6" },
+                                React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2" }, "Localiza\u00E7\u00E3o da UT"),
+                                React.createElement("div", { className: 'flex flex-row items-center mx-auto' }, (!isLoaded) ? React.createElement("div", null, "Loading...") :
+                                    (React.createElement(Map_1["default"], { setLocation: setLocation }))))),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
                             React.createElement(Link_1.Link, { href: "/ut", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));

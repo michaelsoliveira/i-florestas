@@ -4,7 +4,7 @@ var express_1 = require("express");
 var UserController_1 = require("../controllers/UserController");
 var AuthController_1 = require("../controllers/AuthController");
 var auth_middleware_1 = require("../middleware/auth.middleware");
-var EmpresaController_1 = require("../controllers/EmpresaController");
+var DetentorController_1 = require("../controllers/DetentorController");
 var EspecieController_1 = require("../controllers/EspecieController");
 var multer_1 = require("multer");
 var CategoriaEspecieController_1 = require("../controllers/CategoriaEspecieController");
@@ -18,10 +18,12 @@ var ProjetoController_1 = require("../controllers/ProjetoController");
 var permission_1 = require("../middleware/permission");
 var RoleController_1 = require("../controllers/RoleController");
 var PermissionController_1 = require("../controllers/PermissionController");
+var ArvoreController_1 = require("../controllers/ArvoreController");
+var ObservacaoArvoreController_1 = require("../controllers/ObservacaoArvoreController");
 var routes = express_1["default"].Router();
 routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().findAll);
-routes.get('/users/:projetoId/:userId', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
 routes.get('/users/provider/find-by-email', auth_middleware_1.Authentication(), new UserController_1.UserController().findByEmail);
+routes.get('/users/:projetoId/:userId', auth_middleware_1.Authentication(), new UserController_1.UserController().findOne);
 routes.post('/users/create', new UserController_1.UserController().store);
 routes.put('/users/:id', auth_middleware_1.Authentication(), new UserController_1.UserController().update);
 routes.get('/users/search', auth_middleware_1.Authentication(), new UserController_1.UserController().search);
@@ -40,12 +42,12 @@ routes.get('/auth/google', new AuthController_1.AuthController().googleAuth);
 routes.get('/auth/me', auth_middleware_1.Authentication(), new AuthController_1.AuthController().getUserByToken);
 routes.post('/auth/refresh', new AuthController_1.AuthController().refreshToken);
 routes.get('/auth/callback/github', new AuthController_1.AuthController().signInCallback);
-//Empresa
-routes.post('/empresa', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().store);
-routes.get('/empresa/findAll/:projetoId', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findAll);
-routes.get('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().findOne);
-routes.put('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController().update);
-routes["delete"]('/empresa/:id', auth_middleware_1.Authentication(), new EmpresaController_1.EmpresaController()["delete"]);
+//Detentor
+routes.post('/detentor', auth_middleware_1.Authentication(), new DetentorController_1.DetentorController().store);
+routes.get('/detentor/findAll/:projetoId', auth_middleware_1.Authentication(), new DetentorController_1.DetentorController().findAll);
+routes.get('/detentor/:id', auth_middleware_1.Authentication(), new DetentorController_1.DetentorController().findOne);
+routes.put('/detentor/:id', auth_middleware_1.Authentication(), new DetentorController_1.DetentorController().update);
+routes["delete"]('/detentor/:id', auth_middleware_1.Authentication(), new DetentorController_1.DetentorController()["delete"]);
 //Categoria
 routes.post('/categoria/', auth_middleware_1.Authentication(), permission_1.is(['admin', 'gerente']), new CategoriaEspecieController_1.CategoriaEspecieController().store);
 routes.get('/categoria/', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().findAll);
@@ -53,11 +55,18 @@ routes.get('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEs
 routes.get('/categoria/search/q', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().search);
 routes.put('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController().update);
 routes["delete"]('/categoria/:id', auth_middleware_1.Authentication(), new CategoriaEspecieController_1.CategoriaEspecieController()["delete"]);
+//Categoria
+routes.post('/obs-arvore/', auth_middleware_1.Authentication(), permission_1.is(['admin', 'gerente']), new ObservacaoArvoreController_1.ObservacaoArvoreController().store);
+routes.get('/obs-arvore/', auth_middleware_1.Authentication(), new ObservacaoArvoreController_1.ObservacaoArvoreController().findAll);
+routes.get('/obs-arvore/:id', auth_middleware_1.Authentication(), new ObservacaoArvoreController_1.ObservacaoArvoreController().findOne);
+routes.get('/obs-arvore/search/q', auth_middleware_1.Authentication(), new ObservacaoArvoreController_1.ObservacaoArvoreController().search);
+routes.put('/obs-arvore/:id', auth_middleware_1.Authentication(), new ObservacaoArvoreController_1.ObservacaoArvoreController().update);
+routes["delete"]('/obs-arvore/:id', auth_middleware_1.Authentication(), new ObservacaoArvoreController_1.ObservacaoArvoreController()["delete"]);
 //Umf
 routes.post('/umf/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().store);
-routes.get('/umf/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().findAll);
-routes.get('/umf/get/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().getUmf);
 routes.get('/umf/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController().findOne);
+routes.get('/umf/find-by-projeto/:projetoId', auth_middleware_1.Authentication(), new UmfController_1.UmfController().findAll);
+routes.get('/umf/get/', auth_middleware_1.Authentication(), new UmfController_1.UmfController().getUmf);
 routes.get('/umf/search/q', auth_middleware_1.Authentication(), new UmfController_1.UmfController().search);
 routes.put('/umf/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController().update);
 routes["delete"]('/umf/single/:id', auth_middleware_1.Authentication(), new UmfController_1.UmfController()["delete"]);
@@ -65,13 +74,15 @@ routes["delete"]('/umf/multiples', auth_middleware_1.Authentication(), new UmfCo
 //Projeto
 routes.post('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().store);
 routes.get('/projeto/', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findAll);
+routes.get('/projeto/:projetoId/default-data', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().getDefaultData);
 routes.get('/projeto/:projetoId/users', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findUsers);
 routes.get('/projeto/:projetoId/eq-volume', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findEqVolumes);
 routes.get('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().findOne);
 routes.get('/projeto/search/q', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().search);
 routes.get('/projeto/active/get', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().getActive);
+routes.post('/projeto/active/:projetoId', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().changeActive);
 routes.put('/projeto/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().update);
-routes["delete"]('/projeto/single/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController()["delete"]);
+routes.put('/projeto/single/:id', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController()["delete"]);
 routes["delete"]('/projeto/multiples', auth_middleware_1.Authentication(), new ProjetoController_1.ProjetoController().deleteProjetos);
 //Upa
 routes.post('/upa/', auth_middleware_1.Authentication(), new UpaController_1.UpaController().store);
@@ -104,7 +115,7 @@ routes.get('/eq-volume/:projetoId/search/q', auth_middleware_1.Authentication(),
 routes.put('/eq-volume/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().update);
 routes["delete"]('/eq-volume/single/:id', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController()["delete"]);
 //Equação Modelo
-routes.get('/eq-modelo/:projetoId', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().getEqModelos);
+routes.get('/eq-modelo', auth_middleware_1.Authentication(), new EquacaoVolumeController_1.EquacaoVolumeController().getEqModelos);
 //Role
 routes.post('/role/', auth_middleware_1.Authentication(), new RoleController_1.RoleController().store);
 routes.get('/role', new RoleController_1.RoleController().findAll);
@@ -134,4 +145,13 @@ routes.put('/especie/:id', auth_middleware_1.Authentication(), new EspecieContro
 routes["delete"]('/especie/single/:id', auth_middleware_1.Authentication(), new EspecieController_1.EspecieController()["delete"]);
 routes["delete"]('/especie/multiples', auth_middleware_1.Authentication(), new EspecieController_1.EspecieController().deleteEspecies);
 routes.post('/especie/import', multerConfig.single('file'), new EspecieController_1.EspecieController().importEspecie);
+//Arvore
+routes.post('/arvore', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().store);
+routes.get('/arvore', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().findAll);
+routes.get('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().findOne);
+routes.put('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().update);
+routes["delete"]('/arvore/single/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController()["delete"]);
+routes["delete"]('/arvore/multiples', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().deleteArvores);
+routes.post('/arvore/load-csv', multerConfig.single('file'), new ArvoreController_1.ArvoreController().loadCSV);
+routes.post('/arvore/import-inventario', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().importInventario);
 exports["default"] = routes;

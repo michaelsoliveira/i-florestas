@@ -18,6 +18,7 @@ import { can, is } from "../middleware/permission"
 import { RoleController } from "../controllers/RoleController"
 import { PermissionController } from "../controllers/PermissionController"
 import { ArvoreController } from "../controllers/ArvoreController"
+import { ObservacaoArvoreController } from "../controllers/ObservacaoArvoreController"
 
 const routes = express.Router()
 
@@ -59,6 +60,14 @@ routes.get('/categoria/:id', Authentication(), new CategoriaEspecieController().
 routes.get('/categoria/search/q', Authentication(), new CategoriaEspecieController().search)
 routes.put('/categoria/:id', Authentication(), new CategoriaEspecieController().update)
 routes.delete('/categoria/:id', Authentication(), new CategoriaEspecieController().delete)
+
+//Categoria
+routes.post('/obs-arvore/', Authentication(), is(['admin', 'gerente']), new ObservacaoArvoreController().store)
+routes.get('/obs-arvore/', Authentication(), new ObservacaoArvoreController().findAll)
+routes.get('/obs-arvore/:id', Authentication(), new ObservacaoArvoreController().findOne)
+routes.get('/obs-arvore/search/q', Authentication(), new ObservacaoArvoreController().search)
+routes.put('/obs-arvore/:id', Authentication(), new ObservacaoArvoreController().update)
+routes.delete('/obs-arvore/:id', Authentication(), new ObservacaoArvoreController().delete)
 
 //Umf
 routes.post('/umf/', Authentication(), new UmfController().store)

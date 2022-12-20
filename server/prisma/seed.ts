@@ -3,6 +3,28 @@ import bcrypt from "bcryptjs"
 
 const prisma = new PrismaClient()
 
+const observacoes: Prisma.ObservacaoArvoreCreateInput[] = [
+  {
+    nome: 'Oca',
+  },
+  {
+    nome: 'Morta',
+  },
+  {
+    nome: 'Tombada',
+  },
+  {
+    nome: 'Ninho',
+  },
+  {
+    nome: 'Estimada',
+    preservar: false
+  },
+  {
+    nome: 'Caida',
+  }
+]
+
 const roles: Prisma.RoleCreateInput[] = [
   {
     name: 'Admin',
@@ -286,6 +308,16 @@ async function main() {
     })
     
     console.log(`Detentor criada com o id: ${detentor.id}`)
+
+    for (const obs of observacoes) {
+      const obsModelo = await prisma.observacaoArvore.create({
+        data: {
+          ...obs
+        }
+      })
+
+      console.log(`Created observacao with id: ${obsModelo.id}`)
+    }
 
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({

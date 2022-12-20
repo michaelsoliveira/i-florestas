@@ -9,6 +9,7 @@ export interface ArvoreType {
 
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
+        console.log(data)
         try {
             const ut = await prismaClient.ut.findUnique({
                 where: {
@@ -18,14 +19,14 @@ class ArvoreService {
 
             const upa = await prismaClient.upa.findUnique({
                 where: {
-                    id: ut?.id_upa
+                    id: data?.upa
                 }
             })
 
             const arvoreExists = await prismaClient.arvore.findFirst({ 
                 where: { 
                     AND: {
-                        numero_arvore: data.numero_arvore,
+                        numero_arvore: parseInt(data.numero_arvore),
                         ut: {
                             id: data?.ut
                         }
@@ -44,13 +45,14 @@ class ArvoreService {
             })
     
             const preparedData = upa?.tipo === 1 ? {
-                numero_arvore: data?.numero_arvore,
-                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
-                altura: data?.altura,
-                fuste: data?.fuste,
+                numero_arvore: parseInt(data?.numero_arvore),
+                faixa: parseInt(data?.faixa),
+                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+                altura: parseFloat(data?.altura),
+                fuste: parseInt(data?.fuste),
                 orient_x: data?.orient_x,
-                lat_x: data?.lat_x,
-                long_y: data?.long_y,
+                lat_x: parseFloat(data?.lat_x),
+                long_y: parseFloat(data?.long_y),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -62,10 +64,10 @@ class ArvoreService {
                     }
                 }
             } : {
-                numero_arvore: data?.numero_arvore,
-                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
-                altura: data?.altura,
-                fuste: data?.fuste,
+                numero_arvore: parseInt(data?.numero_arvore),
+                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+                altura: parseFloat(data?.altura),
+                fuste: parseInt(data?.fuste),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -86,7 +88,6 @@ class ArvoreService {
 
     async createByImport(data: any): Promise<Arvore> {
         try {
-            console.log(data)
             const ut = await prismaClient.ut.findFirst({
                 where: {
                     numero_ut: parseInt(data?.ut)
@@ -122,6 +123,7 @@ class ArvoreService {
     
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
+                faixa: parseInt(data?.faixa),
                 dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
@@ -278,7 +280,13 @@ class ArvoreService {
     }
 
     async findById(id: string) : Promise<any> {
-        const arvore = await prismaClient.arvore.findUnique({ where: { id } })
+        const arvore = await prismaClient.arvore.findUnique({ 
+            include: {
+                observacao_arvore: true,
+                especie: true
+            },
+            where: { id } 
+        })
 
         return arvore
     }

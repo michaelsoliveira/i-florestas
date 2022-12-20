@@ -16,8 +16,10 @@ import { RootState } from 'store'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [observacao, setObservacao] = useState<OptionType>()
+    const [observacao, setObservances] = useState<OptionType>()
     const [observacoes, setObservacoes] = useState<any>()
+    const [especie, setEspecie] = useState<OptionType>()
+    const [especies, setEspecies] = useState<any>()
     const [orient_x, setOrientX] = useState<any>()
     const [medicao, setMedicao] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
@@ -38,6 +40,16 @@ const AddEdit = ({ id }: any) => {
         })))
     };
 
+    const loadEspecieOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/especie/search/q?nome=${inputValue}`)
+        const json = response.data
+        
+        callback(json?.map((especie: any) => ({
+            value: especie.id,
+            label: especie.nome
+        })))
+    };
+
     useEffect(() => {        
         async function loadArvore() {
         
@@ -45,10 +57,23 @@ const AddEdit = ({ id }: any) => {
                 
                 const { data: arvore } = await client.get(`/arvore/${id}`)
                 
-                setObservacao({
+                setObservances({
                     label: arvore?.observacao_arvore?.nome,
                     value: arvore?.observacao_arvore?.id
                 })
+
+                setEspecie({
+                    label: arvore?.especie?.nome,
+                    value: arvore?.especie?.id
+                })
+
+                if (upa?.tipo === 1) {
+                    setOrientX({
+                        label: arvore?.orient_x === 'D' && 'DIR',
+                        value: arvore?.orient_x
+                    })
+                }
+
                 for (const [key, value] of Object.entries(arvore)) {
                     setValue(key, value, {
                         shouldValidate: true,
@@ -60,31 +85,49 @@ const AddEdit = ({ id }: any) => {
         
         loadArvore()
 
-    }, [session, isAddMode, client, id, setValue, setObservacao])
+    }, [session, isAddMode, client, id, setValue, setObservances, setEspecie, upa?.tipo])
 
     useEffect(() => {
-        const defaultOptions = async () => {
+        const defaultObsOptions = async () => {
             if (typeof session !== typeof undefined){
-                const response = await client.get(`categoria`)
+                const response = await client.get(`obs-arvore`)
                 const { observacoes } = response.data
 
                 setObservacoes(observacoes)
             }
         }
-        defaultOptions()    
+
+        const defaultEspecieOptions = async () => {
+            if (typeof session !== typeof undefined){
+                const response = await client.get(`especie`)
+                const { especies } = response.data
+
+                setEspecies(especies)
+            }
+        }
+
+        defaultEspecieOptions()
+        defaultObsOptions()    
         
     }, [session, client])
 
     const selectedObservacao = (data: any) => {
-        setObservacao(data)
+        setObservances(data)
         setValue('observacao_arvore', data?.value)
+    }
+
+    const selectedEspecie = (data: any) => {
+        setEspecie(data)
+        setValue('especie', data?.value)
     }
 
     async function onSubmit(data: any) {
         const preparedData = {
             ...data,
+            orient_x: orient_x?.value,
             id_projeto: projeto?.id,
-            id_observacao: observacao?.value ?? observacao?.value
+            id_observacao: observacao?.value && observacao?.value,
+            id_especie: especie?.value && especie?.value
         }
         
         try {
@@ -116,6 +159,15 @@ const AddEdit = ({ id }: any) => {
             return {
                 label: observacao.nome,
                 value: observacao.id
+            }
+        })
+    }
+
+    function getEspeciesDefaultOptions() {
+        return especies?.map((especie: any) => {
+            return {
+                label: especie.nome,
+                value: especie.id
             }
         })
     }
@@ -167,9 +219,8 @@ const AddEdit = ({ id }: any) => {
                                             <Option
                                                 key={index}
                                                 index={index}
-                                                selectedIndex={medicao ? medicao : 0}
+                                                selectedIndex={medicao ? medicao : 1}
                                                 onSelect={(index: any) => {
-                                                    setValue('tipo', index === 0 ? 'F' : 'J')
                                                     onSelect(index)
                                                 }}
                                             >
@@ -191,7 +242,7 @@ const AddEdit = ({ id }: any) => {
                                
                                 </div>
                                 {
-                                    (upa.tipo === 0) ? (
+                                    (upa.tipo === 1) ? (
                                         <>
                                             <div>
                                                 <FormInput
@@ -330,6 +381,21 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                                 
                             </div>
+                            <div className='lg:col-span-3 col-span-3 pb-4'>
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Selecione uma Espécie',
+                                                value: ''
+                                            }
+                                        }
+                                        selectedValue={especie}
+                                        defaultOptions={getEspeciesDefaultOptions()}
+                                        options={loadEspecieOptions}
+                                        label="Espécie"
+                                        callback={selectedEspecie}
+                                    />
+                                </div>
                             <div>
                                     <div className='flex flex-row items-center justify-between pt-4 w-full'>
                                         <Link href="/arvore" className="text-center lg:w-1/6 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>

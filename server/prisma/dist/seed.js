@@ -50,6 +50,27 @@ exports.__esModule = true;
 var client_1 = require("@prisma/client");
 var bcryptjs_1 = require("bcryptjs");
 var prisma = new client_1.PrismaClient();
+var observacoes = [
+    {
+        nome: 'Oca'
+    },
+    {
+        nome: 'Morta'
+    },
+    {
+        nome: 'Tombada'
+    },
+    {
+        nome: 'Ninho'
+    },
+    {
+        nome: 'Estimada',
+        preservar: false
+    },
+    {
+        nome: 'Caida'
+    }
+];
 var roles = [
     {
         name: 'Admin',
@@ -231,13 +252,13 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, equacoesModelo_1, eqModelo, equacaoModelo, _g, equacoesVolume_1, eqVolume, equacaoVolume;
-        return __generator(this, function (_h) {
-            switch (_h.label) {
+        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, observacoes_1, obs, obsModelo, _g, equacoesModelo_1, eqModelo, equacaoModelo, _h, equacoesVolume_1, eqVolume, equacaoVolume;
+        return __generator(this, function (_j) {
+            switch (_j.label) {
                 case 0:
                     console.log("Start seeding ...");
                     _i = 0, estados_1 = estados;
-                    _h.label = 1;
+                    _j.label = 1;
                 case 1:
                     if (!(_i < estados_1.length)) return [3 /*break*/, 4];
                     e = estados_1[_i];
@@ -245,9 +266,9 @@ function main() {
                             data: e
                         })];
                 case 2:
-                    estado = _h.sent();
+                    estado = _j.sent();
                     console.log("Created estado with id: " + estado.id);
-                    _h.label = 3;
+                    _j.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
@@ -259,9 +280,9 @@ function main() {
                         }
                     })];
                 case 5:
-                    ufAP = _h.sent();
+                    ufAP = _j.sent();
                     _a = 0, roles_1 = roles;
-                    _h.label = 6;
+                    _j.label = 6;
                 case 6:
                     if (!(_a < roles_1.length)) return [3 /*break*/, 9];
                     r = roles_1[_a];
@@ -269,9 +290,9 @@ function main() {
                             data: r
                         })];
                 case 7:
-                    role = _h.sent();
+                    role = _j.sent();
                     console.log("Created role with id: " + role.id);
-                    _h.label = 8;
+                    _j.label = 8;
                 case 8:
                     _a++;
                     return [3 /*break*/, 6];
@@ -283,7 +304,7 @@ function main() {
                         }
                     })];
                 case 10:
-                    roleAdmin = _h.sent();
+                    roleAdmin = _j.sent();
                     _c = (_b = prisma.user).create;
                     _d = {};
                     _e = {
@@ -291,7 +312,7 @@ function main() {
                         email: 'michaelsoliveira@gmail.com'
                     };
                     return [4 /*yield*/, bcryptjs_1["default"].hash('Fms237691', 10)];
-                case 11: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _h.sent(),
+                case 11: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _j.sent(),
                             _e.users_roles = {
                                 create: {
                                     roles: {
@@ -304,7 +325,7 @@ function main() {
                             _e),
                             _d)])];
                 case 12:
-                    user = _h.sent();
+                    user = _j.sent();
                     console.log("Created user admin with id: " + user.id);
                     return [4 /*yield*/, prisma.projeto.create({
                             data: {
@@ -323,7 +344,7 @@ function main() {
                             }
                         })];
                 case 13:
-                    projeto = _h.sent();
+                    projeto = _j.sent();
                     return [4 /*yield*/, prisma.pessoa.create({
                             include: {
                                 pessoaJuridica: true
@@ -356,29 +377,45 @@ function main() {
                             }
                         })];
                 case 14:
-                    detentor = _h.sent();
+                    detentor = _j.sent();
                     console.log("Detentor criada com o id: " + detentor.id);
-                    _f = 0, equacoesModelo_1 = equacoesModelo;
-                    _h.label = 15;
+                    _f = 0, observacoes_1 = observacoes;
+                    _j.label = 15;
                 case 15:
-                    if (!(_f < equacoesModelo_1.length)) return [3 /*break*/, 18];
-                    eqModelo = equacoesModelo_1[_f];
-                    return [4 /*yield*/, prisma.equacaoModelo.create({
-                            data: __assign({}, eqModelo)
+                    if (!(_f < observacoes_1.length)) return [3 /*break*/, 18];
+                    obs = observacoes_1[_f];
+                    return [4 /*yield*/, prisma.observacaoArvore.create({
+                            data: __assign({}, obs)
                         })];
                 case 16:
-                    equacaoModelo = _h.sent();
-                    console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
-                    _h.label = 17;
+                    obsModelo = _j.sent();
+                    console.log("Created observacao with id: " + obsModelo.id);
+                    _j.label = 17;
                 case 17:
                     _f++;
                     return [3 /*break*/, 15];
                 case 18:
-                    _g = 0, equacoesVolume_1 = equacoesVolume;
-                    _h.label = 19;
+                    _g = 0, equacoesModelo_1 = equacoesModelo;
+                    _j.label = 19;
                 case 19:
-                    if (!(_g < equacoesVolume_1.length)) return [3 /*break*/, 22];
-                    eqVolume = equacoesVolume_1[_g];
+                    if (!(_g < equacoesModelo_1.length)) return [3 /*break*/, 22];
+                    eqModelo = equacoesModelo_1[_g];
+                    return [4 /*yield*/, prisma.equacaoModelo.create({
+                            data: __assign({}, eqModelo)
+                        })];
+                case 20:
+                    equacaoModelo = _j.sent();
+                    console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
+                    _j.label = 21;
+                case 21:
+                    _g++;
+                    return [3 /*break*/, 19];
+                case 22:
+                    _h = 0, equacoesVolume_1 = equacoesVolume;
+                    _j.label = 23;
+                case 23:
+                    if (!(_h < equacoesVolume_1.length)) return [3 /*break*/, 26];
+                    eqVolume = equacoesVolume_1[_h];
                     return [4 /*yield*/, prisma.equacaoVolume.create({
                             data: __assign(__assign({}, eqVolume), { projeto: {
                                     connect: {
@@ -386,14 +423,14 @@ function main() {
                                     }
                                 } })
                         })];
-                case 20:
-                    equacaoVolume = _h.sent();
+                case 24:
+                    equacaoVolume = _j.sent();
                     console.log("Created user Equa\u00E7\u00E3o Volume with id: " + equacaoVolume.id);
-                    _h.label = 21;
-                case 21:
-                    _g++;
-                    return [3 /*break*/, 19];
-                case 22:
+                    _j.label = 25;
+                case 25:
+                    _h++;
+                    return [3 /*break*/, 23];
+                case 26:
                     console.log("Seeding finished.");
                     return [2 /*return*/];
             }
