@@ -434,13 +434,99 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 }
                             </div>   
                         </th>
+                        {upa?.tipo === 1 ? (
+                            <>
+                                <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('faixa')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Faixa
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="col"
+                                className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('orient_x')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Orientação X
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>                 
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('lat_x')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Coord. X
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('long_y')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Coord. Y
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            </>
+                        ) : (
+                            <>
+                                <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('latitude')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Latitude
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            <th
+                                scope="row"
+                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                onClick={() => sortArvores('longitude')}
+                            >
+                                <div className="flex flex-row w-full justify-between">
+                                    Longitude
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>   
+                            </th>
+                            </>
+                        )}
+                        
                         <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('faixa')}
+                            scope="col"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('dap')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Faixa
+                                DAP
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
@@ -449,50 +535,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         </th>
                         <th
                             scope="col"
-                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('orient_x')}
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('altura')}
                         >
                             <div className="flex flex-row w-full justify-between">
-                                Orientação X
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>                 
-                        </th>
-                        <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('lat_x')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Coord. X
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('long_y')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Coord. Y
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </div>   
-                        </th>
-                        <th
-                            scope="col"
-                            className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortArvores('especie')}
-                        >
-                            <div className="flex flex-row w-full justify-between">
-                                Espécie
+                                Altura
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
