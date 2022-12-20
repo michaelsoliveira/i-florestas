@@ -183,21 +183,7 @@ export class ArvoreController {
 
         try {
             for (let arvore of data) {
-
-                if (data.indexOf(arvore) > 0) 
-                {
-                    await arvoreService.createByImport({
-                        numero_arvore: arvore.numero_arvore,
-                        faixa: arvore?.faixa,
-                        dap: arvore?.dap,
-                        altura: arvore?.altura,
-                        orient_x: arvore?.orient_x,
-                        lat_x: arvore?.coord_x,
-                        long_y: arvore?.coord_y,
-                        ut: arvore.ut,
-                        especie: arvore.especie,
-                    })
-                }
+                await arvoreService.createByImport(arvore)
             }
 
             return response.json({

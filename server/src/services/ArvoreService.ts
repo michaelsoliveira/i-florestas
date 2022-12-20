@@ -72,8 +72,6 @@ class ArvoreService {
                     }
                 },
             }
-
-            console.log(preparedData)
     
             const arvore = await prismaClient.arvore.create({
                 data: preparedData
@@ -88,9 +86,10 @@ class ArvoreService {
 
     async createByImport(data: any): Promise<Arvore> {
         try {
+            console.log(data)
             const ut = await prismaClient.ut.findFirst({
                 where: {
-                    numero_ut: data?.numero_ut
+                    numero_ut: parseInt(data?.ut)
                 }
             }) as any
 
@@ -100,10 +99,16 @@ class ArvoreService {
                 }
             })
 
+            const especie = await prismaClient.especie.findFirst({
+                where: {
+                    nome_orgao: data?.especie
+                }
+            })
+
             const arvoreExists = await prismaClient.arvore.findFirst({ 
                 where: { 
                     AND: {
-                        numero_arvore: data.numero_arvore,
+                        numero_arvore: parseInt(data.numero_arvore),
                         ut: {
                             id: ut?.id
                         }
@@ -115,20 +120,14 @@ class ArvoreService {
                 throw new Error('Já existe uma árvore cadastrada com este número')
             }
     
-            const especie = await prismaClient.especie.findFirst({
-                where: {
-                    nome_orgao: data?.especie
-                }
-            })
-    
             const preparedData = upa?.tipo === 1 ? {
-                numero_arvore: data?.numero_arvore,
-                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
-                altura: data?.altura,
-                fuste: data?.fuste,
+                numero_arvore: parseInt(data?.numero_arvore),
+                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+                altura: parseFloat(data?.altura),
+                fuste: parseInt(data?.fuste),
                 orient_x: data?.orient_x,
-                lat_x: data?.lat_x,
-                long_y: data?.long_y,
+                lat_x: parseFloat(data?.lat_x),
+                long_y: parseFloat(data?.long_y),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -140,10 +139,10 @@ class ArvoreService {
                     }
                 }
             } : {
-                numero_arvore: data?.numero_arvore,
-                dap: data?.cap ? data?.cap / Math.PI : data?.dap,
-                altura: data?.altura,
-                fuste: data?.fuste,
+                numero_arvore: parseInt(data?.numero_arvore),
+                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+                altura: parseFloat(data?.altura),
+                fuste: parseInt(data?.fuste),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -161,8 +160,9 @@ class ArvoreService {
             })
     
             return arvore
-        } catch(e) {
-            return e
+        } catch(error) {
+            console.log(error?.message)
+            return error
         }
         
     }

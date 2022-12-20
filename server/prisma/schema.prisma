@@ -78,14 +78,14 @@ model Telefone {
 model SituacaoArvore {
   id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome      String?
-  arvore    Arvore?
+  arvore    Arvore[]
   @@map("situacao_arvore")
 }
 
 model MotivoPreservacao {
   id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome      String?
-  arvore    Arvore?
+  arvore    Arvore[]
   @@map("motivo_preservacao")
 }
 
@@ -93,7 +93,7 @@ model ObservacaoArvore {
   id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome      String?
   preservar Boolean @default(true)
-  arvore    Arvore?
+  arvore    Arvore[]
   @@map("observacao_arvore")
 }
 
@@ -118,15 +118,15 @@ model Arvore {
   ponto_gps       Int?
   lat             Float?
   lng             Float?
-  id_ut           String?   @unique @db.Uuid
+  id_ut           String?   @db.Uuid
   ut              Ut? @relation(fields: [id_ut], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_especie           String?   @unique @db.Uuid
+  id_especie           String?   @db.Uuid
   especie              Especie? @relation(fields: [id_especie], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_situacao           String?   @unique @db.Uuid
+  id_situacao           String?  @db.Uuid
   situacao_arvore       SituacaoArvore? @relation(fields: [id_situacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_motivo_preservacao String?   @unique @db.Uuid
+  id_motivo_preservacao String?   @db.Uuid
   motivo_preservacao    MotivoPreservacao? @relation(fields: [id_motivo_preservacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_observacao String?   @unique @db.Uuid
+  id_observacao String?  @db.Uuid
   observacao_arvore    ObservacaoArvore? @relation(fields: [id_observacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
   @@map("arvore")
 }
