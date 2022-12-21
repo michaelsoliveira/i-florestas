@@ -341,6 +341,7 @@ class ArvoreService {
                 [orderByElement]: order
             }
         }
+
         const where = search ?
             {
                 AND: {
