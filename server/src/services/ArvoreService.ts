@@ -9,7 +9,6 @@ export interface ArvoreType {
 
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
-        console.log(data)
         try {
             const ut = await prismaClient.ut.findUnique({
                 where: {
@@ -145,6 +144,8 @@ class ArvoreService {
                 dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
+                latitude: parseFloat(data?.latitude),
+                longitude: parseFloat(data?.longitude),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -170,8 +171,63 @@ class ArvoreService {
     }
 
     async update(id: string, data: any): Promise<Arvore> {
+        console.log(data)
+        const ut = await prismaClient.ut.findUnique({
+            where: {
+                id: data?.id_ut
+            }
+        }) as any
+
+        const upa = await prismaClient.upa.findUnique({
+            where: {
+                id: ut?.id_upa
+            }
+        })
+
+        const especie = await prismaClient.especie.findFirst({
+            where: {
+                nome_orgao: data?.especie
+            }
+        })
+        const preparedData = upa?.tipo === 1 ? {
+            numero_arvore: parseInt(data?.numero_arvore),
+            faixa: parseInt(data?.faixa),
+            dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+            altura: parseFloat(data?.altura),
+            fuste: parseInt(data?.fuste),
+            orient_x: data?.orient_x,
+            lat_x: parseFloat(data?.lat_x),
+            long_y: parseFloat(data?.long_y),
+            ut: {
+                connect: {
+                    id: ut?.id
+                }
+            },
+            especie: {
+                connect: {
+                    id: especie?.id
+                }
+            }
+        } : {
+            numero_arvore: parseInt(data?.numero_arvore),
+            dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+            altura: parseFloat(data?.altura),
+            fuste: parseInt(data?.fuste),
+            lat_x: parseFloat(data?.latitude),
+            long_y: parseFloat(data?.longitude),
+            ut: {
+                connect: {
+                    id: ut?.id
+                }
+            },
+            especie: {
+                connect: {
+                    id: especie?.id
+                }
+            }
+        }
         const arvore = await prismaClient.arvore.update({
-            data,
+            data: preparedData,
             where: {
                 id
             }

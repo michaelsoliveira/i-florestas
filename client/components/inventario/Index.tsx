@@ -128,7 +128,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const selectUpa = async (upa: any) => {
         const upaSelected = upas.find((u: any) => u.id === upa.value)
-        console.log(upaSelected)
         
         dispatch(setUpa({
             id: upaSelected.id,
@@ -136,9 +135,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             tipo: Number.parseInt(upaSelected.tipo)
         }))
         setSelectedUpa(upa)
-        
-        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
-        const { uts } = response.data
         
     }
 
@@ -206,27 +202,29 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     }
 
     const handleImportTemplate = async () => {
-        const data = upa.tipo === 1 ? [
-            { ut: '1', numero_arvore: '1', especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, ponto_gps: 1, latitude: 2.565, longitude: 0.56, obs: '', comentario: '' },
-            { ut: '1', numero_arvore: '2', especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, ponto_gps: 2, latitude: 7.544, longitude: 1.24, obs: '', comentario: '' },
-            { ut: '1', numero_arvore: '3', especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, ponto_gps: 3, latitude: 14.224, longitude: 4.67, obs: '', comentario: ''},
+        const data = upa.tipo === 0 ? [
+            { ut: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, ponto_gps: 1, latitude: 2.565, longitude: 0.56, obs: '', comentario: '' },
+            { ut: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, ponto_gps: 2, latitude: 7.544, longitude: 1.24, obs: '', comentario: '' },
+            { ut: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, ponto_gps: 3, latitude: 14.224, longitude: 4.67, obs: '', comentario: ''},
         ] : [
             { ut: 1, faixa: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, orient_x: 'D', coord_x: 7.5, coord_y: 10, obs: '', comentario: '' },
             { ut: 1, faixa: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orient_x: 'D', coord_x: 12.5, coord_y: 10, obs: '', comentario: '' },
             { ut: 1, faixa: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orient_x: 'D', coord_x: 22.4, coord_y: 10, obs: '', comentario: ''},
         ]
         
-        CsvDataService.exportToCsv('template_inventario', data)
+        CsvDataService.exportToCsv(upa.tipo === 0 ? 'template_inventario_gps' : 'template_inventario_xy', data)
     }
 
     const handleImportInventario = async () => {
         try {
             setLoading(true)
-            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
+            await client.post(`/arvore/import-inventario?tipoUpa=${upa?.tipo}`, filteredArvores)
                 .then((response: any) => {
                     const { error, message } = response.data
                     if (!error) {
                         alertService.success(message)
+                    } else {
+                        alertService.error(message)
                     }
                     setLoading(false)
                     console.log(response)
@@ -245,10 +243,10 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 setLoading(true)
                 await client.post(`/arvore/load-csv?tipoUpa=${upa?.tipo}`, formData)
                     .then((response: any) => {
-                     
                         const { error, message, arvores } = response.data
                         if (!error) {
                             alertService.success(message) 
+                            console.log(arvores)
                             setFilteredArvores(arvores.slice(1))
                             setLoading(false)
                         } else {
@@ -404,7 +402,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
                                     label="UMF:"
-                                    callback={setSelectedUmf}
+                                    callback={selectUmf}
                                 />
                             </div>
                             {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
@@ -450,111 +448,171 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 </div>
                             )}
                         <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50 w-full">
+                        <thead className="bg-gray-50">
                             <tr>
-                            <th>
-                                <div className="flex justify-center">
-                                <input  
-                                    checked={checkedArvores?.length === currentArvores?.length}
-                                    onChange={handleSelectAllArvore}                
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                />
-                                </div>
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('ut')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    UT
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('faixa')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Faixa
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('numero_arvore')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Número
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="col"
-                                className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('especie')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Espécie
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="col"
-                                className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('orient_x')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Orientação X
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>                 
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('coord_x')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Coord. X
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('coord_y')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Coord. Y
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th scope="col" className="relative w-1/12 px-6 py-3">
-                                <span className="sr-only">Edit</span>
-                            </th>
+                                <th>
+                                    <div className="flex justify-center">
+                                    <input  
+                                        checked={checkedArvores?.length === currentArvores?.length}
+                                        onChange={handleSelectAllArvore}                
+                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                    />
+                                    </div>
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                    onClick={() => sortArvores('ut')}
+                                >
+                                    <div className="flex flex-row w-full justify-between">
+                                        UT
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>   
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                    onClick={() => sortArvores('numero_arvore')}
+                                >
+                                    <div className="flex flex-row w-full justify-between">
+                                        Número
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>   
+                                </th>
+                                
+                                {(upa.tipo === 1) ? (
+                                    <>
+                                        <th
+                                            scope="col"
+                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('faixa')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Faixa
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>   
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('orient_x')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Orientação X
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>                 
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('coord_x')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Coord. X
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>   
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('coord_y')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Coord. Y
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>   
+                                        </th>
+                                    </>
+                                ) : (
+                                    <>
+                                        <th
+                                            scope="col"
+                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('latitude')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Latitude
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>   
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                            onClick={() => sortArvores('longitude')}
+                                        >
+                                            <div className="flex flex-row w-full justify-between">
+                                                Longitude
+                                                {sorted
+                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                                }
+                                            </div>   
+                                        </th>
+                                    </>
+                                )}
+                                <th
+                                    scope="col"
+                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                    onClick={() => sortArvores('especie')}
+                                >
+                                    <div className="flex flex-row w-full justify-between">
+                                        Espécie
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>   
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                    onClick={() => sortArvores('dap')}
+                                >
+                                    <div className="flex flex-row w-full justify-between">
+                                        DAP
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>   
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
+                                    onClick={() => sortArvores('altura')}
+                                >
+                                    <div className="flex flex-row w-full justify-between">
+                                        Altura
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>   
+                                </th>
+                                <th scope="col" className="relative w-1/8 px-6 py-3">
+                                    <span className="sr-only">Edit</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -574,35 +632,63 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     <div className="text-sm text-gray-900">{arvore.ut}</div>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                    <div className="flex flex-col items-starter">
-                                        
-                                        <div className="text-sm font-medium text-gray-900">{arvore?.faixa}</div>
-                                    </div>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">{arvore.numero_arvore}</div>
                                 </td>
+                                {(upa.tipo === 1) ? (
+                                    <>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                            <div className="flex flex-col items-starter">
+                                                
+                                                <div className="text-gray-900">{arvore?.faixa}</div>
+                                            </div>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-gray-900">
+                                            <div className="text-sm text-gray-500">{arvore.orient_x}</div>
+                                        </span>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-gray-900">
+                                            <div className="text-sm text-gray-500">{arvore.coord_x}</div>
+                                        </span>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-gray-900">
+                                            <div className="text-sm text-gray-500">{arvore.coord_y}</div>
+                                        </span>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-gray-900">
+                                            <div className="text-sm text-gray-500">{arvore.latitude}</div>
+                                        </span>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-gray-900">
+                                            <div className="text-sm text-gray-500">{arvore.longitude}</div>
+                                        </span>
+                                        </td>
+                                    </>
+                                )}
+                                
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
+                                <span className="text-xs text-gray-900">
                                     <div className="text-sm text-gray-500">{arvore.especie}</div>
                                 </span>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.orient_x}</div>
+                                <span className="text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.dap}</div>
                                 </span>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.coord_x}</div>
+                                <span className="text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore.altura}</div>
                                 </span>
                                 </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.coord_y}</div>
-                                </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                <td className="px-6 py-4 whitespace-nowrap text-right flex flex-row items-center">
                                 <Link href={`/arvore/update/${arvore.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>

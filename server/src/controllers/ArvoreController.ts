@@ -3,7 +3,7 @@ import { getProjeto } from "../services/ProjetoService";
 import { Readable } from "stream";
 import readline from "readline";
 import arvoreService from "../services/ArvoreService";
-import { prismaClient } from "src/database/prismaClient";
+import { prismaClient } from "../database/prismaClient";
 
 export class ArvoreController {
     async store(request : Request, response: Response) : Promise<Response> { 
@@ -117,7 +117,7 @@ export class ArvoreController {
 
     async loadCSV(request: Request, response: Response) {
         const arvores: any[] = []
-        const { tipoUpa } = request.query as any
+        const { tipoUpa } = request.query
 
         try {
             if (request?.file === undefined) {
@@ -131,10 +131,10 @@ export class ArvoreController {
             const arvoresLine = readline.createInterface({
                 input: readableFile
             })
-            if (tipoUpa === 1) {
+
+            if (tipoUpa === '0') {
                 for await (const line of arvoresLine) {
                     const arvoreLineSplit = line.split(";")
-                    
                     arvores.push({
                         ut: arvoreLineSplit[0],
                         numero_arvore: arvoreLineSplit[1],
@@ -145,11 +145,12 @@ export class ArvoreController {
                         ponto: arvoreLineSplit[6],
                         latitude: arvoreLineSplit[7],
                         longitude: arvoreLineSplit[8],
+                        obs: arvoreLineSplit[9],
+                        comentario: arvoreLineSplit[10],
                     })
                 }
             } else {
                 for await (const line of arvoresLine) {
-                    console.log(line)
                     const arvoreLineSplit = line.split(";")
                     
                     arvores.push({
@@ -163,10 +164,11 @@ export class ArvoreController {
                         orient_x: arvoreLineSplit[7],
                         coord_x: arvoreLineSplit[8],
                         coord_y: arvoreLineSplit[9],
+                        obs: arvoreLineSplit[10],
+                        comentario: arvoreLineSplit[11],
                     })
                 }
             }
-
             return response.json({
                 error: false,
                 arvores,
@@ -180,8 +182,19 @@ export class ArvoreController {
 
     async importInventario(request: Request, response: Response) {
         const data = request.body
+        const { tipoUpa }: any = request.query
+
+        const checkData = Object.keys(data[0])
 
         try {
+
+            if (checkData.includes('faixa') && tipoUpa === '0') {
+                return response.json({
+                    error: true,
+                    message: 'Inventário diferente do tipo da UPA'
+                })
+            }
+        
             for (let arvore of data) {
                 await arvoreService.createByImport(arvore)
             }
