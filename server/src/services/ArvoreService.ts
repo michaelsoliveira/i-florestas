@@ -9,7 +9,6 @@ export interface ArvoreType {
 
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
-        console.log(data)
         try {
             const ut = await prismaClient.ut.findUnique({
                 where: {
@@ -68,6 +67,7 @@ class ArvoreService {
                 dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
+                ponto_gps: parseInt(data?.ponto_gps),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -86,11 +86,14 @@ class ArvoreService {
         
     }
 
-    async createByImport(data: any): Promise<Arvore> {
+    async createByImport(data: any, upaId?: string): Promise<Arvore> {
         try {
             const ut = await prismaClient.ut.findFirst({
                 where: {
-                    numero_ut: parseInt(data?.ut)
+                    AND: {
+                        numero_ut: parseInt(data?.ut),
+                        id_upa: upaId
+                    }
                 }
             }) as any
 
@@ -145,8 +148,9 @@ class ArvoreService {
                 dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
-                latitude: parseFloat(data?.latitude),
-                longitude: parseFloat(data?.longitude),
+                ponto_gps: parseInt(data?.ponto_gps),
+                lat_x: parseFloat(data?.latitude),
+                long_y: parseFloat(data?.longitude),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -172,7 +176,6 @@ class ArvoreService {
     }
 
     async update(id: string, data: any): Promise<Arvore> {
-        console.log(data)
         const ut = await prismaClient.ut.findUnique({
             where: {
                 id: data?.id_ut
@@ -216,6 +219,7 @@ class ArvoreService {
             fuste: parseInt(data?.fuste),
             lat_x: parseFloat(data?.latitude),
             long_y: parseFloat(data?.longitude),
+            ponto_gps: parseInt(data?.ponto_gps),
             ut: {
                 connect: {
                     id: ut?.id

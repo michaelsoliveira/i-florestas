@@ -218,7 +218,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const handleImportInventario = async () => {
         try {
             setLoading(true)
-            await client.post(`/arvore/import-inventario?tipoUpa=${upa?.tipo}`, filteredArvores)
+            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
                 .then((response: any) => {
                     const { error, message } = response.data
                     if (!error) {
@@ -241,12 +241,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
-                await client.post(`/arvore/load-csv?tipoUpa=${upa?.tipo}`, formData)
+                await client.post(`/arvore/load-csv?upaId=${upa?.id}`, formData)
                     .then((response: any) => {
                         const { error, message, arvores } = response.data
                         if (!error) {
                             alertService.success(message) 
-                            console.log(arvores)
                             setFilteredArvores(arvores.slice(1))
                             setLoading(false)
                         } else {
@@ -546,7 +545,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                         <th
                                             scope="col"
                                             className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('latitude')}
+                                            onClick={() => sortArvores('lat_x')}
                                         >
                                             <div className="flex flex-row w-full justify-between">
                                                 Latitude
@@ -559,7 +558,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                         <th
                                             scope="col"
                                             className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('longitude')}
+                                            onClick={() => sortArvores('long_y')}
                                         >
                                             <div className="flex flex-row w-full justify-between">
                                                 Longitude
@@ -662,12 +661,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     <>
                                         <td className="px-3 py-2 whitespace-nowrap">
                                         <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.latitude}</div>
+                                            <div className="text-sm text-gray-500">{arvore.lat_x}</div>
                                         </span>
                                         </td>
                                         <td className="px-3 py-2 whitespace-nowrap">
                                         <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.longitude}</div>
+                                            <div className="text-sm text-gray-500">{arvore.long_y}</div>
                                         </span>
                                         </td>
                                     </>

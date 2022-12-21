@@ -56,11 +56,13 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: arvore } = await client.get(`/arvore/${id}`)
-                
-                setObservances({
-                    label: arvore?.observacao_arvore?.nome,
-                    value: arvore?.observacao_arvore?.id
-                })
+                console.log(arvore)
+                if(arvore?.observacao_arvore) {
+                    setObservances({
+                        label: arvore?.observacao_arvore?.nome,
+                        value: arvore?.observacao_arvore?.id
+                    })
+                }
 
                 setEspecie({
                     label: arvore?.especie?.nome,
@@ -349,6 +351,7 @@ const AddEdit = ({ id }: any) => {
                                         rules={ {required: 'O campo nome é obrigatório'} }
                                         id="altura"
                                         type='number'
+                                        step={0.01}
                                         className="pb-4"
                                     />
                                 </div>

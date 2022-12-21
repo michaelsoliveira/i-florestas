@@ -71,7 +71,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
         const data = response.data
-        console.log(data)
+        
         callback(data?.map((umf: any) => ({
             value: umf.id,
             label: umf.nome
@@ -605,12 +605,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <>
                                 <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.latitude}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.lat}</div>
                                     </span>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.longitude}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.lng}</div>
                                     </span>
                                 </td>
                                 </>

@@ -121,10 +121,13 @@ var AddEdit = function (_a) {
                             return [4 /*yield*/, client.get("/arvore/" + id)];
                         case 1:
                             arvore = (_g.sent()).data;
-                            setObservances({
-                                label: (_a = arvore === null || arvore === void 0 ? void 0 : arvore.observacao_arvore) === null || _a === void 0 ? void 0 : _a.nome,
-                                value: (_b = arvore === null || arvore === void 0 ? void 0 : arvore.observacao_arvore) === null || _b === void 0 ? void 0 : _b.id
-                            });
+                            console.log(arvore);
+                            if (arvore === null || arvore === void 0 ? void 0 : arvore.observacao_arvore) {
+                                setObservances({
+                                    label: (_a = arvore === null || arvore === void 0 ? void 0 : arvore.observacao_arvore) === null || _a === void 0 ? void 0 : _a.nome,
+                                    value: (_b = arvore === null || arvore === void 0 ? void 0 : arvore.observacao_arvore) === null || _b === void 0 ? void 0 : _b.id
+                                });
+                            }
                             setEspecie({
                                 label: (_c = arvore === null || arvore === void 0 ? void 0 : arvore.especie) === null || _c === void 0 ? void 0 : _c.nome,
                                 value: (_d = arvore === null || arvore === void 0 ? void 0 : arvore.especie) === null || _d === void 0 ? void 0 : _d.id
@@ -305,7 +308,7 @@ var AddEdit = function (_a) {
                                 React.createElement("div", null,
                                     React.createElement(FormInput_1.FormInput, { name: "dap", label: "DAP", register: register, errors: errors, rules: { required: 'O campo nome é obrigatório' }, id: "dap", type: 'number', step: 0.01, className: "pb-4" })))),
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { name: "altura", label: "Altura", register: register, errors: errors, rules: { required: 'O campo nome é obrigatório' }, id: "altura", type: 'number', className: "pb-4" })),
+                                React.createElement(FormInput_1.FormInput, { name: "altura", label: "Altura", register: register, errors: errors, rules: { required: 'O campo nome é obrigatório' }, id: "altura", type: 'number', step: 0.01, className: "pb-4" })),
                             React.createElement("div", null,
                                 React.createElement(FormInput_1.FormInput, { name: "fuste", label: "Fuste", register: register, errors: errors, rules: { required: 'O campo nome é obrigatório' }, id: "fuste", type: 'number', className: "pb-4" })),
                             React.createElement("div", { className: 'lg:col-span-2 col-span-3 pb-4' },

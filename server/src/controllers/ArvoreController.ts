@@ -117,7 +117,14 @@ export class ArvoreController {
 
     async loadCSV(request: Request, response: Response) {
         const arvores: any[] = []
-        const { tipoUpa } = request.query
+
+        const { upaId }: any = request.query
+
+        const upa = await prismaClient.upa.findUnique({
+            where: {
+                id: upaId
+            }
+        })
 
         try {
             if (request?.file === undefined) {
@@ -132,7 +139,7 @@ export class ArvoreController {
                 input: readableFile
             })
 
-            if (tipoUpa === '0') {
+            if (upa?.tipo === 0) {
                 for await (const line of arvoresLine) {
                     const arvoreLineSplit = line.split(";")
                     arvores.push({
@@ -182,13 +189,19 @@ export class ArvoreController {
 
     async importInventario(request: Request, response: Response) {
         const data = request.body
-        const { tipoUpa }: any = request.query
+        const { upaId }: any = request.query
+
+        const upa = await prismaClient.upa.findUnique({
+            where: {
+                id: upaId
+            }
+        })
 
         const checkData = Object.keys(data[0])
 
         try {
 
-            if (checkData.includes('faixa') && tipoUpa === '0') {
+            if (checkData.includes('faixa') && upa?.tipo === 0) {
                 return response.json({
                     error: true,
                     message: 'Inventário diferente do tipo da UPA'
@@ -196,7 +209,7 @@ export class ArvoreController {
             }
         
             for (let arvore of data) {
-                await arvoreService.createByImport(arvore)
+                await arvoreService.createByImport(arvore, upaId)
             }
 
             return response.json({

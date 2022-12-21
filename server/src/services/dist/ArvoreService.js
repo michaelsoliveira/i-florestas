@@ -111,6 +111,7 @@ var ArvoreService = /** @class */ (function () {
                             dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
+                            ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -131,7 +132,7 @@ var ArvoreService = /** @class */ (function () {
             });
         });
     };
-    ArvoreService.prototype.createByImport = function (data) {
+    ArvoreService.prototype.createByImport = function (data, upaId) {
         return __awaiter(this, void 0, Promise, function () {
             var ut, upa, especie, arvoreExists, preparedData, arvore, error_1;
             return __generator(this, function (_a) {
@@ -140,7 +141,10 @@ var ArvoreService = /** @class */ (function () {
                         _a.trys.push([0, 6, , 7]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
-                                    numero_ut: parseInt(data === null || data === void 0 ? void 0 : data.ut)
+                                    AND: {
+                                        numero_ut: parseInt(data === null || data === void 0 ? void 0 : data.ut),
+                                        id_upa: upaId
+                                    }
                                 }
                             })];
                     case 1:
@@ -198,8 +202,9 @@ var ArvoreService = /** @class */ (function () {
                             dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
-                            latitude: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
-                            longitude: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
+                            ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
+                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
+                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -280,6 +285,7 @@ var ArvoreService = /** @class */ (function () {
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
+                            ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
