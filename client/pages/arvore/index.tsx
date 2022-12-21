@@ -20,6 +20,7 @@ const ArvoreIndex = () => {
     const [orderBy, setOrderBy] = useState('numero_arvore')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
+    const ut = useAppSelector((state: RootState) => state.ut)
     const dispatch = useAppDispatch()
     const router = useRouter()
     
@@ -27,7 +28,7 @@ const ArvoreIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/arvore?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/arvore/get-all/${ut?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
 
@@ -40,7 +41,7 @@ const ArvoreIndex = () => {
         }, 500)
         //setLoading(false)
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, ut?.id])
 
     useEffect(() => {  
         
@@ -62,7 +63,7 @@ const ArvoreIndex = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/arvore/get-all/${ut?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -71,7 +72,7 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all/${ut?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,

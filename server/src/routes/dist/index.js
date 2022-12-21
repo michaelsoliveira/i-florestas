@@ -147,7 +147,7 @@ routes["delete"]('/especie/multiples', auth_middleware_1.Authentication(), new E
 routes.post('/especie/import', multerConfig.single('file'), new EspecieController_1.EspecieController().importEspecie);
 //Arvore
 routes.post('/arvore', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().store);
-routes.get('/arvore', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().findAll);
+routes.get('/arvore/get-all/:utId', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().findAll);
 routes.get('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().findOne);
 routes.put('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().update);
 routes["delete"]('/arvore/single/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController()["delete"]);

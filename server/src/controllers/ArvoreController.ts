@@ -75,9 +75,9 @@ export class ArvoreController {
     }
 
     async findAll(request: Request, response: Response) {
+        const { utId } = request.params
         try {
-            const { data, perPage, page, skip, count } = await arvoreService.getAll(request.user?.id, request.query)
-
+            const { data, perPage, page, skip, count } = await arvoreService.getAll(request.user?.id, request.query, utId)
             return response.json({
                 error: false,
                 arvores: data,
@@ -98,8 +98,8 @@ export class ArvoreController {
 
     async search(request: Request, response: Response) {
         const { numero_arvore } = request.query
-        
-        const arvores = numero_arvore ? await arvoreService.search(numero_arvore, request.user?.id) : await arvoreService.getAll(request.user?.id, request.query)
+        const { utId } = request.params
+        const arvores = numero_arvore ? await arvoreService.search(numero_arvore, request.user?.id, utId) : await arvoreService.getAll(request.user?.id, request.query, utId)
 
         return response.json(arvores)
     }

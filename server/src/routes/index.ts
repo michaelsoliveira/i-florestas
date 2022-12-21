@@ -165,7 +165,7 @@ routes.post('/especie/import', multerConfig.single('file'), new EspecieControlle
 
 //Arvore
 routes.post('/arvore', Authentication(), new ArvoreController().store)
-routes.get('/arvore', Authentication(), new ArvoreController().findAll)
+routes.get('/arvore/get-all/:utId', Authentication(), new ArvoreController().findAll)
 routes.get('/arvore/:id', Authentication(), new ArvoreController().findOne)
 routes.put('/arvore/:id', Authentication(), new ArvoreController().update)
 routes.delete('/arvore/single/:id', Authentication(), new ArvoreController().delete)

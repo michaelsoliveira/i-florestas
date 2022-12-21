@@ -150,7 +150,6 @@ var AddEdit = function (_a) {
     function setLocation(location) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log(location);
                 setUtLocation(location);
                 setValue('latitude', location.lat);
                 setValue('longitude', location.lng);

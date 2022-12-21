@@ -68,7 +68,7 @@ var AddEdit = function (_a) {
     var _d = react_1.useState(), observacoes = _d[0], setObservacoes = _d[1];
     var _e = react_1.useState(), especie = _e[0], setEspecie = _e[1];
     var _f = react_1.useState(), especies = _f[0], setEspecies = _f[1];
-    var _g = react_1.useState(), orient_x = _g[0], setOrientX = _g[1];
+    var _g = react_1.useState({ label: 'DIR', value: 'D' }), orient_x = _g[0], setOrientX = _g[1];
     var _h = react_1.useState(), medicao = _h[0], setMedicao = _h[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
@@ -291,7 +291,7 @@ var AddEdit = function (_a) {
                                 React.createElement("div", null,
                                     React.createElement(FormInput_1.FormInput, { id: "lat_x", name: "lat_x", label: "Coord. X", register: register, errors: errors, rules: { required: 'O campo nome é obrigatório' }, className: "pb-4" })),
                                 React.createElement("div", { className: 'pt-1' },
-                                    React.createElement(Select_1.Select, { selectedValue: orient_x ? orient_x : { label: 'DIR', value: 'D' }, defaultOptions: [
+                                    React.createElement(Select_1.Select, { selectedValue: orient_x, defaultOptions: [
                                             { label: 'DIR', value: 'D' },
                                             { label: 'ESQ', value: 'E' }
                                         ], label: "DIR / ESQ", callback: function (e) { return setOrientX(e); } })),

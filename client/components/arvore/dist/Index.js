@@ -233,16 +233,29 @@ var Index = function (_a) {
         });
     }); };
     var selectUpa = function (upa) { return __awaiter(void 0, void 0, void 0, function () {
-        var upaSelected;
-        return __generator(this, function (_a) {
-            upaSelected = upas.find(function (u) { return u.id === upa.value; });
-            dispatch(upaSlice_1.setUpa({
-                id: upaSelected.id,
-                descricao: upaSelected.descricao,
-                tipo: Number.parseInt(upaSelected.tipo)
-            }));
-            setSelectedUpa(upa);
-            return [2 /*return*/];
+        var upaSelected, response, uts;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    upaSelected = upas.find(function (u) { return u.id === upa.value; });
+                    dispatch(upaSlice_1.setUpa({
+                        id: upaSelected.id,
+                        descricao: upaSelected.descricao,
+                        tipo: Number.parseInt(upaSelected.tipo)
+                    }));
+                    setSelectedUpa(upa);
+                    return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upaSelected.id)];
+                case 1:
+                    response = _b.sent();
+                    uts = response.data.uts;
+                    dispatch(utSlice_1.setUt({
+                        id: (_a = uts[0]) === null || _a === void 0 ? void 0 : _a.id,
+                        numero_ut: uts[0].numero_ut
+                    }));
+                    setUts(uts);
+                    return [2 /*return*/];
+            }
         });
     }); };
     var selectUt = function (ut) { return __awaiter(void 0, void 0, void 0, function () {
@@ -442,33 +455,52 @@ var Index = function (_a) {
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('faixa'); } },
+                                (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? (React.createElement(React.Fragment, null,
+                                    React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('faixa'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Faixa",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
+                                    React.createElement("th", { scope: "col", className: "justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('orient_x'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Orienta\u00E7\u00E3o X",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
+                                    React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('lat_x'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Coord. X",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
+                                    React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('long_y'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Coord. Y",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))))) : (React.createElement(React.Fragment, null,
+                                    React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('latitude'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Latitude",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
+                                    React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('longitude'); } },
+                                        React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                            "Longitude",
+                                            sorted
+                                                ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                                : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))))),
+                                React.createElement("th", { scope: "col", className: "items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('dap'); } },
                                     React.createElement("div", { className: "flex flex-row w-full justify-between" },
-                                        "Faixa",
+                                        "DAP",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "col", className: "justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('orient_x'); } },
+                                React.createElement("th", { scope: "col", className: "items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('altura'); } },
                                     React.createElement("div", { className: "flex flex-row w-full justify-between" },
-                                        "Orienta\u00E7\u00E3o X",
-                                        sorted
-                                            ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
-                                            : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('lat_x'); } },
-                                    React.createElement("div", { className: "flex flex-row w-full justify-between" },
-                                        "Coord. X",
-                                        sorted
-                                            ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
-                                            : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "row", className: "justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('long_y'); } },
-                                    React.createElement("div", { className: "flex flex-row w-full justify-between" },
-                                        "Coord. Y",
-                                        sorted
-                                            ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
-                                            : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "col", className: "flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('especie'); } },
-                                    React.createElement("div", { className: "flex flex-row w-full justify-between" },
-                                        "Esp\u00E9cie",
+                                        "Altura",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),

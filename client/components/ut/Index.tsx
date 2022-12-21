@@ -125,7 +125,6 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         const { upas } = response.data
         
         setUpas(upas)
-        setFilteredUts(upas)
     }
 
     const selectUpa = async (upa: any) => {
@@ -289,7 +288,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
                                     label="UMF:"
-                                    callback={setSelectedUmf}
+                                    callback={selectUmf}
                                 />
                             </div>
                             {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}

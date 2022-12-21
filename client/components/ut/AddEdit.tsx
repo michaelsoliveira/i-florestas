@@ -84,7 +84,6 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function setLocation(location: google.maps.LatLngLiteral) {
-        console.log(location)
         setUtLocation(location)
         setValue('latitude', location.lat)
         setValue('longitude', location.lng)

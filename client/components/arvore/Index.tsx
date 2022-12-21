@@ -165,6 +165,16 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             tipo: Number.parseInt(upaSelected.tipo)
         }))
         setSelectedUpa(upa)
+
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
+        const { uts } = response.data
+
+        dispatch(setUt({
+            id: uts[0]?.id,
+            numero_ut: uts[0].numero_ut
+        }))
+        
+        setUts(uts)
         
     }
 

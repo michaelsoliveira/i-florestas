@@ -67,6 +67,7 @@ var upaSlice_1 = require("../../store/upaSlice");
 var hooks_1 = require("../../store/hooks");
 var ModalContext_1 = require("contexts/ModalContext");
 var styles_1 = require("../Utils/styles");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
 var Index = function (_a) {
     var currentUts = _a.currentUts, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUts = _a.loadUts;
     var _b = react_1.useState(currentUts), filteredUts = _b[0], setFilteredUts = _b[1];
@@ -80,6 +81,7 @@ var Index = function (_a) {
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var _h = react_1.useState(), selectedUmf = _h[0], setSelectedUmf = _h[1];
     var _j = react_1.useState(), selectedUpa = _j[0], setSelectedUpa = _j[1];
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var dispatch = hooks_1.useAppDispatch();
     var _k = ModalContext_1.useModalContext(), showModal = _k.showModal, hideModal = _k.hideModal, store = _k.store;
     var visible = store.visible;
@@ -104,12 +106,6 @@ var Index = function (_a) {
             }
         });
     }); };
-    // const defaultUpasOptions = useCallback(async() => {
-    //     const umfId = umf.id
-    //     const response = umf ? await client.get(`/upa?orderBy=nome&order=asc&umf=${umfId}`) : await client.get(`/upa?orderBy=nome&order=asc`)
-    //     const { upas } = response.data
-    //     setUpas(upas)
-    // }, [client, umf])
     var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -126,84 +122,63 @@ var Index = function (_a) {
             }
         });
     }); };
+    var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, umfs, compareUmf;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
+                case 1:
+                    response = _a.sent();
+                    umfs = response.data.umfs;
+                    setUmfs(umfs);
+                    compareUmf = umfs ? umfs.find(function (u) { return u.id === umf.id; }) : null;
+                    if (compareUmf) {
+                        setSelectedUmf({
+                            value: umf === null || umf === void 0 ? void 0 : umf.id,
+                            label: umf === null || umf === void 0 ? void 0 : umf.nome
+                        });
+                    }
+                    if (umfs.length === 0) {
+                        setSelectedUmf({
+                            value: '0',
+                            label: 'Nenhuma UMF Cadastrada'
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, projeto === null || projeto === void 0 ? void 0 : projeto.id, umf.id, umf === null || umf === void 0 ? void 0 : umf.nome]);
+    var defaultUpasOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, upas, compareUpa;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/upa?orderBy=descricao&order=asc&umf=" + (umf === null || umf === void 0 ? void 0 : umf.id))];
+                case 1:
+                    response = _a.sent();
+                    upas = response.data.upas;
+                    setUpas(upas);
+                    if (upas.length === 0) {
+                        setSelectedUpa({
+                            value: '0',
+                            label: 'Nenhuma UPA Cadastrada'
+                        });
+                    }
+                    compareUpa = upas ? upas.find(function (u) { return u.id === upa.id; }) : null;
+                    if (compareUpa) {
+                        setSelectedUpa({
+                            value: upa === null || upa === void 0 ? void 0 : upa.id,
+                            label: upa === null || upa === void 0 ? void 0 : upa.descricao
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, umf === null || umf === void 0 ? void 0 : umf.id, upa === null || upa === void 0 ? void 0 : upa.descricao, upa.id]);
     react_1.useEffect(function () {
-        function defaultUmfsOptions() {
-            return __awaiter(this, void 0, void 0, function () {
-                var response, umfs, compareUmf;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, client.get("/umf?orderBy=nome&order=asc")];
-                        case 1:
-                            response = _a.sent();
-                            umfs = response.data.umfs;
-                            setUmfs(umfs);
-                            compareUmf = umfs ? umfs.find(function (u) { return u.id === umf.id; }) : null;
-                            if (compareUmf) {
-                                setSelectedUmf({
-                                    value: umf.id,
-                                    label: umf.nome
-                                });
-                            }
-                            if (umfs.length === 0) {
-                                setSelectedUmf({
-                                    value: '0',
-                                    label: 'Nenhuma UMF Cadastrada'
-                                });
-                            }
-                            else {
-                                setSelectedUmf({
-                                    value: umfs[0].id,
-                                    label: umfs[0].nome
-                                });
-                            }
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }
-        function defaultUpasOptions() {
-            return __awaiter(this, void 0, void 0, function () {
-                var response, upas, compareUpa;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, client.get("/upa?orderBy=descricao&order=asc&umf=" + umf.id)];
-                        case 1:
-                            response = _a.sent();
-                            upas = response.data.upas;
-                            setUpas(upas);
-                            if (upas.length === 0) {
-                                setSelectedUpa({
-                                    value: '0',
-                                    label: 'Nenhuma UPA Cadastrada'
-                                });
-                            }
-                            else {
-                                setSelectedUpa({
-                                    value: upas[0].id,
-                                    label: upas[0].descricao
-                                });
-                                dispatch(upaSlice_1.setUpa({
-                                    id: upas[0].id,
-                                    descricao: upas[0].descricao,
-                                    tipo: Number.parseInt(upas[0].tipo)
-                                }));
-                            }
-                            compareUpa = upas ? upas.find(function (u) { return u.id === upa.id; }) : null;
-                            if (compareUpa) {
-                                setSelectedUpa({
-                                    value: upa.id,
-                                    label: upa.descricao
-                                });
-                            }
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }
         defaultUmfsOptions();
         defaultUpasOptions();
         setFilteredUts(currentUts);
-    }, [currentUts, currentPage, client, umf, upa, dispatch]);
+    }, [currentUts, currentPage, client, umf, upa, defaultUmfsOptions, defaultUpasOptions]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
@@ -229,13 +204,14 @@ var Index = function (_a) {
             switch (_a.label) {
                 case 0:
                     upaSelected = upas.find(function (u) { return u.id === upa.value; });
+                    console.log(upaSelected);
                     dispatch(upaSlice_1.setUpa({
-                        id: upa.value,
-                        descricao: upa.label,
+                        id: upaSelected.id,
+                        descricao: upaSelected.descricao,
                         tipo: Number.parseInt(upaSelected.tipo)
                     }));
                     setSelectedUpa(upa);
-                    return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upa.value)];
+                    return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upaSelected.id)];
                 case 1:
                     response = _a.sent();
                     uts = response.data.uts;
@@ -305,7 +281,6 @@ var Index = function (_a) {
         });
     }); };
     var sortUts = function () {
-        console.log(sorted);
         setSorted(!sorted);
         var sortedUts = [];
         sortedUts = filteredUts.sort(function (a, b) {
@@ -369,15 +344,15 @@ var Index = function (_a) {
             React.createElement(Link_1.Link, { href: '/ut/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
-                React.createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },
+                React.createElement("div", { className: "flex flex-col px-4 w-auto" },
                     React.createElement("div", { className: "w-full" },
                         React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
-                    React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
+                    React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
                         React.createElement("option", { value: "10" }, "10"),
                         React.createElement("option", { value: "20" }, "20"),
                         React.createElement("option", { value: "50" }, "50"),
                         React.createElement("option", { value: "100" }, "100"))),
-                React.createElement("div", { className: "lg:flex lg:flex-col lg:w-8/12 px-4 space-y-4" },
+                React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4" },
                     React.createElement("div", null,
                         React.createElement(Select_1.Select, { initialData: {
                                 label: 'Selecione UMF...',
@@ -387,9 +362,9 @@ var Index = function (_a) {
                         React.createElement(Select_1.Select, { initialData: {
                                 label: 'Selecione UPA...',
                                 value: ''
-                            }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: selectUpa }))),
-                React.createElement("div", { className: "w-72 px-4 lg:mt-0 mt-4" }, "Pesquisar UT:"),
+                            }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } }))),
                 React.createElement("div", { className: "w-full px-4" },
+                    React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar UT:"),
                     React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },

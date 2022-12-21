@@ -9,6 +9,7 @@ export interface ArvoreType {
 
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
+        console.log(data)
         try {
             const ut = await prismaClient.ut.findUnique({
                 where: {
@@ -171,6 +172,7 @@ class ArvoreService {
     }
 
     async update(id: string, data: any): Promise<Arvore> {
+        console.log(data)
         const ut = await prismaClient.ut.findUnique({
             where: {
                 id: data?.id_ut
@@ -183,9 +185,9 @@ class ArvoreService {
             }
         })
 
-        const especie = await prismaClient.especie.findFirst({
+        const especie = await prismaClient.especie.findUnique({
             where: {
-                nome_orgao: data?.especie
+                id: data?.id_especie
             }
         })
         const preparedData = upa?.tipo === 1 ? {
@@ -244,7 +246,7 @@ class ArvoreService {
             })
     }
 
-    async getAll(userId: string, query?: any): Promise<any> {
+    async getAll(userId: string, query?: any, utId?: string): Promise<any> {
         const projeto = await getProjeto(userId)
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
@@ -265,26 +267,10 @@ class ArvoreService {
             {
                 AND: {
                     numero_arvore: parseInt(search),
-                    ut: {
-                        upa: {
-                            umf: {
-                                projeto: {
-                                    id: projeto?.id
-                                }
-                            }
-                        }
-                    }
+                    ut: { id: utId }
                 }
             } : {
-                ut: {
-                    upa: {
-                        umf: {
-                            projeto: {
-                                id: projeto?.id
-                            }
-                        }
-                    }
-                }
+                ut: { id: utId }
             }
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
@@ -313,21 +299,13 @@ class ArvoreService {
          
     }
 
-    async search(q: any, userId: string) {
+    async search(q: any, userId: string, utId?: string) {
         const projeto = await getProjeto(userId)
         const data = await prismaClient.arvore.findMany({
             where: {
                 AND: {
                     numero_arvore: parseInt(q),
-                    ut: {
-                        upa: {
-                            umf: {
-                                projeto: {
-                                    id: projeto?.id
-                                }
-                            }
-                        }
-                    }
+                    ut: { id: utId }
                 }
             }
         })

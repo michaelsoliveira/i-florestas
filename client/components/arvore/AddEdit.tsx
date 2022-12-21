@@ -20,7 +20,7 @@ const AddEdit = ({ id }: any) => {
     const [observacoes, setObservacoes] = useState<any>()
     const [especie, setEspecie] = useState<OptionType>()
     const [especies, setEspecies] = useState<any>()
-    const [orient_x, setOrientX] = useState<any>()
+    const [orient_x, setOrientX] = useState<any>({ label: 'DIR', value: 'D' })
     const [medicao, setMedicao] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
@@ -268,7 +268,7 @@ const AddEdit = ({ id }: any) => {
                                             </div>
                                             <div className='pt-1'>
                                                 <Select
-                                                    selectedValue={orient_x ? orient_x : { label: 'DIR', value: 'D' }}
+                                                    selectedValue={orient_x}
                                                     defaultOptions={[
                                                         { label: 'DIR', value: 'D' },
                                                         { label: 'ESQ', value: 'E' }

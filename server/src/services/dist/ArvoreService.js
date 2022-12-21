@@ -198,6 +198,8 @@ var ArvoreService = /** @class */ (function () {
                             dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
+                            latitude: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
+                            longitude: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -226,16 +228,76 @@ var ArvoreService = /** @class */ (function () {
     };
     ArvoreService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var arvore;
+            var ut, upa, especie, preparedData, arvore;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.arvore.update({
-                            data: data,
-                            where: {
-                                id: id
-                            }
-                        })];
+                    case 0:
+                        console.log(data);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
+                                where: {
+                                    id: data === null || data === void 0 ? void 0 : data.id_ut
+                                }
+                            })];
                     case 1:
+                        ut = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
+                                where: {
+                                    id: ut === null || ut === void 0 ? void 0 : ut.id_upa
+                                }
+                            })];
+                    case 2:
+                        upa = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.findUnique({
+                                where: {
+                                    id: data === null || data === void 0 ? void 0 : data.id_especie
+                                }
+                            })];
+                    case 3:
+                        especie = _a.sent();
+                        preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
+                            numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
+                            faixa: parseInt(data === null || data === void 0 ? void 0 : data.faixa),
+                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
+                            altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
+                            fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
+                            orient_x: data === null || data === void 0 ? void 0 : data.orient_x,
+                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
+                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
+                            ut: {
+                                connect: {
+                                    id: ut === null || ut === void 0 ? void 0 : ut.id
+                                }
+                            },
+                            especie: {
+                                connect: {
+                                    id: especie === null || especie === void 0 ? void 0 : especie.id
+                                }
+                            }
+                        } : {
+                            numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
+                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
+                            altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
+                            fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
+                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
+                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
+                            ut: {
+                                connect: {
+                                    id: ut === null || ut === void 0 ? void 0 : ut.id
+                                }
+                            },
+                            especie: {
+                                connect: {
+                                    id: especie === null || especie === void 0 ? void 0 : especie.id
+                                }
+                            }
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.arvore.update({
+                                data: preparedData,
+                                where: {
+                                    id: id
+                                }
+                            })];
+                    case 4:
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
                 }
@@ -259,7 +321,7 @@ var ArvoreService = /** @class */ (function () {
             });
         });
     };
-    ArvoreService.prototype.getAll = function (userId, query) {
+    ArvoreService.prototype.getAll = function (userId, query, utId) {
         return __awaiter(this, void 0, Promise, function () {
             var projeto, perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, data, total;
             var _b, _c;
@@ -286,26 +348,10 @@ var ArvoreService = /** @class */ (function () {
                             {
                                 AND: {
                                     numero_arvore: parseInt(search),
-                                    ut: {
-                                        upa: {
-                                            umf: {
-                                                projeto: {
-                                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
-                                                }
-                                            }
-                                        }
-                                    }
+                                    ut: { id: utId }
                                 }
                             } : {
-                            ut: {
-                                upa: {
-                                    umf: {
-                                        projeto: {
-                                            id: projeto === null || projeto === void 0 ? void 0 : projeto.id
-                                        }
-                                    }
-                                }
-                            }
+                            ut: { id: utId }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.arvore.findMany({
@@ -343,7 +389,7 @@ var ArvoreService = /** @class */ (function () {
             });
         });
     };
-    ArvoreService.prototype.search = function (q, userId) {
+    ArvoreService.prototype.search = function (q, userId, utId) {
         return __awaiter(this, void 0, void 0, function () {
             var projeto, data;
             return __generator(this, function (_a) {
@@ -355,15 +401,7 @@ var ArvoreService = /** @class */ (function () {
                                 where: {
                                     AND: {
                                         numero_arvore: parseInt(q),
-                                        ut: {
-                                            upa: {
-                                                umf: {
-                                                    projeto: {
-                                                        id: projeto === null || projeto === void 0 ? void 0 : projeto.id
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        ut: { id: utId }
                                     }
                                 }
                             })];
