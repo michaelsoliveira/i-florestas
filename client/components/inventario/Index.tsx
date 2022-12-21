@@ -218,7 +218,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const handleImportInventario = async () => {
         try {
             setLoading(true)
-            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
+            if (filteredArvores.length === 0) {
+                alertService.error('Por favor, carregue primeiramente a planilha!')
+                setLoading(false)
+            } else {
+                await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
                 .then((response: any) => {
                     const { error, message } = response.data
                     if (!error) {
@@ -229,6 +233,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     setLoading(false)
                     console.log(response)
                 })
+            }
+
+            
         } catch(e) {
 
         }

@@ -296,27 +296,32 @@ var Index = function (_a) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 4, , 5]);
                     setLoading(true);
-                    return [4 /*yield*/, client.post("/arvore/import-inventario?upaId=" + (upa === null || upa === void 0 ? void 0 : upa.id), filteredArvores)
-                            .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
-                            if (!error) {
-                                alert_1["default"].success(message);
-                            }
-                            else {
-                                alert_1["default"].error(message);
-                            }
-                            setLoading(false);
-                            console.log(response);
-                        })];
-                case 1:
-                    _a.sent();
+                    if (!(filteredArvores.length === 0)) return [3 /*break*/, 1];
+                    alert_1["default"].error('Por favor, carregue primeiramente a planilha!');
+                    setLoading(false);
                     return [3 /*break*/, 3];
+                case 1: return [4 /*yield*/, client.post("/arvore/import-inventario?upaId=" + (upa === null || upa === void 0 ? void 0 : upa.id), filteredArvores)
+                        .then(function (response) {
+                        var _a = response.data, error = _a.error, message = _a.message;
+                        if (!error) {
+                            alert_1["default"].success(message);
+                        }
+                        else {
+                            alert_1["default"].error(message);
+                        }
+                        setLoading(false);
+                        console.log(response);
+                    })];
                 case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 5];
+                case 4:
                     e_1 = _a.sent();
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     }); };

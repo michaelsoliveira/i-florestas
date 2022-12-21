@@ -149,8 +149,8 @@ class ArvoreService {
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
                 ponto_gps: parseInt(data?.ponto_gps),
-                lat_x: parseFloat(data?.latitude),
-                long_y: parseFloat(data?.longitude),
+                lat_x: parseFloat(data?.lat_x),
+                long_y: parseFloat(data?.long_y),
                 ut: {
                     connect: {
                         id: ut?.id
@@ -217,8 +217,8 @@ class ArvoreService {
             dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
             altura: parseFloat(data?.altura),
             fuste: parseInt(data?.fuste),
-            lat_x: parseFloat(data?.latitude),
-            long_y: parseFloat(data?.longitude),
+            lat_x: parseFloat(data?.lat_x),
+            long_y: parseFloat(data?.long_y),
             ponto_gps: parseInt(data?.ponto_gps),
             ut: {
                 connect: {

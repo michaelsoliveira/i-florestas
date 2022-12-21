@@ -47,23 +47,20 @@ var ArvoreService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log(data);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 7, , 8]);
+                        _a.trys.push([0, 6, , 7]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
                                 where: {
                                     id: data === null || data === void 0 ? void 0 : data.ut
                                 }
                             })];
-                    case 2:
+                    case 1:
                         ut = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
                                 where: {
                                     id: data === null || data === void 0 ? void 0 : data.upa
                                 }
                             })];
-                    case 3:
+                    case 2:
                         upa = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.findFirst({
                                 where: {
@@ -75,7 +72,7 @@ var ArvoreService = /** @class */ (function () {
                                     }
                                 }
                             })];
-                    case 4:
+                    case 3:
                         arvoreExists = _a.sent();
                         if (arvoreExists) {
                             throw new Error('Já existe uma árvore cadastrada com este número');
@@ -85,7 +82,7 @@ var ArvoreService = /** @class */ (function () {
                                     id: data === null || data === void 0 ? void 0 : data.especie
                                 }
                             })];
-                    case 5:
+                    case 4:
                         especie = _a.sent();
                         preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
                             numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
@@ -121,13 +118,13 @@ var ArvoreService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.create({
                                 data: preparedData
                             })];
-                    case 6:
+                    case 5:
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
-                    case 7:
+                    case 6:
                         e_1 = _a.sent();
                         return [2 /*return*/, e_1];
-                    case 8: return [2 /*return*/];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -203,8 +200,8 @@ var ArvoreService = /** @class */ (function () {
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
-                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
-                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
+                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
+                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -236,13 +233,11 @@ var ArvoreService = /** @class */ (function () {
             var ut, upa, especie, preparedData, arvore;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        console.log(data);
-                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
-                                where: {
-                                    id: data === null || data === void 0 ? void 0 : data.id_ut
-                                }
-                            })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
+                            where: {
+                                id: data === null || data === void 0 ? void 0 : data.id_ut
+                            }
+                        })];
                     case 1:
                         ut = _a.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
@@ -283,8 +278,8 @@ var ArvoreService = /** @class */ (function () {
                             dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
-                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.latitude),
-                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.longitude),
+                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
+                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
                             ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
                             ut: {
                                 connect: {

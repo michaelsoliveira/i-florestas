@@ -281,9 +281,9 @@ var ArvoreController = /** @class */ (function () {
                             dap: arvoreLineSplit[3],
                             altura: arvoreLineSplit[4],
                             fuste: arvoreLineSplit[5],
-                            ponto: arvoreLineSplit[6],
-                            latitude: arvoreLineSplit[7],
-                            longitude: arvoreLineSplit[8],
+                            ponto_gps: arvoreLineSplit[6],
+                            lat_x: arvoreLineSplit[7],
+                            long_y: arvoreLineSplit[8],
                             obs: arvoreLineSplit[9],
                             comentario: arvoreLineSplit[10]
                         });
