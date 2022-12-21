@@ -10,14 +10,19 @@ export interface EquacaoVolumeType {
 
 class EquacaoVolumeService {
     async create(data: EquacaoVolumeType, userId: string): Promise<EquacaoVolume> {
-        
+        console.log(data)
         const equacaoVolumeExists = await prismaClient.equacaoVolume.findFirst({
             where: {
-                OR: 
-                [
-                    { nome: data.nome },
-                    { expressao: data.expressao }
-                ]
+                AND: {
+                    OR: 
+                    [
+                        { nome: data.nome },
+                        { expressao: data.expressao }
+                    ],
+                    projeto: {
+                        id: data?.id_projeto
+                    }
+                }
             }
         })
 

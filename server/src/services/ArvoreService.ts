@@ -2,6 +2,8 @@ import { prismaClient } from "../database/prismaClient";
 import { Arvore } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
+const math = require('mathjs')
+
 export interface ArvoreType {
     numero_arvore: number;
     id_projeto: string;
@@ -42,16 +44,36 @@ class ArvoreService {
                     id: data?.especie
                 }
             })
+
+            const eqVolume = await prismaClient.equacaoVolume.findFirst({
+                where: {
+                    upa: {
+                        some: {
+                            id: upa?.id
+                        }
+                    }
+                }
+            }) as any
+    
+            const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
+    
+            let scope = {
+                DAP: dap,
+                ALTURA: parseFloat(data?.altura)
+            }
+    
+            const volume = math.evaluate(eqVolume?.expressao, scope)
     
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
                 faixa: parseInt(data?.faixa),
-                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+                dap,
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
                 orient_x: data?.orient_x,
                 lat_x: parseFloat(data?.lat_x),
                 long_y: parseFloat(data?.long_y),
+                volume,
                 ut: {
                     connect: {
                         id: ut?.id
@@ -68,11 +90,17 @@ class ArvoreService {
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
                 ponto_gps: parseInt(data?.ponto_gps),
+                volume,
                 ut: {
                     connect: {
                         id: ut?.id
                     }
                 },
+                especie: {
+                    connect: {
+                        id: especie?.id
+                    }
+                }
             }
     
             const arvore = await prismaClient.arvore.create({
@@ -123,6 +151,25 @@ class ArvoreService {
             if (arvoreExists) {
                 throw new Error('Já existe uma árvore cadastrada com este número')
             }
+
+            const eqVolume = await prismaClient.equacaoVolume.findFirst({
+                where: {
+                    upa: {
+                        some: {
+                            id: upa?.id
+                        }
+                    }
+                }
+            }) as any
+    
+            const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
+    
+            let scope = {
+                DAP: dap,
+                ALTURA: parseFloat(data?.altura)
+            }
+    
+            const volume = math.evaluate(eqVolume?.expressao, scope)
     
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
@@ -131,6 +178,7 @@ class ArvoreService {
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
                 orient_x: data?.orient_x,
+                volume,
                 lat_x: parseFloat(data?.lat_x),
                 long_y: parseFloat(data?.long_y),
                 ut: {
@@ -151,6 +199,7 @@ class ArvoreService {
                 ponto_gps: parseInt(data?.ponto_gps),
                 lat_x: parseFloat(data?.lat_x),
                 long_y: parseFloat(data?.long_y),
+                volume,
                 ut: {
                     connect: {
                         id: ut?.id
@@ -166,7 +215,7 @@ class ArvoreService {
             const arvore = await prismaClient.arvore.create({
                 data: preparedData
             })
-    
+
             return arvore
         } catch(error) {
             console.log(error?.message)
@@ -193,15 +242,36 @@ class ArvoreService {
                 id: data?.id_especie
             }
         })
+
+        const eqVolume = await prismaClient.equacaoVolume.findFirst({
+            where: {
+                upa: {
+                    some: {
+                        id: upa?.id
+                    }
+                }
+            }
+        }) as any
+
+        const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
+
+        let scope = {
+            DAP: dap,
+            ALTURA: parseFloat(data?.altura)
+        }
+
+        const volume = math.evaluate(eqVolume?.expressao, scope)
+
         const preparedData = upa?.tipo === 1 ? {
             numero_arvore: parseInt(data?.numero_arvore),
             faixa: parseInt(data?.faixa),
-            dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
+            dap,
             altura: parseFloat(data?.altura),
             fuste: parseInt(data?.fuste),
             orient_x: data?.orient_x,
             lat_x: parseFloat(data?.lat_x),
             long_y: parseFloat(data?.long_y),
+            volume,
             ut: {
                 connect: {
                     id: ut?.id
@@ -220,6 +290,7 @@ class ArvoreService {
             lat_x: parseFloat(data?.lat_x),
             long_y: parseFloat(data?.long_y),
             ponto_gps: parseInt(data?.ponto_gps),
+            volume,
             ut: {
                 connect: {
                     id: ut?.id
@@ -231,11 +302,14 @@ class ArvoreService {
                 }
             }
         }
+
+        console.log(preparedData)
+
         const arvore = await prismaClient.arvore.update({
-            data: preparedData,
             where: {
                 id
-            }
+            },
+            data: preparedData
         })
 
         return arvore

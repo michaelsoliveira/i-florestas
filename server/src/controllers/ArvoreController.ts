@@ -9,6 +9,7 @@ export class ArvoreController {
     async store(request : Request, response: Response) : Promise<Response> { 
         try {    
             const data = request.body
+            console.log(data)
             const arvore = await arvoreService.create(data)
             return response.json({
                 error: false,

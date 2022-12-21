@@ -102,11 +102,11 @@ model Arvore {
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
   numero_arvore     Int
-  dap             Float?
-  altura          Float?
+  dap             Decimal?  @db.Decimal(5,2)
+  altura          Decimal?  @db.Decimal(5,2)
   fuste           Int?
   area_basal      Float?
-  volume          Float?
+  volume          Decimal?  @db.Decimal(5,2)
   comentario      String? @db.Text
   orient_x        String? @db.Char(1)
   lat_x           Float?
