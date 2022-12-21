@@ -171,7 +171,6 @@ class ArvoreService {
     }
 
     async update(id: string, data: any): Promise<Arvore> {
-        console.log(data)
         const ut = await prismaClient.ut.findUnique({
             where: {
                 id: data?.id_ut
