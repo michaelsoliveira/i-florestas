@@ -270,10 +270,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             perPage,
             orderBy,
             order,
-            search: evt.target.value
+            search: evt.target?.value
         }
-        
-        setSearchInput(evt.target.value)
+        setSearchInput(evt.target?.value)
         onPageChanged(paginatedData)
     }
 
@@ -395,12 +394,13 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             </div>
                         </div>
                         <div className="w-full px-4 pt-4 lg:pt-0">
-                            <label htmlFor="procurar_ut">Pesquisar UT:</label>
+                            <label htmlFor="procurar_ut">Pesquisar Árvore:</label>
                             <Input
                                 label="Pesquisar UT"
                                 id="search"
                                 name="search"
-                                onChange={(e: any) => handleSearch(e.target.value)}
+                                value={searchInput}
+                                onChange={handleSearch}
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
                                 
@@ -556,6 +556,19 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 }
                             </div>   
                         </th>
+                        <th
+                            scope="col"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('volume')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                Volume
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
                         <th scope="col" className="relative w-1/12 px-6 py-3">
                             <span className="sr-only">Edit</span>
                         </th>
@@ -629,11 +642,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <span className="text-sm font-medium text-gray-900">
                                     <div className="text-sm text-gray-500">{arvore?.volume}</div>
                                 </span>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore.categoria_arvore?.nome}</div>
-                            </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                             <Link href={`/arvore/update/${arvore.id}`}>

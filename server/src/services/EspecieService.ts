@@ -17,7 +17,7 @@ class EspecieService {
             where: { 
                 AND: {
                     nome: dataRequest.nome,
-                    id_projeto: id_projeto ? id_projeto : projetoId
+                    id_projeto: projetoId
                 }
             } 
         })

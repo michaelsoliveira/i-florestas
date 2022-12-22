@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
@@ -22,6 +22,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const { client } = useContext(AuthContext)
     const [checkedUts, setCheckedUts] = useState<any>([])
     const [sorted, setSorted] = useState(false)
+    const [searchInput, setSearchInput] = useState("")
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
@@ -181,14 +182,15 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         }       
     }
 
-    const handleSearch = async (query: string) => {
+    const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
         const paginatedData = {
             currentPage: 1,
             perPage,
             orderBy,
             order,
-            search: query
+            search: evt.target.value
         }
+        setSearchInput(evt.target.value)
         onPageChanged({
             upa: upa.id,
             ...paginatedData
@@ -314,7 +316,8 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 label="Pesquisar UT"
                                 id="search"
                                 name="search"
-                                onChange={(e: any) => handleSearch(e.target.value)}
+                                value={searchInput}
+                                onChange={handleSearch}
                                 className=
                                 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
                                 

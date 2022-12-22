@@ -103,7 +103,8 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                             setLoading(false)
                             console.log(message)
                         }
-                    }).catch(() => {
+                    }).catch((error: any) => {
+                        console.log(error.message)
                         setLoading(false)
                     })
             }

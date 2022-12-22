@@ -112,8 +112,7 @@ export class EspecieController {
     async importEspecie(request: Request, response: Response) {
         const especies: any[] = []
         const projeto = await getProjeto(request.user?.id)
-        const projetoId = projeto ? projeto?.id : ''
-
+        console.log(projeto)
         try {
             if (request?.file === undefined) {
                 return response.status(400).send("Please upload a CSV file!");
@@ -138,7 +137,7 @@ export class EspecieController {
             }
 
             for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) await especieService.create(especie, projetoId)
+                if (especies.indexOf(especie) > 0) await especieService.create(especie, projeto?.id)
             }
 
             return response.json({

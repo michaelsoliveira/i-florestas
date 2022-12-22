@@ -146,7 +146,8 @@ const AddEdit = ({ id }: any) => {
     async function createArvore(data: any) {
         client.post(`/arvore`, {upa: upa?.id, ut: ut?.id, ...data})
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, arvore, message } = response.data
+                console.log(arvore)
                 if (!error) {
                     alertService.success(message);
                     router.push('/arvore')
@@ -175,7 +176,6 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function updateArvore(id: string, data: any) {
-        
         client.put(`/arvore/${id}`, data)
             .then((response: any) => {
                 const { error, message } = response.data
@@ -217,11 +217,11 @@ const AddEdit = ({ id }: any) => {
                             <div className='grid grid-cols-3 lg:grid-cols-5 gap-4'>
                                 <div className='col-span-3 lg:col-span-5 w-48'>
                                     <RadioGroup labelText="Medição">
-                                        {["CAP", "DAP"].map((el, index) => (
+                                        {["DAP", "CAP"].map((el, index) => (
                                             <Option
                                                 key={index}
                                                 index={index}
-                                                selectedIndex={medicao ? medicao : 1}
+                                                selectedIndex={medicao ? medicao : 0}
                                                 onSelect={(index: any) => {
                                                     onSelect(index)
                                                 }}
@@ -300,7 +300,7 @@ const AddEdit = ({ id }: any) => {
                                                     register={register}
                                                     errors={errors}
                                                     rules={ {required: 'O campo nome é obrigatório'} }
-                                                    id="ponto"
+                                                    id="ponto_gps"
                                                     className="pb-4"
                                                 />
                                             </div>
@@ -308,7 +308,7 @@ const AddEdit = ({ id }: any) => {
                                     )
                                 }
                                 {
-                                    (medicao === 0) ? (
+                                    (medicao === 1) ? (
                                         <>
                                         <div>
                                             <FormInput
