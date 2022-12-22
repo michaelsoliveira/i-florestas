@@ -10,6 +10,7 @@ import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
@@ -24,6 +25,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
+    const { projeto } = useContext(ProjetoContext)
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = useCallback((id?: string) => {
@@ -90,7 +92,7 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
-                await client.post('/especie/import', formData)
+                await client.post(`/especie/import?projetoId=${projeto?.id}`, formData)
                     .then((response: any) => {
                         console.log(response)
                         const { error, message } = response.data
