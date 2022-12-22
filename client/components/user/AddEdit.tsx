@@ -151,14 +151,12 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         then: Yup.string().required('É necessário selecionar um usuário')
                     }) 
                 }),
-            roles: Yup.array()
-                    .when('id_projeto', {
-                        is: (projeto:string) => projeto === projetoId,
-                        then: Yup.array().required("É necessário pelo menos 1 grupo de usuário.").nullable()
-                        // .min(1, 'Selecione pelo menos 1 grupo de usuário')
-                    })
-                    
-                
+            // roles: Yup.array()
+            //     .when('id_projeto', {
+            //         is: (projeto:string) => projeto === projetoId,
+            //         then: Yup.array().required("É necessário pelo menos 1 grupo de usuário.").nullable()
+            //         // .min(1, 'Selecione pelo menos 1 grupo de usuário')
+            //     })
             });
 
         async function handleRegister(data: any) {
@@ -194,6 +192,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         }
                 })
                 .catch((error: any) => {
+                    console.log(error.message)
                     alertService.warn(`Error: ${error.message}`)
                 });
             } else {
@@ -248,6 +247,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         values: Values,
                         { setSubmitting }: FormikHelpers<Values>
                     ) => {
+                        
                         handleRegister(values)
                     }}
                 >
@@ -270,6 +270,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         
                                         const fields = ['username', 'email'];
                                         setFieldValue('id_user', data?.id)
+                                        setFieldValue('id_projeto', projetoId)
                                         
                                         fields.forEach(field => setFieldValue(field, data[field], false));
                                     });
@@ -278,10 +279,8 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
-                            setFieldValue('id_projeto', projetoId)
                             loadUser()
-                            
-                        }, [loadUser, setFieldValue]);
+                        }, [loadUser]);
                         
                         return (
                             <div className="flex flex-col justify-center w-full">

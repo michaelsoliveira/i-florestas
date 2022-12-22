@@ -61,7 +61,7 @@ var FocusError_1 = require("../Form/FocusError");
 var ModalContext_1 = require("contexts/ModalContext");
 exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
-    var styles = _a.styles, userId = _a.userId, sendForm = _a.sendForm, redirect = _a.redirect, projetoId = _a.projetoId, roles = _a.roles, users = _a.users;
+    var styles = _a.styles, userId = _a.userId, sendForm = _a.sendForm, redirect = _a.redirect, projetoId = _a.projetoId, roles = _a.roles;
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
     var isAddMode = !userId;
@@ -70,10 +70,34 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _c = react_1.useState([]), selectedRoles = _c[0], setSelectedRoles = _c[1];
     var _d = react_1.useState(0), option = _d[0], setOption = _d[1];
     var session = react_2.useSession().data;
+    var _e = react_1.useState(), users = _e[0], setUsers = _e[1];
     var hideModal = ModalContext_1.useModalContext().hideModal;
     function onSelect(index) {
         setOption(index);
     }
+    var loadUsers = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!session) return [3 /*break*/, 2];
+                    return [4 /*yield*/, client.get('/users')];
+                case 1:
+                    data = (_a.sent()).data;
+                    setUsers(data);
+                    _a.label = 2;
+                case 2: return [2 /*return*/];
+            }
+        });
+    }); }, [session, client]);
+    react_1.useEffect(function () {
+        var isLoaded = false;
+        if (!isLoaded)
+            loadUsers();
+        return function () {
+            isLoaded = true;
+        };
+    }, [loadUsers]);
     var loadRolesOptions = function (inputValue, callback) { return __awaiter(_this, void 0, void 0, function () {
         var response, json;
         return __generator(this, function (_a) {
@@ -127,10 +151,10 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
         username: Yup.string()
             .when('option', {
             is: function (option) { return option === 0; },
-            then: Yup.string().test("len", "O nome de usuário tem que ter entre 3 e 20 caracteres.", function (val) {
+            then: Yup.string().test("len", "O nome de usuário tem que ter entre 3 e 40 caracteres.", function (val) {
                 return val &&
                     val.toString().length >= 3 &&
-                    val.toString().length <= 20;
+                    val.toString().length <= 40;
             })
                 .required("Campo obrigatório!")
         }),
@@ -168,19 +192,6 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 is: true,
                 then: Yup.string().required('É necessário selecionar um usuário')
             })
-        }),
-        roles: Yup.array()
-            .when('id_projeto', {
-            is: function (projeto) { return projeto === projetoId; },
-            then: Yup.array()
-                .of(Yup.object().shape({
-                id: Yup.string()
-                    .ensure()
-                    .required("Name is required"),
-                name: Yup.string()
-                    .ensure()
-                    .required("Name is required")
-            }))
         })
     });
     function handleRegister(data) {
@@ -221,11 +232,13 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                         case 2:
                                             alert_1["default"].success('Usuário cadastrado com SUCESSO!');
                                             sendForm();
+                                            hideModal();
                                             _a.label = 3;
                                         case 3: return [2 /*return*/];
                                     }
                                 });
                             }); })["catch"](function (error) {
+                                console.log(error.message);
                                 alert_1["default"].warn("Error: " + error.message);
                             })];
                     case 1:
@@ -262,7 +275,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 isAddMode: isAddMode,
                 id_user: '',
                 id_projeto: '',
-                roles: [],
+                roles: {},
                 option: 0
             }, validationSchema: validationSchema, onSubmit: function (values, _a) {
                 var setSubmitting = _a.setSubmitting;
@@ -290,6 +303,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                     }
                                     var fields = ['username', 'email'];
                                     setFieldValue('id_user', data === null || data === void 0 ? void 0 : data.id);
+                                    setFieldValue('id_projeto', projetoId);
                                     fields.forEach(function (field) { return setFieldValue(field, data[field], false); });
                                 })];
                         case 1:
@@ -301,9 +315,8 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             }); }, [setFieldValue]);
             // eslint-disable-next-line react-hooks/rules-of-hooks
             react_1.useEffect(function () {
-                setFieldValue('id_projeto', projetoId);
                 loadUser();
-            }, [loadUser, setFieldValue]);
+            }, [loadUser]);
             return (React.createElement("div", { className: "flex flex-col justify-center w-full" },
                 React.createElement("div", { className: "relative h-full mx-0" },
                     React.createElement("div", { className: "relative pt-3 px-4 w-full" },
@@ -344,13 +357,11 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                     React.createElement("div", { className: 'py-4' },
                                         React.createElement(formik_1.Field, { name: "roles_id" }, function () { return (React.createElement(Select_1.Select, { isMulti: true, selectedValue: selectedRoles, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", 
                                             // options={selectedRoles}
-                                            callback: function (value) {
-                                                console.log(value);
-                                                // setFieldValue('roles_id', (old: any) => [...old, value])
-                                                setSelectedRoles(value);
+                                            callback: function (data) {
+                                                setSelectedRoles(data);
+                                                setFieldValue('roles', data);
                                             } })); }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "roles_id", component: "div" }),
-                                        JSON.stringify(selectedRoles, null, 2)))),
+                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "roles", component: "div" })))),
                             React.createElement(FocusError_1["default"], null))))));
         })));
 });

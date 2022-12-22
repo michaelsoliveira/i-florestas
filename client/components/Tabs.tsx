@@ -19,7 +19,9 @@ const Tabs = () => {
   const formRef = createRef<any>()
 
   const submitForm = () => {
-    formRef.current.handleSubmit()
+    if (formRef.current) {
+        formRef.current.handleSubmit()
+    }
   } 
 
   return (

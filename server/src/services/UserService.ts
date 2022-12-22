@@ -83,11 +83,11 @@ class UserService {
                         id_projeto: data?.id_projeto
                     }
                 },
-                users_roles: {
-                    createMany: {
-                        data: roles
-                    }
-                }
+                // users_roles: {
+                //     createMany: {
+                //         data: roles
+                //     }
+                // }
             }
         })
 
