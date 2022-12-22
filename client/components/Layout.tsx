@@ -22,12 +22,16 @@ const Layout = ({ children }: props) => {
     const { client } = useContext(AuthContext)
 
     const getProjetoAtivo = useCallback(async () => {
-        if (session) {
-            const { data } = await client.get(`/projeto/active/get`)
-            setProjeto(data)
+        try {
+            if (session) {
+                const response = await client.get(`/projeto/active/get`)
+                const { projeto } = response.data
+                setProjeto(projeto ? projeto : { id: '', nome: 'Nenhum Projeto Cadastrado' })
+            }
+        } catch(error: any) {
+            console.log(error.message)
         }
-            
-        
+       
     }, [session, client, setProjeto])
 
     useEffect (() => {
@@ -38,7 +42,7 @@ const Layout = ({ children }: props) => {
     const withProjeto = projeto ? 
         [
             {
-                name: 'Geral',
+                name: 'Gerenciar',
                 description: 'Gerenciar Informações do Projeto',
                 href: `/projeto`,
                 icon: CogIcon

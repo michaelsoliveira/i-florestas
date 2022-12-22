@@ -45,11 +45,33 @@ class ProjetoService {
 
         const roleAdmin = await prismaClient.role.findFirst({ 
             where: { name: { mode: Prisma.QueryMode.insensitive, equals: 'admin' } } 
-        })
-        
+        }) as any
+
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
+                users_roles: {
+                    connectOrCreate: {
+                        where: {
+                            user_id_role_id: {
+                                role_id: roleAdmin?.id,
+                                user_id: data?.id_user ? data?.id_user : userId
+                            }
+                        },
+                        create: {
+                            users: {
+                                connect: {
+                                    id: data?.id_user ? data?.id_user : userId
+                                }
+                            },
+                            roles: {
+                                connect: {
+                                    id: roleAdmin?.id
+                                }
+                            },
+                        },
+                    }
+                },
                 projeto_users: {
                     create: {
                         users: {

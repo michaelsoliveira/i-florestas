@@ -198,10 +198,19 @@ export class ProjetoController {
     }
 
     async getActive(request: Request, response: Response) {
+        try {
+            const projeto = await projetoService.getActive(request.user?.id)
 
-        const projeto = await projetoService.getActive(request.user?.id)
-
-        return response.json(projeto)
+            return response.json({
+                error: false,
+                projeto
+            })
+        } catch (error: any) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
     }
 
     async findOne(request: Request, response: Response) {

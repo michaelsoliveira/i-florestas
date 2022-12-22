@@ -245,23 +245,14 @@ async function main() {
             username: 'michaelsoliveira',
             email: 'michaelsoliveira@gmail.com',
             password: await bcrypt.hash('Fms237691', 10),
-            users_roles: {
-              create: {
-                roles: {
-                  connect: {
-                    id: roleAdmin?.id
-                  }
-                }
-              }
-            }
         },
     })
     console.log(`Created user admin with id: ${user.id}`)
 
     const projeto = await prisma.projeto.create({
       data: {
-        nome: 'Projeto Teste',
-        projeto_users: {
+        nome: 'Projeto Inicial',
+        users_roles: {
           create: [
               {
                   users: {
@@ -269,6 +260,11 @@ async function main() {
                           id: user?.id
                       }
                   },
+                  roles: {
+                    connect: {
+                      id: roleAdmin?.id
+                    }
+                  }
               }
           ]
       }
