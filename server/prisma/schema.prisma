@@ -147,19 +147,18 @@ model PessoaJuridica {
   @@map("pessoa_juridica")
 }
 
-model ProjetoUser {
-  id_projeto String  @db.Uuid
-  id_user    String  @db.Uuid
-  active     Boolean @default(false)
-  projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
-  users      User    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
+// model ProjetoUser {
+//   id_projeto String  @db.Uuid
+//   id_user    String  @db.Uuid
+//   projeto    Projeto @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_9197746d4fec9555520a45d1ad0")
+//   users      User    @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf1")
 
-  @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
-  @@unique([id_projeto, id_user, active])
-  @@index([id_projeto], map: "IDX_9197746d4fec9555520a45d1ad")
-  @@index([id_user], map: "IDX_ea3cb7162981b687e4daa856bf")
-  @@map("projeto_users")
-}
+//   @@id([id_projeto, id_user], map: "PK_57c5338b1a54ea499a79c1286f2")
+//   @@unique([id_projeto, id_user])
+//   @@index([id_projeto], map: "IDX_9197746d4fec9555520a45d1ad")
+//   @@index([id_user], map: "IDX_ea3cb7162981b687e4daa856bf")
+//   @@map("projeto_users")
+// }
 
 model Endereco {
   id         String   @id(map: "PK_2a6880f71a7f8d1c677bb2a32a8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
@@ -230,9 +229,10 @@ model Projeto {
   equacao_Volume           EquacaoVolume[]
   especie                  Especie[]
   pessoa                   Pessoa[]
-  projeto_users            ProjetoUser[]
+  // projeto_users            ProjetoUser[]
   umf                      Umf[]
   users_roles              UserRole[]
+  active                   Boolean @default(false)
 
   @@map("projeto")
 }
@@ -318,7 +318,7 @@ model User {
   image             String?          @db.VarChar
   email_verified    DateTime?
   accounts          Account[]
-  projeto_users     ProjetoUser[]
+  // projeto_users     ProjetoUser[]
   refresh_token     RefreshToken[]
   sessions          Session[]
   users_permissions UserPermission[]
@@ -340,15 +340,14 @@ model UserPermission {
 }
 
 model UserRole {
-  user_id         String  @db.Uuid
-  role_id         String  @db.Uuid
-  id_projeto      String? @db.Uuid
-  roles           Role   @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "FK_1cf664021f00b9cc1ff95e17de4")
-  users           User   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_e4435209df12bc1f001e5360174")
-  projeto         Projeto?    @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf0")
+  user_id         String    @db.Uuid
+  role_id         String    @db.Uuid
+  id_projeto      String    @db.Uuid
+  roles           Role      @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "FK_1cf664021f00b9cc1ff95e17de4")
+  users           User      @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "FK_e4435209df12bc1f001e5360174")
+  projeto         Projeto   @relation(fields: [id_projeto], references: [id], onDelete: Cascade, map: "FK_ea3cb7162981b687e4daa856bf0")
 
-  @@id([user_id, role_id], map: "PK_c525e9373d63035b9919e578a9c")
-  @@unique([user_id, role_id, id_projeto])
+  @@id([user_id, role_id, id_projeto], map: "PK_c525e9373d63035b9919e578a9c")
   @@index([role_id], map: "IDX_1cf664021f00b9cc1ff95e17de")
   @@index([user_id], map: "IDX_e4435209df12bc1f001e536017")
   @@index([id_projeto], map: "IDX_e4435209df12bc1f001e536011")

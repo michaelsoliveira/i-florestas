@@ -252,6 +252,7 @@ async function main() {
     const projeto = await prisma.projeto.create({
       data: {
         nome: 'Projeto Inicial',
+        active: true,
         users_roles: {
           create: [
               {
@@ -267,7 +268,7 @@ async function main() {
                   }
               }
           ]
-      }
+        }
       }
     })
 
