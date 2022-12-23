@@ -63,7 +63,7 @@ class UserService {
             return user
         }
 
-        const roles = data.roles?.map((role: any) => {
+        const userRoles = data.roles?.map((role: any) => {
             return {
                 role_id: role.value,
                 id_projeto: data?.id_projeto
@@ -80,11 +80,14 @@ class UserService {
                 },
                 users_roles: {
                     createMany: {
-                        data: roles
+                        data: userRoles
                     }
                 }
             }
         }) : await prismaClient.user.update({
+            include: {
+                users_roles: true,
+            },
             where: {
                 id: data?.id_user
             },
@@ -95,8 +98,15 @@ class UserService {
                     }
                 },
                 users_roles: {
-                    createMany: {
-                        data: roles
+                    updateMany: {
+                        where: {
+                            user_id: data?.id_user,
+                            role_id: {
+                                in: userRoles.map((role: any) => { return role.role_id })
+                            }
+                            
+                        },
+                        data: userRoles.map((role: any) => { return { id_projeto: role?.id } })
                     }
                 }
             }

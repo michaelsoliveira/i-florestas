@@ -348,8 +348,10 @@ model UserRole {
   projeto         Projeto?    @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ea3cb7162981b687e4daa856bf0")
 
   @@id([user_id, role_id], map: "PK_c525e9373d63035b9919e578a9c")
+  @@unique([user_id, role_id, id_projeto])
   @@index([role_id], map: "IDX_1cf664021f00b9cc1ff95e17de")
   @@index([user_id], map: "IDX_e4435209df12bc1f001e536017")
+  @@index([id_projeto], map: "IDX_e4435209df12bc1f001e536011")
   @@map("users_roles")
 }
 
