@@ -38,20 +38,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.CreateRolePermissionService = exports.CreatePermissionService = exports.CreateRoleService = exports.CreateUserACLService = void 0;
 var prismaClient_1 = require("../database/prismaClient");
+var ProjetoService_1 = require("./ProjetoService");
 var CreateUserACLService = /** @class */ (function () {
     function CreateUserACLService() {
     }
     CreateUserACLService.prototype.execute = function (_a) {
         var id = _a.id, roles = _a.roles, permissions = _a.permissions;
         return __awaiter(this, void 0, Promise, function () {
-            var user;
+            var projeto, user;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
-                            where: {
-                                id: id
-                            }
-                        })];
+                    case 0:
+                        projeto = ProjetoService_1.getProjeto(id);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
+                                where: {
+                                    id: id
+                                }
+                            })];
                     case 1:
                         user = _b.sent();
                         if (!user) {
@@ -61,7 +64,8 @@ var CreateUserACLService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.userRole.createMany({
                                 data: roles.map(function (role) { return ({
                                     user_id: id,
-                                    role_id: role.id
+                                    role_id: role.id,
+                                    id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id
                                 }); })
                             })];
                     case 2:

@@ -79,20 +79,20 @@ class CategoriaService {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
                     projeto: {
-                        projeto_users: {
+                        active: true,
+                        users_roles: {
                             some: {
-                                active: true,
-                                id_user: userId
+                                user_id: userId
                             }
                         }
                     }
                 }
             } : {
                 projeto: {
-                    projeto_users: {
+                    active: true,
+                    users_roles: {
                         some: {
-                            active: true,
-                            id_user: userId
+                            user_id: userId
                         }
                     }
                 }
@@ -130,10 +130,10 @@ class CategoriaService {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: q },
                     projeto: {
-                        projeto_users: {
+                        active: true,
+                        users_roles: {
                             some: {
-                                id_user: userId,
-                                active: true
+                                user_id: userId
                             }
                         }
                     }

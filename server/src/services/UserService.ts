@@ -15,7 +15,7 @@ class UserService {
         const where =  data?.id_projeto ? {
             AND: {
                 email: data?.email,
-                projeto_users: {
+                users_roles: {
                     some: {
                         id_projeto: data?.id_projeto
                     }
@@ -54,6 +54,7 @@ class UserService {
                     ...dataRequest,
                     users_roles: {
                         create: {
+                            id_projeto: data?.id_projeto,
                             role_id: roleAdmin ? roleAdmin?.id : ''
                         }
                     }
@@ -73,11 +74,11 @@ class UserService {
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
                 ...dataRequest,
-                projeto_users: {
-                    create: {
-                        id_projeto: data?.id_projeto
-                    }
-                },
+                // projeto_users: {
+                //     create: {
+                //         id_projeto: data?.id_projeto
+                //     }
+                // },
                 users_roles: {
                     createMany: {
                         data: userRoles
@@ -92,11 +93,11 @@ class UserService {
                 id: data?.id_user
             },
             data: {
-                projeto_users: {
-                    create: {
-                        id_projeto: data?.id_projeto
-                    }
-                },
+                // projeto_users: {
+                //     create: {
+                //         id_projeto: data?.id_projeto
+                //     }
+                // },
                 users_roles: {
                     updateMany: {
                         where: {
@@ -214,9 +215,11 @@ class UserService {
     async getAllByProjeto(): Promise<any[]> {
         const users = await prismaClient.user.findMany({
             where: {
-                projeto_users: {
+                users_roles: {
                     some: {
-                        active: true
+                        projeto: {
+                            active: true
+                        }
                     }
                 }
             }
@@ -235,15 +238,11 @@ class UserService {
         const where = projetoId ? { 
             AND: {
                 id,
-                projeto_users: {
+                users_roles: {
                     some: {
                         projeto: {
                             id: projetoId
-                        }
-                    }
-                },
-                users_roles: {
-                    some: {
+                        },
                         user_id: id
                     }
                 } 

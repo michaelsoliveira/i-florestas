@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,90 +36,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+// import { CategoriaEspecie } from "../entities/CategoriaEspecie";
 var prismaClient_1 = require("../database/prismaClient");
 var client_1 = require("@prisma/client");
-var EspecieService = /** @class */ (function () {
-    function EspecieService() {
+var CategoriaService = /** @class */ (function () {
+    function CategoriaService() {
     }
-    EspecieService.prototype.create = function (dataRequest, projetoId) {
+    CategoriaService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var nome, nome_cientifico, nome_orgao, id_projeto, especieExists, preparedData, data, especie;
+            var categoriaExists, categoria;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        nome = dataRequest.nome, nome_cientifico = dataRequest.nome_cientifico, nome_orgao = dataRequest.nome_orgao, id_projeto = dataRequest.id_projeto;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({
-                                where: {
-                                    AND: {
-                                        nome: dataRequest.nome,
-                                        id_projeto: id_projeto ? id_projeto : projetoId
-                                    }
-                                }
-                            })];
-                    case 1:
-                        especieExists = _a.sent();
-                        if (especieExists) {
-                            throw new Error('Já existe uma espécie cadastrada com este nome');
-                        }
-                        preparedData = {
-                            nome: nome,
-                            nome_cientifico: nome_cientifico,
-                            nome_orgao: nome_orgao,
-                            projeto: {
-                                connect: {
-                                    id: id_projeto ? id_projeto : projetoId
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.findFirst({
+                            where: {
+                                AND: {
+                                    nome: data.nome,
+                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                                 }
                             }
-                        };
-                        data = (dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria) ? __assign(__assign({}, preparedData), { categoria_especie: {
-                                connect: {
-                                    id: dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria
-                                }
-                            } }) : preparedData;
-                        especie = prismaClient_1.prismaClient.especie.create({ data: data });
-                        return [2 /*return*/, especie];
-                }
-            });
-        });
-    };
-    EspecieService.prototype.update = function (id, dataRequest) {
-        return __awaiter(this, void 0, Promise, function () {
-            var nome, nome_cientifico, nome_orgao, preparedData, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        nome = dataRequest.nome, nome_cientifico = dataRequest.nome_cientifico, nome_orgao = dataRequest.nome_orgao;
-                        preparedData = {
-                            nome: nome,
-                            nome_cientifico: nome_cientifico,
-                            nome_orgao: nome_orgao
-                        };
-                        data = (dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria) ? __assign(__assign({}, preparedData), { categoria_especie: {
-                                connect: {
-                                    id: dataRequest === null || dataRequest === void 0 ? void 0 : dataRequest.id_categoria
-                                }
-                            } }) : preparedData;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.update({
-                                where: {
-                                    id: id
-                                },
+                        })];
+                    case 1:
+                        categoriaExists = _a.sent();
+                        if (categoriaExists) {
+                            throw new Error('Já existe uma categoria cadastrada com este nome');
+                        }
+                        return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.create({
                                 data: data
                             })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, this.findById(id)];
+                    case 2:
+                        categoria = _a.sent();
+                        return [2 /*return*/, categoria];
                 }
             });
         });
     };
-    EspecieService.prototype["delete"] = function (id) {
+    CategoriaService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
+            var categoria;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.especie["delete"]({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.update({
+                            data: data,
                             where: {
                                 id: id
                             }
+                        })];
+                    case 1:
+                        categoria = _a.sent();
+                        return [2 /*return*/, categoria];
+                }
+            });
+        });
+    };
+    CategoriaService.prototype["delete"] = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie["delete"]({
+                            where: { id: id }
+                        })
+                            .then(function (response) {
+                            console.log(response);
                         })];
                     case 1:
                         _a.sent();
@@ -139,26 +105,14 @@ var EspecieService = /** @class */ (function () {
             });
         });
     };
-    EspecieService.prototype.deleteEspecies = function (ids) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                ids.forEach(function (id) {
-                    prismaClient_1.prismaClient.especie["delete"]({
-                        where: { id: id }
-                    });
-                });
-                return [2 /*return*/];
-            });
-        });
-    };
-    EspecieService.prototype.getAll = function (query, userId) {
+    CategoriaService.prototype.getAll = function (userId, query) {
         return __awaiter(this, void 0, Promise, function () {
-            var perPage, page, order, search, orderBy, skip, orderByTerm, orderByElement, where, _a, data, total;
+            var perPage, page, search, orderBy, order, skip, orderByTerm, orderByElement, where, _a, data, total;
             var _b, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        perPage = query.perPage, page = query.page, order = query.order, search = query.search, orderBy = query.orderBy;
+                        perPage = query.perPage, page = query.page, search = query.search, orderBy = query.orderBy, order = query.order;
                         skip = (page - 1) * perPage;
                         orderByTerm = {};
                         orderByElement = orderBy ? orderBy.split('.') : {};
@@ -196,27 +150,17 @@ var EspecieService = /** @class */ (function () {
                             }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
-                                prismaClient_1.prismaClient.especie.findMany({
-                                    include: {
-                                        categoria_especie: {
-                                            select: {
-                                                id: true,
-                                                nome: true
-                                            }
-                                        }
-                                    },
+                                prismaClient_1.prismaClient.categoriaEspecie.findMany({
                                     where: where,
+                                    orderBy: orderByTerm,
                                     take: perPage ? parseInt(perPage) : 50,
-                                    skip: skip ? skip : 0,
-                                    orderBy: __assign({}, orderByTerm)
+                                    skip: skip ? skip : 0
                                 }),
-                                prismaClient_1.prismaClient.especie.count({ where: where })
+                                prismaClient_1.prismaClient.categoriaEspecie.count()
                             ])];
                     case 1:
                         _a = _d.sent(), data = _a[0], total = _a[1];
                         return [2 /*return*/, {
-                                orderBy: orderBy,
-                                order: order,
                                 data: data,
                                 perPage: perPage,
                                 page: page,
@@ -227,31 +171,60 @@ var EspecieService = /** @class */ (function () {
             });
         });
     };
-    EspecieService.prototype.findById = function (id) {
-        return __awaiter(this, void 0, Promise, function () {
-            var especie;
+    CategoriaService.prototype.deleteCategorias = function (categorias) {
+        return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.especie.findUnique({
-                            include: {
-                                categoria_especie: {
-                                    select: {
-                                        id: true,
-                                        nome: true
-                                    }
-                                }
-                            },
-                            where: {
-                                id: id
-                            }
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.deleteMany({
+                            where: { id: { "in": categorias } }
                         })];
                     case 1:
-                        especie = _a.sent();
-                        return [2 /*return*/, especie];
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    return EspecieService;
+    CategoriaService.prototype.search = function (q, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.findMany({
+                            where: {
+                                AND: {
+                                    nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: q },
+                                    projeto: {
+                                        active: true,
+                                        users_roles: {
+                                            some: {
+                                                user_id: userId
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        })];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data];
+                }
+            });
+        });
+    };
+    CategoriaService.prototype.findById = function (id) {
+        return __awaiter(this, void 0, Promise, function () {
+            var categoria;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.findUnique({ where: { id: id } })];
+                    case 1:
+                        categoria = _a.sent();
+                        return [2 /*return*/, categoria];
+                }
+            });
+        });
+    };
+    return CategoriaService;
 }());
-exports["default"] = new EspecieService;
+exports["default"] = new CategoriaService;

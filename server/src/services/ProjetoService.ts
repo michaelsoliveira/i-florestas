@@ -1,4 +1,8 @@
-import { Prisma, Projeto, ProjetoUser } from "@prisma/client";
+import { 
+    Prisma, 
+    Projeto, 
+    // ProjetoUser 
+} from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface ProjetoType {
@@ -12,10 +16,10 @@ export const getProjeto = async (userId: string) => {
     return await prismaClient.projeto.findFirst({
         where: {
             AND: {
-                projeto_users: {
+                active: true,
+                users_roles: {
                     some: {
-                        id_user: userId,
-                        active: true
+                        user_id: userId
                     }
                 },
             }
@@ -29,9 +33,9 @@ class ProjetoService {
         const projetoExists = await prismaClient.projeto.findFirst({
             where: {
                 AND: {
-                    projeto_users: {
+                    users_roles: {
                         some: {
-                            id_user: data?.id_user ? data?.id_user : userId
+                            user_id: data?.id_user ? data?.id_user : userId
                         }
                     },
                     nome: data.nome
@@ -51,13 +55,7 @@ class ProjetoService {
             data: {
                 nome: data?.nome,
                 users_roles: {
-                    connectOrCreate: {
-                        where: {
-                            user_id_role_id: {
-                                role_id: roleAdmin?.id,
-                                user_id: data?.id_user ? data?.id_user : userId
-                            }
-                        },
+                    
                         create: {
                             users: {
                                 connect: {
@@ -69,20 +67,9 @@ class ProjetoService {
                                     id: roleAdmin?.id
                                 }
                             },
-                        },
+                        }
                     }
-                },
-                projeto_users: {
-                    create: {
-                        users: {
-                            connect: {
-                                id: data?.id_user ? data?.id_user : userId
-                            }
-                        },
-                        active: data?.active
-                    }
-                }
-            } 
+                } 
         })
 
         return projeto
@@ -96,19 +83,7 @@ class ProjetoService {
             },
             data: {
                 nome: data?.nome,
-                projeto_users: {
-                    update: {
-                        data: {
-                            active: data?.active,
-                        },
-                        where: {
-                            id_projeto_id_user: {
-                                id_projeto: id,
-                                id_user: userId
-                            }
-                        }
-                    }
-                }
+                active: data?.active
             }
         })
 
@@ -116,25 +91,19 @@ class ProjetoService {
     }
 
     async changeActive(projetoId: string, userId: string): Promise<Projeto> {
-        const projetoUser = await prismaClient.projetoUser.update({
+        const projeto = await prismaClient.projeto.update({
             data: {
                 active: true
             },
             where: {
-                id_projeto_id_user: {
-                    id_projeto: projetoId,
-                    id_user: userId
-                }
-            },
-            include: {
-                projeto: true
+                id: projetoId
             }
         })
 
-        return projetoUser.projeto
+        return projeto
     }
 
-    async getDefaultData(projetoId: string, userId: string) : Promise<any> {
+    async getDefaultData(projetoId: string | any, userId: string) : Promise<any> {
         const data = await prismaClient.umf.findFirst({
             include: {
                 projeto: true,
@@ -143,7 +112,7 @@ class ProjetoService {
             where: {
                 projeto: {
                     id: projetoId,
-                    projeto_users: {
+                    users_roles: {
                         some: {
                             users: {
                                 id: userId
@@ -212,12 +181,10 @@ class ProjetoService {
                 select: {
                     id: true,
                     nome: true,
-                    projeto_users: {
-                        select: {
-                            active: true
-                        },
+                    active: true,
+                    users_roles: {
                         where: {
-                            id_user: id
+                            user_id: id
                         }
                     },
                     pessoa: true
@@ -376,12 +343,12 @@ class ProjetoService {
             },
             where: {
                 AND: {
-                    projeto_users: {
-                        some: {
-                            active: true,
-                            id_user: id
-                        }
-                    },
+                    active: true
+                    // users_roles: {
+                    //     some: {
+                    //         id_user: id
+                    //     }
+                    // },
                 }
                 
             }

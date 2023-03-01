@@ -57,14 +57,25 @@ var UserService = /** @class */ (function () {
     UserService.prototype.create = function (data) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, passwordHash, roleAdmin, dataRequest, user_1, roles, user, _b;
+            var where, userExists, passwordHash, roleAdmin, dataRequest, user_1, userRoles, user, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: {
-                                email: data === null || data === void 0 ? void 0 : data.email
+                    case 0:
+                        where = (data === null || data === void 0 ? void 0 : data.id_projeto) ? {
+                            AND: {
+                                email: data === null || data === void 0 ? void 0 : data.email,
+                                users_roles: {
+                                    some: {
+                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                    }
+                                }
                             }
-                        })];
+                        } : {
+                            email: data === null || data === void 0 ? void 0 : data.email
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                                where: where
+                            })];
                     case 1:
                         userExists = _c.sent();
                         if (userExists) {
@@ -92,6 +103,7 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { users_roles: {
                                         create: {
+                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
                                             role_id: roleAdmin ? roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id : ''
                                         }
                                     } })
@@ -100,20 +112,23 @@ var UserService = /** @class */ (function () {
                         user_1 = _c.sent();
                         return [2 /*return*/, user_1];
                     case 5:
-                        roles = (_a = data.roles) === null || _a === void 0 ? void 0 : _a.map(function (role) {
+                        userRoles = (_a = data.roles) === null || _a === void 0 ? void 0 : _a.map(function (role) {
                             return {
-                                role_id: role.value
+                                role_id: role.value,
+                                id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         });
                         if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 7];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
-                                data: __assign(__assign({}, dataRequest), { projeto_users: {
-                                        create: {
-                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
-                                        }
-                                    }, users_roles: {
+                                data: __assign(__assign({}, dataRequest), { 
+                                    // projeto_users: {
+                                    //     create: {
+                                    //         id_projeto: data?.id_projeto
+                                    //     }
+                                    // },
+                                    users_roles: {
                                         createMany: {
-                                            data: roles
+                                            data: userRoles
                                         }
                                     } })
                             })];
@@ -121,13 +136,27 @@ var UserService = /** @class */ (function () {
                         _b = _c.sent();
                         return [3 /*break*/, 9];
                     case 7: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
+                            include: {
+                                users_roles: true
+                            },
                             where: {
                                 id: data === null || data === void 0 ? void 0 : data.id_user
                             },
                             data: {
-                                projeto_users: {
-                                    create: {
-                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                // projeto_users: {
+                                //     create: {
+                                //         id_projeto: data?.id_projeto
+                                //     }
+                                // },
+                                users_roles: {
+                                    updateMany: {
+                                        where: {
+                                            user_id: data === null || data === void 0 ? void 0 : data.id_user,
+                                            role_id: {
+                                                "in": userRoles.map(function (role) { return role.role_id; })
+                                            }
+                                        },
+                                        data: userRoles.map(function (role) { return { id_projeto: role === null || role === void 0 ? void 0 : role.id }; })
                                     }
                                 }
                             }
@@ -259,9 +288,11 @@ var UserService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findMany({
                             where: {
-                                projeto_users: {
+                                users_roles: {
                                     some: {
-                                        active: true
+                                        projeto: {
+                                            active: true
+                                        }
                                     }
                                 }
                             }
@@ -289,40 +320,45 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.findOne = function (id, projetoId) {
         return __awaiter(this, void 0, Promise, function () {
-            var user, data;
+            var where, user, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
-                            where: {
-                                AND: {
-                                    id: id,
-                                    projeto_users: {
-                                        some: {
-                                            projeto: {
-                                                id: projetoId
-                                            }
-                                        }
-                                    },
-                                    users_roles: {
-                                        some: {
-                                            user_id: id
-                                        }
-                                    }
-                                }
-                            },
-                            include: {
+                    case 0:
+                        where = projetoId ? {
+                            AND: {
+                                id: id,
                                 users_roles: {
-                                    include: {
-                                        roles: {
-                                            select: {
-                                                id: true,
-                                                name: true
-                                            }
-                                        }
+                                    some: {
+                                        projeto: {
+                                            id: projetoId
+                                        },
+                                        user_id: id
                                     }
                                 }
                             }
-                        })];
+                        } : {
+                            id: id,
+                            users_roles: {
+                                some: {
+                                    user_id: id
+                                }
+                            }
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                                where: where,
+                                include: {
+                                    users_roles: {
+                                        include: {
+                                            roles: {
+                                                select: {
+                                                    id: true,
+                                                    name: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            })];
                     case 1:
                         user = _a.sent();
                         data = {

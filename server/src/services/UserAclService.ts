@@ -1,5 +1,6 @@
 import { User, Role, UserRole, Permission } from '@prisma/client';
 import { prismaClient } from '../database/prismaClient';
+import { getProjeto } from './ProjetoService';
 
 type PermissionRequest = {
   name: string;
@@ -24,7 +25,7 @@ type UserACLRequest = {
 
 export class CreateUserACLService {
   async execute({ id, roles, permissions }: UserACLRequest): Promise<User | Error> {
-
+    const projeto = getProjeto(id) as any
     const user = await prismaClient.user.findUnique({
       where: {
         id
@@ -39,7 +40,8 @@ export class CreateUserACLService {
       await prismaClient.userRole.createMany({
         data: roles.map((role: any) => ({
           user_id: id,
-          role_id: role.id
+          role_id: role.id,
+          id_projeto: projeto?.id
         }))
       });
     }
