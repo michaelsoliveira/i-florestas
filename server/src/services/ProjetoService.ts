@@ -161,35 +161,34 @@ class ProjetoService {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: search },
                     excluido: false,
-                    projeto_users: {
+                    users_roles: {
                         some: {
-                            id_user: id
+                            user_id: id
                         }
                     }
                 }
             } : {
                 excluido: false,
-                projeto_users: {
+                users_roles: {
                     some: {
-                        id_user: id
+                        user_id: id
                     }
                 }
             }
 
         const [projetos, total] = await prismaClient.$transaction([
             prismaClient.projeto.findMany({
-                select: {
-                    id: true,
-                    nome: true,
-                    active: true,
-                    users_roles: {
-                        where: {
-                            user_id: id
-                        }
-                    },
+                include: {
                     pessoa: true
                 },
-                where,
+                where: {
+                    excluido: false,
+                    users_roles: {
+                        some: {
+                            user_id: id
+                        }
+                    }
+                },
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
@@ -203,7 +202,7 @@ class ProjetoService {
             return {
                 id: projeto?.id,
                 nome: projeto?.nome,
-                active: projeto?.projeto_users[0].active,
+                active: projeto?.active,
                 pessoa: projeto?.pessoa[0]
             }
         })
@@ -336,25 +335,28 @@ class ProjetoService {
         return projeto
     }
 
-    async getActive(id: string): Promise<Projeto | null> {
-        const projeto = await prismaClient.projeto.findFirst({
+    async getActive(id: string): Promise<any> {
+        const user = await prismaClient.userRole.findFirst({
             include: {
-                pessoa: true
+                projeto: {
+                    include: {
+                        pessoa: true
+                    }
+                },
+
             },
             where: {
                 AND: {
-                    active: true
-                    // users_roles: {
-                    //     some: {
-                    //         id_user: id
-                    //     }
-                    // },
+                    projeto: {
+                        active: true
+                    },
+                    user_id: id
                 }
                 
             }
         })
 
-        return projeto
+        return user?.projeto
     }
 }
 
