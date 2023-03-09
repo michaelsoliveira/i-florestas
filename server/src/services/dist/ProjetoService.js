@@ -338,17 +338,20 @@ var ProjetoService = /** @class */ (function () {
                         console.log(search);
                         where = search ?
                             {
-                                AND: {
-                                    OR: {
-                                        username: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
-                                        email: { mode: client_1.Prisma.QueryMode.insensitive, contains: search }
+                                AND: [{
+                                        OR: [{
+                                                username: { mode: client_1.Prisma.QueryMode.insensitive, contains: search }
+                                            }, {
+                                                email: { mode: client_1.Prisma.QueryMode.insensitive, contains: search }
+                                            }]
                                     },
-                                    users_roles: {
-                                        some: {
-                                            id_projeto: projetoId
+                                    {
+                                        users_roles: {
+                                            some: {
+                                                id_projeto: projetoId
+                                            }
                                         }
-                                    }
-                                }
+                                    }]
                             } : {
                             users_roles: {
                                 some: {
@@ -375,7 +378,9 @@ var ProjetoService = /** @class */ (function () {
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm)
                                 }),
-                                prismaClient_1.prismaClient.user.count()
+                                prismaClient_1.prismaClient.user.count({
+                                    where: where
+                                })
                             ])];
                     case 1:
                         _a = _d.sent(), users = _a[0], total = _a[1];

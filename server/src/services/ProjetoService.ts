@@ -245,17 +245,20 @@ class ProjetoService {
         console.log(search)
         const where = search ?
             {
-                AND: {
-                    OR: {
-                        username: { mode: Prisma.QueryMode.insensitive, contains: search },
-                        email: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    },
-                    users_roles: {
-                        some: {
-                            id_projeto: projetoId
+                AND: [{
+                        OR: [{
+                            username: { mode: Prisma.QueryMode.insensitive, contains: search }
+                        }, {
+                            email: { mode: Prisma.QueryMode.insensitive, contains: search },
+                        }] 
+                    }, 
+                    {
+                        users_roles: {
+                            some: {
+                                id_projeto: projetoId
+                            }
                         }
-                    }
-                }
+                    }]
             } : {
                 users_roles: {
                     some: {
@@ -285,7 +288,9 @@ class ProjetoService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.user.count()
+            prismaClient.user.count({
+                where
+            })
         ])
 
         const data = users.map((user) => {
