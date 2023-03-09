@@ -120,13 +120,7 @@ var UserService = /** @class */ (function () {
                         });
                         if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 7];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
-                                data: __assign(__assign({}, dataRequest), { 
-                                    // projeto_users: {
-                                    //     create: {
-                                    //         id_projeto: data?.id_projeto
-                                    //     }
-                                    // },
-                                    users_roles: {
+                                data: __assign(__assign({}, dataRequest), { users_roles: {
                                         createMany: {
                                             data: userRoles
                                         }
@@ -143,11 +137,6 @@ var UserService = /** @class */ (function () {
                                 id: data === null || data === void 0 ? void 0 : data.id_user
                             },
                             data: {
-                                // projeto_users: {
-                                //     create: {
-                                //         id_projeto: data?.id_projeto
-                                //     }
-                                // },
                                 users_roles: {
                                     updateMany: {
                                         where: {
@@ -195,7 +184,8 @@ var UserService = /** @class */ (function () {
                         };
                         roles = (data === null || data === void 0 ? void 0 : data.roles) && (data === null || data === void 0 ? void 0 : data.roles.map(function (role) {
                             return {
-                                role_id: role.value
+                                role_id: role.id ? role.id : role.value,
+                                id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         }));
                         if (!(data === null || data === void 0 ? void 0 : data.by_provider)) return [3 /*break*/, 2];
@@ -209,14 +199,15 @@ var UserService = /** @class */ (function () {
                     case 2: return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                             prismaClient_1.prismaClient.userRole.deleteMany({
                                 where: {
-                                    user_id: id
+                                    user_id: id,
+                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                                 }
                             }),
                             prismaClient_1.prismaClient.user.update({
                                 where: {
                                     id: id
                                 },
-                                data: (data === null || data === void 0 ? void 0 : data.roles) ? __assign(__assign({}, basicData), { users_roles: {
+                                data: (data === null || data === void 0 ? void 0 : data.roles.length) > 0 ? __assign(__assign({}, basicData), { users_roles: {
                                         createMany: {
                                             data: roles
                                         }

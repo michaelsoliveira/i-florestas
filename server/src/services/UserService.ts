@@ -74,11 +74,6 @@ class UserService {
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
                 ...dataRequest,
-                // projeto_users: {
-                //     create: {
-                //         id_projeto: data?.id_projeto
-                //     }
-                // },
                 users_roles: {
                     createMany: {
                         data: userRoles
@@ -93,11 +88,6 @@ class UserService {
                 id: data?.id_user
             },
             data: {
-                // projeto_users: {
-                //     create: {
-                //         id_projeto: data?.id_projeto
-                //     }
-                // },
                 users_roles: {
                     updateMany: {
                         where: {
@@ -137,7 +127,8 @@ class UserService {
 
         const roles = data?.roles && data?.roles.map((role: any) => {
             return {
-                role_id: role.value
+                role_id: role.id ? role.id : role.value,
+                id_projeto: data?.id_projeto
             }
         })
 
@@ -155,7 +146,8 @@ class UserService {
             const [deleted, user] = await prismaClient.$transaction([
                 prismaClient.userRole.deleteMany({
                     where: {
-                        user_id: id
+                        user_id: id,
+                        id_projeto: data?.id_projeto
                     }
                 }),
                 prismaClient.user.update({
@@ -163,12 +155,12 @@ class UserService {
                     {
                         id
                     },
-                    data: data?.roles ? {
+                    data: data?.roles.length > 0 ? {
                         ...basicData,
                         users_roles: {
                             createMany: {
-                                data: roles
-                            }
+                                data: roles,
+                            },
                         }
                     } : basicData
                 })
