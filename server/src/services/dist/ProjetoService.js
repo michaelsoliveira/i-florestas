@@ -244,34 +244,33 @@ var ProjetoService = /** @class */ (function () {
                                 AND: {
                                     nome: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
                                     excluido: false,
-                                    projeto_users: {
+                                    users_roles: {
                                         some: {
-                                            id_user: id
+                                            user_id: id
                                         }
                                     }
                                 }
                             } : {
                             excluido: false,
-                            projeto_users: {
+                            users_roles: {
                                 some: {
-                                    id_user: id
+                                    user_id: id
                                 }
                             }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.projeto.findMany({
-                                    select: {
-                                        id: true,
-                                        nome: true,
-                                        active: true,
-                                        users_roles: {
-                                            where: {
-                                                user_id: id
-                                            }
-                                        },
+                                    include: {
                                         pessoa: true
                                     },
-                                    where: where,
+                                    where: {
+                                        excluido: false,
+                                        users_roles: {
+                                            some: {
+                                                user_id: id
+                                            }
+                                        }
+                                    },
                                     take: perPage ? parseInt(perPage) : 50,
                                     skip: skip ? skip : 0,
                                     orderBy: __assign({}, orderByTerm)
@@ -284,7 +283,7 @@ var ProjetoService = /** @class */ (function () {
                             return {
                                 id: projeto === null || projeto === void 0 ? void 0 : projeto.id,
                                 nome: projeto === null || projeto === void 0 ? void 0 : projeto.nome,
-                                active: projeto === null || projeto === void 0 ? void 0 : projeto.projeto_users[0].active,
+                                active: projeto === null || projeto === void 0 ? void 0 : projeto.active,
                                 pessoa: projeto === null || projeto === void 0 ? void 0 : projeto.pessoa[0]
                             };
                         });
@@ -336,6 +335,7 @@ var ProjetoService = /** @class */ (function () {
                                 _c[orderByElement] = order,
                                 _c);
                         }
+                        console.log(search);
                         where = search ?
                             {
                                 AND: {
@@ -343,14 +343,14 @@ var ProjetoService = /** @class */ (function () {
                                         username: { mode: client_1.Prisma.QueryMode.insensitive, contains: search },
                                         email: { mode: client_1.Prisma.QueryMode.insensitive, contains: search }
                                     },
-                                    projeto_users: {
+                                    users_roles: {
                                         some: {
                                             id_projeto: projetoId
                                         }
                                     }
                                 }
                             } : {
-                            projeto_users: {
+                            users_roles: {
                                 some: {
                                     id_projeto: projetoId
                                 }
@@ -442,27 +442,29 @@ var ProjetoService = /** @class */ (function () {
     };
     ProjetoService.prototype.getActive = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var projeto;
+            var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findFirst({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.userRole.findFirst({
                             include: {
-                                pessoa: true
+                                projeto: {
+                                    include: {
+                                        pessoa: true
+                                    }
+                                }
                             },
                             where: {
                                 AND: {
-                                    active: true
-                                    // users_roles: {
-                                    //     some: {
-                                    //         id_user: id
-                                    //     }
-                                    // },
+                                    projeto: {
+                                        active: true
+                                    },
+                                    user_id: id
                                 }
                             }
                         })];
                     case 1:
-                        projeto = _a.sent();
-                        return [2 /*return*/, projeto];
+                        user = _a.sent();
+                        return [2 /*return*/, user === null || user === void 0 ? void 0 : user.projeto];
                 }
             });
         });

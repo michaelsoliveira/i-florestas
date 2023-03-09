@@ -242,6 +242,7 @@ class ProjetoService {
                 [orderByElement]: order
             }
         }
+        console.log(search)
         const where = search ?
             {
                 AND: {
@@ -249,14 +250,14 @@ class ProjetoService {
                         username: { mode: Prisma.QueryMode.insensitive, contains: search },
                         email: { mode: Prisma.QueryMode.insensitive, contains: search },
                     },
-                    projeto_users: {
+                    users_roles: {
                         some: {
                             id_projeto: projetoId
                         }
                     }
                 }
             } : {
-                projeto_users: {
+                users_roles: {
                     some: {
                         id_projeto: projetoId
                     }
