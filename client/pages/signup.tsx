@@ -2,16 +2,16 @@ import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
 import { UserAddIcon } from '@heroicons/react/solid'
 import Link from 'next/link';
-import React from 'react';
+import React, { createRef, useRef } from 'react';
 
-import {styles} from 'components/helpers/defaultStyles'
+import { styles } from 'components/helpers/defaultStyles'
 import { useModalContext } from 'contexts/ModalContext';
 import { useSession } from 'next-auth/react';
 
 const SigupPage = () => {
   const { hideModal } = useModalContext()
   const { data: session } = useSession()
-  const formRef = React.createRef<any>()
+  const formRef = useRef<any>()
 
   const submitForm = () => {
     if (formRef.current) {
@@ -31,16 +31,16 @@ const SigupPage = () => {
         </div>
         <div className='w-full pt-20'>
           <AddEdit projetoId='' ref={formRef} styles={styles} redirect/>
-          <div className='mx-auto flex flex-row items-center justify-center py-4'>
-            <button
-                // disabled={formState.isSubmitting}
-                type="submit"
-                className="group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                onClick={submitForm}
-              >
-                <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
-                </span>
+            <div className='mx-auto flex flex-row items-center justify-center py-4'>
+              <button
+                  // disabled={formState.isSubmitting}
+                  type="submit"
+                  className="group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  onClick={submitForm}
+                >
+                  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                  </span>
                 Cadastrar
               </button>
             </div>

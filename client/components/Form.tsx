@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createElement } from "react";
 import { useForm } from "react-hook-form";
 
 export default function Form({ defaultValues, children, onSubmit }: any) {
@@ -9,7 +9,7 @@ export default function Form({ defaultValues, children, onSubmit }: any) {
     <form onSubmit={handleSubmit(onSubmit)}>
       { React.Children.map(children, child => {
         return child.props.name
-          ? React.createElement(child.type, {
+          ? createElement(child.type, {
               ...{
                 ...child.props,
                 register: methods.register,

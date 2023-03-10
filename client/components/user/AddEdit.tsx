@@ -1,5 +1,5 @@
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
-import { useCallback, useContext, useEffect, forwardRef , useState } from 'react'
+import React, { useCallback, useContext, useEffect, forwardRef , useState } from 'react'
 import { useAppDispatch } from '../../store/hooks'
 import { create } from '../../store/userSlice'
 import * as Yup from 'yup'
@@ -314,7 +314,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                  <div className={session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col'}>
                                     <div>
                                         <label className={styles.label} htmlFor="username">Nome</label>
-                                        <Field className={styles.field} id="username" name="username" placeholder="Michael" />
+                                        <Field type="text" className={styles.field} id="username" name="username" placeholder="Michael" />
                                         <ErrorMessage className='text-sm text-red-500 mt-1' name="username" component="div" />
                                     </div>
                                     <div>

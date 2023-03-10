@@ -81,7 +81,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             switch (_a.label) {
                 case 0:
                     if (!session) return [3 /*break*/, 2];
-                    return [4 /*yield*/, client.get('/users')];
+                    return [4 /*yield*/, client.get('/users/search')];
                 case 1:
                     data = (_a.sent()).data;
                     setUsers(data);
@@ -264,8 +264,8 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             });
         });
     }
-    return (React.createElement("div", null,
-        React.createElement(formik_1.Formik, { innerRef: ref, initialValues: {
+    return (react_1["default"].createElement("div", null,
+        react_1["default"].createElement(formik_1.Formik, { innerRef: ref, initialValues: {
                 username: '',
                 email: '',
                 password: '',
@@ -278,7 +278,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 roles: {},
                 option: 0
             }, validationSchema: validationSchema, onSubmit: function (values, _a) {
-                var setSubmitting = _a.setSubmitting;
+                var setSubmitting = _a.setSubmitting, setFieldValue = _a.setFieldValue;
                 handleRegister(values);
             } }, function (_a) {
             var errors = _a.errors, touched = _a.touched, isSubmitting = _a.isSubmitting, setFieldValue = _a.setFieldValue, setFieldTouched = _a.setFieldTouched, setTouched = _a.setTouched;
@@ -303,7 +303,6 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                     }
                                     var fields = ['username', 'email'];
                                     setFieldValue('id_user', data === null || data === void 0 ? void 0 : data.id);
-                                    setFieldValue('id_projeto', projetoId);
                                     fields.forEach(function (field) { return setFieldValue(field, data[field], false); });
                                 })];
                         case 1:
@@ -315,53 +314,54 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             }); }, [setFieldValue]);
             // eslint-disable-next-line react-hooks/rules-of-hooks
             react_1.useEffect(function () {
+                setFieldValue('id_projeto', projetoId);
                 loadUser();
-            }, [loadUser]);
-            return (React.createElement("div", { className: "flex flex-col justify-center w-full" },
-                React.createElement("div", { className: "relative h-full mx-0" },
-                    React.createElement("div", { className: "relative pt-3 px-4 w-full" },
-                        React.createElement(formik_1.Form, null,
-                            session && isAddMode && (React.createElement("div", { className: "mx-auto px-5 py-4" },
-                                React.createElement(RadioGroup_1["default"], null, ["Cadastrar", "Selecionar"].map(function (el, index) { return (React.createElement(Option_1["default"], { key: index, index: index, selectedIndex: option, onSelect: function (index) {
+            }, [loadUser, setFieldValue]);
+            return (react_1["default"].createElement("div", { className: "flex flex-col justify-center w-full" },
+                react_1["default"].createElement("div", { className: "relative h-full mx-0" },
+                    react_1["default"].createElement("div", { className: "relative pt-3 px-4 w-full" },
+                        react_1["default"].createElement(formik_1.Form, null,
+                            session && isAddMode && (react_1["default"].createElement("div", { className: "mx-auto px-5 py-4" },
+                                react_1["default"].createElement(RadioGroup_1["default"], null, ["Cadastrar", "Selecionar"].map(function (el, index) { return (react_1["default"].createElement(Option_1["default"], { key: index, index: index, selectedIndex: option, onSelect: function (index) {
                                         setTouched({}, false);
                                         setFieldValue('option', index);
                                         onSelect(index);
                                     } }, el)); })))),
-                            (option === 0) ? (React.createElement("div", { className: session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col' },
-                                React.createElement("div", null,
-                                    React.createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
-                                    React.createElement(formik_1.Field, { className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "username", component: "div" })),
-                                React.createElement("div", null,
-                                    React.createElement("label", { className: styles.label, htmlFor: "emailRegister" }, "Email"),
-                                    React.createElement(formik_1.Field, { className: styles.field, id: "emailRegister", name: "email", placeholder: "john@acme.com", type: "email" }),
-                                    React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "email", component: "div" })),
-                                isAddMode && (React.createElement(React.Fragment, null,
-                                    React.createElement("div", null,
-                                        React.createElement("label", { className: styles.label, htmlFor: "password" }, "Senha"),
-                                        React.createElement(formik_1.Field, { type: "password", className: styles.field, id: "passwordRegister", name: "password", placeholder: "******" }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "password", component: "div" })),
-                                    React.createElement("div", null,
-                                        React.createElement("label", { className: styles.label, htmlFor: "password" }, "Confirmar a Senha"),
-                                        React.createElement(formik_1.Field, { type: "password", className: styles.field, id: "confirmPassword", name: "confirmPassword", placeholder: "******" }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) :
-                                (React.createElement("div", null,
-                                    React.createElement("div", { className: 'py-4' },
-                                        React.createElement(formik_1.Field, { name: "id_user" }, function () { return (React.createElement(Select_1.Select, { placeholder: 'Entre com as iniciais...', selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
+                            (option === 0) ? (react_1["default"].createElement("div", { className: session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col' },
+                                react_1["default"].createElement("div", null,
+                                    react_1["default"].createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
+                                    react_1["default"].createElement(formik_1.Field, { type: "text", className: styles.field, id: "username", name: "username", placeholder: "Michael" }),
+                                    react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "username", component: "div" })),
+                                react_1["default"].createElement("div", null,
+                                    react_1["default"].createElement("label", { className: styles.label, htmlFor: "emailRegister" }, "Email"),
+                                    react_1["default"].createElement(formik_1.Field, { className: styles.field, id: "emailRegister", name: "email", placeholder: "john@acme.com", type: "email" }),
+                                    react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "email", component: "div" })),
+                                isAddMode && (react_1["default"].createElement(react_1["default"].Fragment, null,
+                                    react_1["default"].createElement("div", null,
+                                        react_1["default"].createElement("label", { className: styles.label, htmlFor: "password" }, "Senha"),
+                                        react_1["default"].createElement(formik_1.Field, { type: "password", className: styles.field, id: "passwordRegister", name: "password", placeholder: "******" }),
+                                        react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "password", component: "div" })),
+                                    react_1["default"].createElement("div", null,
+                                        react_1["default"].createElement("label", { className: styles.label, htmlFor: "password" }, "Confirmar a Senha"),
+                                        react_1["default"].createElement(formik_1.Field, { type: "password", className: styles.field, id: "confirmPassword", name: "confirmPassword", placeholder: "******" }),
+                                        react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "confirmPassword", component: "div" })))))) :
+                                (react_1["default"].createElement("div", null,
+                                    react_1["default"].createElement("div", { className: 'py-4' },
+                                        react_1["default"].createElement(formik_1.Field, { name: "id_user" }, function () { return (react_1["default"].createElement(Select_1.Select, { placeholder: 'Entre com as iniciais...', selectedValue: selectedUser, defaultOptions: getUsersDefaultOptions(), options: loadUsersOptions, label: "Pesquisar Usu\u00E1rio", callback: function (value) {
                                                 setFieldValue('id_user', value === null || value === void 0 ? void 0 : value.value);
                                                 setSelectedUser(value);
                                             } })); }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_user", component: "div" })))),
+                                        react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "id_user", component: "div" })))),
                             session &&
-                                (React.createElement("div", { className: 'w-full ' },
-                                    React.createElement("div", { className: 'py-4' },
-                                        React.createElement(formik_1.Field, { name: "roles_id" }, function () { return (React.createElement(Select_1.Select, { isMulti: true, selectedValue: selectedRoles, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", 
+                                (react_1["default"].createElement("div", { className: 'w-full ' },
+                                    react_1["default"].createElement("div", { className: 'py-4' },
+                                        react_1["default"].createElement(formik_1.Field, { name: "roles_id" }, function () { return (react_1["default"].createElement(Select_1.Select, { isMulti: true, selectedValue: selectedRoles, defaultOptions: getRolesDefaultOptions(), options: loadRolesOptions, label: "Grupo de Usu\u00E1rio", 
                                             // options={selectedRoles}
                                             callback: function (data) {
                                                 setSelectedRoles(data);
                                                 setFieldValue('roles', data);
                                             } })); }),
-                                        React.createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "roles", component: "div" })))),
-                            React.createElement(FocusError_1["default"], null))))));
+                                        react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "roles", component: "div" })))),
+                            react_1["default"].createElement(FocusError_1["default"], null))))));
         })));
 });
