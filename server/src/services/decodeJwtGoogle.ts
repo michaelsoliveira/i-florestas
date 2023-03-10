@@ -1,6 +1,6 @@
 const { OAuth2Client } = require('google-auth-library')
 
-export const getDecodedOAuthJwtGoogle = async (token: string | undefined) => {
+const getDecodedOAuthJwtGoogle = async (token: string | undefined) => {
 
   try {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)

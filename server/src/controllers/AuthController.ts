@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import authService from "../services/AuthService"
-import { getDecodedOAuthJwtGoogle } from "../services/DecodeJwtGoogle";
+import getDecodedOAuthJwtGoogle from "../services/DecodeJwtGoogle";
 export interface BaseUser {
     email: string,
     password: string
