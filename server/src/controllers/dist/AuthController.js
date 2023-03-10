@@ -49,7 +49,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.AuthController = void 0;
 var AuthService_1 = require("../services/AuthService");
-var DecodeJwtGoogle_1 = require("../../services/DecodeJwtGoogle");
+var DecodeJwtGoogle_1 = require("../services/DecodeJwtGoogle");
 var refreshTokens = [];
 var AuthController = /** @class */ (function () {
     function AuthController() {

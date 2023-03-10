@@ -37,14 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.getDecodedOAuthJwtGoogle = void 0;
-var OAuth2Client = require('google-auth-library').OAuth2Client;
+var google_auth_library_1 = require("google-auth-library");
 exports.getDecodedOAuthJwtGoogle = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     var client, tokenInfo, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+                client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
                 return [4 /*yield*/, client.getTokenInfo(token)];
             case 1:
                 tokenInfo = _a.sent();
