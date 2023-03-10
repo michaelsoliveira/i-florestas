@@ -12,3 +12,5 @@ export const getDecodedOAuthJwtGoogle = async (token: string | undefined) => {
     return { status: 500, data: error }
   }
 }
+
+export default getDecodedOAuthJwtGoogle
