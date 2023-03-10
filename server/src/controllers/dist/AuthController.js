@@ -96,7 +96,7 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         authorization = request.headers.authorization;
                         token = authorization === null || authorization === void 0 ? void 0 : authorization.replace('Bearer', '').trim();
-                        return [4 /*yield*/, DecodeJwtGoogle_1.getDecodedOAuthJwtGoogle(token)];
+                        return [4 /*yield*/, DecodeJwtGoogle_1["default"](token)];
                     case 1:
                         userInfo = _a.sent();
                         return [2 /*return*/, response.json(userInfo)];
