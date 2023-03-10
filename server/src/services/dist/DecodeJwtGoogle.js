@@ -36,8 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.getDecodedOAuthJwtGoogle = void 0;
 var OAuth2Client = require('google-auth-library').OAuth2Client;
-var getDecodedOAuthJwtGoogle = function (token) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getDecodedOAuthJwtGoogle = function (token) { return __awaiter(void 0, void 0, void 0, function () {
     var client, tokenInfo, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -55,4 +56,4 @@ var getDecodedOAuthJwtGoogle = function (token) { return __awaiter(void 0, void 
         }
     });
 }); };
-exports["default"] = getDecodedOAuthJwtGoogle;
+exports["default"] = exports.getDecodedOAuthJwtGoogle;

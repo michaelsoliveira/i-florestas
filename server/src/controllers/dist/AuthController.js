@@ -49,7 +49,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.AuthController = void 0;
 var AuthService_1 = require("../services/AuthService");
-var DecodeJwtGoogle_1 = require("../services/DecodeJwtGoogle");
+var DecodeJwtGoogle_1 = require("../../services/DecodeJwtGoogle");
 var refreshTokens = [];
 var AuthController = /** @class */ (function () {
     function AuthController() {
@@ -96,7 +96,7 @@ var AuthController = /** @class */ (function () {
                     case 0:
                         authorization = request.headers.authorization;
                         token = authorization === null || authorization === void 0 ? void 0 : authorization.replace('Bearer', '').trim();
-                        return [4 /*yield*/, DecodeJwtGoogle_1["default"](token)];
+                        return [4 /*yield*/, DecodeJwtGoogle_1.getDecodedOAuthJwtGoogle(token)];
                     case 1:
                         userInfo = _a.sent();
                         return [2 /*return*/, response.json(userInfo)];
