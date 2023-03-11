@@ -55,10 +55,10 @@ const Tabs = () => {
               Cadastro
             </Tab>
         </Tab.List>
-        <Tab.Panels className="mt-2">
+        <Tab.Panels>
             <Tab.Panel
               className={classNames(
-                'px-6 py-4'
+                'px-6 py-2'
               )}
           >
               <Login /> 

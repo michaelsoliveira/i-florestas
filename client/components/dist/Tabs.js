@@ -35,8 +35,8 @@ var Tabs = function () {
                             ? 'bg-green-700 text-white shadow'
                             : 'text-gray-700 hover:bg-gray-100 hover:text-green-700');
                     } }, "Cadastro")),
-            react_2["default"].createElement(react_1.Tab.Panels, { className: "mt-2" },
-                react_2["default"].createElement(react_1.Tab.Panel, { className: classnames_1["default"]('px-6 py-4') },
+            react_2["default"].createElement(react_1.Tab.Panels, null,
+                react_2["default"].createElement(react_1.Tab.Panel, { className: classnames_1["default"]('px-6 py-2') },
                     react_2["default"].createElement(Login_1["default"], null)),
                 react_2["default"].createElement(react_1.Tab.Panel, { className: classnames_1["default"]('px-4 py-2 text-left mx-auto flex flex-wrap justify-center items-center') },
                     react_2["default"].createElement("div", { className: "flex flex-col items-center justify-between w-full" },

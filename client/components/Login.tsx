@@ -73,7 +73,7 @@ function Login({ csrfToken }: any) {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6" method='POST'>
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-6" method='POST'>
           <input type="hidden" name="csrfToken" value={csrfToken} />
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="rounded-md flex flex-col">
@@ -114,7 +114,7 @@ function Login({ csrfToken }: any) {
               </div>
             </div>
 
-            <div className='mx-auto flex flex-row items-center justify-center py-4'>
+            <div className='mx-auto flex flex-row items-center justify-center py-2'>
             <button
                 disabled={formState.isSubmitting}
                 type="submit"
@@ -127,7 +127,7 @@ function Login({ csrfToken }: any) {
               </button>
             </div>
       </form>
-      <div className="flex flex-col justify-between items-center mt-3 w-full">
+      <div className="flex flex-col justify-between items-center w-full">
         <div className="mt-4 flex items-center justify-between">
             <span className="border-b w-1/5 lg:w-4/6"></span>
             <a href="#" className="text-xs text-center text-gray-500 uppercase w-96">or login with social</a>
@@ -145,20 +145,20 @@ function Login({ csrfToken }: any) {
                         <path d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.7592 25.1975 27.56 26.805 26.0133 27.9758C26.0142 27.975 26.015 27.975 26.0158 27.9742L31.1742 32.3392C30.8092 32.6708 36.6667 28.3333 36.6667 20C36.6667 18.8825 36.5517 17.7917 36.3425 16.7358Z" fill="#1976D2"/>
                     </svg>
                 </div>
-                <h1 className="px-4 py-3 w-5/6 text-center text-gray-600 font-medium">Sign in with Google</h1>
+                <h1 className="px-4 py-2 w-5/6 text-center text-gray-600 font-medium">Sign in with Google</h1>
             </a>
         </div>
         <button
           onClick={() => signInProvider('facebook')}
           className="flex items-center justify-center mb-2 text-indigo-700 hover:text-indigo-600 rounded-lg shadow-md hover:bg-gray-100 w-5/6">
           <FaFacebookF className="fa fa-facebook mr-2" />
-          <h1 className="px-4 py-3 w-5/6 text-center text-gray-600 font-medium">Sign in with Facebook</h1>
+          <h1 className="px-4 py-2 w-5/6 text-center text-gray-600 font-medium">Sign in with Facebook</h1>
         </button>
         <button
           onClick={() => signInProvider('github')}
           className="flex items-center justify-center mb-2 text-gray-700 hover:text-gray-800 rounded-lg shadow-md hover:bg-gray-100 w-5/6">
           <FaGithub className="fa fa-facebook mr-2" />
-          <h1 className="px-4 py-3 w-5/6 text-center text-gray-600 font-medium">Sign in with Github</h1>
+          <h1 className="px-4 py-2 w-5/6 text-center text-gray-600 font-medium">Sign in with Github</h1>
         </button>
       </div> 
     </div>
