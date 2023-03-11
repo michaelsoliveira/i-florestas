@@ -103,7 +103,6 @@ var UserService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { users_roles: {
                                         create: {
-                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto,
                                             role_id: roleAdmin ? roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id : ''
                                         }
                                     } })
@@ -118,6 +117,7 @@ var UserService = /** @class */ (function () {
                                 id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         });
+                        console.log(userRoles);
                         if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 7];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { users_roles: {
@@ -138,14 +138,20 @@ var UserService = /** @class */ (function () {
                             },
                             data: {
                                 users_roles: {
-                                    updateMany: {
-                                        where: {
-                                            user_id: data === null || data === void 0 ? void 0 : data.id_user,
-                                            role_id: {
-                                                "in": userRoles.map(function (role) { return role.role_id; })
-                                            }
-                                        },
-                                        data: userRoles.map(function (role) { return { id_projeto: role === null || role === void 0 ? void 0 : role.id }; })
+                                    createMany: {
+                                        // where: {
+                                        //     user_id: data?.id_user,
+                                        //     id_projeto: data?.id_projeto,
+                                        //     role_id: {
+                                        //         in: userRoles.map((role: any) => { return role.role_id })
+                                        //     }
+                                        // },
+                                        data: userRoles.map(function (role) {
+                                            return {
+                                                id_projeto: role.id_projeto,
+                                                role_id: role === null || role === void 0 ? void 0 : role.role_id
+                                            };
+                                        })
                                     }
                                 }
                             }

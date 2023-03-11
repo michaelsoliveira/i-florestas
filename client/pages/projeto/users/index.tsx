@@ -26,7 +26,7 @@ const ProjetoUsersIndex = ({ roles }: ProjetoUserType) => {
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
     const [currentUsers, setCurrentUsers] = useState<UserType[]>([])
-    const [orderBy, setOrderBy] = useState('user.username')
+    const [orderBy, setOrderBy] = useState('users.username')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
@@ -37,7 +37,8 @@ const ProjetoUsersIndex = ({ roles }: ProjetoUserType) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
+        const url = `/projeto/${projeto?.id}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`
+        const { data } = await client.get(url)
         setTotalItems(data?.count)
         setCurrentUsers(data?.users)
         setLoading(false)

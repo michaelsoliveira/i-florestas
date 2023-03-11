@@ -54,8 +54,15 @@ class ProjetoService {
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
+                active: data?.active,
                 users_roles: {
-                    
+                    connectOrCreate: {
+                        where: {
+                            user_id_role_id: {
+                                user_id: data?.id_user ? data?.id_user : userId,
+                                role_id: roleAdmin?.id
+                            }
+                        },
                         create: {
                             users: {
                                 connect: {
@@ -66,10 +73,11 @@ class ProjetoService {
                                 connect: {
                                     id: roleAdmin?.id
                                 }
-                            },
-                        }
+                            }
+                        },
                     }
-                } 
+                }
+            } 
         })
 
         return projeto
@@ -112,6 +120,7 @@ class ProjetoService {
             where: {
                 projeto: {
                     id: projetoId,
+                    excluido: false,
                     users_roles: {
                         some: {
                             users: {
@@ -129,7 +138,8 @@ class ProjetoService {
     async delete(id: string): Promise<void> {
         await prismaClient.projeto.update({
             data: {
-                excluido: true
+                excluido: true,
+                active: false
             },
             where: {
                 id
@@ -158,22 +168,27 @@ class ProjetoService {
         }
         const where = search ?
             {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    excluido: false,
-                    users_roles: {
+                AND: [
+                    { nome: { mode: Prisma.QueryMode.insensitive, contains: search } },
+                    { excluido: false },
+                    {
+                        users_roles: {
                         some: {
                             user_id: id
                         }
                     }
-                }
+                }]
             } : {
-                excluido: false,
-                users_roles: {
-                    some: {
-                        user_id: id
+                AND: [
+                    { excluido: false },
+                    {  
+                        users_roles: {
+                            some: {
+                                user_id: id
+                            }
+                        }
                     }
-                }
+                ]
             }
 
         const [projetos, total] = await prismaClient.$transaction([
@@ -181,21 +196,14 @@ class ProjetoService {
                 include: {
                     pessoa: true
                 },
-                where: {
-                    excluido: false,
-                    users_roles: {
-                        some: {
-                            user_id: id
-                        }
-                    }
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
                 }
             }),
-            prismaClient.projeto.count()
+            prismaClient.projeto.count({ where })
         ])
 
         const data = projetos.map((projeto: any) => {
@@ -233,53 +241,54 @@ class ProjetoService {
         
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
-        if (orderByElement.length == 2) {
-            orderByTerm = {
-                [orderByElement[1]]: order
-            }
-        } else {
+        if (orderByElement.length == 1) {
             orderByTerm = {
                 [orderByElement]: order
             }
+        } else {
+            orderByTerm = orderByElement.reduce((ordered: any, curr: any) => {
+                return {
+                    [ordered]: {
+                        [curr]: order
+                    }
+                }
+            })
         }
-        console.log(search)
+        
         const where = search ?
             {
-                AND: [{
-                        OR: [{
-                            username: { mode: Prisma.QueryMode.insensitive, contains: search }
-                        }, {
-                            email: { mode: Prisma.QueryMode.insensitive, contains: search },
-                        }] 
-                    }, 
+                AND: [
                     {
-                        users_roles: {
-                            some: {
-                                id_projeto: projetoId
-                            }
+                        users: {
+                            OR: [{
+                                username: { mode: Prisma.QueryMode.insensitive, contains: search }
+                            }, {
+                                email: { mode: Prisma.QueryMode.insensitive, contains: search },
+                            }] 
                         }
-                    }]
-            } : {
-                users_roles: {
-                    some: {
-                        id_projeto: projetoId
+                    },
+                    {
+                        projeto: {
+                            id: projetoId
+                        }
                     }
+                ]
+            } : {
+                projeto: {
+                    id: projetoId
                 }
             }
 
-        const [users, total] = await prismaClient.$transaction([
-            prismaClient.user.findMany({
+        const [usersRoles, total] = await prismaClient.$transaction([
+            prismaClient.userRole.findMany({
                 include: {
-                    users_roles: {
-                        include: {
-                            roles: {
-                                select: {
-                                    id: true,
-                                    name: true
-                                }    
-                            }
-                        }
-                    },
+                    users: true,
+                    roles: {
+                        select: {
+                            id: true,
+                            name: true
+                        }    
+                    }
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
@@ -288,23 +297,21 @@ class ProjetoService {
                     ...orderByTerm
                 }
             }),
-            prismaClient.user.count({
+            prismaClient.userRole.count({
                 where
             })
         ])
 
-        const data = users.map((user) => {
+        const data = usersRoles.map((userRole) => {
             return {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                image: user.image,
-                email_verified: user.email_verified,
-                roles: user.users_roles.map((user_roles) => {
-                    return {
-                        ...user_roles.roles
-                    }
-                })
+                id: userRole?.users.id,
+                username: userRole?.users.username,
+                email: userRole?.users.email,
+                image: userRole?.users.image,
+                email_verified: userRole?.users.email_verified,
+                roles: [{
+                    ...userRole.roles
+                }]
             }
         })
 
@@ -352,12 +359,15 @@ class ProjetoService {
 
             },
             where: {
-                AND: {
-                    projeto: {
-                        active: true
+                AND: [
+                    {
+                        projeto: {
+                            excluido: false,
+                            active: true
+                        } 
                     },
-                    user_id: id
-                }
+                    { user_id: id }
+                ]
                 
             }
         })

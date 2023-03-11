@@ -55,24 +55,25 @@ var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
 var solid_2 = require("@heroicons/react/solid");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
 var Users = function (_a) {
-    var currentUsers = _a.currentUsers, projetoId = _a.projetoId, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;
-    var _b = react_1.useState(currentUsers), filteredUsers = _b[0], setFilteredUsers = _b[1];
+    var currentUsers = _a.currentUsers, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;
+    var _b = react_1.useState(), filteredUsers = _b[0], setFilteredUsers = _b[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _c = react_1.useState(false), sorted = _c[0], setSorted = _c[1];
     var _d = react_1.useState([]), checkedUsers = _d[0], setCheckedUsers = _d[1];
     var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
     var _f = react_1.useState(), users = _f[0], setUsers = _f[1];
     var formRef = react_2.createRef();
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
+    react_1.useEffect(function () {
+        setFilteredUsers(currentUsers);
+    }, [currentUsers]);
     var userById = function (id) {
         return currentUsers.find(function (user) { return user.id === id; });
     };
     var formSubmit = function () {
         formRef.current.handleSubmit();
-        console.log(formRef.current.errors);
-        if (formRef.current.isValid) {
-            hideModal();
-        }
     };
     var deleteSingleModal = function (id) {
         var _a;
@@ -87,30 +88,14 @@ var Users = function (_a) {
         });
     };
     var updateUser = function (id) {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, userId: id, styles: styles_1.stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projeto === null || projeto === void 0 ? void 0 : projeto.id, userId: id, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var addUser = function () {
-        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { users: users, roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projetoId, styles: styles_1.stylesForm, redirect: false })
+        showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: react_2["default"].createElement(AddEdit_1.AddEdit, { roles: roles, sendForm: function () { loadUsers(10); }, ref: formRef, projetoId: projeto === null || projeto === void 0 ? void 0 : projeto.id, styles: styles_1.stylesForm, redirect: false })
         });
     };
     var deleteMultModal = function () { return showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' }); };
-    var getUsers = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get('/users/search')];
-                case 1:
-                    data = (_a.sent()).data;
-                    setUsers(data);
-                    return [2 /*return*/];
-            }
-        });
-    }); }, [client]);
-    react_1.useEffect(function () {
-        getUsers();
-        setFilteredUsers(currentUsers);
-    }, [currentUsers, currentPage, getUsers]);
     function deleteUser(id) {
         return __awaiter(this, void 0, void 0, function () {
             var error_1;

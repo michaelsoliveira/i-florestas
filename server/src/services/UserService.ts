@@ -54,7 +54,6 @@ class UserService {
                     ...dataRequest,
                     users_roles: {
                         create: {
-                            id_projeto: data?.id_projeto,
                             role_id: roleAdmin ? roleAdmin?.id : ''
                         }
                     }
@@ -70,6 +69,8 @@ class UserService {
                 id_projeto: data?.id_projeto
             }
         })
+
+        console.log(userRoles)
 
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
@@ -89,15 +90,21 @@ class UserService {
             },
             data: {
                 users_roles: {
-                    updateMany: {
-                        where: {
-                            user_id: data?.id_user,
-                            role_id: {
-                                in: userRoles.map((role: any) => { return role.role_id })
-                            }
+                    createMany: {
+                        // where: {
+                        //     user_id: data?.id_user,
+                        //     id_projeto: data?.id_projeto,
+                        //     role_id: {
+                        //         in: userRoles.map((role: any) => { return role.role_id })
+                        //     }
                             
-                        },
-                        data: userRoles.map((role: any) => { return { id_projeto: role?.id } })
+                        // },
+                        data: userRoles.map((role: any) => { 
+                            return { 
+                                id_projeto: role.id_projeto, 
+                                role_id: role?.role_id
+                            } 
+                        })
                     }
                 }
             }
