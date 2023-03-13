@@ -124,10 +124,11 @@ class ArvoreService {
                     }
                 }
             }) as any
+            console.log(ut)
 
             const upa = await prismaClient.upa.findUnique({
                 where: {
-                    id: ut?.id_upa
+                    id: upaId
                 }
             })
 

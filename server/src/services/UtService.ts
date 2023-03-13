@@ -8,6 +8,8 @@ export interface UtType {
     area_total: number;
     quantidade_faixas: number;
     largura_faixas: number;
+    azimute: number;
+    quadrante: number;
     latitude: number;
     longitude: number;
     comprimento_faixas: number;
@@ -24,6 +26,8 @@ class UtService {
             quantidade_faixas, 
             comprimento_faixas, 
             largura_faixas, 
+            azimute,
+            quadrante,
             latitude, 
             longitude,
             id_upa
@@ -66,7 +70,9 @@ class UtService {
             ...preparedData, 
             quantidade_faixas: parseInt(quantidade_faixas), 
             comprimento_faixas: parseInt(comprimento_faixas), 
-            largura_faixas: parseInt(largura_faixas)  
+            largura_faixas: parseInt(largura_faixas),
+            azimute: parseFloat(azimute),
+            quadrante: parseInt(quadrante), 
         } : preparedData
         
         const ut = await prismaClient.ut.create({data})
@@ -83,6 +89,8 @@ class UtService {
             quantidade_faixas, 
             comprimento_faixas, 
             largura_faixas, 
+            azimute,
+            quadrante,
             latitude, 
             longitude,
             id_upa
@@ -108,7 +116,9 @@ class UtService {
             ...preparedData, 
             quantidade_faixas: parseInt(quantidade_faixas), 
             comprimento_faixas: parseInt(comprimento_faixas), 
-            largura_faixas: parseInt(largura_faixas)  
+            largura_faixas: parseInt(largura_faixas)  ,
+            azimute: parseFloat(azimute),
+            quadrante: parseInt(quadrante)
         } : preparedData
         
         const ut = await prismaClient.ut.update({

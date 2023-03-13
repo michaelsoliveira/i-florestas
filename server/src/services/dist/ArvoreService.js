@@ -38,16 +38,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var prismaClient_1 = require("../database/prismaClient");
 var ProjetoService_1 = require("./ProjetoService");
+var math = require('mathjs');
 var ArvoreService = /** @class */ (function () {
     function ArvoreService() {
     }
     ArvoreService.prototype.create = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var ut, upa, arvoreExists, especie, preparedData, arvore, e_1;
+            var ut, upa, arvoreExists, especie, eqVolume, dap, scope, volume, preparedData, arvore, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
+                        _a.trys.push([0, 7, , 8]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
                                 where: {
                                     id: data === null || data === void 0 ? void 0 : data.ut
@@ -84,15 +85,33 @@ var ArvoreService = /** @class */ (function () {
                             })];
                     case 4:
                         especie = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findFirst({
+                                where: {
+                                    upa: {
+                                        some: {
+                                            id: upa === null || upa === void 0 ? void 0 : upa.id
+                                        }
+                                    }
+                                }
+                            })];
+                    case 5:
+                        eqVolume = _a.sent();
+                        dap = (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap);
+                        scope = {
+                            DAP: dap,
+                            ALTURA: parseFloat(data === null || data === void 0 ? void 0 : data.altura)
+                        };
+                        volume = math.evaluate(eqVolume === null || eqVolume === void 0 ? void 0 : eqVolume.expressao, scope);
                         preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
                             numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
                             faixa: parseInt(data === null || data === void 0 ? void 0 : data.faixa),
-                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
+                            dap: dap,
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             orient_x: data === null || data === void 0 ? void 0 : data.orient_x,
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
+                            volume: volume,
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -109,33 +128,39 @@ var ArvoreService = /** @class */ (function () {
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
+                            volume: volume,
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
+                                }
+                            },
+                            especie: {
+                                connect: {
+                                    id: especie === null || especie === void 0 ? void 0 : especie.id
                                 }
                             }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.create({
                                 data: preparedData
                             })];
-                    case 5:
+                    case 6:
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
-                    case 6:
+                    case 7:
                         e_1 = _a.sent();
                         return [2 /*return*/, e_1];
-                    case 7: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
     };
     ArvoreService.prototype.createByImport = function (data, upaId) {
         return __awaiter(this, void 0, Promise, function () {
-            var ut, upa, especie, arvoreExists, preparedData, arvore, error_1;
+            var ut, upa, especie, arvoreExists, eqVolume, dap, scope, volume, preparedData, arvore, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
+                        _a.trys.push([0, 7, , 8]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
                                     AND: {
@@ -146,9 +171,10 @@ var ArvoreService = /** @class */ (function () {
                             })];
                     case 1:
                         ut = _a.sent();
+                        console.log(ut);
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
                                 where: {
-                                    id: ut === null || ut === void 0 ? void 0 : ut.id_upa
+                                    id: upaId
                                 }
                             })];
                     case 2:
@@ -175,6 +201,23 @@ var ArvoreService = /** @class */ (function () {
                         if (arvoreExists) {
                             throw new Error('Já existe uma árvore cadastrada com este número');
                         }
+                        return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findFirst({
+                                where: {
+                                    upa: {
+                                        some: {
+                                            id: upa === null || upa === void 0 ? void 0 : upa.id
+                                        }
+                                    }
+                                }
+                            })];
+                    case 5:
+                        eqVolume = _a.sent();
+                        dap = (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap);
+                        scope = {
+                            DAP: dap,
+                            ALTURA: parseFloat(data === null || data === void 0 ? void 0 : data.altura)
+                        };
+                        volume = math.evaluate(eqVolume === null || eqVolume === void 0 ? void 0 : eqVolume.expressao, scope);
                         preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
                             numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
                             faixa: parseInt(data === null || data === void 0 ? void 0 : data.faixa),
@@ -182,6 +225,7 @@ var ArvoreService = /** @class */ (function () {
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             orient_x: data === null || data === void 0 ? void 0 : data.orient_x,
+                            volume: volume,
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
                             ut: {
@@ -202,6 +246,7 @@ var ArvoreService = /** @class */ (function () {
                             ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
+                            volume: volume,
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -216,21 +261,21 @@ var ArvoreService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.create({
                                 data: preparedData
                             })];
-                    case 5:
+                    case 6:
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
-                    case 6:
+                    case 7:
                         error_1 = _a.sent();
                         console.log(error_1 === null || error_1 === void 0 ? void 0 : error_1.message);
                         return [2 /*return*/, error_1];
-                    case 7: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
     };
     ArvoreService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var ut, upa, especie, preparedData, arvore;
+            var ut, upa, especie, eqVolume, dap, scope, volume, preparedData, arvore;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
@@ -254,15 +299,33 @@ var ArvoreService = /** @class */ (function () {
                             })];
                     case 3:
                         especie = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findFirst({
+                                where: {
+                                    upa: {
+                                        some: {
+                                            id: upa === null || upa === void 0 ? void 0 : upa.id
+                                        }
+                                    }
+                                }
+                            })];
+                    case 4:
+                        eqVolume = _a.sent();
+                        dap = (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap);
+                        scope = {
+                            DAP: dap,
+                            ALTURA: parseFloat(data === null || data === void 0 ? void 0 : data.altura)
+                        };
+                        volume = math.evaluate(eqVolume === null || eqVolume === void 0 ? void 0 : eqVolume.expressao, scope);
                         preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
                             numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
                             faixa: parseInt(data === null || data === void 0 ? void 0 : data.faixa),
-                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
+                            dap: dap,
                             altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
                             fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
                             orient_x: data === null || data === void 0 ? void 0 : data.orient_x,
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
+                            volume: volume,
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -281,6 +344,7 @@ var ArvoreService = /** @class */ (function () {
                             lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
                             long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
                             ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
+                            volume: volume,
                             ut: {
                                 connect: {
                                     id: ut === null || ut === void 0 ? void 0 : ut.id
@@ -292,13 +356,14 @@ var ArvoreService = /** @class */ (function () {
                                 }
                             }
                         };
+                        console.log(preparedData);
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.update({
-                                data: preparedData,
                                 where: {
                                     id: id
-                                }
+                                },
+                                data: preparedData
                             })];
-                    case 4:
+                    case 5:
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
                 }
