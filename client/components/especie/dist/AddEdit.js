@@ -58,7 +58,7 @@ var react_2 = require("next-auth/react");
 var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
-var Especie = function (_a) {
+var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
     var _c = react_1.useState(), categoria = _c[0], setCategoria = _c[1];
@@ -234,4 +234,4 @@ var Especie = function (_a) {
                             React.createElement(Link_1.Link, { href: "/especie", className: "text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-2/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));
 };
-exports["default"] = Especie;
+exports["default"] = AddEdit;

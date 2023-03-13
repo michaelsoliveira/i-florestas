@@ -10,7 +10,7 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
 
-const Categoria = ({ id }: any) => {
+const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
@@ -282,4 +282,4 @@ const Categoria = ({ id }: any) => {
     )
 }
 
-export default Categoria
+export default AddEdit

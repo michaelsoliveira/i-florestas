@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
-import Especies from "components/especie/Especies"
+import Especies from "@/components/especie/Index"
 import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -9,7 +9,6 @@ import { useRouter } from "next/router"
 import { RootState } from "store"
 import { EspecieType } from "types/IEspecieType"
 import { LoadingContext } from "contexts/LoadingContext"
-import { Loading } from "@/components/Loading"
 
 const EspecieIndex = () => {
     const { client } = useContext(AuthContext)

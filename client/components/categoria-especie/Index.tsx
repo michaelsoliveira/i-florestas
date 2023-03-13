@@ -10,7 +10,7 @@ import { styles } from "../Utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
 
-const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
+const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
     const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>(currentCategorias)
     const [selectedCategoria, setSelectedCategoria] = useState<CategoriaEspecieType>()
@@ -114,7 +114,6 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
 
     return (
         <div>
-            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Categoria de Espécies</h1>
                 <Link
@@ -307,4 +306,4 @@ const Categorias = ({ currentCategorias, onPageChanged, changeItemsPerPage, curr
     )
 }
 
-export default Categorias
+export default Index

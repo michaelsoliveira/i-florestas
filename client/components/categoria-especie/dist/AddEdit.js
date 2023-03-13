@@ -56,13 +56,15 @@ var AuthContext_1 = require("contexts/AuthContext");
 var react_2 = require("next-auth/react");
 var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
-var Categoria = function (_a) {
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     react_1.useEffect(function () {
         function loadCategoria() {
             return __awaiter(this, void 0, void 0, function () {
@@ -91,11 +93,13 @@ var Categoria = function (_a) {
     }, [session, isAddMode, client, id, setValue]);
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
+            var preparedData;
             return __generator(this, function (_a) {
+                preparedData = __assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id });
                 try {
                     return [2 /*return*/, isAddMode
-                            ? createCategoria(data)
-                            : updateCategoria(id, data)];
+                            ? createCategoria(preparedData)
+                            : updateCategoria(id, preparedData)];
                 }
                 catch (error) {
                     alert_1["default"].error(error.message);
@@ -167,7 +171,15 @@ var Categoria = function (_a) {
                                 }, id: "nome", className: "pb-4" })),
                         React.createElement("div", { className: 'flex flex-col md:flex-row space-x-0 md:space-x-4' },
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioFuste", name: "criterioFuste", label: "Fuste", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_fuste", name: "criterio_fuste", label: "Fuste", type: "number", register: register, errors: errors, rules: {
+                                        valueAsNumber: true,
+                                        pattern: {
+                                            value: /^[0-3]+$/,
+                                            message: 'Por favor entre com um valor numérico entre 1 e 3'
+                                        }
+                                    }, className: "pb-4" })),
+                            React.createElement("div", null,
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_dminc", name: "criterio_dminc", label: "Di\u00E2metro Min\u00EDmo", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -175,15 +187,7 @@ var Categoria = function (_a) {
                                         }
                                     }, className: "pb-4" })),
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioDminc", name: "criterioDminc", label: "Di\u00E2metro Min\u00EDmo", type: "number", register: register, errors: errors, rules: {
-                                        valueAsNumber: true,
-                                        pattern: {
-                                            value: /^[0-9]+$/,
-                                            message: 'Por favor entre com um valor numérico'
-                                        }
-                                    }, className: "pb-4" })),
-                            React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioDmaxc", name: "criterioDmaxc", label: "Di\u00E2metro M\u00E1ximo", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_dmaxc", name: "criterio_dmaxc", label: "Di\u00E2metro M\u00E1ximo", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -192,7 +196,7 @@ var Categoria = function (_a) {
                                     }, className: "pb-4" }))),
                         React.createElement("div", { className: 'flex flex-col md:flex-row space-x-0 md:space-x-4' },
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioNMin", name: "criterioNMin", label: "M\u00EDnimo / 100ha", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_n_min", name: "criterio_n_min", label: "M\u00EDnimo / 100ha", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -200,7 +204,7 @@ var Categoria = function (_a) {
                                         }
                                     }, className: "pb-4" })),
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioPercMin", name: "criterioPercMin", label: "Percentual Explor\u00E1vel", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_perc_min", name: "criterio_perc_min", label: "Percentual Explor\u00E1vel", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -209,7 +213,7 @@ var Categoria = function (_a) {
                                     }, className: "pb-4" }))),
                         React.createElement("div", { className: 'flex flex-row justify-between md:justify-start space-x-4 md:space-x-4' },
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioAltura", name: "criterioAltura", label: "Altura m\u00E1xima da \u00E1rvore", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_altura", name: "criterio_altura", label: "Altura m\u00E1xima da \u00E1rvore", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -217,7 +221,7 @@ var Categoria = function (_a) {
                                         }
                                     }, className: "pb-4 w-full" })),
                             React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { id: "criterioVolume", name: "criterioVolume", label: "Vol. m\u00E1ximo da \u00E1rvore", type: "number", register: register, errors: errors, rules: {
+                                React.createElement(FormInput_1.FormInput, { id: "criterio_volume", name: "criterio_volume", label: "Vol. m\u00E1ximo da \u00E1rvore", type: "number", register: register, errors: errors, rules: {
                                         valueAsNumber: true,
                                         pattern: {
                                             value: /^[0-9]+$/,
@@ -231,4 +235,4 @@ var Categoria = function (_a) {
                             React.createElement(Link_1.Link, { href: "/categoria-especie", className: "text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-2/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));
 };
-exports["default"] = Categoria;
+exports["default"] = AddEdit;

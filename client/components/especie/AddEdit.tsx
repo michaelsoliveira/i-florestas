@@ -10,7 +10,7 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
 
-const Especie = ({ id }: any) => {
+const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [categoria, setCategoria] = useState<OptionType>()
     const [categorias, setCategorias] = useState<any>()
@@ -216,4 +216,4 @@ const Especie = ({ id }: any) => {
     )
 }
 
-export default Especie
+export default AddEdit

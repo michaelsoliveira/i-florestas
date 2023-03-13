@@ -59,13 +59,13 @@ var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
-var Modal_1 = require("../Modal");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var Select_1 = require("../Select");
 var umfSlice_1 = require("../../store/umfSlice");
 var hooks_1 = require("../../store/hooks");
 var ModalContext_1 = require("contexts/ModalContext");
 var styles_1 = require("../Utils/styles");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
 var Index = function (_a) {
     var currentUpas = _a.currentUpas, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUpas = _a.loadUpas;
     var _b = react_1.useState(currentUpas), filteredUpa = _b[0], setFilteredUpa = _b[1];
@@ -76,6 +76,7 @@ var Index = function (_a) {
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var _f = react_1.useState(), selectedUmf = _f[0], setSelectedUmf = _f[1];
     var dispatch = hooks_1.useAppDispatch();
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var _g = ModalContext_1.useModalContext(), showModal = _g.showModal, hideModal = _g.hideModal, store = _g.store;
     var visible = store.visible;
     var upaById = function (id) {
@@ -99,13 +100,25 @@ var Index = function (_a) {
             }
         });
     }); };
+    var umfExits = umfs === null || umfs === void 0 ? void 0 : umfs.length;
+    var loadUmf = react_1.useCallback(function () {
+        if (umf && umfExits > 0) {
+            setSelectedUmf({
+                value: umf === null || umf === void 0 ? void 0 : umf.id,
+                label: umf === null || umf === void 0 ? void 0 : umf.nome
+            });
+        }
+        else {
+            setSelectedUmf({});
+        }
+    }, [umf, umfExits]);
     react_1.useEffect(function () {
         function defaultOptions() {
             return __awaiter(this, void 0, void 0, function () {
                 var response, umfs;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, client.get("/umf?orderBy=nome&order=asc")];
+                        case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
                         case 1:
                             response = _a.sent();
                             umfs = response.data.umfs;
@@ -115,24 +128,10 @@ var Index = function (_a) {
                 });
             });
         }
-        var compareUmf = umfs ? umfs.find(function (u) { return u.id === umf.id; }) : null;
-        if (compareUmf) {
-            setSelectedUmf({
-                value: umf.id,
-                label: umf.nome
-            });
-        }
-        else {
-            if (umfs) {
-                setSelectedUmf({
-                    value: umfs[0].id,
-                    label: umfs[0].nome
-                });
-            }
-        }
+        loadUmf();
         defaultOptions();
         setFilteredUpa(currentUpas);
-    }, [currentUpas, currentPage, client, umf, umfs]);
+    }, [currentUpas, currentPage, client, umf, loadUmf, projeto === null || projeto === void 0 ? void 0 : projeto.id]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
@@ -256,7 +255,6 @@ var Index = function (_a) {
         });
     }); };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidade de Planejamento Anual"),
             React.createElement(Link_1.Link, { href: '/upa/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
@@ -273,12 +271,11 @@ var Index = function (_a) {
                 React.createElement("div", { className: "lg:flex lg:flex-wrap lg:w-5/12 px-4" },
                     React.createElement("div", { className: "w-3/12 flex items-center" }, "UMF: "),
                     React.createElement("div", { className: "w-9/12" },
-                        React.createElement(Select_1.Select, { initialData: {
-                                label: 'Selecione UMF...',
-                                value: ''
-                            }, selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, 
+                        React.createElement(Select_1.Select, { placeholder: 'Selecione UMF...', selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, 
                             // label="Volume da Árvore"
-                            callback: selectUmf }))),
+                            callback: selectUmf, initialData: {
+                                label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                            } }))),
                 React.createElement("div", { className: "w-60 px-4" }, "Pesquisar UPA:"),
                 React.createElement("div", { className: "w-full px-4" },
                     React.createElement(input_1.Input, { label: "Pesquisar Upa", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
@@ -315,7 +312,7 @@ var Index = function (_a) {
                                     React.createElement("div", { className: "text-sm text-gray-900" }, upa === null || upa === void 0 ? void 0 : upa.descricao)),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, (upa === null || upa === void 0 ? void 0 : upa.tipo) == 0 ? (React.createElement("div", null, "Cartesiano X Y")) : (React.createElement("div", null, "GPS"))))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, (upa === null || upa === void 0 ? void 0 : upa.tipo) == 0 ? (React.createElement("div", null, "GPS")) : (React.createElement("div", null, "Cartesiano X Y"))))),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
                                         React.createElement("div", { className: "text-sm text-gray-500" }, (_a = upa === null || upa === void 0 ? void 0 : upa.equacao_volume) === null || _a === void 0 ? void 0 : _a.nome))),

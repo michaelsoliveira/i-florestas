@@ -51,8 +51,7 @@ var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var styles_1 = require("../Utils/styles");
 var ModalContext_1 = require("contexts/ModalContext");
-var Modal_1 = require("../Modal");
-var Categorias = function (_a) {
+var Index = function (_a) {
     var currentCategorias = _a.currentCategorias, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadCategorias = _a.loadCategorias;
     var _b = react_1.useState(currentCategorias), filteredCategorias = _b[0], setFilteredCategorias = _b[1];
     var _c = react_1.useState(), selectedCategoria = _c[0], setSelectedCategoria = _c[1];
@@ -165,7 +164,6 @@ var Categorias = function (_a) {
         });
     }); };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Categoria de Esp\u00E9cies"),
             React.createElement(Link_1.Link, { href: '/categoria-especie/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
@@ -213,19 +211,19 @@ var Categorias = function (_a) {
                                 React.createElement("div", { className: "flex flex-col items-starter" },
                                     React.createElement("div", { className: "text-sm font-medium text-gray-900" }, categoria === null || categoria === void 0 ? void 0 : categoria.nome))),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                React.createElement("div", { className: "text-sm text-gray-900" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterioFuste)),
+                                React.createElement("div", { className: "text-sm text-gray-900" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterio_fuste)),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterioDminc))),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterio_dminc))),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterioDmaxc))),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterio_dmaxc))),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterioAltura))),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterio_altura))),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterioVolume))),
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, categoria === null || categoria === void 0 ? void 0 : categoria.criterio_volume))),
                             React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                 React.createElement("span", { className: "text-sm font-medium text-gray-900" },
                                     React.createElement("div", { className: "text-sm text-gray-500" }, (categoria === null || categoria === void 0 ? void 0 : categoria.preservar) ? (React.createElement("div", null, "Sim"))
@@ -236,4 +234,4 @@ var Categorias = function (_a) {
                                 React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(categoria.id); } },
                                     React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };
-exports["default"] = Categorias;
+exports["default"] = Index;

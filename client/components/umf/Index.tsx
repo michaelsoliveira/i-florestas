@@ -101,7 +101,6 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     return (
         <div>
-            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Unidade de Manejo Florestal</h1>
                 <Link

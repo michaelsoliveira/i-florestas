@@ -47,66 +47,64 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var react_1 = require("react");
 var withAuthentication_1 = require("components/withAuthentication");
-var Index_1 = require("@/components/especie/Index");
-var Pagination_1 = require("components/Pagination");
-var AuthContext_1 = require("contexts/AuthContext");
+var react_1 = require("react");
 var hooks_1 = require("store/hooks");
+var AuthContext_1 = require("contexts/AuthContext");
 var paginationSlice_1 = require("store/paginationSlice");
 var router_1 = require("next/router");
+var Index_1 = require("@/components/equacao/Index");
+var Pagination_1 = require("components/Pagination");
 var LoadingContext_1 = require("contexts/LoadingContext");
-var EspecieIndex = function () {
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var ProjetoEquacoesIndex = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _a = react_1.useContext(LoadingContext_1.LoadingContext), loading = _a.loading, setLoading = _a.setLoading;
     var _b = react_1.useState(1), currentPage = _b[0], setCurrentPage = _b[1];
     var _c = react_1.useState(10), itemsPerPage = _c[0], setItemsPerPage = _c[1];
     var _d = react_1.useState(0), totalItems = _d[0], setTotalItems = _d[1];
-    var _e = react_1.useState([]), currentEspecies = _e[0], setCurrentEspecies = _e[1];
-    var _f = react_1.useState(0), totalPages = _f[0], setTotalPages = _f[1];
-    var _g = react_1.useState('especie.nome'), orderBy = _g[0], setOrderBy = _g[1];
-    var _h = react_1.useState('asc'), order = _h[0], setOrder = _h[1];
+    var _e = react_1.useState([]), currentEquacoes = _e[0], setCurrentEquacoes = _e[1];
+    var _f = react_1.useState('nome'), orderBy = _f[0], setOrderBy = _f[1];
+    var _g = react_1.useState('asc'), order = _g[0], setOrder = _g[1];
     var pagination = hooks_1.useAppSelector(function (state) { return state.pagination; });
     var dispatch = hooks_1.useAppDispatch();
     var router = router_1.useRouter();
-    var loadEspecies = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
-        var currentPagePagination, perPage, url, data;
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
+    var loadEquacoes = react_1.useCallback(function (itemsPerPage, currentPage) { return __awaiter(void 0, void 0, void 0, function () {
+        var currentPagePagination, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     setLoading(true);
                     currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1;
-                    perPage = itemsPerPage ? itemsPerPage : pagination.perPage;
-                    url = "/especie?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + (itemsPerPage ? itemsPerPage : perPage) + "&orderBy=" + orderBy + "&order=" + order;
                     setCurrentPage(currentPagePagination);
-                    return [4 /*yield*/, client.get(url)];
+                    return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/eq-volume?page=" + (currentPage ? currentPage : currentPagePagination) + "&perPage=" + itemsPerPage + "&orderBy=" + orderBy + "&order=" + order)];
                 case 1:
                     data = (_a.sent()).data;
+                    console.log(data);
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentEspecies(data === null || data === void 0 ? void 0 : data.especies);
-                    setTimeout(function () {
-                        setLoading(false);
-                    }, 500);
+                    setCurrentEquacoes(data === null || data === void 0 ? void 0 : data.equacoes);
+                    setLoading(false);
                     return [2 /*return*/];
             }
         });
-    }); }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading]);
+    }); }, [client, order, orderBy, pagination.currentPage, pagination.name, projeto === null || projeto === void 0 ? void 0 : projeto.id, router.pathname, setLoading]);
     react_1.useEffect(function () {
-        loadEspecies(itemsPerPage);
-    }, [loadEspecies, itemsPerPage]);
+        loadEquacoes(itemsPerPage);
+    }, [itemsPerPage, loadEquacoes]);
     var onPageChanged = function (paginatedData) { return __awaiter(void 0, void 0, void 0, function () {
-        var name, currentPage, perPage, totalPages, orderBy, order, search, data, data;
+        var name, currentPage, perPage, orderBy, order, search, data, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    name = paginatedData.name, currentPage = paginatedData.currentPage, perPage = paginatedData.perPage, totalPages = paginatedData.totalPages, orderBy = paginatedData.orderBy, order = paginatedData.order, search = paginatedData.search;
+                    name = paginatedData.name, currentPage = paginatedData.currentPage, perPage = paginatedData.perPage, orderBy = paginatedData.orderBy, order = paginatedData.order, search = paginatedData.search;
                     if (!search) return [3 /*break*/, 2];
-                    return [4 /*yield*/, client.get("/especie?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&search=" + search.toLowerCase())];
+                    return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/eq-volume?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order + "&search=" + search.toLowerCase())];
                 case 1:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
                     return [3 /*break*/, 4];
-                case 2: return [4 /*yield*/, client.get("/especie?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order)];
+                case 2: return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/eq-volume?page=" + currentPage + "&perPage=" + perPage + "&orderBy=" + orderBy + "&order=" + order)];
                 case 3:
                     data = (_a.sent()).data;
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
@@ -118,23 +116,22 @@ var EspecieIndex = function () {
                     setOrderBy(orderBy);
                     setOrder(order);
                     setTotalItems(data === null || data === void 0 ? void 0 : data.count);
-                    setCurrentEspecies(data === null || data === void 0 ? void 0 : data.especies);
-                    setTotalPages(totalPages ? totalPages : Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage));
+                    setCurrentEquacoes(data === null || data === void 0 ? void 0 : data.users);
                     return [2 /*return*/];
             }
         });
     }); };
-    var changeItemsPerPage = function (evt) {
+    var changeItemsPerPage = function (value) {
         onPageChanged({
             name: router.pathname,
             currentPage: 1,
-            perPage: evt.target.value,
+            perPage: value,
             orderBy: orderBy,
             order: order
         });
     };
     return (React.createElement("div", null,
-        React.createElement(Index_1["default"], { currentEspecies: currentEspecies, loadEspecies: loadEspecies, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
+        React.createElement(Index_1["default"], { currentEquacoes: currentEquacoes, loading: loading, loadEquacoes: loadEquacoes, currentPage: currentPage, orderBy: orderBy, order: order, onPageChanged: onPageChanged, perPage: itemsPerPage, changeItemsPerPage: changeItemsPerPage }),
         React.createElement(Pagination_1.Pagination, { perPage: itemsPerPage, totalItems: totalItems, orderBy: orderBy, order: order, currentPage: currentPage, onPageChanged: onPageChanged, pageNeighbours: 3 })));
 };
-exports["default"] = withAuthentication_1["default"](EspecieIndex);
+exports["default"] = withAuthentication_1["default"](ProjetoEquacoesIndex);

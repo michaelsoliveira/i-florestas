@@ -50,7 +50,6 @@ var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var ModalContext_1 = require("contexts/ModalContext");
-var Modal_1 = require("../Modal");
 var LoadingContext_1 = require("contexts/LoadingContext");
 var create_csv_1 = require("services/create-csv");
 var hooks_1 = require("store/hooks");
@@ -428,7 +427,6 @@ var Index = function (_a) {
         }
     };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto" }, "\u00C1rvores"),
             React.createElement("div", { className: "flex flex-row" },

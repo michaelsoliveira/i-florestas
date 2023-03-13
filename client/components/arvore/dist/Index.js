@@ -50,7 +50,6 @@ var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var ModalContext_1 = require("contexts/ModalContext");
-var Modal_1 = require("../Modal");
 var LoadingContext_1 = require("contexts/LoadingContext");
 var hooks_1 = require("store/hooks");
 var Select_1 = require("../Select");
@@ -353,15 +352,16 @@ var Index = function (_a) {
     }); };
     var handleSearch = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
         var paginatedData;
-        return __generator(this, function (_a) {
+        var _a, _b;
+        return __generator(this, function (_c) {
             paginatedData = {
                 currentPage: 1,
                 perPage: perPage,
                 orderBy: orderBy,
                 order: order,
-                search: evt.target.value
+                search: (_a = evt.target) === null || _a === void 0 ? void 0 : _a.value
             };
-            setSearchInput(evt.target.value);
+            setSearchInput((_b = evt.target) === null || _b === void 0 ? void 0 : _b.value);
             onPageChanged(paginatedData);
             return [2 /*return*/];
         });
@@ -405,7 +405,6 @@ var Index = function (_a) {
         }
     };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto" }, "\u00C1rvores"),
             React.createElement(Link_1.Link, { href: '/arvore/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
@@ -436,8 +435,8 @@ var Index = function (_a) {
                                 value: ''
                             }, selectedValue: selectedUt, defaultOptions: getUtsDefaultOptions(), options: loadUts, label: "UT:", callback: function (e) { selectUt(e); } }))),
                 React.createElement("div", { className: "w-full px-4 pt-4 lg:pt-0" },
-                    React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar UT:"),
-                    React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
+                    React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar \u00C1rvore:"),
+                    React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", value: searchInput, onChange: handleSearch, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     (checkedArvores === null || checkedArvores === void 0 ? void 0 : checkedArvores.length) > 0 && (React.createElement("div", { className: "py-4" },
@@ -503,51 +502,51 @@ var Index = function (_a) {
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
+                                React.createElement("th", { scope: "col", className: "items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer", onClick: function () { return sortArvores('volume'); } },
+                                    React.createElement("div", { className: "flex flex-row w-full justify-between" },
+                                        "Volume",
+                                        sorted
+                                            ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
+                                            : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
                                 React.createElement("th", { scope: "col", className: "relative w-1/12 px-6 py-3" },
                                     React.createElement("span", { className: "sr-only" }, "Edit")))),
-                        React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredArvores === null || filteredArvores === void 0 ? void 0 : filteredArvores.map(function (arvore) {
-                            var _a;
-                            return (React.createElement("tr", { key: arvore.id },
-                                React.createElement("td", { className: "flex justify-center" },
-                                    React.createElement("input", { value: arvore === null || arvore === void 0 ? void 0 : arvore.id, checked: checkedArvores.includes(arvore === null || arvore === void 0 ? void 0 : arvore.id), onChange: handleSelectArvore, id: "arvoreId", type: "checkbox", className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" })),
+                        React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredArvores === null || filteredArvores === void 0 ? void 0 : filteredArvores.map(function (arvore) { return (React.createElement("tr", { key: arvore.id },
+                            React.createElement("td", { className: "flex justify-center" },
+                                React.createElement("input", { value: arvore === null || arvore === void 0 ? void 0 : arvore.id, checked: checkedArvores.includes(arvore === null || arvore === void 0 ? void 0 : arvore.id), onChange: handleSelectArvore, id: "arvoreId", type: "checkbox", className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" })),
+                            React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                React.createElement("div", { className: "flex flex-col items-starter" },
+                                    React.createElement("div", { className: "text-sm font-medium text-gray-900" }, arvore === null || arvore === void 0 ? void 0 : arvore.numero_arvore))),
+                            ((upa === null || upa === void 0 ? void 0 : upa.tipo) === 1) ? (React.createElement(React.Fragment, null,
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                    React.createElement("div", { className: "flex flex-col items-starter" },
-                                        React.createElement("div", { className: "text-sm font-medium text-gray-900" }, arvore === null || arvore === void 0 ? void 0 : arvore.numero_arvore))),
-                                ((upa === null || upa === void 0 ? void 0 : upa.tipo) === 1) ? (React.createElement(React.Fragment, null,
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("div", { className: "text-sm text-gray-900" }, arvore === null || arvore === void 0 ? void 0 : arvore.faixa)),
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                            React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.orient_x))),
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                            React.createElement("div", { className: "text-sm text-gray-500" }, arvore.lat_x))),
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                            React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.long_y))))) : (React.createElement(React.Fragment, null,
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                            React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.lat))),
-                                    React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
-                                        React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                            React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.lng))))),
+                                    React.createElement("div", { className: "text-sm text-gray-900" }, arvore === null || arvore === void 0 ? void 0 : arvore.faixa)),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.dap))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.orient_x))),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.altura))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore.lat_x))),
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.volume))),
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.long_y))))) : (React.createElement(React.Fragment, null,
                                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                                     React.createElement("span", { className: "text-sm font-medium text-gray-900" },
-                                        React.createElement("div", { className: "text-sm text-gray-500" }, (_a = arvore.categoria_arvore) === null || _a === void 0 ? void 0 : _a.nome))),
-                                React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
-                                    React.createElement(Link_1.Link, { href: "/arvore/update/" + arvore.id },
-                                        React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
-                                    React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(arvore.id); } },
-                                        React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
-                        }))))))));
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.lat))),
+                                React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                    React.createElement("span", { className: "text-sm font-medium text-gray-900" },
+                                        React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.lng))))),
+                            React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                React.createElement("span", { className: "text-sm font-medium text-gray-900" },
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.dap))),
+                            React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                React.createElement("span", { className: "text-sm font-medium text-gray-900" },
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.altura))),
+                            React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                React.createElement("span", { className: "text-sm font-medium text-gray-900" },
+                                    React.createElement("div", { className: "text-sm text-gray-500" }, arvore === null || arvore === void 0 ? void 0 : arvore.volume))),
+                            React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
+                                React.createElement(Link_1.Link, { href: "/arvore/update/" + arvore.id },
+                                    React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(arvore.id); } },
+                                    React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); }))))))));
 };
 exports["default"] = Index;

@@ -12,7 +12,7 @@ import React, { createRef } from 'react'
 import { PlusIcon } from "@heroicons/react/outline"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Users = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
+const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
     
     const [filteredEquacoes, setFilteredEquacoes] = useState<any[]>(currentEquacoes)
     const { client } = useContext(AuthContext)
@@ -303,4 +303,4 @@ const Users = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
     )
 }
 
-export default Users
+export default Index

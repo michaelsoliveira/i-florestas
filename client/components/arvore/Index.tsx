@@ -317,7 +317,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     return (
         <div>
-            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
                 <Link

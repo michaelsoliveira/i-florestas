@@ -48,28 +48,25 @@ var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
-var Modal_1 = require("../Modal");
 var AuthContext_1 = require("../../contexts/AuthContext");
+var ModalContext_1 = require("contexts/ModalContext");
+var styles_1 = require("../Utils/styles");
 var Umfs = function (_a) {
     var currentUmfs = _a.currentUmfs, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUmfs = _a.loadUmfs;
     var _b = react_1.useState(currentUmfs), filteredUmf = _b[0], setFilteredUmf = _b[1];
-    var _c = react_1.useState(), selectedUmf = _c[0], setSelectedUmf = _c[1];
-    var _d = react_1.useState(false), uploading = _d[0], setUploading = _d[1];
-    var _e = react_1.useState(false), removeSingleModal = _e[0], setOpenSingleModal = _e[1];
-    var _f = react_1.useState(false), removeMultipleModal = _f[0], setOpenMultipleModal = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var _g = react_1.useState([]), checkedUmfs = _g[0], setCheckedUmfs = _g[1];
-    var _h = react_1.useState(false), sorted = _h[0], setSorted = _h[1];
+    var _c = react_1.useState([]), checkedUmfs = _c[0], setCheckedUmfs = _c[1];
+    var _d = react_1.useState(false), sorted = _d[0], setSorted = _d[1];
+    var _e = ModalContext_1.useModalContext(), showModal = _e.showModal, hideModal = _e.hideModal, store = _e.store;
+    var visible = store.visible;
+    var umfById = function (id) {
+        return currentUmfs.find(function (ut) { return ut.id === id; });
+    };
+    var deleteSingleModal = function (id) { var _a; return showModal({ title: 'Deletar UMF', onConfirm: function () { deleteUmf(id); }, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: "Tem Certeza que deseja excluir a UMF " + ((_a = umfById(id)) === null || _a === void 0 ? void 0 : _a.nome) + " ?" }); };
+    var deleteMultModal = function () { return showModal({ title: 'Deletar UMFs', onConfirm: deleteUmfs, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UMFs selecionadas' }); };
     react_1.useEffect(function () {
         setFilteredUmf(currentUmfs);
     }, [currentUmfs, currentPage]);
-    function toogleDeleteModal(id) {
-        if (id) {
-            var umf = currentUmfs.find(function (umf) { return umf.id === id; });
-            setSelectedUmf(umf);
-        }
-        setOpenSingleModal(true);
-    }
     function deleteUmf(id) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -78,7 +75,7 @@ var Umfs = function (_a) {
                         .then(function () {
                         alert_1["default"].success('A UMF foi deletada com SUCESSO!!!');
                         loadUmfs();
-                        setOpenSingleModal(false);
+                        hideModal();
                     });
                 }
                 catch (error) {
@@ -145,7 +142,7 @@ var Umfs = function (_a) {
                             setCheckedUmfs([]);
                             alert_1["default"].success('As UMFs foram deletadas com SUCESSO!!!');
                             loadUmfs();
-                            setOpenMultipleModal(false);
+                            hideModal();
                         })];
                 case 1:
                     _a.sent();
@@ -178,7 +175,7 @@ var Umfs = function (_a) {
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     checkedUmfs.length > 0 && (React.createElement("div", { className: "py-4" },
-                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: function () { return setOpenMultipleModal(true); } }, "Deletar"))),
+                        React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
                         React.createElement("thead", { className: "bg-gray-50" },
                             React.createElement("tr", null,
@@ -215,12 +212,8 @@ var Umfs = function (_a) {
                                 React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                     React.createElement(Link_1.Link, { href: "/umf/update/" + umf.id },
                                         React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
-                                    React.createElement(Link_1.Link, { href: "#", onClick: function () { return toogleDeleteModal(umf.id); } },
+                                    React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(umf.id); } },
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
-                        }))))),
-            removeSingleModal &&
-                React.createElement(Modal_1["default"], { className: "w-full", styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar UMF", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir a UMF " + (selectedUmf === null || selectedUmf === void 0 ? void 0 : selectedUmf.nome) + "?", data: selectedUmf, parentFunction: deleteUmf, hideModal: function () { return setOpenSingleModal(false); }, open: removeSingleModal }),
-            removeMultipleModal &&
-                React.createElement(Modal_1["default"], { className: "w-full", styleButton: "bg-red-600 hover:bg-red-700 focus:ring-red-500", title: "Deletar UMFs", buttonText: "Deletar", bodyText: "Tem certeza que seja excluir as " + (checkedUmfs === null || checkedUmfs === void 0 ? void 0 : checkedUmfs.length) + " UMFs selecionados?", data: checkedUmfs, parentFunction: deleteUmfs, hideModal: function () { return setOpenMultipleModal(false); }, open: removeMultipleModal })))));
+                        })))))))));
 };
 exports["default"] = Umfs;

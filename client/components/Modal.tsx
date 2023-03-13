@@ -65,10 +65,10 @@ export default function Modal(props: ModaType) {
   return (
     <Transition.Root show={visible || false} as={Fragment}>
       <Dialog
-              as="div" className={
-              classNames("fixed z-40 inset-0 overflow-y-auto text-sm",
-                      className
-              )}
+            as="div" className={
+            classNames("fixed z-40 inset-0 overflow-y-auto text-sm",
+                    className
+            )}
         initialFocus={cancelButtonRef} 
         onClose={hideModal}>
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full">

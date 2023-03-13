@@ -59,7 +59,6 @@ var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
-var Modal_1 = require("../Modal");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var Select_1 = require("../Select");
 var umfSlice_1 = require("../../store/umfSlice");
@@ -75,15 +74,16 @@ var Index = function (_a) {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _d = react_1.useState([]), checkedUts = _d[0], setCheckedUts = _d[1];
     var _e = react_1.useState(false), sorted = _e[0], setSorted = _e[1];
-    var _f = react_1.useState(), umfs = _f[0], setUmfs = _f[1];
-    var _g = react_1.useState(), upas = _g[0], setUpas = _g[1];
+    var _f = react_1.useState(""), searchInput = _f[0], setSearchInput = _f[1];
+    var _g = react_1.useState(), umfs = _g[0], setUmfs = _g[1];
+    var _h = react_1.useState(), upas = _h[0], setUpas = _h[1];
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
-    var _h = react_1.useState(), selectedUmf = _h[0], setSelectedUmf = _h[1];
-    var _j = react_1.useState(), selectedUpa = _j[0], setSelectedUpa = _j[1];
+    var _j = react_1.useState(), selectedUmf = _j[0], setSelectedUmf = _j[1];
+    var _k = react_1.useState(), selectedUpa = _k[0], setSelectedUpa = _k[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var dispatch = hooks_1.useAppDispatch();
-    var _k = ModalContext_1.useModalContext(), showModal = _k.showModal, hideModal = _k.hideModal, store = _k.store;
+    var _l = ModalContext_1.useModalContext(), showModal = _l.showModal, hideModal = _l.hideModal, store = _l.store;
     var visible = store.visible;
     var utById = function (id) {
         return currentUts.find(function (ut) { return ut.id === id; });
@@ -266,7 +266,7 @@ var Index = function (_a) {
             });
         });
     }
-    var handleSearch = function (query) { return __awaiter(void 0, void 0, void 0, function () {
+    var handleSearch = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
         var paginatedData;
         return __generator(this, function (_a) {
             paginatedData = {
@@ -274,8 +274,9 @@ var Index = function (_a) {
                 perPage: perPage,
                 orderBy: orderBy,
                 order: order,
-                search: query
+                search: evt.target.value
             };
+            setSearchInput(evt.target.value);
             onPageChanged(__assign({ upa: upa.id }, paginatedData));
             return [2 /*return*/];
         });
@@ -338,7 +339,6 @@ var Index = function (_a) {
         });
     }); };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidades de Trabalho"),
             React.createElement(Link_1.Link, { href: '/ut/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
@@ -365,7 +365,7 @@ var Index = function (_a) {
                             }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } }))),
                 React.createElement("div", { className: "w-full px-4" },
                     React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar UT:"),
-                    React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
+                    React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", value: searchInput, onChange: handleSearch, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     checkedUts.length > 0 && (React.createElement("div", { className: "py-4" },

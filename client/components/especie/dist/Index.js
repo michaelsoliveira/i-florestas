@@ -44,15 +44,16 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var Link_1 = require("../../components/Link");
-var input_1 = require("../../components/atoms/input");
+var Link_1 = require("../Link");
+var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var ModalContext_1 = require("contexts/ModalContext");
-var Modal_1 = require("../Modal");
 var LoadingContext_1 = require("contexts/LoadingContext");
-var Especies = function (_a) {
+var create_csv_1 = require("services/create-csv");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var Index = function (_a) {
     var currentEspecies = _a.currentEspecies, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loadEspecies = _a.loadEspecies;
     var _b = react_1.useState(currentEspecies), filteredEspecies = _b[0], setFilteredEspecies = _b[1];
     var _c = react_1.useState(), selectedEspecie = _c[0], setSelectedEspecie = _c[1];
@@ -65,6 +66,7 @@ var Especies = function (_a) {
     var _h = ModalContext_1.useModalContext(), showModal = _h.showModal, hideModal = _h.hideModal, store = _h.store;
     var visible = store.visible;
     var setLoading = react_1.useContext(LoadingContext_1.LoadingContext).setLoading;
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
     var especieById = react_1.useCallback(function (id) {
         return currentEspecies.find(function (especie) { return especie.id === id; });
@@ -74,7 +76,7 @@ var Especies = function (_a) {
             try {
                 client["delete"]("/especie/single/" + id)
                     .then(function (response) {
-                    var error = response.data, message = response.message;
+                    var _a = response.data, error = _a.error, message = _a.message;
                     if (!error) {
                         alert_1["default"].success(message);
                         loadEspecies();
@@ -124,18 +126,31 @@ var Especies = function (_a) {
             }
         });
     }); };
+    var handleImportTemplate = function () { return __awaiter(void 0, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_a) {
+            data = [
+                { nome: 'Teste1', nome_vulgar: 'Teste1', nome_cientifico: 'Teste1' },
+                { nome: 'Teste2', nome_vulgar: 'Teste2', nome_cientifico: 'Teste2' },
+                { nome: 'Teste3', nome_vulgar: 'Teste3', nome_cientifico: 'Teste3' }
+            ];
+            create_csv_1.CsvDataService.exportToCsv('template_especie', data);
+            return [2 /*return*/];
+        });
+    }); };
     var handleImportEspecies = function (e) { return __awaiter(void 0, void 0, void 0, function () {
         var formData, e_1;
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
-                    _b.trys.push([0, 4, , 5]);
-                    if (!(e.target.files.length > 0)) return [3 /*break*/, 2];
+                    _c.trys.push([0, 3, , 4]);
+                    window.removeEventListener('focus', handleFocusBack);
+                    if (!((_a = e.target) === null || _a === void 0 ? void 0 : _a.value.length)) return [3 /*break*/, 2];
                     formData = new FormData();
-                    formData.append('file', (_a = e.target) === null || _a === void 0 ? void 0 : _a.files[0]);
+                    formData.append('file', (_b = e.target) === null || _b === void 0 ? void 0 : _b.files[0]);
                     setLoading(true);
-                    return [4 /*yield*/, client.post('/especie/import', formData)
+                    return [4 /*yield*/, client.post("/especie/import?projetoId=" + (projeto === null || projeto === void 0 ? void 0 : projeto.id), formData)
                             .then(function (response) {
                             console.log(response);
                             var _a = response.data, error = _a.error, message = _a.message;
@@ -145,32 +160,34 @@ var Especies = function (_a) {
                                 setLoading(false);
                             }
                             else {
+                                setLoading(false);
                                 console.log(message);
                             }
-                        })["catch"](function () {
+                        })["catch"](function (error) {
+                            console.log(error.message);
                             setLoading(false);
                         })];
                 case 1:
-                    _b.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    setUploading(false);
-                    _b.label = 3;
+                    _c.sent();
+                    _c.label = 2;
+                case 2: return [3 /*break*/, 4];
                 case 3:
-                    setUploading(false);
-                    return [3 /*break*/, 5];
-                case 4:
-                    e_1 = _b.sent();
+                    e_1 = _c.sent();
                     setLoading(false);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     }); };
+    var handleFocusBack = function () {
+        setUploading(false);
+        window.removeEventListener('focus', handleFocusBack);
+    };
     var openFile = function () {
         var _a;
         (_a = fileRef.current) === null || _a === void 0 ? void 0 : _a.click();
         setUploading(true);
+        window.addEventListener('focus', handleFocusBack);
     };
     var handleSearch = function (evt) { return __awaiter(void 0, void 0, void 0, function () {
         var paginatedData;
@@ -226,16 +243,20 @@ var Especies = function (_a) {
         }
     };
     return (React.createElement("div", null,
-        visible && (React.createElement(Modal_1["default"], null)),
         React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
             React.createElement("h1", { className: "font-medium text-2xl font-roboto" }, "Esp\u00E9cies"),
-            React.createElement("div", { className: "relative w-64" },
-                React.createElement("button", { onClick: openFile, disabled: uploading, className: "bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center" },
-                    React.createElement("svg", { className: "fill-green-700", height: "18", viewBox: "0 0 24 24", width: "18", xmlns: "http://www.w3.org/2000/svg" },
+            React.createElement("div", { className: "flex flex-row" },
+                React.createElement("a", { onClick: openFile, className: "bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer" },
+                    React.createElement("svg", { className: "fill-green-700 w-6 h-6", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" },
                         React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
                         React.createElement("path", { d: "M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" })),
-                    React.createElement("span", { className: "ml-2" }, uploading ? "Importando..." : "Importar Espécies")),
-                React.createElement("input", { disabled: uploading, onChange: function (e) { return handleImportEspecies(e); }, ref: fileRef, className: "cursor-pointer absolute block opacity-0 pin-r pin-t", type: "file", name: "fileRef" })),
+                    React.createElement("span", { className: "ml-2" }, uploading ? "Importando..." : "Importar")),
+                React.createElement("input", { disabled: uploading, onChange: handleImportEspecies, ref: fileRef, type: "file", className: "cursor-pointer absolute block opacity-0 pin-r pin-t", name: "fileRef" })),
+            React.createElement("div", null,
+                React.createElement("a", { onClick: handleImportTemplate, className: "bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer" },
+                    React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", strokeWidth: "1.5", stroke: "currentColor", className: "w-6 h-6" },
+                        React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" })),
+                    React.createElement("span", { className: "ml-2" }, "Modelo"))),
             React.createElement(Link_1.Link, { href: '/especie/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
         React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
@@ -309,4 +330,4 @@ var Especies = function (_a) {
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
                         }))))))));
 };
-exports["default"] = Especies;
+exports["default"] = Index;

@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../../components/Link"
-import { Loading } from "../../components/Loading"
-import { Input } from "../../components/atoms/input"
+import { Link } from "../Link"
+import { Loading } from "../Loading"
+import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
@@ -12,7 +12,7 @@ import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
+const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
@@ -180,7 +180,6 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
 
     return (
         <div>
-            {visible && (<Modal />)}
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
                 <div className="flex flex-row">
@@ -390,4 +389,4 @@ const Especies = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsP
     )
 }
 
-export default Especies
+export default Index
