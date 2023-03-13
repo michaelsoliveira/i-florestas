@@ -104,23 +104,15 @@ var ProjetoService = /** @class */ (function () {
                                     nome: data === null || data === void 0 ? void 0 : data.nome,
                                     active: data === null || data === void 0 ? void 0 : data.active,
                                     users_roles: {
-                                        connectOrCreate: {
-                                            where: {
-                                                user_id_role_id: {
-                                                    user_id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId,
-                                                    role_id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
+                                        create: {
+                                            users: {
+                                                connect: {
+                                                    id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
                                                 }
                                             },
-                                            create: {
-                                                users: {
-                                                    connect: {
-                                                        id: (data === null || data === void 0 ? void 0 : data.id_user) ? data === null || data === void 0 ? void 0 : data.id_user : userId
-                                                    }
-                                                },
-                                                roles: {
-                                                    connect: {
-                                                        id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
-                                                    }
+                                            roles: {
+                                                connect: {
+                                                    id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
                                                 }
                                             }
                                         }

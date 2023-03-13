@@ -57,7 +57,7 @@ var UserService = /** @class */ (function () {
     UserService.prototype.create = function (data) {
         var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var where, userExists, passwordHash, roleAdmin, dataRequest, user_1, userRoles, user, _b;
+            var where, userExists, passwordHash, roleAdmin, projeto, dataRequest, user_1, userRoles, user, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -91,6 +91,14 @@ var UserService = /** @class */ (function () {
                             })];
                     case 3:
                         roleAdmin = _c.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.create({
+                                data: {
+                                    nome: data === null || data === void 0 ? void 0 : data.projeto,
+                                    active: true
+                                }
+                            })];
+                    case 4:
+                        projeto = _c.sent();
                         dataRequest = {
                             username: data === null || data === void 0 ? void 0 : data.username,
                             email: data === null || data === void 0 ? void 0 : data.email,
@@ -99,26 +107,26 @@ var UserService = /** @class */ (function () {
                             provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
                             id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
                         };
-                        if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 5];
+                        if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 6];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { users_roles: {
                                         create: {
-                                            role_id: roleAdmin ? roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id : ''
+                                            role_id: roleAdmin ? roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id : '',
+                                            id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id
                                         }
                                     } })
                             })];
-                    case 4:
+                    case 5:
                         user_1 = _c.sent();
                         return [2 /*return*/, user_1];
-                    case 5:
+                    case 6:
                         userRoles = (_a = data.roles) === null || _a === void 0 ? void 0 : _a.map(function (role) {
                             return {
                                 role_id: role.value,
                                 id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         });
-                        console.log(userRoles);
-                        if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 7];
+                        if (!((data === null || data === void 0 ? void 0 : data.option) === 0)) return [3 /*break*/, 8];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
                                 data: __assign(__assign({}, dataRequest), { users_roles: {
                                         createMany: {
@@ -126,10 +134,10 @@ var UserService = /** @class */ (function () {
                                         }
                                     } })
                             })];
-                    case 6:
+                    case 7:
                         _b = _c.sent();
-                        return [3 /*break*/, 9];
-                    case 7: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
+                        return [3 /*break*/, 10];
+                    case 8: return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                             include: {
                                 users_roles: true
                             },
@@ -156,10 +164,10 @@ var UserService = /** @class */ (function () {
                                 }
                             }
                         })];
-                    case 8:
-                        _b = _c.sent();
-                        _c.label = 9;
                     case 9:
+                        _b = _c.sent();
+                        _c.label = 10;
+                    case 10:
                         user = _b;
                         return [2 /*return*/, user];
                 }
@@ -316,57 +324,47 @@ var UserService = /** @class */ (function () {
         });
     };
     UserService.prototype.findOne = function (id, projetoId) {
+        var _a, _b, _c;
         return __awaiter(this, void 0, Promise, function () {
-            var where, user, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var where, userRole, data;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        where = projetoId ? {
-                            AND: {
-                                id: id,
-                                users_roles: {
-                                    some: {
-                                        projeto: {
-                                            id: projetoId
-                                        },
-                                        user_id: id
+                        where = {
+                            AND: [
+                                {
+                                    users: {
+                                        id: id
+                                    }
+                                },
+                                {
+                                    projeto: {
+                                        id: projetoId
                                     }
                                 }
-                            }
-                        } : {
-                            id: id,
-                            users_roles: {
-                                some: {
-                                    user_id: id
-                                }
-                            }
+                            ]
                         };
-                        return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
+                        return [4 /*yield*/, prismaClient_1.prismaClient.userRole.findFirst({
                                 where: where,
                                 include: {
-                                    users_roles: {
-                                        include: {
-                                            roles: {
-                                                select: {
-                                                    id: true,
-                                                    name: true
-                                                }
-                                            }
+                                    users: true,
+                                    roles: {
+                                        select: {
+                                            id: true,
+                                            name: true
                                         }
                                     }
                                 }
                             })];
                     case 1:
-                        user = _a.sent();
+                        userRole = _d.sent();
                         data = {
-                            id: user === null || user === void 0 ? void 0 : user.id,
-                            email: user === null || user === void 0 ? void 0 : user.email,
-                            username: user === null || user === void 0 ? void 0 : user.username,
-                            roles: user === null || user === void 0 ? void 0 : user.users_roles.map(function (user_roles) {
-                                return __assign({}, user_roles.roles);
-                            })
+                            id: (_a = userRole === null || userRole === void 0 ? void 0 : userRole.users) === null || _a === void 0 ? void 0 : _a.id,
+                            email: (_b = userRole === null || userRole === void 0 ? void 0 : userRole.users) === null || _b === void 0 ? void 0 : _b.email,
+                            username: (_c = userRole === null || userRole === void 0 ? void 0 : userRole.users) === null || _c === void 0 ? void 0 : _c.username,
+                            roles: [userRole === null || userRole === void 0 ? void 0 : userRole.roles]
                         };
-                        if (!user)
+                        if (!(userRole === null || userRole === void 0 ? void 0 : userRole.users))
                             throw new Error("User not Found 0");
                         return [2 /*return*/, data];
                 }

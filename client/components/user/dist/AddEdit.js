@@ -148,6 +148,16 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     }
     var validationSchema = Yup.object().shape({
         isAddMode: Yup.boolean(),
+        projeto: Yup.string()
+            .when('id_projeto', {
+            is: function (id_projeto) {
+                if (id_projeto === '')
+                    return false;
+            },
+            then: Yup.string()
+                .required('Campo nome do projeto é obrigatório')
+                .min(6, 'O campo deve ter no mínimo 6 caracteres')
+        }),
         username: Yup.string()
             .when('option', {
             is: function (option) { return option === 0; },
@@ -271,6 +281,7 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                 password: '',
                 confirmPassword: '',
                 provider: '',
+                projeto: '',
                 id_provider: '',
                 isAddMode: isAddMode,
                 id_user: '',
@@ -328,6 +339,10 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
                                         onSelect(index);
                                     } }, el)); })))),
                             (option === 0) ? (react_1["default"].createElement("div", { className: session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col' },
+                                !projetoId && (react_1["default"].createElement("div", null,
+                                    react_1["default"].createElement("label", { className: styles.label, htmlFor: "projeto" }, "Projeto"),
+                                    react_1["default"].createElement(formik_1.Field, { className: styles.field, id: "projeto", name: "projeto", placeholder: "Nome do Projeto" }),
+                                    react_1["default"].createElement(formik_1.ErrorMessage, { className: 'text-sm text-red-500 mt-1', name: "email", component: "div" }))),
                                 react_1["default"].createElement("div", null,
                                     react_1["default"].createElement("label", { className: styles.label, htmlFor: "username" }, "Nome"),
                                     react_1["default"].createElement(formik_1.Field, { type: "text", className: styles.field, id: "username", name: "username", placeholder: "Michael" }),

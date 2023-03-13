@@ -40,6 +40,13 @@ class UserService {
             }
         })
 
+        const projeto = await prismaClient.projeto.create({
+            data: {
+                nome: data?.projeto,
+                active: true,
+            }
+        })
+
         const dataRequest = {
             username: data?.username,
             email: data?.email,
@@ -54,7 +61,8 @@ class UserService {
                     ...dataRequest,
                     users_roles: {
                         create: {
-                            role_id: roleAdmin ? roleAdmin?.id : ''
+                            role_id: roleAdmin ? roleAdmin?.id : '',
+                            id_projeto: projeto?.id
                         }
                     }
                 }
@@ -69,8 +77,6 @@ class UserService {
                 id_projeto: data?.id_projeto
             }
         })
-
-        console.log(userRoles)
 
         const user = data?.option === 0 ? await prismaClient.user.create({
             data: {
@@ -114,6 +120,7 @@ class UserService {
     }
 
     async update(id: string, data: any): Promise<UserPrisma> {
+        console.log(data)
         const userExists = await prismaClient.user.findFirst({
             where: {
                 id
@@ -153,8 +160,10 @@ class UserService {
             const [deleted, user] = await prismaClient.$transaction([
                 prismaClient.userRole.deleteMany({
                     where: {
-                        user_id: id,
-                        id_projeto: data?.id_projeto
+                        AND: [
+                            { user_id: id },
+                            { id_projeto: data?.id_projeto }
+                        ]
                     }
                 }),
                 prismaClient.user.update({
@@ -234,55 +243,43 @@ class UserService {
     }
 
     async findOne(id: string, projetoId?: string | undefined): Promise<any> {
-        const where = projetoId ? { 
-            AND: {
-                id,
-                users_roles: {
-                    some: {
-                        projeto: {
-                            id: projetoId
-                        },
-                        user_id: id
+        const where = {
+            AND: [
+                {
+                    users: {
+                        id
+                    },
+                },
+                {
+                    projeto: {
+                        id: projetoId
                     }
-                } 
-            }
-        } : {
-            id,
-            users_roles: {
-                some: {
-                    user_id: id
                 }
-            } 
+            ]
         }
 
-        const user = await prismaClient.user.findFirst({ 
+        const userRole = await prismaClient.userRole.findFirst({ 
             where,
             include: {
-                users_roles: {
-                    include: {
-                        roles: {
-                            select: {
-                                id: true,
-                                name: true
-                            }    
-                        }
-                    }
-                },
+                users: true,
+                roles: {
+                    select: {
+                        id: true,
+                        name: true
+                    }    
+                }
+                    
             },
         })
 
         const data = {
-            id: user?.id,
-            email: user?.email,
-            username: user?.username,
-            roles: user?.users_roles.map((user_roles: any) => {
-                return {
-                    ...user_roles.roles
-                }
-            })
+            id: userRole?.users?.id,
+            email: userRole?.users?.email,
+            username: userRole?.users?.username,
+            roles: [userRole?.roles]
         }
 
-        if (!user) throw new Error("User not Found 0")
+        if (!userRole?.users) throw new Error("User not Found 0")
 
         return data
     }

@@ -56,25 +56,17 @@ class ProjetoService {
                 nome: data?.nome,
                 active: data?.active,
                 users_roles: {
-                    connectOrCreate: {
-                        where: {
-                            user_id_role_id: {
-                                user_id: data?.id_user ? data?.id_user : userId,
-                                role_id: roleAdmin?.id
+                    create: {
+                        users: {
+                            connect: {
+                                id: data?.id_user ? data?.id_user : userId
                             }
                         },
-                        create: {
-                            users: {
-                                connect: {
-                                    id: data?.id_user ? data?.id_user : userId
-                                }
-                            },
-                            roles: {
-                                connect: {
-                                    id: roleAdmin?.id
-                                }
+                        roles: {
+                            connect: {
+                                id: roleAdmin?.id
                             }
-                        },
+                        }
                     }
                 }
             } 

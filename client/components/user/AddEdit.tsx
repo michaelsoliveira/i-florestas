@@ -55,7 +55,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
             let isLoaded = false
 
             if (!isLoaded) loadUsers()
-
             return () => {
                 isLoaded = true
             }
@@ -101,6 +100,15 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
         const validationSchema = Yup.object().shape({
             isAddMode: Yup.boolean(),
+            projeto: Yup.string()
+            .when('id_projeto', {
+                is: (id_projeto:string) => {
+                    if (id_projeto === '') return false
+                },
+                then: Yup.string()
+                    .required('Campo nome do projeto é obrigatório')
+                    .min(6, 'O campo deve ter no mínimo 6 caracteres')
+                }),
             username: Yup.string()
             .when('option', {
                 is: (option:any) => option===0,
@@ -225,6 +233,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
             isAddMode: boolean;
             id_user: string;
             id_projeto: string;
+            projeto: string;
             roles: any;
             option: number;
         }
@@ -239,6 +248,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         password: '',
                         confirmPassword: '',
                         provider: '',
+                        projeto: '',
                         id_provider: '',
                         isAddMode,
                         id_user: '',
@@ -312,6 +322,18 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         )}
                             {(option === 0) ? (
                                  <div className={session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col'}>
+                                    {!projetoId && (
+                                        <div>
+                                            <label className={styles.label} htmlFor="projeto">Projeto</label>
+                                            <Field
+                                                className={styles.field}
+                                                id="projeto"
+                                                name="projeto"
+                                                placeholder="Nome do Projeto"
+                                            />
+                                            <ErrorMessage className='text-sm text-red-500 mt-1' name="email" component="div" />
+                                        </div>
+                                    )}
                                     <div>
                                         <label className={styles.label} htmlFor="username">Nome</label>
                                         <Field type="text" className={styles.field} id="username" name="username" placeholder="Michael" />
