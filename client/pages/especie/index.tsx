@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
-import Especies from "@/components/especie/Index"
+import Index from "@/components/especie/Index"
 import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -104,7 +104,7 @@ const EspecieIndex = () => {
 
     return (
         <div>
-            <Especies
+            <Index
                 currentEspecies={currentEspecies}
                 loadEspecies={loadEspecies}
                 currentPage={currentPage}

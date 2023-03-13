@@ -1,4 +1,4 @@
-import Categoria from "@/components/categoria-especie/Categoria";
+import AddEdit from "@/components/categoria-especie/AddEdit";
 import withAuthentication from "components/withAuthentication";
 
-export default withAuthentication(Categoria)
+export default withAuthentication(AddEdit)
