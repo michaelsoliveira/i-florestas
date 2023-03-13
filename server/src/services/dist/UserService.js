@@ -176,7 +176,7 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var userExists, basicData, roles, user, _a, deleted, user;
+            var userExists, basicData, roles, user, _a, deleted, userRole;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findFirst({
@@ -202,35 +202,37 @@ var UserService = /** @class */ (function () {
                                 id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         }));
-                        if (!(data === null || data === void 0 ? void 0 : data.by_provider)) return [3 /*break*/, 2];
-                        user = prismaClient_1.prismaClient.user.update({
-                            where: {
-                                id: id
-                            },
-                            data: basicData
-                        });
-                        return [2 /*return*/, user];
-                    case 2: return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
-                            prismaClient_1.prismaClient.userRole.deleteMany({
-                                where: {
-                                    user_id: id,
-                                    id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
-                                }
-                            }),
-                            prismaClient_1.prismaClient.user.update({
+                        console.log(data);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                                 where: {
                                     id: id
                                 },
-                                data: (data === null || data === void 0 ? void 0 : data.roles.length) > 0 ? __assign(__assign({}, basicData), { users_roles: {
-                                        createMany: {
-                                            data: roles
-                                        }
-                                    } }) : basicData
-                            })
-                        ])];
+                                data: basicData
+                            })];
+                    case 2:
+                        user = _b.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
+                                prismaClient_1.prismaClient.userRole.deleteMany({
+                                    where: {
+                                        AND: [
+                                            { user_id: id },
+                                            { id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto }
+                                        ]
+                                    }
+                                }),
+                                prismaClient_1.prismaClient.userRole.createMany({
+                                    data: roles.map(function (role) {
+                                        return {
+                                            user_id: data === null || data === void 0 ? void 0 : data.id_user,
+                                            role_id: role === null || role === void 0 ? void 0 : role.role_id,
+                                            id_projeto: role === null || role === void 0 ? void 0 : role.id_projeto
+                                        };
+                                    })
+                                })
+                            ])];
                     case 3:
-                        _a = _b.sent(), deleted = _a[0], user = _a[1];
-                        return [2 /*return*/, user];
+                        _a = _b.sent(), deleted = _a[0], userRole = _a[1];
+                        return [2 /*return*/, userExists];
                 }
             });
         });

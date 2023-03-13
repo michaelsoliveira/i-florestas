@@ -120,7 +120,6 @@ class UserService {
     }
 
     async update(id: string, data: any): Promise<UserPrisma> {
-        console.log(data)
         const userExists = await prismaClient.user.findFirst({
             where: {
                 id
@@ -146,44 +145,38 @@ class UserService {
             }
         })
 
-        if (data?.by_provider) {
-            const user = prismaClient.user.update({
-                where: 
-                {
-                    id
-                },
-                data: basicData
-            })
+        console.log(data)
 
-            return user
-        } else {
-            const [deleted, user] = await prismaClient.$transaction([
-                prismaClient.userRole.deleteMany({
-                    where: {
-                        AND: [
-                            { user_id: id },
-                            { id_projeto: data?.id_projeto }
-                        ]
-                    }
-                }),
-                prismaClient.user.update({
-                    where: 
-                    {
-                        id
-                    },
-                    data: data?.roles.length > 0 ? {
-                        ...basicData,
-                        users_roles: {
-                            createMany: {
-                                data: roles,
-                            },
-                        }
-                    } : basicData
-                })
-            ])
+        const user = await prismaClient.user.update({
+            where: 
+            {
+                id
+            },
+            data: basicData
+        })
     
-            return user
-        }
+        const [deleted, userRole] = await prismaClient.$transaction([
+            prismaClient.userRole.deleteMany({
+                where: {
+                    AND: [
+                        { user_id: id },
+                        { id_projeto: data?.id_projeto }
+                    ]
+                }
+            }),
+            prismaClient.userRole.createMany({
+                data: roles.map((role: any) => {
+                    return {
+                        user_id: data?.id_user,
+                        role_id: role?.role_id,
+                        id_projeto: role?.id_projeto
+                    }
+                })
+            })
+        ])
+
+        return userExists
+        
     }
 
     async delete(id: string) {
