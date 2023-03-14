@@ -17,6 +17,7 @@ import { setUmf, UmfType } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import CSVTable from "../csv-table"
+import ProgressBar from "../Utils/ProgressBar"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -41,6 +42,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
     const [inventario, setInventario] = useState<any>()
+    const [completedLoad, setCompletedLoad] = useState(0)
 
     const dispatch = useAppDispatch()
 
@@ -231,7 +233,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         alertService.error(message)
                     }
                     setLoading(false)
-                    console.log(response)
                 })
             }
 
@@ -248,6 +249,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 const formData = new FormData()
                 formData.append('file', e.target?.files[0])
                 setLoading(true)
+                setCompletedLoad(20)
                 await client.post(`/arvore/load-csv?upaId=${upa?.id}`, formData)
                     .then((response: any) => {
                         const { error, message, arvores } = response.data
@@ -255,11 +257,14 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             alertService.success(message) 
                             setFilteredArvores(arvores.slice(1))
                             setLoading(false)
+                            setCompletedLoad(100)
                         } else {
                             setLoading(false)
+                            setCompletedLoad(0)
                             console.log(message)
                         }
                     }).catch(() => {
+                        setCompletedLoad(0)
                         setLoading(false)
                     })
             }
@@ -440,6 +445,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             />
                         </div>
                     </div>
+                    <ProgressBar completed={completedLoad} />
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
                             {checkedArvores?.length > 0 && (

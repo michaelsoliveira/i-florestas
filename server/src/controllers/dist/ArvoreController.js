@@ -59,6 +59,7 @@ var ArvoreController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         data = request.body;
+                        console.log(data);
                         return [4 /*yield*/, ArvoreService_1["default"].create(data)];
                     case 1:
                         arvore = _a.sent();

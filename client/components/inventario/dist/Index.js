@@ -57,6 +57,7 @@ var Select_1 = require("../Select");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
 var umfSlice_1 = require("../../store/umfSlice");
 var upaSlice_1 = require("../../store/upaSlice");
+var ProgressBar_1 = require("../Utils/ProgressBar");
 var Index = function (_a) {
     var currentArvores = _a.currentArvores, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loadArvores = _a.loadArvores;
     var _b = react_1.useState(currentArvores), filteredArvores = _b[0], setFilteredArvores = _b[1];
@@ -80,6 +81,7 @@ var Index = function (_a) {
     var _o = react_1.useState(), selectedUt = _o[0], setSelectedUt = _o[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var _p = react_1.useState(), inventario = _p[0], setInventario = _p[1];
+    var _q = react_1.useState(0), completedLoad = _q[0], setCompletedLoad = _q[1];
     var dispatch = hooks_1.useAppDispatch();
     var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
     var arvoreById = react_1.useCallback(function (id) {
@@ -311,7 +313,6 @@ var Index = function (_a) {
                             alert_1["default"].error(message);
                         }
                         setLoading(false);
-                        console.log(response);
                     })];
                 case 2:
                     _a.sent();
@@ -336,6 +337,7 @@ var Index = function (_a) {
                     formData = new FormData();
                     formData.append('file', (_b = e.target) === null || _b === void 0 ? void 0 : _b.files[0]);
                     setLoading(true);
+                    setCompletedLoad(20);
                     return [4 /*yield*/, client.post("/arvore/load-csv?upaId=" + (upa === null || upa === void 0 ? void 0 : upa.id), formData)
                             .then(function (response) {
                             var _a = response.data, error = _a.error, message = _a.message, arvores = _a.arvores;
@@ -343,12 +345,15 @@ var Index = function (_a) {
                                 alert_1["default"].success(message);
                                 setFilteredArvores(arvores.slice(1));
                                 setLoading(false);
+                                setCompletedLoad(100);
                             }
                             else {
                                 setLoading(false);
+                                setCompletedLoad(0);
                                 console.log(message);
                             }
                         })["catch"](function () {
+                            setCompletedLoad(0);
                             setLoading(false);
                         })];
                 case 1:
@@ -466,6 +471,7 @@ var Index = function (_a) {
                 React.createElement("div", { className: "w-full px-4" },
                     React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar UT:"),
                     React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
+            React.createElement(ProgressBar_1["default"], { completed: completedLoad }),
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
                 React.createElement("div", { className: "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg" },
                     (checkedArvores === null || checkedArvores === void 0 ? void 0 : checkedArvores.length) > 0 && (React.createElement("div", { className: "py-4" },
