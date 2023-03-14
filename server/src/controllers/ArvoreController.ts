@@ -4,6 +4,7 @@ import { Readable } from "stream";
 import readline from "readline";
 import arvoreService from "../services/ArvoreService";
 import { prismaClient } from "../database/prismaClient";
+import path from "path";
 
 export class ArvoreController {
     async store(request : Request, response: Response) : Promise<Response> { 
@@ -119,6 +120,19 @@ export class ArvoreController {
     async loadCSV(request: Request, response: Response) {
         const arvores: any[] = []
 
+        const fs = require("fs");
+        const { parse } = require("csv-parse");
+        fs.wr
+        fs.createReadStream(path.join(__dirname, '/', request.file?.originalname || ''))
+        .pipe(parse({ delimiter: ";", from_line: 2 }))
+        .on("data", function (row: any) {
+            arvores.push(row)
+        })
+        .on("end", function () {
+            console.log(arvores);
+        })
+
+        /*
         const { upaId }: any = request.query
         
         const upa = await prismaClient.upa.findUnique({
@@ -178,15 +192,17 @@ export class ArvoreController {
                 }
             }
             
+            */
             return response.json({
                 error: false,
                 arvores,
                 message: 'Árvores carregadas com sucesso!!!'
             })
-            
+        /*
         } catch (error) {
             return response.json(error.message)
         }
+        */
     }
 
     async importInventario(request: Request, response: Response) {
