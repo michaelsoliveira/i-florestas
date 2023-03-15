@@ -18,6 +18,7 @@ import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import CSVTable from "../csv-table"
 import ProgressBar from "../Utils/ProgressBar"
+import CsvImport from "../Utils/CsvImport"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -43,6 +44,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const { projeto } = useContext(ProjetoContext)
     const [inventario, setInventario] = useState<any>()
     const [completedLoad, setCompletedLoad] = useState(0)
+    const csvImport = CsvImport({delimiter: ";", encoding: "iso-8859-1"})
+    const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
 
     const dispatch = useAppDispatch()
 
@@ -219,22 +222,23 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const handleImportInventario = async () => {
         try {
-            setLoading(true)
-            if (filteredArvores.length === 0) {
-                alertService.error('Por favor, carregue primeiramente a planilha!')
-                setLoading(false)
-            } else {
-                await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
-                .then((response: any) => {
-                    const { error, message } = response.data
-                    if (!error) {
-                        alertService.success(message)
-                    } else {
-                        alertService.error(message)
-                    }
-                    setLoading(false)
-                })
-            }
+            console.log(dataImported)
+            // setLoading(true)
+            // if (filteredArvores.length === 0) {
+            //     alertService.error('Por favor, carregue primeiramente a planilha!')
+            //     setLoading(false)
+            // } else {
+            //     await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
+            //     .then((response: any) => {
+            //         const { error, message } = response.data
+            //         if (!error) {
+            //             alertService.success(message)
+            //         } else {
+            //             alertService.error(message)
+            //         }
+            //         setLoading(false)
+            //     })
+            // }
 
             
         } catch(e) {
@@ -246,27 +250,28 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         try {
             window.removeEventListener('focus', handleFocusBack)
             if (e.target?.value.length) {
-                const formData = new FormData()
-                formData.append('file', e.target?.files[0])
+                // const formData = new FormData()
+                // formData.append('file', e.target?.files[0])
                 setLoading(true)
                 setCompletedLoad(20)
-                await client.post(`/arvore/load-csv?upaId=${upa?.id}`, formData)
-                    .then((response: any) => {
-                        const { error, message, arvores } = response.data
-                        if (!error) {
-                            alertService.success(message) 
-                            setFilteredArvores(arvores.slice(1))
-                            setLoading(false)
-                            setCompletedLoad(100)
-                        } else {
-                            setLoading(false)
-                            setCompletedLoad(0)
-                            console.log(message)
-                        }
-                    }).catch(() => {
-                        setCompletedLoad(0)
-                        setLoading(false)
-                    })
+                
+                // await client.post(`/arvore/load-csv?upaId=${upa?.id}`, formData)
+                //     .then((response: any) => {
+                //         const { error, message, arvores } = response.data
+                //         if (!error) {
+                //             alertService.success(message) 
+                //             setFilteredArvores(arvores.slice(1))
+                //             setLoading(false)
+                //             setCompletedLoad(100)
+                //         } else {
+                //             setLoading(false)
+                //             setCompletedLoad(0)
+                //             console.log(message)
+                //         }
+                //     }).catch(() => {
+                //         setCompletedLoad(0)
+                //         setLoading(false)
+                //     })
             }
         } catch(e) {
             setLoading(false)
@@ -343,6 +348,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 <div className="flex flex-row">
                     <a
                         onClick={openFile}
+                        // onClick={handleOnSubmitImport}
                         className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
                     >
                         <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -353,8 +359,10 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     </a>
                     <input
                         disabled={uploading} 
-                        onChange={handleLoadInventario}
+                        // onChange={handleLoadInventario}
+                        onChange={handleOnChangeImport}
                         ref={fileRef}
+                        accept={".csv"}
                         type="file"
                         className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
                         name="fileRef"
@@ -363,7 +371,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 </div>
                 <div>
                     <a
-                        onClick={handleImportTemplate}
+                        onClick={handleOnSubmitImport}
                         className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">

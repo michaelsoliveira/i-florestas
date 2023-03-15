@@ -20,7 +20,6 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     const [sorted, setSorted] = useState(false)
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
-    const [users, setUsers] = useState<any>()
     const formRef = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
 
@@ -137,7 +136,6 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
 
     return (
         <div>
-            {/* {visible && type === 'updateUser' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
             
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <div>

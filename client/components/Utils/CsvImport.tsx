@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 type CsvImportType = {
-    delimiter: string | ';';
-    encoding: string | 'utf-8'
+    delimiter?: string;
+    encoding?: string;
 }
 
 const CsvImport = ({ delimiter, encoding }: CsvImportType) => {
@@ -11,7 +11,7 @@ const CsvImport = ({ delimiter, encoding }: CsvImportType) => {
 
     const fileReader = new FileReader();
 
-    const handleOnChange = (e: any) => {
+    const handleOnChangeImport = (e: any) => {
         setFile(e.target.files[0]);
     };
 
@@ -31,7 +31,7 @@ const CsvImport = ({ delimiter, encoding }: CsvImportType) => {
         setArray(array);
     };
 
-    const handleOnSubmit = (e: any) => {
+    const handleOnSubmitImport = (e: any) => {
         e.preventDefault();
 
         if (file) {
@@ -40,55 +40,59 @@ const CsvImport = ({ delimiter, encoding }: CsvImportType) => {
             csvFileToArray(data);
         };
 
-        fileReader.readAsText(file, "iso-8859-1");
+        fileReader.readAsText(file, encoding);
         }
     };
 
     const headerKeys = Object.keys(Object.assign({}, ...array));
 
-    return (
-        <div style={{ textAlign: "center" }}>
-          <h1>REACTJS CSV IMPORT EXAMPLE </h1>
-          <form>
-            <input
-              type={"file"}
-              id={"csvFileInput"}
-              accept={".csv"}
-              onChange={handleOnChange}
-            />
+    return {
+      headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported: array
+    }
+
+    // return (
+    //     <div style={{ textAlign: "center" }}>
+    //       <h1>REACTJS CSV IMPORT EXAMPLE </h1>
+    //       <form>
+    //         <input
+    //           type={"file"}
+    //           id={"csvFileInput"}
+    //           accept={".csv"}
+    //           onChange={handleOnChangeImport}
+    //         />
     
-            <button
-              onClick={(e) => {
-                handleOnSubmit(e);
-              }}
-            >
-              IMPORT CSV
-            </button>
-          </form>
+    //         <button
+    //           onClick={(e) => {
+    //             handleOnSubmitImport(e);
+    //           }}
+    //         >
+    //           IMPORT CSV
+    //         </button>
+    //       </form>
     
-          <br />
+    //       <br />
     
-          <table>
-            <thead>
-              <tr key={"header"}>
-                {headerKeys.map((key: any) => (
-                  <th key={key}>{key}</th>
-                ))}
-              </tr>
-            </thead>
+    //       <table>
+    //         <thead>
+    //           <tr key={"header"}>
+    //             {headerKeys.map((key: any) => (
+    //               <th key={key}>{key}</th>
+    //             ))}
+    //           </tr>
+    //         </thead>
     
-            <tbody>
-              {array.map((item: any) => (
-                <tr key={item.id}>
-                  {Object.values(item).map((val: any) => (
-                    <td key={val}>{val}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
+    //         <tbody>
+    //           {array.map((item: any) => (
+    //             <tr key={item.id}>
+    //               {Object.values(item).map((val: any) => (
+    //                 <td key={val}>{val}</td>
+    //               ))}
+    //             </tr>
+    //           ))}
+    //         </tbody>
+    //       </table>
+    //     </div>
+    //   );
     
 }
 
