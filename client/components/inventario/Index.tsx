@@ -441,7 +441,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             </div>
                         </div>
                         <div className="w-full px-4">
-                            <label htmlFor="procurar_ut">Pesquisar UT:</label>
+                            <label htmlFor="procurar_ut">Pesquisar Árvore:</label>
                             <Input
                                 label="Pesquisar UT"
                                 id="search"
