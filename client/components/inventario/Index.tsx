@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState, CSSProperties } from "react"
 import { Link } from "../Link"
 import { Loading } from "../Loading"
 import { Input } from "../atoms/input"
@@ -19,6 +19,32 @@ import { setUt } from "../../store/utSlice"
 import CSVTable from "../csv-table"
 import ProgressBar from "../Utils/ProgressBar"
 import CsvImport from "../Utils/CsvImport"
+import { useCSVReader } from 'react-papaparse'
+
+const styles = {
+    csvReader: {
+      display: 'flex',
+      flexDirection: 'row',
+      marginBottom: 10,
+    } as CSSProperties,
+    browseFile: {
+      width: '20%',
+    } as CSSProperties,
+    acceptedFile: {
+      border: '1px solid #ccc',
+      height: 45,
+      lineHeight: 2.5,
+      paddingLeft: 10,
+      width: '80%',
+    } as CSSProperties,
+    remove: {
+      borderRadius: 0,
+      padding: '0 20px',
+    } as CSSProperties,
+    progressBarBackgroundColor: {
+      backgroundColor: 'green',
+    } as CSSProperties,
+  };
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -46,6 +72,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [completedLoad, setCompletedLoad] = useState(0)
     const csvImport = CsvImport({delimiter: ";", encoding: "iso-8859-1"})
     const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
+    const { CSVReader } = useCSVReader()
 
     const dispatch = useAppDispatch()
 
@@ -341,11 +368,41 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         }
     };
 
+    const onUploadAccepted = (results: any) => {
+        console.log('---------------------------');
+        console.log(results);
+        console.log('---------------------------');
+    }
+
     return (
         <div>
+            <CSVReader onUploadAccepted={onUploadAccepted}>
+                    {({
+                        getRootProps,
+                        acceptedFile,
+                        ProgressBar,
+                        getRemoveFileProps,
+                    }: any) => (
+                        <>
+                        <div style={styles.csvReader}>
+                            <button type='button' {...getRootProps()} style={styles.browseFile}>
+                                Browse file
+                            </button>
+                            <div style={styles.acceptedFile}>
+                            {acceptedFile && acceptedFile.name}
+                            </div>
+                            <button {...getRemoveFileProps()} style={styles.remove}>
+                            Remove
+                            </button>
+                        </div>
+                        <ProgressBar style={styles.progressBarBackgroundColor} />
+                        </>
+                    )}
+                    </CSVReader>
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
                 <div className="flex flex-row">
+                
                     <a
                         onClick={openFile}
                         // onClick={handleOnSubmitImport}
