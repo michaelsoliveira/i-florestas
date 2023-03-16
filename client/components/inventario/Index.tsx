@@ -190,19 +190,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const deleteArvore = useCallback(async (id?: string) => {
         try {
-            client.delete(`/arvore/single/${id}`)
-                .then((response: any) => {
-                    const { error, message } = response.data
-                    if (!error) {
-                        alertService.success(message)
-                        loadArvores()
-                        hideModal()
-                    }
-                })
+           
         } catch (error) {
             console.log(error)
         }       
-    }, [client, hideModal, loadArvores])
+    }, [])
     
     const deleteSingleModal = useCallback((id?: string) => {
             const arvore = arvoreById(id)
@@ -220,13 +212,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const deleteArvores = async () => {
         setLoading(true)
         try {
-            await client.delete('/arvore/multiples', { data: { ids: checkedArvores} })
-                .then(() => {
-                    setCheckedArvores([])
-                    alertService.success('As espécies foram deletadas com SUCESSO!!!')
-                    loadArvores()
-                    hideModal()
-                })
+           
         setLoading(false)
         } catch (error) {
             console.log(error)
@@ -376,7 +362,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     return (
         <div>
-            <CSVReader onUploadAccepted={onUploadAccepted}>
+            
+            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+                <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
+
+                    <CSVReader onUploadAccepted={onUploadAccepted}>
                     {({
                         getRootProps,
                         acceptedFile,
@@ -384,37 +374,33 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         getRemoveFileProps,
                     }: any) => (
                         <>
-                        <div style={styles.csvReader}>
-                            <button type='button' {...getRootProps()} style={styles.browseFile}>
-                                Browse file
-                            </button>
-                            <div style={styles.acceptedFile}>
-                            {acceptedFile && acceptedFile.name}
-                            </div>
-                            <button {...getRemoveFileProps()} style={styles.remove}>
-                            Remove
-                            </button>
+                        <div className="flex flex-row">
+                            <a 
+                                {...getRootProps()} 
+                                className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
+                            >
+                                <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                                </svg>
+                                <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
+                            </a>
+                            
+                            
+                            { acceptedFile && (
+                                <>
+                                    <div>{acceptedFile.name}</div>
+                                    <button {...getRemoveFileProps()} style={styles.remove}>
+                                        Remove
+                                    </button>
+                                </>
+                            )}
                         </div>
                         <ProgressBar style={styles.progressBarBackgroundColor} />
                         </>
                     )}
-                    </CSVReader>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
-                <div className="flex flex-row">
-                
-                    <a
-                        onClick={openFile}
-                        // onClick={handleOnSubmitImport}
-                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
-                    >
-                        <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                        </svg>
-                        <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
-                    </a>
-                    <input
+                </CSVReader>
+                    {/* <input
                         disabled={uploading} 
                         // onChange={handleLoadInventario}
                         onChange={handleOnChangeImport}
@@ -423,12 +409,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         type="file"
                         className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
                         name="fileRef"
-                    />
+                    /> */}
             
-                </div>
+
                 <div>
                     <a
-                        onClick={handleOnSubmitImport}
+                        onClick={handleImportTemplate}
                         className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
