@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState, CSSProperties } from "react"
+import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState, CSSProperties, useMemo } from "react"
 import { Link } from "../Link"
 import { Loading } from "../Loading"
 import { Input } from "../atoms/input"
@@ -6,7 +6,6 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { useModalContext } from "contexts/ModalContext"
-import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 import { useAppDispatch, useAppSelector } from "store/hooks"
@@ -16,10 +15,11 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 import { setUmf, UmfType } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
-import CSVTable from "../csv-table"
 import ProgressBar from "../Utils/ProgressBar"
 import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
+import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
+import { Button } from "../Utils/Button"
 
 const styles = {
     csvReader: {
@@ -50,12 +50,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     
     const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
     const [selectedArvore, setSelectedArvore] = useState<any>()
-    const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
-    const fileRef = useRef(null) as any
-    const [sorted, setSorted] = useState(false)
-    const [checkedArvores, setCheckedArvores] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
@@ -68,13 +64,17 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
-    const [inventario, setInventario] = useState<any>()
-    const [completedLoad, setCompletedLoad] = useState(0)
+    const [columnData, setColumnData] = useState([])
+    const [rowData, setRowData] = useState([])
     const csvImport = CsvImport({delimiter: ";", encoding: "iso-8859-1"})
     const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
     const { CSVReader } = useCSVReader()
 
     const dispatch = useAppDispatch()
+      
+    const columns = useMemo(() => columnData, [columnData])
+    
+    const data = useMemo(() => rowData, [rowData])
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const arvoreById = useCallback((id?: string) => {
@@ -207,7 +207,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         defaultUmfsOptions()
         defaultUpasOptions()
         // setFilteredArvores(currentArvores)
-    }, [currentArvores, currentPage, defaultUmfsOptions, defaultUpasOptions])
+    }, [currentPage, defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
         setLoading(true)
@@ -236,58 +236,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const handleImportInventario = async () => {
         try {
             console.log(dataImported)
-            // setLoading(true)
-            // if (filteredArvores.length === 0) {
-            //     alertService.error('Por favor, carregue primeiramente a planilha!')
-            //     setLoading(false)
-            // } else {
-            //     await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, filteredArvores)
-            //     .then((response: any) => {
-            //         const { error, message } = response.data
-            //         if (!error) {
-            //             alertService.success(message)
-            //         } else {
-            //             alertService.error(message)
-            //         }
-            //         setLoading(false)
-            //     })
-            // }
-
-            
         } catch(e) {
 
-        }
-    }
-
-    const handleLoadInventario = async (e: any) => {
-        try {
-            window.removeEventListener('focus', handleFocusBack)
-            if (e.target?.value.length) {
-                // const formData = new FormData()
-                // formData.append('file', e.target?.files[0])
-                setLoading(true)
-                setCompletedLoad(20)
-                
-                // await client.post(`/arvore/load-csv?upaId=${upa?.id}`, formData)
-                //     .then((response: any) => {
-                //         const { error, message, arvores } = response.data
-                //         if (!error) {
-                //             alertService.success(message) 
-                //             setFilteredArvores(arvores.slice(1))
-                //             setLoading(false)
-                //             setCompletedLoad(100)
-                //         } else {
-                //             setLoading(false)
-                //             setCompletedLoad(0)
-                //             console.log(message)
-                //         }
-                //     }).catch(() => {
-                //         setCompletedLoad(0)
-                //         setLoading(false)
-                //     })
-            }
-        } catch(e) {
-            setLoading(false)
         }
     }
 
@@ -296,77 +246,34 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         window.removeEventListener('focus', handleFocusBack)
     }
 
-    const openFile = () => {
-        fileRef.current?.click()
-        setUploading(true)
-        window.addEventListener('focus', handleFocusBack)
-    }
+    const onUploadAccepted = (result: any) => {
+        const columns = result.data[0].map((col: any, index: any) => {
+            return {
+                Header: col,
+                accessor: col.split(" ").join("_").toLowerCase()
+            }
+        })
 
-    const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
-        const paginatedData = {
-            currentPage: 1,
-            perPage,
-            orderBy,
-            order,
-            search: evt.target.value
-        }
-        
-        setSearchInput(evt.target.value)
-        onPageChanged(paginatedData)
-    }
-
-    const sortArvores = (sortBy: string) => {
-        const sortedBy = sortBy.split(".")
-        const nElements = sortedBy.length
-        
-        let sortedArvores: any = []        
-        sortedArvores = filteredArvores.sort((a: any, b: any) => {
-            return  sorted
-                ? nElements > 1 
-                    ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
-                    : a[sortBy].toLowerCase().localeCompare(b[sortBy].toLowerCase())
-                : nElements > 1 
-                    ? b[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(a[sortedBy[0]][sortedBy[1]].toLowerCase()) 
-                    : b[sortBy].toLowerCase().localeCompare(a[sortBy].toLowerCase());
+        const rows = result.data.slice(1).map((row: any) => {
+            return row.reduce((acc: any, curr: any, index: any) => {
+                acc[columns[index].accessor] = curr;
+                return acc;
+            }, {})
         })
         
-        setSorted(!sorted)
-        setFilteredArvores(sortedArvores)    
-    }
-
-    const handleSelectArvore = (evt: any) => {
-        const arvoreId = evt.target.value
-
-        if (!checkedArvores.includes(arvoreId)) {
-            setCheckedArvores([...checkedArvores, arvoreId])
-        } else {
-            setCheckedArvores(checkedArvores.filter((checkedArvoreId: any) => {
-                return checkedArvoreId !== arvoreId
-            }))
-        }
-    }
-
-    const handleSelectAllArvore = () => {
-        if (checkedArvores.length < currentArvores.length) {
-            setCheckedArvores(currentArvores.map(({ id }: any) => id));
-        } else {
-            setCheckedArvores([]);
-        }
-    };
-
-    const onUploadAccepted = (results: any) => {
-        console.log('---------------------------');
-        console.log(results);
-        console.log('---------------------------');
+        setColumnData(columns)
+        setRowData(rows)
     }
 
     return (
         <div>
             
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
+                <div></div>
 
-                    <CSVReader onUploadAccepted={onUploadAccepted}>
+                    <CSVReader 
+                        onUploadAccepted={onUploadAccepted}
+                    >
                     {({
                         getRootProps,
                         acceptedFile,
@@ -374,43 +281,39 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         getRemoveFileProps,
                     }: any) => (
                         <>
-                        <div className="flex flex-row">
-                            <a 
-                                {...getRootProps()} 
-                                className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
-                            >
-                                <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                                </svg>
-                                <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
-                            </a>
-                            
-                            
-                            { acceptedFile && (
-                                <>
-                                    <div>{acceptedFile.name}</div>
-                                    <button {...getRemoveFileProps()} style={styles.remove}>
-                                        Remove
-                                    </button>
-                                </>
-                            )}
-                        </div>
-                        <ProgressBar style={styles.progressBarBackgroundColor} />
+                        <div className="lg:grid lg:grid-cols-3">
+                            <div className="">
+                                <a 
+                                    {...getRootProps()} 
+                                    className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold px-4 inline-flex align-middle hover:cursor-pointer"
+                                >
+                                    <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                                    </svg>
+                                    <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
+                                </a>
+                                </div>
+                                <div className="lg:grid lg:grid-cols-2 lg:gap-2">
+                                    
+                                    { acceptedFile && (
+                                        <>
+                                            <div className="inline-block align-baseline">{acceptedFile.name}</div>
+                                            <Button {...getRemoveFileProps()}
+                                                className="text-red-700 hover:cursor-pointer justify-center"
+                                            >
+                                                Remove
+                                            </Button>
+                                    </>
+                                    )}
+                                </div>
+                                <div className="col-span-3 pt-1">
+                                    <ProgressBar style={styles.progressBarBackgroundColor} />
+                                </div>
+                            </div>
                         </>
                     )}
-                </CSVReader>
-                    {/* <input
-                        disabled={uploading} 
-                        // onChange={handleLoadInventario}
-                        onChange={handleOnChangeImport}
-                        ref={fileRef}
-                        accept={".csv"}
-                        type="file"
-                        className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
-                        name="fileRef"
-                    /> */}
-            
+                </CSVReader>        
 
                 <div>
                     <a
@@ -432,6 +335,9 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 </a>
             </div>
                 <div className="flex flex-col p-6">
+                    <div className="pb-2">
+                        <h1 className="text-xl font-semibold">Importação do Inventário</h1>
+                    </div>
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
                         <div className="flex flex-col px-4 w-auto">
                             <div className="w-full">
@@ -449,7 +355,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
                                 <Select
@@ -483,289 +389,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 />
                             </div>
                         </div>
-                        <div className="w-full px-4">
-                            <label htmlFor="procurar_ut">Pesquisar Árvore:</label>
-                            <Input
-                                label="Pesquisar UT"
-                                id="search"
-                                name="search"
-                                onChange={(e: any) => handleSearch(e.target.value)}
-                                className=
-                                'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
-                                
-                            />
-                        </div>
+     
                     </div>
-                    <ProgressBar completed={completedLoad} />
-                    <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
-                        <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedArvores?.length > 0 && (
-                                <div className="py-4">
-                                    <button
-                                        className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={deleteMultModal}
-                                    >
-                                        Deletar
-                                    </button>
-                                </div>
-                            )}
-                        <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th>
-                                    <div className="flex justify-center">
-                                    <input  
-                                        checked={checkedArvores?.length === currentArvores?.length}
-                                        onChange={handleSelectAllArvore}                
-                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                    />
-                                    </div>
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                    onClick={() => sortArvores('ut')}
-                                >
-                                    <div className="flex flex-row w-full justify-between">
-                                        UT
-                                        {sorted
-                                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                                            : (<ChevronDownIcon className="w-5 h-5" />)
-                                        }
-                                    </div>   
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                    onClick={() => sortArvores('numero_arvore')}
-                                >
-                                    <div className="flex flex-row w-full justify-between">
-                                        Número
-                                        {sorted
-                                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                                            : (<ChevronDownIcon className="w-5 h-5" />)
-                                        }
-                                    </div>   
-                                </th>
-                                
-                                {(upa.tipo === 1) ? (
-                                    <>
-                                        <th
-                                            scope="col"
-                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('faixa')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Faixa
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>   
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('orient_x')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Orientação X
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>                 
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('coord_x')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Coord. X
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>   
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('coord_y')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Coord. Y
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>   
-                                        </th>
-                                    </>
-                                ) : (
-                                    <>
-                                        <th
-                                            scope="col"
-                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('lat_x')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Latitude
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>   
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                            onClick={() => sortArvores('long_y')}
-                                        >
-                                            <div className="flex flex-row w-full justify-between">
-                                                Longitude
-                                                {sorted
-                                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                                }
-                                            </div>   
-                                        </th>
-                                    </>
-                                )}
-                                <th
-                                    scope="col"
-                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                    onClick={() => sortArvores('especie')}
-                                >
-                                    <div className="flex flex-row w-full justify-between">
-                                        Espécie
-                                        {sorted
-                                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                                            : (<ChevronDownIcon className="w-5 h-5" />)
-                                        }
-                                    </div>   
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                    onClick={() => sortArvores('dap')}
-                                >
-                                    <div className="flex flex-row w-full justify-between">
-                                        DAP
-                                        {sorted
-                                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                                            : (<ChevronDownIcon className="w-5 h-5" />)
-                                        }
-                                    </div>   
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 tracking-wider cursor-pointer"
-                                    onClick={() => sortArvores('altura')}
-                                >
-                                    <div className="flex flex-row w-full justify-between">
-                                        Altura
-                                        {sorted
-                                            ? (<ChevronUpIcon className="w-5 h-5" />)
-                                            : (<ChevronDownIcon className="w-5 h-5" />)
-                                        }
-                                    </div>   
-                                </th>
-                                <th scope="col" className="relative w-1/8 px-6 py-3">
-                                    <span className="sr-only">Edit</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredArvores?.map((arvore: any, key: any) => (
-                                <tr key={key}>
-                                <td className="flex justify-center">
-                                <input                 
-                                        value={arvore?.ut}
-                                        checked={checkedArvores.includes(arvore?.id)}
-                                        onChange={handleSelectArvore}
-                                        id="arvoreId"
-                                        type="checkbox"
-                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                    />    
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                    <div className="text-sm text-gray-900">{arvore.ut}</div>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                    <div className="text-sm text-gray-900">{arvore.numero_arvore}</div>
-                                </td>
-                                {(upa.tipo === 1) ? (
-                                    <>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                            <div className="flex flex-col items-starter">
-                                                
-                                                <div className="text-gray-900">{arvore?.faixa}</div>
-                                            </div>
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                        <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.orient_x}</div>
-                                        </span>
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                        <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.coord_x}</div>
-                                        </span>
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                        <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.coord_y}</div>
-                                        </span>
-                                        </td>
-                                    </>
-                                ) : (
-                                    <>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                        <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.lat_x}</div>
-                                        </span>
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                        <span className="text-gray-900">
-                                            <div className="text-sm text-gray-500">{arvore.long_y}</div>
-                                        </span>
-                                        </td>
-                                    </>
-                                )}
-                                
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-xs text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.especie}</div>
-                                </span>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.dap}</div>
-                                </span>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-gray-900">
-                                    <div className="text-sm text-gray-500">{arvore.altura}</div>
-                                </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right flex flex-row items-center">
-                                <Link href={`/arvore/update/${arvore.id}`}>
-                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                                </Link>
-                                <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
-                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
-                                </Link>
-                                </td>
-                            </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+            <div className="mt-6">
+                <Table columns={columns} data={data} />
             </div>
-        </div>
-            
+        </div>    
     </div>
     )
 }

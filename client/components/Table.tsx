@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
 import { Button, PageButton } from './Utils/Button'
@@ -20,16 +20,16 @@ function GlobalFilter({
 
   return (
     <label className="flex gap-x-2 items-baseline">
-      <span className="text-gray-700">Search: </span>
+      <span className="text-gray-700">Pesquisar: </span>
       <input
         type="text"
-        className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="rounded-md px-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         value={value || ""}
         onChange={e => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder={`${count} records...`}
+        placeholder={`${count} registros...`}
       />
     </label>
   )
@@ -42,7 +42,7 @@ export function SelectColumnFilter({
 }: any) {
   // Calculate the options for filtering
   // using the preFilteredRows
-  const options = React.useMemo(() => {
+  const options = useMemo(() => {
     const options = new Set() as any
     preFilteredRows.forEach((row: any) => {
       options.add(row.values[id])
@@ -97,7 +97,7 @@ export function AvatarCell({ value, column, row }: any) {
   return (
     <div className="flex items-center">
       <div className="flex-shrink-0 h-10 w-10">
-        <Image className="h-10 w-10 rounded-full" src={row.original[column.imgAccessor]} alt="" />
+        <Image width="50" height="50" className="h-10 w-10 rounded-full" src={row.original[column.imgAccessor]} alt="" />
       </div>
       <div className="ml-4">
         <div className="text-sm font-medium text-gray-900">{value}</div>
