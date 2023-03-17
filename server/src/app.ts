@@ -29,6 +29,7 @@ var corsOptions = {
     optionsSuccessStatus: 200,
   }
 app.use(cors(corsOptions));
+app.use(express.json({limit: '50mb'}))
 // app.use(cors())
 app.use(cookieParser())
 app.use(express.json())

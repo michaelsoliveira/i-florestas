@@ -211,7 +211,14 @@ const Index = () => {
 
     const handleImportInventario = async () => {
         try {
-            
+            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
+                columns: columnData,
+                data: rowData
+                
+            })
+                .then((result: any) => {
+                    console.log(result)
+                })
         } catch(e) {
 
         }
