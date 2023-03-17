@@ -1,9 +1,5 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState, CSSProperties, useMemo } from "react"
+import { useCallback, useContext, useEffect, useState, CSSProperties, useMemo } from "react"
 import { Link } from "../Link"
-import { Loading } from "../Loading"
-import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
-import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { useModalContext } from "contexts/ModalContext"
 import { LoadingContext } from "contexts/LoadingContext"
@@ -12,10 +8,9 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { RootState } from "store"
 import { OptionType, Select } from "../Select"
 import { ProjetoContext } from "contexts/ProjetoContext"
-import { setUmf, UmfType } from "../../store/umfSlice"
+import { setUmf } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
-import ProgressBar from "../Utils/ProgressBar"
 import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
@@ -27,29 +22,13 @@ const styles = {
       flexDirection: 'row',
       marginBottom: 10,
     } as CSSProperties,
-    browseFile: {
-      width: '20%',
-    } as CSSProperties,
-    acceptedFile: {
-      border: '1px solid #ccc',
-      height: 45,
-      lineHeight: 2.5,
-      paddingLeft: 10,
-      width: '80%',
-    } as CSSProperties,
-    remove: {
-      borderRadius: 0,
-      padding: '0 20px',
-    } as CSSProperties,
     progressBarBackgroundColor: {
       backgroundColor: 'green',
     } as CSSProperties,
   };
 
-const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
+const Index = () => {
     
-    const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
-    const [selectedArvore, setSelectedArvore] = useState<any>()
     const [uploading, setUploading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
@@ -67,7 +46,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
     const csvImport = CsvImport({delimiter: ";", encoding: "iso-8859-1"})
-    const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
+    // const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
+    const [encoding, setEncoding] = useState('iso-8859-1')
     const { CSVReader } = useCSVReader()
 
     const dispatch = useAppDispatch()
@@ -77,9 +57,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const data = useMemo(() => rowData, [rowData])
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-    const arvoreById = useCallback((id?: string) => {
-        return currentArvores.find((arvore: any) => arvore.id === id)
-    }, [currentArvores])
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
@@ -197,9 +174,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     }, [])
     
     const deleteSingleModal = useCallback((id?: string) => {
-            const arvore = arvoreById(id)
-            showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número ${arvore?.numero_arvore}?`})
-        }, [arvoreById, showModal, deleteArvore])
+            showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número?`})
+        }, [])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
 
@@ -207,7 +183,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         defaultUmfsOptions()
         defaultUpasOptions()
         // setFilteredArvores(currentArvores)
-    }, [currentPage, defaultUmfsOptions, defaultUpasOptions])
+    }, [defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
         setLoading(true)
@@ -235,7 +211,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const handleImportInventario = async () => {
         try {
-            console.log(dataImported)
+            
         } catch(e) {
 
         }
@@ -248,9 +224,18 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const onUploadAccepted = (result: any) => {
         const columns = result.data[0].map((col: any, index: any) => {
-            return {
-                Header: col,
-                accessor: col.split(" ").join("_").toLowerCase()
+            const accessor = col.split(" ").join("_").toLowerCase()
+            if (accessor === 'ut' || accessor === 'especie') {
+                return {
+                    Header: col,
+                    accessor: col.split(" ").join("_").toLowerCase(),
+                    Filter: SelectColumnFilter
+                }
+            } else {
+                return {
+                    Header: col,
+                    accessor
+                }
             }
         })
 
@@ -272,6 +257,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                 <div></div>
 
                     <CSVReader 
+                        config={
+                            {
+                                encoding
+                            }
+                        }
                         onUploadAccepted={onUploadAccepted}
                     >
                     {({
@@ -281,7 +271,22 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         getRemoveFileProps,
                     }: any) => (
                         <>
-                        <div className="lg:grid lg:grid-cols-3">
+                        <div className="lg:grid lg:grid-cols-4">
+                            <div className="px-2 w-36">
+                                <select
+                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
+                                    value={encoding}
+                                    onChange={e => {
+                                        setEncoding(String(e.target.value))
+                                    }}
+                                >
+                                    {["iso-8859-1", "utf-8"].map(pageSize => (
+                                    <option key={pageSize} value={pageSize}>
+                                        {pageSize}
+                                    </option>
+                                    ))}
+                                </select>
+                            </div>
                             <div className="">
                                 <a 
                                     {...getRootProps()} 
@@ -295,19 +300,20 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 </a>
                                 </div>
                                 <div className="lg:grid lg:grid-cols-2 lg:gap-2">
-                                    
+                                   
                                     { acceptedFile && (
                                         <>
                                             <div className="inline-block align-baseline">{acceptedFile.name}</div>
                                             <Button {...getRemoveFileProps()}
-                                                className="text-red-700 hover:cursor-pointer justify-center"
+                                                className="text-red-700 hover:cursor-pointer justify-center w-24"
                                             >
                                                 Remove
                                             </Button>
                                     </>
                                     )}
+                                   
                                 </div>
-                                <div className="col-span-3 pt-1">
+                                <div className="col-span-4 pt-1">
                                     <ProgressBar style={styles.progressBarBackgroundColor} />
                                 </div>
                             </div>
@@ -339,24 +345,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         <h1 className="text-xl font-semibold">Importação do Inventário</h1>
                     </div>
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        <div className="flex flex-col px-4 w-auto">
-                            <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
-                            </div>
-                            <select
-                                value={perPage}
-                                onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
-                                id="perPage" 
-                                className="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            >
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
-                            {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
                                 <Select
                                     initialData={
@@ -372,7 +361,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     callback={selectUmf}
                                 />
                             </div>
-                            {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
                             <div>
                                 <Select
                                     initialData={

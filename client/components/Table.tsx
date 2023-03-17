@@ -19,11 +19,11 @@ function GlobalFilter({
   }, 200)
 
   return (
-    <label className="flex gap-x-2 items-baseline">
+    <label className="flex gap-x-2 items-baseline px-2">
       <span className="text-gray-700">Pesquisar: </span>
       <input
         type="text"
-        className="rounded-md px-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="rounded-md px-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
         value={value || ""}
         onChange={e => {
           setValue(e.target.value);
@@ -52,10 +52,10 @@ export function SelectColumnFilter({
 
   // Render a multi-select box
   return (
-    <label className="flex gap-x-2 items-baseline">
+    <div className="flex gap-x-2 items-baseline px-2">
       <span className="text-gray-700">{render("Header")}: </span>
       <select
-        className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+        className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
         name={id}
         id={id}
         value={filterValue}
@@ -70,7 +70,7 @@ export function SelectColumnFilter({
           </option>
         ))}
       </select>
-    </label>
+    </div>
   )
 }
 
@@ -161,7 +161,7 @@ function Table({ columns, data }: any) {
       </div>
       {/* table */}
       <div className="mt-4 flex flex-col">
-        <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-6">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
               <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
@@ -230,18 +230,18 @@ function Table({ columns, data }: any) {
       {/* Pagination */}
       <div className="py-3 flex items-center justify-between">
         <div className="flex-1 flex justify-between sm:hidden">
-          <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</Button>
-          <Button onClick={() => nextPage()} disabled={!canNextPage}>Next</Button>
+          <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Anterior</Button>
+          <Button onClick={() => nextPage()} disabled={!canNextPage}>Próximo</Button>
         </div>
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div className="flex gap-x-2 items-baseline">
             <span className="text-sm text-gray-700">
-              Page <span className="font-medium">{state.pageIndex + 1}</span> of <span className="font-medium">{pageOptions.length}</span>
+              Página <span className="font-medium">{state.pageIndex + 1}</span> de <span className="font-medium">{pageOptions.length}</span>
             </span>
-            <label>
-              <span className="sr-only">Items Per Page</span>
+            <div className='inline-flex items-baseline text-sm'>
+              <span className='w-36 font-medium'>por Página</span>
               <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
                 value={state.pageSize}
                 onChange={e => {
                   setPageSize(Number(e.target.value))
@@ -249,11 +249,11 @@ function Table({ columns, data }: any) {
               >
                 {[5, 10, 20].map(pageSize => (
                   <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
+                    {pageSize}
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
           </div>
           <div>
             <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
@@ -262,21 +262,21 @@ function Table({ columns, data }: any) {
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
               >
-                <span className="sr-only">First</span>
+                <span className="sr-only">Primeiro</span>
                 <ChevronDoubleLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </PageButton>
               <PageButton
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
-                <span className="sr-only">Previous</span>
+                <span className="sr-only">Anterior</span>
                 <ChevronLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </PageButton>
               <PageButton
                 onClick={() => nextPage()}
                 disabled={!canNextPage
                 }>
-                <span className="sr-only">Next</span>
+                <span className="sr-only">Próximo</span>
                 <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </PageButton>
               <PageButton
@@ -284,7 +284,7 @@ function Table({ columns, data }: any) {
                 onClick={() => gotoPage(pageCount - 1)}
                 disabled={!canNextPage}
               >
-                <span className="sr-only">Last</span>
+                <span className="sr-only">Último</span>
                 <ChevronDoubleRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </PageButton>
             </nav>
