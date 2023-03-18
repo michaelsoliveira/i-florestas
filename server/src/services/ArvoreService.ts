@@ -114,45 +114,8 @@ class ArvoreService {
         
     }
 
-    async createByImport(data: any, upaId?: string): Promise<Arvore> {
+    async createByImport(data: any, upa?: any): Promise<any> {
         try {
-            const ut = await prismaClient.ut.findFirst({
-                where: {
-                    AND: {
-                        numero_ut: parseInt(data?.ut),
-                        id_upa: upaId
-                    }
-                }
-            }) as any
-            console.log(ut)
-
-            const upa = await prismaClient.upa.findUnique({
-                where: {
-                    id: upaId
-                }
-            })
-
-            const especie = await prismaClient.especie.findFirst({
-                where: {
-                    nome_orgao: data?.especie
-                }
-            })
-
-            const arvoreExists = await prismaClient.arvore.findFirst({ 
-                where: { 
-                    AND: {
-                        numero_arvore: parseInt(data.numero_arvore),
-                        ut: {
-                            id: ut?.id
-                        }
-                    }
-                } 
-            })
-    
-            if (arvoreExists) {
-                throw new Error('Já existe uma árvore cadastrada com este número')
-            }
-
             const eqVolume = await prismaClient.equacaoVolume.findFirst({
                 where: {
                     upa: {
@@ -162,7 +125,7 @@ class ArvoreService {
                     }
                 }
             }) as any
-    
+
             const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
     
             let scope = {
@@ -171,53 +134,58 @@ class ArvoreService {
             }
     
             const volume = math.evaluate(eqVolume?.expressao, scope)
-    
-            const preparedData = upa?.tipo === 1 ? {
-                numero_arvore: parseInt(data?.numero_arvore),
-                faixa: parseInt(data?.faixa),
-                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
-                altura: parseFloat(data?.altura),
-                fuste: parseInt(data?.fuste),
-                orient_x: data?.orient_x,
-                volume,
-                lat_x: parseFloat(data?.lat_x),
-                long_y: parseFloat(data?.long_y),
-                ut: {
-                    connect: {
-                        id: ut?.id
-                    }
-                },
-                especie: {
-                    connect: {
-                        id: especie?.id
-                    }
-                }
-            } : {
-                numero_arvore: parseInt(data?.numero_arvore),
-                dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
-                altura: parseFloat(data?.altura),
-                fuste: parseInt(data?.fuste),
-                ponto_gps: parseInt(data?.ponto_gps),
-                lat_x: parseFloat(data?.lat_x),
-                long_y: parseFloat(data?.long_y),
-                volume,
-                ut: {
-                    connect: {
-                        id: ut?.id
-                    }
-                },
-                especie: {
-                    connect: {
-                        id: especie?.id
-                    }
-                }
-            }
-    
-            const arvore = await prismaClient.arvore.create({
-                data: preparedData
-            })
+            await prismaClient.arvore.createMany({
+                data: data.map(async (arv: any) => {
+                    const especie = await prismaClient.especie.findFirst({
+                        where: {
+                            nome_orgao: data?.especie
+                        }
+                    })
 
-            return arvore
+                    const ut = await prismaClient.ut.findFirst({
+                        where: {
+                            AND: [
+                                    { numero_ut: parseInt(data?.ut) },
+                                    { id_upa: upa?.id }
+                                ]
+                        }
+                    }) as any
+
+                    const preparedData = upa?.tipo === 1 ? {
+                        faixa: parseInt(arv?.faixa),
+                        orient_x: arv?.orient_x,
+                    } : {
+                        ponto_gps: parseInt(arv?.ponto_gps),
+                        lat_x: parseFloat(arv?.lat_x),
+                        long_y: parseFloat(arv?.long_y),
+                    }
+
+                    return {
+                        numero_arvore: parseInt(arv?.numero_arvore),
+                        dap: arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap),
+                        altura: parseFloat(arv?.altura),
+                        fuste: parseInt(arv?.fuste),
+                        volume,
+                        ...preparedData,
+                        ut: {
+                            connect: {
+                                id: ut?.id
+                            }
+                        },
+                        especie: {
+                            connect: {
+                                id: especie?.id
+                            }
+                        }
+                    }
+                })
+            })
+    
+            // const arvore = await prismaClient.arvore.create({
+            //     data: preparedData
+            // })
+
+            // return arvore
         } catch(error) {
             console.log(error?.message)
             return error

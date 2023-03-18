@@ -7,7 +7,7 @@ export class ArvoreController {
     async store(request : Request, response: Response) : Promise<Response> { 
         try {    
             const data = request.body
-            console.log(data)
+
             const arvore = await arvoreService.create(data)
             return response.json({
                 error: false,
@@ -114,94 +114,6 @@ export class ArvoreController {
         }
     }
 
-    async loadCSV(request: Request, response: Response) {
-        const arvores: any[] = []
-
-        const fs = require("fs");
-        const { parse } = require("csv-parse");
-        fs.wr
-        fs.createReadStream(path.join(__dirname, '/', request.file?.originalname || ''))
-        .pipe(parse({ delimiter: ";", from_line: 2 }))
-        .on("data", function (row: any) {
-            arvores.push(row)
-        })
-        .on("end", function () {
-            console.log(arvores);
-        })
-
-        /*
-        const { upaId }: any = request.query
-        
-        const upa = await prismaClient.upa.findUnique({
-            where: {
-                id: upaId
-            }
-        })
-
-        try {
-            if (request?.file === undefined) {
-                return response.status(400).send("Please upload a CSV file!");
-            }
-
-            const readableFile = new Readable().setEncoding('utf8')
-            readableFile.push(request.file?.buffer)
-            readableFile.push(null)
-
-            const arvoresLine = readline.createInterface({
-                input: readableFile
-            })
-
-            if (upa?.tipo === 0) {
-                for await (const line of arvoresLine) {
-                    const arvoreLineSplit = line.split(";")
-                    arvores.push({
-                        ut: arvoreLineSplit[0],
-                        numero_arvore: arvoreLineSplit[1],
-                        especie: arvoreLineSplit[2],
-                        dap: arvoreLineSplit[3],
-                        altura: arvoreLineSplit[4],
-                        fuste: arvoreLineSplit[5],
-                        ponto_gps: arvoreLineSplit[6],
-                        lat_x: arvoreLineSplit[7],
-                        long_y: arvoreLineSplit[8],
-                        obs: arvoreLineSplit[9],
-                        comentario: arvoreLineSplit[10],
-                    })
-                }
-            } else {
-                for await (const line of arvoresLine) {
-                    const arvoreLineSplit = line.split(";")
-                    
-                    arvores.push({
-                        ut: arvoreLineSplit[0],
-                        faixa: arvoreLineSplit[1],
-                        numero_arvore: arvoreLineSplit[2],
-                        especie: arvoreLineSplit[3],
-                        dap: arvoreLineSplit[4],
-                        altura: arvoreLineSplit[5],
-                        fuste: arvoreLineSplit[6],
-                        orient_x: arvoreLineSplit[7],
-                        coord_x: arvoreLineSplit[8],
-                        coord_y: arvoreLineSplit[9],
-                        obs: arvoreLineSplit[10],
-                        comentario: arvoreLineSplit[11],
-                    })
-                }
-            }
-            
-            */
-            return response.json({
-                error: false,
-                arvores,
-                message: 'Árvores carregadas com sucesso!!!'
-            })
-        /*
-        } catch (error) {
-            return response.json(error.message)
-        }
-        */
-    }
-
     async importInventario(request: Request, response: Response) {
         const data = request.body
         const { data: importedData } = data
@@ -215,8 +127,6 @@ export class ArvoreController {
 
         const checkData = Object.keys(data.columns)
 
-        console.log(data.columns, importedData)
-
         try {
 
             if (checkData.includes('faixa') && upa?.tipo === 0) {
@@ -225,10 +135,9 @@ export class ArvoreController {
                     message: 'Inventário diferente do tipo da UPA'
                 })
             }
-        
-            for (let arvore of importedData) {
-                await arvoreService.createByImport(arvore, upaId)
-            }
+
+            await arvoreService.createByImport(importedData, upa)
+            
 
             return response.json({
                 error: false,

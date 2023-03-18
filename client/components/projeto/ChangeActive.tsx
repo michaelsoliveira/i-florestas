@@ -89,7 +89,6 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 nome: data?.nome
             }))
 
-            console.log(data?.upa)
             if (data?.upa.length > 0) {
                 data?.upa.map((upa: any) => {
                     dispath(setUpa({
