@@ -240,37 +240,37 @@ async function main() {
     }
   })
 
+    const projeto = await prisma.projeto.create({
+      data: {
+        nome: 'Projeto Inicial'
+      }
+    })
+
     const user = await prisma.user.create({
       data: {
             username: 'michaelsoliveira',
             email: 'michaelsoliveira@gmail.com',
             password: await bcrypt.hash('Fms237691', 10),
+            id_projeto_active: projeto?.id,
+            users_roles: {
+              create: [
+                  {
+                      projeto: {
+                          connect: {
+                              id: projeto?.id
+                          }
+                      },
+                      roles: {
+                        connect: {
+                          id: roleAdmin?.id
+                        }
+                      }
+                  }
+              ]
+            }
         },
     })
     console.log(`Created user admin with id: ${user.id}`)
-
-    const projeto = await prisma.projeto.create({
-      data: {
-        nome: 'Projeto Inicial',
-        active: true,
-        users_roles: {
-          create: [
-              {
-                  users: {
-                      connect: {
-                          id: user?.id
-                      }
-                  },
-                  roles: {
-                    connect: {
-                      id: roleAdmin?.id
-                    }
-                  }
-              }
-          ]
-        }
-      }
-    })
 
     const detentor = await prisma.pessoa.create({
       include: {

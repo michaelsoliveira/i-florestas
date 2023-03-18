@@ -229,10 +229,9 @@ model Projeto {
   equacao_Volume           EquacaoVolume[]
   especie                  Especie[]
   pessoa                   Pessoa[]
-  // projeto_users            ProjetoUser[]
   umf                      Umf[]
   users_roles              UserRole[]
-  active                   Boolean @default(false)
+  users                    User[]
 
   @@map("projeto")
 }
@@ -323,6 +322,8 @@ model User {
   sessions          Session[]
   users_permissions UserPermission[]
   users_roles       UserRole[]
+  id_projeto_active String    @db.Uuid
+  projeto           Projeto   @relation(fields: [id_projeto_active], references: [id], onDelete: Cascade)
 
   @@map("users")
 }

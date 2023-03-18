@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
 import { Button, PageButton } from './Utils/Button'
@@ -13,7 +13,7 @@ function GlobalFilter({
   setGlobalFilter,
 }: any) {
   const count = preGlobalFilteredRows.length
-  const [value, setValue] = React.useState(globalFilter)
+  const [value, setValue] = useState(globalFilter)
   const onChange = useAsyncDebounce((value: any) => {
     setGlobalFilter(value || undefined)
   }, 200)
@@ -63,7 +63,7 @@ export function SelectColumnFilter({
           setFilter(e.target.value || undefined)
         }}
       >
-        <option value="">All</option>
+        <option value="">Todos</option>
         {options.map((option, i) => (
           <option key={i} value={option}>
             {option}
