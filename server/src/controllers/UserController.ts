@@ -212,7 +212,7 @@ export class UserController {
 
     async findAll(request: Request, response: Response) {
         try {
-            let users = await userService.getAllByProjeto()
+            let users = await userService.getAllByProjeto(request.user?.id)
 
             return response.json(users)
         } catch(error) {

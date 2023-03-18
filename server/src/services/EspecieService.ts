@@ -2,6 +2,7 @@ import { Especie } from "../entities/Especie";
 import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
 import { Prisma } from "@prisma/client";
+import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
     nome: string;
@@ -95,6 +96,7 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
+        const projeto = getProjeto(userId) as any
         const { perPage, page, order, search, orderBy } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -112,25 +114,17 @@ class EspecieService {
         }
         const where = search ?
             {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                AND: [{
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: search }
+                    },
+                    {
                     projeto: {
-                        active: true,
-                        users_roles: {
-                            some: {
-                                user_id: userId,
-                            }
-                        }
+                        id: projeto?.id
                     }
-                }
+                }]
             } : {
                 projeto: {
-                    active: true,
-                    users_roles: {
-                        some: {
-                            user_id: userId,
-                        }
-                    }
+                    id: projeto?.id
                 }
             }
 

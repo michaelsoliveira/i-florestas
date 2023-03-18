@@ -31,15 +31,15 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 const response = await client.get(`/projeto`)
                 const { projetos, error, message } = response.data
                 
-                const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
+                const { data: { projeto } } = await client.get('/projeto/active/get')
                 
                 setSelectedProjeto({
-                    label: projetoAtivo?.nome,
-                    value: projetoAtivo?.id
+                    label: projeto?.nome,
+                    value: projeto?.id
                 })
 
                 setProjetos(projetos)
-                setProjeto(projetoAtivo)
+                setProjeto(projeto)
                 if (error) {
                     console.log(message)
                 }
@@ -88,14 +88,24 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 id: data?.id,
                 nome: data?.nome
             }))
-            console.log(data?.upa)
-            data?.upa &&
-            dispath(setUpa({
-                id: data?.upa[0].id,
-                descricao: data?.upa[0].descricao,
-                tipo: data?.upa[0].tipo
-            }))
 
+            console.log(data?.upa)
+            if (data?.upa.length > 0) {
+                data?.upa.map((upa: any) => {
+                    dispath(setUpa({
+                        id: upa.id,
+                        descricao: upa.descricao,
+                        tipo: upa.tipo
+                    })) 
+                })
+            } else {
+                dispath(setUpa({
+                    id: '',
+                    descricao: 'NEHUMA UPA CADASTRADA',
+                    tipo: 0
+                }))
+            }
+                
             setProjeto(projetoResponse?.projeto)
             hideModal()
         }

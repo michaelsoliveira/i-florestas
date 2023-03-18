@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import especieService from "../services/EspecieService";
 import { Readable } from 'stream'
 import readline from "readline";
-import { getProjeto } from "../services/ProjetoService";
 
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {

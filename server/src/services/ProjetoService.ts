@@ -12,17 +12,16 @@ export interface ProjetoType {
     id_role: string;
 }
 
-export const getProjeto = async (userId: string) => {
+export const getProjeto = async (userId?: string) => {
+    const user = await prismaClient.user.findUnique({
+        where: {
+            id: userId
+        }
+    })
+    
     return await prismaClient.projeto.findFirst({
         where: {
-            AND: {
-                active: true,
-                users_roles: {
-                    some: {
-                        user_id: userId
-                    }
-                },
-            }
+            id: user?.id_projeto_active    
         }
     })
 }
@@ -54,7 +53,6 @@ class ProjetoService {
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.nome,
-                active: data?.active,
                 users_roles: {
                     create: {
                         users: {
@@ -72,35 +70,59 @@ class ProjetoService {
             } 
         })
 
+        if (data?.active) {
+            await prismaClient.user.update({
+                data: {
+                    id_projeto_active: projeto?.id
+                },
+                where: {
+                    id: userId
+                }
+            })
+        }
+
         return projeto
     }
 
     async update(id: string, data: ProjetoType, userId: string): Promise<Projeto> {
-        
+
         const projeto = await prismaClient.projeto.update({
             where: {
                 id
             },
             data: {
-                nome: data?.nome,
-                active: data?.active
+                nome: data?.nome
             }
         })
+
+        if (data?.active) {
+            await prismaClient.user.update({
+                data: {
+                    id_projeto_active: id
+                },
+                where: {
+                    id: userId
+                }
+            })
+        }
 
         return projeto
     }
 
     async changeActive(projetoId: string, userId: string): Promise<Projeto> {
-        const projeto = await prismaClient.projeto.update({
+        const user = await prismaClient.user.update({
+            include: {
+                projeto: true
+            },
             data: {
-                active: true
+                id_projeto_active: projetoId
             },
             where: {
-                id: projetoId
+                id: userId
             }
         })
 
-        return projeto
+        return user?.projeto
     }
 
     async getDefaultData(projetoId: string | any, userId: string) : Promise<any> {
@@ -130,8 +152,7 @@ class ProjetoService {
     async delete(id: string): Promise<void> {
         await prismaClient.projeto.update({
             data: {
-                excluido: true,
-                active: false
+                excluido: true
             },
             where: {
                 id
@@ -341,30 +362,17 @@ class ProjetoService {
     }
 
     async getActive(id: string): Promise<any> {
-        const user = await prismaClient.userRole.findFirst({
-            include: {
-                projeto: {
-                    include: {
-                        pessoa: true
-                    }
-                },
+        const user = await prismaClient.user.findUnique({
+            where: { id }
+        })
 
-            },
+        const projetoAtivo = await prismaClient.projeto.findUnique({
             where: {
-                AND: [
-                    {
-                        projeto: {
-                            excluido: false,
-                            active: true
-                        } 
-                    },
-                    { user_id: id }
-                ]
-                
+                id: user?.id_projeto_active
             }
         })
 
-        return user?.projeto
+        return projetoAtivo
     }
 }
 

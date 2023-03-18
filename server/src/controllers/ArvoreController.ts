@@ -1,7 +1,4 @@
 import { Request, Response } from "express";
-import { getProjeto } from "../services/ProjetoService";
-import { Readable } from "stream";
-import readline from "readline";
 import arvoreService from "../services/ArvoreService";
 import { prismaClient } from "../database/prismaClient";
 import path from "path";

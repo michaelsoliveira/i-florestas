@@ -53,9 +53,9 @@ const Projetos = () => {
             const response = await client.get(`projeto`)
             const { projetos, error, message } = response.data
             
-            const projetoAtivo = projetos ? projetos.find((projeto: any) => projeto.active === true) : {}
+            const { data: { projeto } } = await client.get('/projeto/active/get')
 
-            setProjeto(projetoAtivo)
+            setProjeto(projeto)
             
             if (error) {
                 console.log(message)

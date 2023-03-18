@@ -81,9 +81,7 @@ export class CategoriaEspecieController {
     }
 
     async search(request: Request, response: Response) {
-        const { nome } = request.query
-        
-        const categorias = nome ? await categoriaService.search(nome) : await categoriaService.getAll(request.user?.id, request.query)
+        const categorias = await categoriaService.getAll(request.user?.id, request.query)
 
         return response.json(categorias)
     }

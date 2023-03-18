@@ -18,14 +18,18 @@ class UpaService {
         
         const upaExists = await prismaClient.upa.findFirst({
             where: {
-                AND: {
-                    descricao: data.descricao,
-                    umf: {
-                        projeto: {
-                            id: projeto?.id
+                AND: [
+                        {
+                            descricao: data.descricao
+                        },
+                        {
+                            umf: {
+                            projeto: {
+                                id: projeto?.id
+                            }
                         }
                     }
-                }
+                ]
             }
         })
         
@@ -123,20 +127,22 @@ class UpaService {
         const projeto = await getProjeto(userId)
 
         const where = {
-            OR: {
                 descricao: {
                     mode: Prisma.QueryMode.insensitive,
                     contains: search ? search : ''
-                }
-            },
-            AND: {
-                id_umf: umf,
-                umf: {
-                    projeto: {
-                        id: projeto?.id
+                },
+                AND: [
+                {
+                    id_umf: umf
+                },
+                    {
+                        umf: {
+                        projeto: {
+                            id: projeto?.id
+                        }
                     }
-                }
-            }   
+                }   
+            ]
         }
         
         const [upas, total] = await prismaClient.$transaction([
@@ -153,7 +159,7 @@ class UpaService {
                     umf: true
                 }
             }),
-            prismaClient.upa.count()
+            prismaClient.upa.count({ where })
         ])
 
         return {
@@ -178,7 +184,7 @@ class UpaService {
         const projeto = await getProjeto(userId)
         const upas = await prismaClient.upa.findMany({
             where: {
-                AND: {
+                AND: [{
                     umf: {
                         projeto: {
                             id: projeto?.id
@@ -188,7 +194,7 @@ class UpaService {
                         mode: Prisma.QueryMode.insensitive,
                         contains: q
                     }
-                }
+                }]
             }
         })
         return upas

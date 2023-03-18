@@ -165,28 +165,30 @@ class UtService {
 
         const where = search ? 
                 {
-                    AND: {
+                    AND: [{
                         upa: {
                             umf: {
                                 projeto: {
                                     id: projeto?.id
                                 }
                             }
-                        },
-                        id_upa: upa,
-                        numero_ut: parseInt(search)
-                    }
+                        }
+                    },
+                    {   id_upa: upa },
+                    { numero_ut: parseInt(search)
+                    }]
             } : {
-                AND: {
+                AND: [{
                     upa: {
                         umf: {
                             projeto: {
                                 id: projeto?.id
                             }
                         }
-                    },
-                    id_upa: upa
-                }
+                    }
+                },
+                {    id_upa: upa}
+            ]
             }
                     
         const [uts, total] = await prismaClient.$transaction([
@@ -201,7 +203,7 @@ class UtService {
                     upa: false
                 }
             }),
-            prismaClient.ut.count()
+            prismaClient.ut.count({ where })
         ])
 
         return {

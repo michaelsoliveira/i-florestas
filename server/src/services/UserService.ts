@@ -13,14 +13,17 @@ class UserService {
 
     async create(data: any): Promise<UserPrisma> {
         const where =  data?.id_projeto ? {
-            AND: {
-                email: data?.email,
+            AND: [
+                {
+                    email: data?.email
+                },
+                {
                 users_roles: {
                     some: {
                         id_projeto: data?.id_projeto
                     }
                 }
-            }
+            }]
         } : {
             email: data?.email
         }
@@ -43,7 +46,6 @@ class UserService {
         const projeto = await prismaClient.projeto.create({
             data: {
                 nome: data?.projeto,
-                active: true,
             }
         })
 
@@ -53,7 +55,8 @@ class UserService {
             password: passwordHash,
             image: data?.image,
             provider: data?.provider ? data?.provider : 'local',
-            id_provider: data?.id_provider ? data?.id_provider : ''
+            id_provider: data?.id_provider ? data?.id_provider : '',
+            id_projeto_active: projeto?.id
         }
         if (!data?.id_projeto) {
             const user = await prismaClient.user.create({
@@ -97,14 +100,6 @@ class UserService {
             data: {
                 users_roles: {
                     createMany: {
-                        // where: {
-                        //     user_id: data?.id_user,
-                        //     id_projeto: data?.id_projeto,
-                        //     role_id: {
-                        //         in: userRoles.map((role: any) => { return role.role_id })
-                        //     }
-                            
-                        // },
                         data: userRoles.map((role: any) => { 
                             return { 
                                 id_projeto: role.id_projeto, 
@@ -213,20 +208,22 @@ class UserService {
         return this.findOne(id)
     }
 
-    async getAllByProjeto(): Promise<any[]> {
-        const users = await prismaClient.user.findMany({
+    async getAllByProjeto(userId: string): Promise<any[]> {
+        const user = await prismaClient.user.findUnique({
             where: {
-                users_roles: {
-                    some: {
-                        projeto: {
-                            active: true
-                        }
-                    }
-                }
+                id: userId
             }
         })
+        const projeto = await prismaClient.projeto.findMany({
+            include: {
+                users: true
+            },
+            where: {
+                id: user?.id_projeto_active
+            }
+        }) as any
  
-        return users;
+        return projeto?.users;
     };
 
     async getAll(): Promise<any[]> {

@@ -64,29 +64,11 @@ class ObservacaoArvoreService {
                 [orderByElement]: order
             }
         }
-        const where = search ?
-            {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    // projeto: {
-                    //     projeto_users: {
-                    //         some: {
-                    //             active: true,
-                    //             id_user: userId
-                    //         }
-                    //     }
-                    // }
+        const where = 
+                {
+                    nome: { mode: Prisma.QueryMode.insensitive, contains: search }
                 }
-            } : {
-                // projeto: {
-                //     projeto_users: {
-                //         some: {
-                //             active: true,
-                //             id_user: userId
-                //         }
-                //     }
-                // }
-            }
+           
         const [data, total] = await prismaClient.$transaction([
             prismaClient.observacaoArvore.findMany({
                 where,
@@ -94,7 +76,7 @@ class ObservacaoArvoreService {
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
             }),
-            prismaClient.observacaoArvore.count()
+            prismaClient.observacaoArvore.count({ where })
         ])
 
         return {
@@ -119,14 +101,6 @@ class ObservacaoArvoreService {
             where: {
                 AND: {
                     nome: { mode: Prisma.QueryMode.insensitive, contains: q },
-                    // projeto: {
-                    //     projeto_users: {
-                    //         some: {
-                    //             id_user: userId,
-                    //             active: true
-                    //         }
-                    //     }
-                    // }
                 }
             }
         })

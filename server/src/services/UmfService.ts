@@ -119,36 +119,32 @@ class UmfService {
         const projeto = await getProjeto(id)
 
         let where = {
-            OR: {
-                nome: {
-                    mode: Prisma.QueryMode.insensitive,
-                    contains: search ? search : ''
+            AND: [
+                {
+                    OR: [
+                            {
+                                nome: {
+                                    mode: Prisma.QueryMode.insensitive,
+                                    contains: search ? search : ''
+                                }
+                            },
+                            {
+                                municipio: {
+                                mode: Prisma.QueryMode.insensitive,
+                                contains: search ? search : ''
+                            }
+                        }
+                    ],
                 },
-                municipio: {
-                    mode: Prisma.QueryMode.insensitive,
-                    contains: search ? search : ''
-                }
-            },
-            AND: {
-                id_projeto: projetoId
-            }   
+                {
+                    id_projeto: projeto?.id
+                }   
+            ]
         }
         
         const [umfs, total] = await prismaClient.$transaction([
             prismaClient.umf.findMany({
-                where: {
-                    projeto: {
-                        AND: {
-                            id: projeto?.id,
-                            users_roles: {
-                                some: {
-                                    user_id: id
-                                }
-                            }
-                        }
-                        
-                    }
-                },
+                where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
                 orderBy: {
@@ -184,15 +180,18 @@ class UmfService {
         const projeto = await getProjeto(userId)
         const umfs = await prismaClient.umf.findMany({
             where: {
-                AND: {
-                    projeto: {
-                        id: projeto?.id
+                AND: [
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        }
                     },
+                    {
                     nome: {
                         mode: Prisma.QueryMode.insensitive,
                         contains: q
                     }
-                }
+                }]
             }
         })
         return umfs

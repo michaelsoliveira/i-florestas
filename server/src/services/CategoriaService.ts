@@ -2,6 +2,7 @@
 import { prismaClient } from "../database/prismaClient";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { CategoriaEspecie } from "@prisma/client";
+import { getProjeto } from "./ProjetoService";
 
 export interface CategoriaType {
     nome: string;
@@ -59,6 +60,7 @@ class CategoriaService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
+        const projeto = getProjeto(userId) as any
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -76,25 +78,19 @@ class CategoriaService {
         }
         const where = search ?
             {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                    projeto: {
-                        active: true,
-                        users_roles: {
-                            some: {
-                                user_id: userId
+                AND: [
+                        {
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: search }
+                        },
+                        {
+                            projeto: {
+                                id: projeto?.id
                             }
                         }
-                    }
-                }
+                    ]
             } : {
                 projeto: {
-                    active: true,
-                    users_roles: {
-                        some: {
-                            user_id: userId
-                        }
-                    }
+                    id: projeto?.id
                 }
             }
         const [data, total] = await prismaClient.$transaction([
@@ -125,19 +121,19 @@ class CategoriaService {
     }
 
     async search(q: any, userId?: string) {
+        const projeto = getProjeto(userId) as any
         const data = await prismaClient.categoriaEspecie.findMany({
             where: {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: q },
-                    projeto: {
-                        active: true,
-                        users_roles: {
-                            some: {
-                                user_id: userId
+                AND: [
+                        {
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: q }
+                        },
+                        { 
+                            projeto: {
+                                id: projeto?.id
                             }
                         }
-                    }
-                }
+                    ]
             }
         })
         return data
