@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -154,53 +165,14 @@ var ArvoreService = /** @class */ (function () {
             });
         });
     };
-    ArvoreService.prototype.createByImport = function (data, upaId) {
-        return __awaiter(this, void 0, Promise, function () {
-            var ut, upa, especie, arvoreExists, eqVolume, dap, scope, volume, preparedData, arvore, error_1;
+    ArvoreService.prototype.createByImport = function (dt, upa) {
+        return __awaiter(this, void 0, void 0, function () {
+            var eqVolume_1, data, error_1;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 7, , 8]);
-                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
-                                where: {
-                                    AND: {
-                                        numero_ut: parseInt(data === null || data === void 0 ? void 0 : data.ut),
-                                        id_upa: upaId
-                                    }
-                                }
-                            })];
-                    case 1:
-                        ut = _a.sent();
-                        console.log(ut);
-                        return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
-                                where: {
-                                    id: upaId
-                                }
-                            })];
-                    case 2:
-                        upa = _a.sent();
-                        return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({
-                                where: {
-                                    nome_orgao: data === null || data === void 0 ? void 0 : data.especie
-                                }
-                            })];
-                    case 3:
-                        especie = _a.sent();
-                        return [4 /*yield*/, prismaClient_1.prismaClient.arvore.findFirst({
-                                where: {
-                                    AND: {
-                                        numero_arvore: parseInt(data.numero_arvore),
-                                        ut: {
-                                            id: ut === null || ut === void 0 ? void 0 : ut.id
-                                        }
-                                    }
-                                }
-                            })];
-                    case 4:
-                        arvoreExists = _a.sent();
-                        if (arvoreExists) {
-                            throw new Error('Já existe uma árvore cadastrada com este número');
-                        }
+                        _a.trys.push([0, 4, , 5]);
                         return [4 /*yield*/, prismaClient_1.prismaClient.equacaoVolume.findFirst({
                                 where: {
                                     upa: {
@@ -210,65 +182,61 @@ var ArvoreService = /** @class */ (function () {
                                     }
                                 }
                             })];
-                    case 5:
-                        eqVolume = _a.sent();
-                        dap = (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap);
-                        scope = {
-                            DAP: dap,
-                            ALTURA: parseFloat(data === null || data === void 0 ? void 0 : data.altura)
-                        };
-                        volume = math.evaluate(eqVolume === null || eqVolume === void 0 ? void 0 : eqVolume.expressao, scope);
-                        preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
-                            numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
-                            faixa: parseInt(data === null || data === void 0 ? void 0 : data.faixa),
-                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
-                            altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
-                            fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
-                            orient_x: data === null || data === void 0 ? void 0 : data.orient_x,
-                            volume: volume,
-                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
-                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
-                            ut: {
-                                connect: {
-                                    id: ut === null || ut === void 0 ? void 0 : ut.id
-                                }
-                            },
-                            especie: {
-                                connect: {
-                                    id: especie === null || especie === void 0 ? void 0 : especie.id
-                                }
-                            }
-                        } : {
-                            numero_arvore: parseInt(data === null || data === void 0 ? void 0 : data.numero_arvore),
-                            dap: (data === null || data === void 0 ? void 0 : data.cap) ? parseFloat(data === null || data === void 0 ? void 0 : data.cap) / Math.PI : parseFloat(data === null || data === void 0 ? void 0 : data.dap),
-                            altura: parseFloat(data === null || data === void 0 ? void 0 : data.altura),
-                            fuste: parseInt(data === null || data === void 0 ? void 0 : data.fuste),
-                            ponto_gps: parseInt(data === null || data === void 0 ? void 0 : data.ponto_gps),
-                            lat_x: parseFloat(data === null || data === void 0 ? void 0 : data.lat_x),
-                            long_y: parseFloat(data === null || data === void 0 ? void 0 : data.long_y),
-                            volume: volume,
-                            ut: {
-                                connect: {
-                                    id: ut === null || ut === void 0 ? void 0 : ut.id
-                                }
-                            },
-                            especie: {
-                                connect: {
-                                    id: especie === null || especie === void 0 ? void 0 : especie.id
-                                }
-                            }
-                        };
-                        return [4 /*yield*/, prismaClient_1.prismaClient.arvore.create({
-                                data: preparedData
+                    case 1:
+                        eqVolume_1 = _a.sent();
+                        return [4 /*yield*/, Promise.all(dt.map(function (arv) { return __awaiter(_this, void 0, Promise, function () {
+                                var dap, scope, volume, especie, ut, preparedData;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            dap = (arv === null || arv === void 0 ? void 0 : arv.cap) ? parseFloat(arv === null || arv === void 0 ? void 0 : arv.cap) / Math.PI : parseFloat(arv === null || arv === void 0 ? void 0 : arv.dap);
+                                            scope = {
+                                                DAP: dap,
+                                                ALTURA: parseFloat(arv === null || arv === void 0 ? void 0 : arv.altura)
+                                            };
+                                            volume = math.evaluate(eqVolume_1 === null || eqVolume_1 === void 0 ? void 0 : eqVolume_1.expressao, scope);
+                                            return [4 /*yield*/, prismaClient_1.prismaClient.especie.findFirst({
+                                                    where: {
+                                                        nome_orgao: arv === null || arv === void 0 ? void 0 : arv.especie
+                                                    }
+                                                })];
+                                        case 1:
+                                            especie = _a.sent();
+                                            return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
+                                                    where: {
+                                                        AND: [
+                                                            { numero_ut: parseInt(arv === null || arv === void 0 ? void 0 : arv.ut) },
+                                                            { id_upa: upa === null || upa === void 0 ? void 0 : upa.id }
+                                                        ]
+                                                    }
+                                                })];
+                                        case 2:
+                                            ut = _a.sent();
+                                            preparedData = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? {
+                                                faixa: parseInt(arv === null || arv === void 0 ? void 0 : arv.faixa),
+                                                orient_x: arv === null || arv === void 0 ? void 0 : arv.orient_x
+                                            } : {
+                                                ponto_gps: parseInt(arv === null || arv === void 0 ? void 0 : arv.ponto_gps),
+                                                lat_x: parseFloat(arv === null || arv === void 0 ? void 0 : arv.latitude.replace(",", ".")),
+                                                long_y: parseFloat(arv === null || arv === void 0 ? void 0 : arv.longitude.replace(",", "."))
+                                            };
+                                            return [2 /*return*/, __assign(__assign({ numero_arvore: parseInt(arv === null || arv === void 0 ? void 0 : arv.numero_arvore), dap: (arv === null || arv === void 0 ? void 0 : arv.cap) ? parseFloat(arv === null || arv === void 0 ? void 0 : arv.cap) / Math.PI : parseFloat(arv === null || arv === void 0 ? void 0 : arv.dap), altura: parseFloat(arv === null || arv === void 0 ? void 0 : arv.altura), fuste: parseInt(arv === null || arv === void 0 ? void 0 : arv.qf), volume: volume }, preparedData), { id_ut: ut === null || ut === void 0 ? void 0 : ut.id, id_especie: especie === null || especie === void 0 ? void 0 : especie.id })];
+                                    }
+                                });
+                            }); }))];
+                    case 2:
+                        data = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.arvore.createMany({
+                                data: data
                             })];
-                    case 6:
-                        arvore = _a.sent();
-                        return [2 /*return*/, arvore];
-                    case 7:
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
                         error_1 = _a.sent();
                         console.log(error_1 === null || error_1 === void 0 ? void 0 : error_1.message);
                         return [2 /*return*/, error_1];
-                    case 8: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

@@ -90,7 +90,7 @@ export class ArvoreController {
             return response.json({
                 error: false,
                 arvores: [],
-                message: null
+                message: error?.message
             })
         }
     }

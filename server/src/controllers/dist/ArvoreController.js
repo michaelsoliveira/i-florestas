@@ -35,17 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 exports.__esModule = true;
 exports.ArvoreController = void 0;
-var stream_1 = require("stream");
-var readline_1 = require("readline");
 var ArvoreService_1 = require("../services/ArvoreService");
 var prismaClient_1 = require("../database/prismaClient");
 var ArvoreController = /** @class */ (function () {
@@ -59,7 +50,6 @@ var ArvoreController = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         data = request.body;
-                        console.log(data);
                         return [4 /*yield*/, ArvoreService_1["default"].create(data)];
                     case 1:
                         arvore = _a.sent();
@@ -181,7 +171,7 @@ var ArvoreController = /** @class */ (function () {
                         return [2 /*return*/, response.json({
                                 error: false,
                                 arvores: [],
-                                message: null
+                                message: error_4 === null || error_4 === void 0 ? void 0 : error_4.message
                             })];
                     case 4: return [2 /*return*/];
                 }
@@ -235,141 +225,14 @@ var ArvoreController = /** @class */ (function () {
             });
         });
     };
-    ArvoreController.prototype.loadCSV = function (request, response) {
-        var e_1, _a, e_2, _b;
-        var _c;
-        return __awaiter(this, void 0, void 0, function () {
-            var arvores, upaId, upa, readableFile, arvoresLine, arvoresLine_1, arvoresLine_1_1, line, arvoreLineSplit, e_1_1, arvoresLine_2, arvoresLine_2_1, line, arvoreLineSplit, e_2_1, error_6;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        arvores = [];
-                        upaId = request.query.upaId;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
-                                where: {
-                                    id: upaId
-                                }
-                            })];
-                    case 1:
-                        upa = _d.sent();
-                        _d.label = 2;
-                    case 2:
-                        _d.trys.push([2, 27, , 28]);
-                        if ((request === null || request === void 0 ? void 0 : request.file) === undefined) {
-                            return [2 /*return*/, response.status(400).send("Please upload a CSV file!")];
-                        }
-                        readableFile = new stream_1.Readable().setEncoding('utf8');
-                        readableFile.push((_c = request.file) === null || _c === void 0 ? void 0 : _c.buffer);
-                        readableFile.push(null);
-                        arvoresLine = readline_1["default"].createInterface({
-                            input: readableFile
-                        });
-                        if (!((upa === null || upa === void 0 ? void 0 : upa.tipo) === 0)) return [3 /*break*/, 15];
-                        _d.label = 3;
-                    case 3:
-                        _d.trys.push([3, 8, 9, 14]);
-                        arvoresLine_1 = __asyncValues(arvoresLine);
-                        _d.label = 4;
-                    case 4: return [4 /*yield*/, arvoresLine_1.next()];
-                    case 5:
-                        if (!(arvoresLine_1_1 = _d.sent(), !arvoresLine_1_1.done)) return [3 /*break*/, 7];
-                        line = arvoresLine_1_1.value;
-                        arvoreLineSplit = line.split(";");
-                        arvores.push({
-                            ut: arvoreLineSplit[0],
-                            numero_arvore: arvoreLineSplit[1],
-                            especie: arvoreLineSplit[2],
-                            dap: arvoreLineSplit[3],
-                            altura: arvoreLineSplit[4],
-                            fuste: arvoreLineSplit[5],
-                            ponto_gps: arvoreLineSplit[6],
-                            lat_x: arvoreLineSplit[7],
-                            long_y: arvoreLineSplit[8],
-                            obs: arvoreLineSplit[9],
-                            comentario: arvoreLineSplit[10]
-                        });
-                        _d.label = 6;
-                    case 6: return [3 /*break*/, 4];
-                    case 7: return [3 /*break*/, 14];
-                    case 8:
-                        e_1_1 = _d.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 14];
-                    case 9:
-                        _d.trys.push([9, , 12, 13]);
-                        if (!(arvoresLine_1_1 && !arvoresLine_1_1.done && (_a = arvoresLine_1["return"]))) return [3 /*break*/, 11];
-                        return [4 /*yield*/, _a.call(arvoresLine_1)];
-                    case 10:
-                        _d.sent();
-                        _d.label = 11;
-                    case 11: return [3 /*break*/, 13];
-                    case 12:
-                        if (e_1) throw e_1.error;
-                        return [7 /*endfinally*/];
-                    case 13: return [7 /*endfinally*/];
-                    case 14: return [3 /*break*/, 26];
-                    case 15:
-                        _d.trys.push([15, 20, 21, 26]);
-                        arvoresLine_2 = __asyncValues(arvoresLine);
-                        _d.label = 16;
-                    case 16: return [4 /*yield*/, arvoresLine_2.next()];
-                    case 17:
-                        if (!(arvoresLine_2_1 = _d.sent(), !arvoresLine_2_1.done)) return [3 /*break*/, 19];
-                        line = arvoresLine_2_1.value;
-                        arvoreLineSplit = line.split(";");
-                        arvores.push({
-                            ut: arvoreLineSplit[0],
-                            faixa: arvoreLineSplit[1],
-                            numero_arvore: arvoreLineSplit[2],
-                            especie: arvoreLineSplit[3],
-                            dap: arvoreLineSplit[4],
-                            altura: arvoreLineSplit[5],
-                            fuste: arvoreLineSplit[6],
-                            orient_x: arvoreLineSplit[7],
-                            coord_x: arvoreLineSplit[8],
-                            coord_y: arvoreLineSplit[9],
-                            obs: arvoreLineSplit[10],
-                            comentario: arvoreLineSplit[11]
-                        });
-                        _d.label = 18;
-                    case 18: return [3 /*break*/, 16];
-                    case 19: return [3 /*break*/, 26];
-                    case 20:
-                        e_2_1 = _d.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3 /*break*/, 26];
-                    case 21:
-                        _d.trys.push([21, , 24, 25]);
-                        if (!(arvoresLine_2_1 && !arvoresLine_2_1.done && (_b = arvoresLine_2["return"]))) return [3 /*break*/, 23];
-                        return [4 /*yield*/, _b.call(arvoresLine_2)];
-                    case 22:
-                        _d.sent();
-                        _d.label = 23;
-                    case 23: return [3 /*break*/, 25];
-                    case 24:
-                        if (e_2) throw e_2.error;
-                        return [7 /*endfinally*/];
-                    case 25: return [7 /*endfinally*/];
-                    case 26: return [2 /*return*/, response.json({
-                            error: false,
-                            arvores: arvores,
-                            message: 'Árvores carregadas com sucesso!!!'
-                        })];
-                    case 27:
-                        error_6 = _d.sent();
-                        return [2 /*return*/, response.json(error_6.message)];
-                    case 28: return [2 /*return*/];
-                }
-            });
-        });
-    };
     ArvoreController.prototype.importInventario = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, upaId, upa, checkData, _i, data_1, arvore, error_7;
+            var data, importedData, upaId, upa, checkData, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         data = request.body;
+                        importedData = data.data;
                         upaId = request.query.upaId;
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
                                 where: {
@@ -378,36 +241,27 @@ var ArvoreController = /** @class */ (function () {
                             })];
                     case 1:
                         upa = _a.sent();
-                        checkData = Object.keys(data[0]);
+                        checkData = Object.keys(data.columns);
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 7, , 8]);
+                        _a.trys.push([2, 4, , 5]);
                         if (checkData.includes('faixa') && (upa === null || upa === void 0 ? void 0 : upa.tipo) === 0) {
                             return [2 /*return*/, response.json({
                                     error: true,
                                     message: 'Inventário diferente do tipo da UPA'
                                 })];
                         }
-                        _i = 0, data_1 = data;
-                        _a.label = 3;
+                        return [4 /*yield*/, ArvoreService_1["default"].createByImport(importedData, upa)];
                     case 3:
-                        if (!(_i < data_1.length)) return [3 /*break*/, 6];
-                        arvore = data_1[_i];
-                        return [4 /*yield*/, ArvoreService_1["default"].createByImport(arvore, upaId)];
-                    case 4:
                         _a.sent();
-                        _a.label = 5;
-                    case 5:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/, response.json({
-                            error: false,
-                            message: 'Árvores importadas com sucesso!!!'
-                        })];
-                    case 7:
-                        error_7 = _a.sent();
-                        return [2 /*return*/, response.json(error_7.message)];
-                    case 8: return [2 /*return*/];
+                        return [2 /*return*/, response.json({
+                                error: false,
+                                message: 'Árvores importadas com sucesso!!!'
+                            })];
+                    case 4:
+                        error_6 = _a.sent();
+                        return [2 /*return*/, response.json(error_6.message)];
+                    case 5: return [2 /*return*/];
                 }
             });
         });

@@ -10,7 +10,7 @@ import { OptionType, Select } from "../Select"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import { setUmf } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
-import { setUt } from "../../store/utSlice"
+import alertService from '../../services/alert'
 import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
@@ -45,8 +45,6 @@ const Index = () => {
     const { projeto } = useContext(ProjetoContext)
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
-    const csvImport = CsvImport({delimiter: ";", encoding: "iso-8859-1"})
-    // const { headerKeys, handleOnSubmitImport, handleOnChangeImport, dataImported } = csvImport
     const [encoding, setEncoding] = useState('iso-8859-1')
     const { CSVReader } = useCSVReader()
 
@@ -175,14 +173,13 @@ const Index = () => {
     
     const deleteSingleModal = useCallback((id?: string) => {
             showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número?`})
-        }, [])
+        }, [deleteArvore, showModal])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
 
     useEffect(() => {
         defaultUmfsOptions()
         defaultUpasOptions()
-        // setFilteredArvores(currentArvores)
     }, [defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
@@ -211,14 +208,17 @@ const Index = () => {
 
     const handleImportInventario = async () => {
         try {
+            setLoading(true)
             await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                 columns: columnData,
                 data: rowData
-                
             })
-                .then((result: any) => {
-                    console.log(result)
-                })
+            .then((result: any) => {
+                const { data } = result
+                setLoading(false)
+                alertService.success(data?.message)
+                console.log(result)
+            })
         } catch(e) {
 
         }
