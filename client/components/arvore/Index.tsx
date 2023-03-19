@@ -617,12 +617,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <>
                                 <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.lat}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.lat ? arvore?.lat : arvore?.lat_x}</div>
                                     </span>
                                 </td>
                                 <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.lng}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.lng ? arvore?.lng : arvore?.long_y}</div>
                                     </span>
                                 </td>
                                 </>
