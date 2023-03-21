@@ -312,9 +312,9 @@ class UserService {
         
         let transporter = nodemailer.createTransport({
             service: 'gmail',
-            //host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            //secure: true,
-            //port: 465,
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            secure: true,
+            port: 465,
             auth: {
                 type: 'OAuth2',
                 user: process.env.GMAIL_USER,
@@ -335,8 +335,8 @@ class UserService {
         const mainBackgroundColor = "#ffffff"
         const buttonBackgroundColor = "#346df1"
         const buttonBorderColor = "#346df1"
-        const buttonTextColor = "#ffffff"
-        const url = 'https://bomanejo.com/auth/login'
+        const buttonTextColor = "#444444"
+        const url = 'https://bomanejo.online/login'
 
         const linkLogin = `
             <a href="${url}" target="_blank" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${buttonTextColor}; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid ${buttonBorderColor}; display: inline-block; font-weight: bold;">
