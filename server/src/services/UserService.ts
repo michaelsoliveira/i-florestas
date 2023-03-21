@@ -319,6 +319,19 @@ class UserService {
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PWD
+            },
+            tls: {
+                // do not fail on invalid certs
+                rejectUnauthorized: false,
+            },
+        });
+
+        // verify connection configuration
+        transporter.verify(function (error, success) {
+            if (error) {
+            console.log(error);
+            } else {
+            console.log("Server is ready to take our messages");
             }
         });
 
