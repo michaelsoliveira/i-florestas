@@ -309,9 +309,10 @@ class UserService {
         const { email, name, message } = data
         
         let transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            //service: 'gmail',
-            secure: false,
+            //host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            service: 'gmail',
+            secure: true,
+            port: 465,
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PWD
