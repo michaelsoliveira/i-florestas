@@ -58,7 +58,7 @@ class UserService {
             id_provider: data?.id_provider ? data?.id_provider : '',
             id_projeto_active: projeto?.id
         }
-        
+
         if (!data?.id_projeto) {
             const user = await prismaClient.user.create({
                 data: { 
@@ -310,6 +310,12 @@ class UserService {
         
         let transporter = nodemailer.createTransport({
             service: 'gmail',
+            port: 465,
+            //  if true the connection will use TLS when connecting to server. If false (the 
+            // default) then TLS is used if server supports the STARTTLS extension. In most 
+            // cases set this value to true if you are connecting to port 465. For port 587 or 
+            // 25 keep it false
+            secure: true, // use TLS
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PWD
@@ -326,7 +332,7 @@ class UserService {
         const buttonBackgroundColor = "#346df1"
         const buttonBorderColor = "#346df1"
         const buttonTextColor = "#ffffff"
-        const url = 'http://bomanejo.com'
+        const url = 'https://bomanejo.com/auth/login'
 
         const linkLogin = `
             <a href="${url}" target="_blank" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${buttonTextColor}; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid ${buttonBorderColor}; display: inline-block; font-weight: bold;">
@@ -334,7 +340,6 @@ class UserService {
             </a>
         `
 
-        
     // send mail with defined transport object
     transporter.sendMail({
         from: '"Michael Santos de Oliveira" <michaelsoliveira@gmail.com>', // sender address
