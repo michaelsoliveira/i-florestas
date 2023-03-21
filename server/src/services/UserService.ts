@@ -310,12 +310,7 @@ class UserService {
         
         let transporter = nodemailer.createTransport({
             service: 'gmail',
-            port: 465,
-            //  if true the connection will use TLS when connecting to server. If false (the 
-            // default) then TLS is used if server supports the STARTTLS extension. In most 
-            // cases set this value to true if you are connecting to port 465. For port 587 or 
-            // 25 keep it false
-            secure: true, // use TLS
+            secure: false,
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PWD
