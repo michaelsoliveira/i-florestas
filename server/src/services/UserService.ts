@@ -8,6 +8,7 @@ export interface UserRequest {
     email: string,
     password: string
 }
+var smtpTransport = require('nodemailer-smtp-transport');
 
 class UserService {
 
@@ -140,8 +141,6 @@ class UserService {
                 id_projeto: data?.id_projeto
             }
         })
-
-        console.log(data)
 
         const user = await prismaClient.user.update({
             where: 
@@ -308,20 +307,16 @@ class UserService {
     async sendMail(data: any) {
         const { email, name, message } = data
         
-        let transporter = nodemailer.createTransport({
-            //host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        let transporter = nodemailer.createTransport(smtpTransport({
             service: 'gmail',
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
             secure: true,
             port: 465,
             auth: {
                 user: process.env.GMAIL_USER,
                 pass: process.env.GMAIL_PWD
             },
-            tls: {
-                // do not fail on invalid certs
-                rejectUnauthorized: false,
-            },
-        });
+        }));
 
         // verify connection configuration
         transporter.verify(function (error, success) {

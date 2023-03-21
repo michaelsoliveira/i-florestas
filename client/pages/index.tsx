@@ -1,13 +1,20 @@
 import Image from 'next/image'
-import Tabs from 'components/Tabs'
 import { Carousel } from 'components/home/Carousel'
 import Hero from 'components/home/Hero'
 import { useSession } from 'next-auth/react'
 import Team from '@/components/home/Team'
+import { useEffect } from 'react'
 
 export default function Dashboard() {
   
   const { data: session } = useSession()
+
+  useEffect(() => {
+    if (session) {
+      console.log(session)
+    }
+  }, [session])
+  
 
   return (
     
@@ -41,16 +48,6 @@ export default function Dashboard() {
                 <div className="text-center lg:flex lg:flex-col py-4">
                   <Team />
                 </div>
-                {/* <div className='max-w-md lg:max-w-lg md:max-w-md sm:text-center mx-auto'>
-                    
-                      <div>
-                        <h2 className="text-3xl leading-8 font-semibold mt-2 text-green-800">
-                          Vamos testar! 
-                        </h2>
-                        <Tabs />
-                      </div>
-                    
-                </div> */}
             </div>
            )} 
         </div>

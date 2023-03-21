@@ -1,5 +1,4 @@
 import { useModalContext } from "contexts/ModalContext"
-import Login from "../Login"
 import Tabs from "../Tabs"
 
 const Hero = ({ session }: any) => {
@@ -44,6 +43,7 @@ const Hero = ({ session }: any) => {
                         Tutorial
                     </a>
                     </div>
+                
                 </div>
             )}
         </div>
