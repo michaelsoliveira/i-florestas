@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs"
-import { getRepository, UsingJoinColumnIsNotAllowedError } from "typeorm"
 import nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
 import { prisma, Prisma, User as UserPrisma } from "@prisma/client"
@@ -8,7 +7,10 @@ export interface UserRequest {
     email: string,
     password: string
 }
-var smtpTransport = require('nodemailer-smtp-transport');
+import { google } from 'googleapis'
+
+const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
+client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
 
 class UserService {
 
@@ -305,25 +307,22 @@ class UserService {
     }
 
     async sendMail(data: any) {
+        const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
         
-        let transporter = nodemailer.createTransport(smtpTransport({
+        let transporter = nodemailer.createTransport({
             service: 'gmail',
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secure: true,
-            port: 465,
+            //host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            //secure: true,
+            //port: 465,
             auth: {
+                type: 'OAuth2',
                 user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PWD
-            },
-        }));
-
-        // verify connection configuration
-        transporter.verify(function (error, success) {
-            if (error) {
-            console.log(error);
-            } else {
-            console.log("Server is ready to take our messages");
+                //pass: process.env.GMAIL_PWD,
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                accessToken: accessToken
             }
         });
 
@@ -345,52 +344,52 @@ class UserService {
             </a>
         `
 
-    // send mail with defined transport object
-    transporter.sendMail({
-        from: '"Michael Santos de Oliveira" <michaelsoliveira@gmail.com>', // sender address
-        to: email, // list of receivers
-        subject: "Acesso ao Software BOManejo Web", // Subject line
-        text: `Usuário ${name} foi cadastrado com Sucesso!`, // plain text body
-        html: `
-            <body style="background: ${backgroundColor};">
-                <table style="padding: 10px 0px 0px 10px;" width="100%" border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                    <td align="center" style="padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-                        <strong>Seja bem vindo ${escapedName}</strong>
-                    </td>
-                    </tr>
-                </table>
-                <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px;">
-                    <tr>
-                    <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-                        Você pode realizar o login utilizando seu email: <strong>${escapedEmail}</strong>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td align="center" style="padding: 20px 0;">
-                        <table border="0" cellspacing="0" cellpadding="0">
+        // send mail with defined transport object
+        transporter.sendMail({
+            from: '"Michael Santos de Oliveira" <michaelsoliveira@gmail.com>', // sender address
+            to: email, // list of receivers
+            subject: "Acesso ao Software BOManejo Web", // Subject line
+            text: `Usuário ${name} foi cadastrado com Sucesso!`, // plain text body
+            html: `
+                <body style="background: ${backgroundColor};">
+                    <table style="padding: 10px 0px 0px 10px;" width="100%" border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td align="center" style="border-radius: 5px; padding: 10px 20px; font-size: 18px; color: #ffffff;" bgcolor="${buttonBackgroundColor}">
-                                ${message}
-                            </td>
+                        <td align="center" style="padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
+                            <strong>Seja bem vindo ${escapedName}</strong>
+                        </td>
                         </tr>
-                        </table>
-                    </td>
-                    </tr>
-                    <tr>
-                    <td align="center" style="padding: 0px 0px 10px 0px; font-size: 14px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-                        Você não precisa retornar este email
-                    </td>
-                    </tr>
-                </table>
-            </body>`, // html body
-    }, (error, data) => {
-        if (error) {
-            console.log('Error: ', error)
-        } else {
-            console.log("Message sent: %s", data.response);
-        }
-    });
+                    </table>
+                    <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px;">
+                        <tr>
+                        <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
+                            Você pode realizar o login utilizando seu email: <strong>${escapedEmail}</strong>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" style="padding: 20px 0;">
+                            <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td align="center" style="border-radius: 5px; padding: 10px 20px; font-size: 18px; color: #ffffff;" bgcolor="${buttonBackgroundColor}">
+                                    ${message}
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td align="center" style="padding: 0px 0px 10px 0px; font-size: 14px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
+                            Você não precisa retornar este email
+                        </td>
+                        </tr>
+                    </table>
+                </body>`, // html body
+        }, (error, data) => {
+            if (error) {
+                console.log('Error: ', error)
+            } else {
+                console.log("Message sent: %s", data.response);
+            }
+        });
 
     }
 
