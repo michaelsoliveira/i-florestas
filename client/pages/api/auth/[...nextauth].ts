@@ -31,7 +31,7 @@ async function findProvider(token: any) {
       }
       
       const userExists = await userService.findProvider(token)
-      
+
       if (userExists) {
         if (!userExists.provider || !userExists.id_provider)
           await userService.update(userExists?.id, dataProvider, access_token)
@@ -39,6 +39,8 @@ async function findProvider(token: any) {
         await userService.create(dataProvider)
           .then( () => {
               userService.sendEmail(dataProvider)
+          }).catch((err: any) => {
+            console.log(err)
           })
       }
     } catch (error: any) {

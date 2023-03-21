@@ -45,7 +45,7 @@ class UserService {
 
         const projeto = await prismaClient.projeto.create({
             data: {
-                nome: data?.projeto,
+                nome: data?.projeto ? data?.projeto : 'Projeto Inicial',
             }
         })
 
@@ -58,6 +58,7 @@ class UserService {
             id_provider: data?.id_provider ? data?.id_provider : '',
             id_projeto_active: projeto?.id
         }
+        
         if (!data?.id_projeto) {
             const user = await prismaClient.user.create({
                 data: { 
@@ -306,7 +307,7 @@ class UserService {
 
     async sendMail(data: any) {
         const { email, name, message } = data
-        console.log(process.env.GMAIL_USER, process.env.GMAIL_PWD)
+        
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
