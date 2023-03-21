@@ -9,13 +9,6 @@ export default function Dashboard() {
   
   const { data: session } = useSession()
 
-  useEffect(() => {
-    if (session) {
-      console.log(session)
-    }
-  }, [session])
-  
-
   return (
     
     <div className="w-full">
