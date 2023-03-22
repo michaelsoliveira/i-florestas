@@ -80,6 +80,8 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         }
+
+        console.log(totalItems)
         
         dispatch(paginate(paginatedData))
 
@@ -93,6 +95,7 @@ const ArvoreIndex = () => {
     }
 
     const changeItemsPerPage = (evt: ChangeEvent<HTMLSelectElement>) => {
+        console.log(evt.target)
         onPageChanged({
             name: router.pathname,
             currentPage: 1,

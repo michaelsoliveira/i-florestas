@@ -312,8 +312,8 @@ class UserService {
         
         let transporter = nodemailer.createTransport({
             service: 'gmail',
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secure: true,
+            //host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            //secure: true,
             port: 587,
             auth: {
                 type: 'OAuth2',
@@ -323,6 +323,18 @@ class UserService {
                 clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
                 accessToken: accessToken
+            },
+            tls: {
+                // do not fail on invalid certs
+                rejectUnauthorized: false,
+            },
+        });
+
+        transporter.verify(function(error, success) {
+            if (error) {
+                    console.log(error);
+            } else {
+                    console.log('Server is ready to take our messages');
             }
         });
 

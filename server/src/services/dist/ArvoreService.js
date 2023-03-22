@@ -394,7 +394,7 @@ var ArvoreService = /** @class */ (function () {
                                     take: perPage ? parseInt(perPage) : 50,
                                     skip: skip ? skip : 0
                                 }),
-                                prismaClient_1.prismaClient.arvore.count()
+                                prismaClient_1.prismaClient.arvore.count({ where: where })
                             ])];
                     case 2:
                         _a = _d.sent(), data = _a[0], total = _a[1];

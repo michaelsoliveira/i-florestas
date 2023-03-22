@@ -113,6 +113,7 @@ var ArvoreIndex = function () {
                     paginatedData = __assign(__assign({ name: name }, paginatedData), { totalPages: Math.ceil((data === null || data === void 0 ? void 0 : data.count) / perPage), totalItems: data === null || data === void 0 ? void 0 : data.count });
                     _a.label = 4;
                 case 4:
+                    console.log(totalItems);
                     dispatch(paginationSlice_1.paginate(paginatedData));
                     setCurrentPage(currentPage);
                     setItemsPerPage(perPage);
@@ -126,6 +127,7 @@ var ArvoreIndex = function () {
         });
     }); };
     var changeItemsPerPage = function (evt) {
+        console.log(evt.target);
         onPageChanged({
             name: router.pathname,
             currentPage: 1,

@@ -316,7 +316,7 @@ class ArvoreService {
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
             }),
-            prismaClient.arvore.count()
+            prismaClient.arvore.count({ where })
         ])
 
         return {
