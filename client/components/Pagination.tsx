@@ -150,7 +150,6 @@ export const Pagination = function Pagination({ perPage, totalItems, orderBy, or
                 <div>
                     
                     <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        
                         <a href="#" onClick={(event) => {
                             event.preventDefault()
                             if (currentPage > 1) gotoPage(currentPage - 1)

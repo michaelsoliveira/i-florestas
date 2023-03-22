@@ -6,9 +6,7 @@ import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroi
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { useModalContext } from "contexts/ModalContext"
-import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
-import { CsvDataService } from "services/create-csv"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { RootState } from "store"
 import { OptionType, Select } from "../Select"
@@ -126,7 +124,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa?.id}`)
         const { uts } = response.data
             setUts(uts)
-            if (uts.length === 0) {
+            if (uts && uts.length === 0) {
                 setSelectedUt({
                     value: '0',
                     label: 'Nenhuma UT Cadastrada'
@@ -149,7 +147,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             nome: umf.label
         }))
         setSelectedUmf(umf)
-
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
         const { upas } = response.data
         
@@ -188,7 +185,15 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         }))
         
         setSelectedUt(ut)
+        const paginatedData = {
+            currentPage: 1,
+            perPage,
+            orderBy,
+            order,
+            totalItems: filteredArvores.length
+        }
         
+        onPageChanged(paginatedData)
     }
 
     function getUmfsDefaultOptions() {
@@ -334,7 +339,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             </div>
                             <select
                                 value={perPage}
-                                onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
+                                onChange={(evt: any) => changeItemsPerPage(evt)}
                                 id="perPage" 
                                 className="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >

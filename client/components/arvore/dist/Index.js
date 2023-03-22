@@ -194,7 +194,7 @@ var Index = function (_a) {
                     response = _a.sent();
                     uts = response.data.uts;
                     setUts(uts);
-                    if (uts.length === 0) {
+                    if (uts && uts.length === 0) {
                         setSelectedUt({
                             value: '0',
                             label: 'Nenhuma UT Cadastrada'
@@ -257,7 +257,7 @@ var Index = function (_a) {
         });
     }); };
     var selectUt = function (ut) { return __awaiter(void 0, void 0, void 0, function () {
-        var utSelected;
+        var utSelected, paginatedData;
         return __generator(this, function (_a) {
             utSelected = uts.find(function (u) { return u.id === ut.value; });
             dispatch(utSlice_1.setUt({
@@ -265,6 +265,14 @@ var Index = function (_a) {
                 numero_ut: utSelected.numero_ut
             }));
             setSelectedUt(ut);
+            paginatedData = {
+                currentPage: 1,
+                perPage: perPage,
+                orderBy: orderBy,
+                order: order,
+                totalItems: filteredArvores.length
+            };
+            onPageChanged(paginatedData);
             return [2 /*return*/];
         });
     }); };
@@ -413,7 +421,7 @@ var Index = function (_a) {
                 React.createElement("div", { className: "flex flex-col px-4 w-auto" },
                     React.createElement("div", { className: "w-full" },
                         React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
-                    React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
+                    React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt); }, id: "perPage", className: "w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
                         React.createElement("option", { value: "10" }, "10"),
                         React.createElement("option", { value: "20" }, "20"),
                         React.createElement("option", { value: "50" }, "50"),
