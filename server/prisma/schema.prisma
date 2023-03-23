@@ -97,6 +97,37 @@ model ObservacaoArvore {
   @@map("observacao_arvore")
 }
 
+model SituacaoPoa {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome      String?
+  poa       Poa[]
+  @@map("situacao_poa")
+}
+
+model Poa {
+  id                  String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  descricao           String?
+  data_ultimo_plan    DateTime @db.Timestamp(6)
+  pmfs                String?
+  nome_resp_elab      String?
+  crea_resp_elab      String?
+  art_resp_elab       String?
+  nome_resp_exec      String?
+  crea_resp_exec      String?
+  art_resp_exec       String?
+  nome_detentor       String?
+  cpf_detentor        String? @db.VarChar(12)
+  nome_proponente     String?
+  cpf_proponente      String? @db.VarChar(12)
+  id_situacao         String? @db.Uuid
+  corte_maximo        Float?
+  situacao_poa        SituacaoPoa? @relation(fields: [id_situacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_id             String  @db.Uuid()
+  user                User  @relation(fields: [user_id], references: [id])
+  id_projeto          String  @db.Uuid()
+  projeto             Projeto  @relation(fields: [id_projeto], references: [id])
+}
+
 model Arvore {
   id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime @default(now()) @db.Timestamp(6)
@@ -219,7 +250,7 @@ model Projeto {
   umf                      Umf[]
   users_roles              UserRole[]
   users                    User[]
-
+  poa                      Poa[]
   @@map("projeto")
 }
 
@@ -308,9 +339,9 @@ model User {
   sessions          Session[]
   users_permissions UserPermission[]
   users_roles       UserRole[]
+  poa               Poa[]
   id_projeto_active String          @db.Uuid
   projeto           Projeto         @relation(fields: [id_projeto_active], references: [id], onDelete: Cascade)
-
   @@map("users")
 }
 
