@@ -261,8 +261,6 @@ class ArvoreService {
             }
         }
 
-        console.log(preparedData)
-
         const arvore = await prismaClient.arvore.update({
             where: {
                 id
@@ -272,6 +270,20 @@ class ArvoreService {
 
         return arvore
     }
+
+    async linkarGPS(data: any) {
+        const preparedData = Promise.all([
+            data.map((row: any) => {
+                
+            })
+        ])
+        // const result = await prismaClient.arvore.update({
+        //     data: {
+
+        //     }
+        // })
+    }
+
 
     async delete(id: string): Promise<void> {
         await prismaClient.arvore.delete({
@@ -302,10 +314,10 @@ class ArvoreService {
 
         const where = search ?
             {
-                AND: {
-                    numero_arvore: parseInt(search),
-                    ut: { id: utId }
-                }
+                AND: [
+                    {numero_arvore: parseInt(search)},
+                    {ut: { id: utId }}
+                ]
             } : {
                 ut: { id: utId }
             }
@@ -337,13 +349,12 @@ class ArvoreService {
     }
 
     async search(q: any, userId: string, utId?: string) {
-        const projeto = await getProjeto(userId)
         const data = await prismaClient.arvore.findMany({
             where: {
-                AND: {
-                    numero_arvore: parseInt(q),
-                    ut: { id: utId }
-                }
+                AND: [
+                    {numero_arvore: parseInt(q)},
+                    {ut: { id: utId }}
+                ]
             }
         })
         return data

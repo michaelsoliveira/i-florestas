@@ -324,7 +324,6 @@ var ArvoreService = /** @class */ (function () {
                                 }
                             }
                         };
-                        console.log(preparedData);
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.update({
                                 where: {
                                     id: id
@@ -335,6 +334,18 @@ var ArvoreService = /** @class */ (function () {
                         arvore = _a.sent();
                         return [2 /*return*/, arvore];
                 }
+            });
+        });
+    };
+    ArvoreService.prototype.linkarGPS = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var preparedData;
+            return __generator(this, function (_a) {
+                preparedData = Promise.all([
+                    data.map(function (row) {
+                    })
+                ]);
+                return [2 /*return*/];
             });
         });
     };
@@ -380,10 +391,10 @@ var ArvoreService = /** @class */ (function () {
                         }
                         where = search ?
                             {
-                                AND: {
-                                    numero_arvore: parseInt(search),
-                                    ut: { id: utId }
-                                }
+                                AND: [
+                                    { numero_arvore: parseInt(search) },
+                                    { ut: { id: utId } }
+                                ]
                             } : {
                             ut: { id: utId }
                         };
@@ -425,21 +436,18 @@ var ArvoreService = /** @class */ (function () {
     };
     ArvoreService.prototype.search = function (q, userId, utId) {
         return __awaiter(this, void 0, void 0, function () {
-            var projeto, data;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, ProjetoService_1.getProjeto(userId)];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.arvore.findMany({
+                            where: {
+                                AND: [
+                                    { numero_arvore: parseInt(q) },
+                                    { ut: { id: utId } }
+                                ]
+                            }
+                        })];
                     case 1:
-                        projeto = _a.sent();
-                        return [4 /*yield*/, prismaClient_1.prismaClient.arvore.findMany({
-                                where: {
-                                    AND: {
-                                        numero_arvore: parseInt(q),
-                                        ut: { id: utId }
-                                    }
-                                }
-                            })];
-                    case 2:
                         data = _a.sent();
                         return [2 /*return*/, data];
                 }

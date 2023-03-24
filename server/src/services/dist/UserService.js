@@ -51,6 +51,9 @@ var bcryptjs_1 = require("bcryptjs");
 var nodemailer_1 = require("nodemailer");
 var prismaClient_1 = require("../database/prismaClient");
 var client_1 = require("@prisma/client");
+var googleapis_1 = require("googleapis");
+var client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
 var UserService = /** @class */ (function () {
     function UserService() {
     }
@@ -62,14 +65,18 @@ var UserService = /** @class */ (function () {
                 switch (_c.label) {
                     case 0:
                         where = (data === null || data === void 0 ? void 0 : data.id_projeto) ? {
-                            AND: {
-                                email: data === null || data === void 0 ? void 0 : data.email,
-                                users_roles: {
-                                    some: {
-                                        id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                            AND: [
+                                {
+                                    email: data === null || data === void 0 ? void 0 : data.email
+                                },
+                                {
+                                    users_roles: {
+                                        some: {
+                                            id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
+                                        }
                                     }
                                 }
-                            }
+                            ]
                         } : {
                             email: data === null || data === void 0 ? void 0 : data.email
                         };
@@ -93,8 +100,7 @@ var UserService = /** @class */ (function () {
                         roleAdmin = _c.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.projeto.create({
                                 data: {
-                                    nome: data === null || data === void 0 ? void 0 : data.projeto,
-                                    active: true
+                                    nome: (data === null || data === void 0 ? void 0 : data.projeto) ? data === null || data === void 0 ? void 0 : data.projeto : 'Projeto Inicial'
                                 }
                             })];
                     case 4:
@@ -105,7 +111,8 @@ var UserService = /** @class */ (function () {
                             password: passwordHash,
                             image: data === null || data === void 0 ? void 0 : data.image,
                             provider: (data === null || data === void 0 ? void 0 : data.provider) ? data === null || data === void 0 ? void 0 : data.provider : 'local',
-                            id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : ''
+                            id_provider: (data === null || data === void 0 ? void 0 : data.id_provider) ? data === null || data === void 0 ? void 0 : data.id_provider : '',
+                            id_projeto_active: projeto === null || projeto === void 0 ? void 0 : projeto.id
                         };
                         if (!!(data === null || data === void 0 ? void 0 : data.id_projeto)) return [3 /*break*/, 6];
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.create({
@@ -147,13 +154,6 @@ var UserService = /** @class */ (function () {
                             data: {
                                 users_roles: {
                                     createMany: {
-                                        // where: {
-                                        //     user_id: data?.id_user,
-                                        //     id_projeto: data?.id_projeto,
-                                        //     role_id: {
-                                        //         in: userRoles.map((role: any) => { return role.role_id })
-                                        //     }
-                                        // },
                                         data: userRoles.map(function (role) {
                                             return {
                                                 id_projeto: role.id_projeto,
@@ -202,7 +202,6 @@ var UserService = /** @class */ (function () {
                                 id_projeto: data === null || data === void 0 ? void 0 : data.id_projeto
                             };
                         }));
-                        console.log(data);
                         return [4 /*yield*/, prismaClient_1.prismaClient.user.update({
                                 where: {
                                     id: id
@@ -288,25 +287,29 @@ var UserService = /** @class */ (function () {
             });
         });
     };
-    UserService.prototype.getAllByProjeto = function () {
+    UserService.prototype.getAllByProjeto = function (userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var users;
+            var user, projeto;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findMany({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
                             where: {
-                                users_roles: {
-                                    some: {
-                                        projeto: {
-                                            active: true
-                                        }
-                                    }
-                                }
+                                id: userId
                             }
                         })];
                     case 1:
-                        users = _a.sent();
-                        return [2 /*return*/, users];
+                        user = _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.projeto.findMany({
+                                include: {
+                                    users: true
+                                },
+                                where: {
+                                    id: user === null || user === void 0 ? void 0 : user.id_projeto_active
+                                }
+                            })];
+                    case 2:
+                        projeto = _a.sent();
+                        return [2 /*return*/, projeto === null || projeto === void 0 ? void 0 : projeto.users];
                 }
             });
         });
@@ -413,15 +416,31 @@ var UserService = /** @class */ (function () {
     };
     UserService.prototype.sendMail = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var email, name, message, transporter, escapedEmail, escapedName, backgroundColor, textColor, mainBackgroundColor, buttonBackgroundColor, buttonBorderColor, buttonTextColor, url, linkLogin;
+            var accessToken, email, name, message, transporter, escapedEmail, escapedName, backgroundColor, textColor, mainBackgroundColor, buttonBackgroundColor, buttonBorderColor, buttonTextColor, url, linkLogin;
             return __generator(this, function (_a) {
+                accessToken = client.getAccessToken();
                 email = data.email, name = data.name, message = data.message;
-                console.log(process.env.GMAIL_USER, process.env.GMAIL_PWD);
                 transporter = nodemailer_1["default"].createTransport({
                     service: 'gmail',
+                    //host: process.env.SMTP_HOST || 'smtp.gmail.com',
+                    secure: true,
+                    port: 587,
                     auth: {
+                        type: 'OAuth2',
                         user: process.env.GMAIL_USER,
-                        pass: process.env.GMAIL_PWD
+                        //pass: process.env.GMAIL_PWD,
+                        clientId: process.env.GOOGLE_CLIENT_ID,
+                        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                        accessToken: accessToken
+                    }
+                });
+                transporter.verify(function (error, success) {
+                    if (error) {
+                        console.log(error);
+                    }
+                    else {
+                        console.log('Server is ready to take our messages');
                     }
                 });
                 escapedEmail = "" + email.replace(/\./g, "&#8203;.");
@@ -431,8 +450,8 @@ var UserService = /** @class */ (function () {
                 mainBackgroundColor = "#ffffff";
                 buttonBackgroundColor = "#346df1";
                 buttonBorderColor = "#346df1";
-                buttonTextColor = "#ffffff";
-                url = 'http://bomanejo.com';
+                buttonTextColor = "#444444";
+                url = 'https://bomanejo.online/login';
                 linkLogin = "\n            <a href=\"" + url + "\" target=\"_blank\" style=\"font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: " + buttonTextColor + "; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid " + buttonBorderColor + "; display: inline-block; font-weight: bold;\">\n                Login\n            </a>\n        ";
                 // send mail with defined transport object
                 transporter.sendMail({
@@ -440,7 +459,7 @@ var UserService = /** @class */ (function () {
                     to: email,
                     subject: "Acesso ao Software BOManejo Web",
                     text: "Usu\u00E1rio " + name + " foi cadastrado com Sucesso!",
-                    html: "\n            <body style=\"background: " + backgroundColor + ";\">\n                <table style=\"padding: 10px 0px 0px 10px;\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n                    <tr>\n                    <td align=\"center\" style=\"padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                        <strong>Seja bem vindo " + escapedName + "</strong>\n                    </td>\n                    </tr>\n                </table>\n                <table width=\"100%\" border=\"0\" cellspacing=\"20\" cellpadding=\"0\" style=\"background: " + mainBackgroundColor + "; max-width: 600px; margin: auto; border-radius: 10px;\">\n                    <tr>\n                    <td align=\"center\" style=\"padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                        Voc\u00EA pode realizar o login utilizando seu email: <strong>" + escapedEmail + "</strong>\n                    </td>\n                    </tr>\n                    <tr>\n                    <td align=\"center\" style=\"padding: 20px 0;\">\n                        <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n                        <tr>\n                            <td align=\"center\" style=\"border-radius: 5px; padding: 10px 20px; font-size: 18px; color: #ffffff;\" bgcolor=\"" + buttonBackgroundColor + "\">\n                                " + message + "\n                            </td>\n                        </tr>\n                        </table>\n                    </td>\n                    </tr>\n                    <tr>\n                    <td align=\"center\" style=\"padding: 0px 0px 10px 0px; font-size: 14px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                        Voc\u00EA n\u00E3o precisa retornar este email\n                    </td>\n                    </tr>\n                </table>\n            </body>"
+                    html: "\n                <body style=\"background: " + backgroundColor + ";\">\n                    <table style=\"padding: 10px 0px 0px 10px;\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n                        <tr>\n                        <td align=\"center\" style=\"padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                            <strong>Seja bem vindo " + escapedName + "</strong>\n                        </td>\n                        </tr>\n                    </table>\n                    <table width=\"100%\" border=\"0\" cellspacing=\"20\" cellpadding=\"0\" style=\"background: " + mainBackgroundColor + "; max-width: 600px; margin: auto; border-radius: 10px;\">\n                        <tr>\n                        <td align=\"center\" style=\"padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                            Voc\u00EA pode realizar o login utilizando seu email: <strong>" + escapedEmail + "</strong>\n                        </td>\n                        </tr>\n                        <tr>\n                        <td align=\"center\" style=\"padding: 20px 0;\">\n                            <table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n                            <tr>\n                                <td align=\"center\" style=\"border-radius: 5px; padding: 10px 20px; font-size: 18px; color: #ffffff;\" bgcolor=\"" + buttonBackgroundColor + "\">\n                                    " + message + "\n                                </td>\n                            </tr>\n                            </table>\n                        </td>\n                        </tr>\n                        <tr>\n                        <td align=\"center\" style=\"padding: 0px 0px 10px 0px; font-size: 14px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: " + textColor + ";\">\n                            Voc\u00EA n\u00E3o precisa retornar este email\n                        </td>\n                        </tr>\n                    </table>\n                </body>"
                 }, function (error, data) {
                     if (error) {
                         console.log('Error: ', error);
