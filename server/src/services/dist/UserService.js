@@ -423,16 +423,12 @@ var UserService = /** @class */ (function () {
                 transporter = nodemailer_1["default"].createTransport({
                     service: 'gmail',
                     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-                    secure: true,
+                    secure: false,
                     port: 587,
                     auth: {
-                        type: 'OAuth2',
+                        // type: 'OAuth2',
                         user: process.env.GMAIL_USER,
-                        //pass: process.env.GMAIL_PWD,
-                        clientId: process.env.GOOGLE_CLIENT_ID,
-                        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-                        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-                        accessToken: accessToken
+                        pass: process.env.GMAIL_PWD
                     }
                 });
                 transporter.verify(function (error, success) {
