@@ -54,7 +54,6 @@ var client_1 = require("@prisma/client");
 var googleapis_1 = require("googleapis");
 var client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
-var smtpTransport = require("nodemailer-smtp-transport");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
@@ -421,21 +420,25 @@ var UserService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 accessToken = client.getAccessToken();
                 email = data.email, name = data.name, message = data.message;
-                transporter = nodemailer_1["default"].createTransport(smtpTransport({
-                    // service: 'gmail',
+                transporter = nodemailer_1["default"].createTransport({
+                    service: 'gmail',
                     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-                    secureConnection: false,
-                    // secure: true,
+                    secure: false,
                     port: 587,
                     auth: {
-                        // type: 'OAuth2',
+                        type: 'OAuth2',
                         user: process.env.GMAIL_USER,
-                        pass: process.env.GMAIL_PWD
+                        // pass: process.env.GMAIL_PWD,
+                        clientId: process.env.GOOGLE_CLIENT_ID,
+                        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                        accessToken: accessToken
                     },
                     tls: {
-                        ciphers: 'SSLv3'
+                        // do not fail on invalid certs
+                        rejectUnauthorized: false
                     }
-                }));
+                });
                 transporter.verify(function (error, success) {
                     if (error) {
                         console.log(error);

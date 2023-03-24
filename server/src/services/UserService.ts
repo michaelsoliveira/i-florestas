@@ -11,7 +11,6 @@ import { google } from 'googleapis'
 
 const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
-var smtpTransport = require("nodemailer-smtp-transport");
 
 class UserService {
 
@@ -311,28 +310,25 @@ class UserService {
         const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
         
-        // let transporter = nodemailer.createTransport(smtpTransport({
-        //     // service: 'gmail',
-        //     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        //     secureConnection: false,
-        //     // secure: true,
-        //     port: 587,
-        //     auth: {
-        //         // type: 'OAuth2',
-        //         user: process.env.GMAIL_USER,
-        //         pass: process.env.GMAIL_PWD,
-        //         // clientId: process.env.GOOGLE_CLIENT_ID,
-        //         // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        //         // refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-        //         // accessToken: accessToken
-        //     },
-        //     tls: {
-        //         ciphers:'SSLv3'
-        //     }
-        // }));
         let transporter = nodemailer.createTransport({
-            name: 'localhost'
-        })
+            service: 'gmail',
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            secure: true,
+            port: 465,
+            auth: {
+                type: 'OAuth2',
+                user: process.env.GMAIL_USER,
+                // pass: process.env.GMAIL_PWD,
+                clientId: process.env.GOOGLE_CLIENT_ID,
+                clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+                refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+                accessToken: accessToken
+            },
+            // tls: {
+            // // do not fail on invalid certs
+            //     rejectUnauthorized: false,
+            // },
+        });
 
         transporter.verify(function(error, success) {
             if (error) {
