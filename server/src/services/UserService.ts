@@ -314,8 +314,9 @@ class UserService {
         let transporter = nodemailer.createTransport(smtpTransport({
             // service: 'gmail',
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secure: true,
-            port: 465,
+            secureConnection: false,
+            // secure: true,
+            port: 587,
             auth: {
                 // type: 'OAuth2',
                 user: process.env.GMAIL_USER,
@@ -324,6 +325,9 @@ class UserService {
                 // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 // refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
                 // accessToken: accessToken
+            },
+            tls: {
+                ciphers:'SSLv3'
             }
         }));
 
