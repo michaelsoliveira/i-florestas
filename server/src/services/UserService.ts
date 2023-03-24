@@ -11,6 +11,7 @@ import { google } from 'googleapis'
 
 const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
+var smtpTransport = require('nodemailer-smtp-transport');
 
 class UserService {
 
@@ -310,10 +311,10 @@ class UserService {
         const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
         
-        let transporter = nodemailer.createTransport({
+        let transporter = nodemailer.createTransport(smtpTransport({
             service: 'gmail',
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secure: false,
+            // secure: false,
             port: 587,
             auth: {
                 // type: 'OAuth2',
@@ -328,7 +329,7 @@ class UserService {
             // // do not fail on invalid certs
             //     rejectUnauthorized: false,
             // },
-        });
+        }));
 
         transporter.verify(function(error, success) {
             if (error) {
