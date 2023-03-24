@@ -54,6 +54,7 @@ var client_1 = require("@prisma/client");
 var googleapis_1 = require("googleapis");
 var client = new googleapis_1.google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN });
+var smtpTransport = require("nodemailer-smtp-transport");
 var UserService = /** @class */ (function () {
     function UserService() {
     }
@@ -420,7 +421,7 @@ var UserService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 accessToken = client.getAccessToken();
                 email = data.email, name = data.name, message = data.message;
-                transporter = nodemailer_1["default"].createTransport("SMTP", {
+                transporter = nodemailer_1["default"].createTransport(smtpTransport({
                     // service: 'gmail',
                     host: process.env.SMTP_HOST || 'smtp.gmail.com',
                     // secure: false,
@@ -430,7 +431,7 @@ var UserService = /** @class */ (function () {
                         user: process.env.GMAIL_USER,
                         pass: process.env.GMAIL_PWD
                     }
-                });
+                }));
                 transporter.verify(function (error, success) {
                     if (error) {
                         console.log(error);
