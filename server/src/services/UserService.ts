@@ -311,25 +311,28 @@ class UserService {
         const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
         
-        let transporter = nodemailer.createTransport(smtpTransport({
-            // service: 'gmail',
-            host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secureConnection: false,
-            // secure: true,
-            port: 587,
-            auth: {
-                // type: 'OAuth2',
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PWD,
-                // clientId: process.env.GOOGLE_CLIENT_ID,
-                // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-                // refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-                // accessToken: accessToken
-            },
-            tls: {
-                ciphers:'SSLv3'
-            }
-        }));
+        // let transporter = nodemailer.createTransport(smtpTransport({
+        //     // service: 'gmail',
+        //     host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        //     secureConnection: false,
+        //     // secure: true,
+        //     port: 587,
+        //     auth: {
+        //         // type: 'OAuth2',
+        //         user: process.env.GMAIL_USER,
+        //         pass: process.env.GMAIL_PWD,
+        //         // clientId: process.env.GOOGLE_CLIENT_ID,
+        //         // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        //         // refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+        //         // accessToken: accessToken
+        //     },
+        //     tls: {
+        //         ciphers:'SSLv3'
+        //     }
+        // }));
+        let transporter = nodemailer.createTransport({
+            name: 'localhost'
+        })
 
         transporter.verify(function(error, success) {
             if (error) {
