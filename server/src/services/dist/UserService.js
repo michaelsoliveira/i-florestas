@@ -420,10 +420,10 @@ var UserService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 accessToken = client.getAccessToken();
                 email = data.email, name = data.name, message = data.message;
-                transporter = nodemailer_1["default"].createTransport({
-                    service: 'gmail',
+                transporter = nodemailer_1["default"].createTransport("SMTP", {
+                    // service: 'gmail',
                     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-                    secure: false,
+                    // secure: false,
                     port: 587,
                     auth: {
                         // type: 'OAuth2',
