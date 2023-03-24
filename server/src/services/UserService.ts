@@ -310,10 +310,10 @@ class UserService {
         const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
         
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
+        let transporter = nodemailer.createTransport("SMTP", {
+            // service: 'gmail',
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
-            secure: false,
+            // secure: false,
             port: 587,
             auth: {
                 // type: 'OAuth2',
