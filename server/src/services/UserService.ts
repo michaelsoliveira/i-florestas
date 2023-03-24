@@ -315,7 +315,7 @@ class UserService {
             // service: 'gmail',
             host: process.env.SMTP_HOST || 'smtp.gmail.com',
             secure: true,
-            port: 587,
+            port: 465,
             auth: {
                 // type: 'OAuth2',
                 user: process.env.GMAIL_USER,

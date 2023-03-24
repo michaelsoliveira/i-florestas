@@ -424,8 +424,8 @@ var UserService = /** @class */ (function () {
                 transporter = nodemailer_1["default"].createTransport(smtpTransport({
                     // service: 'gmail',
                     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-                    // secure: false,
-                    port: 587,
+                    secure: true,
+                    port: 465,
                     auth: {
                         // type: 'OAuth2',
                         user: process.env.GMAIL_USER,
