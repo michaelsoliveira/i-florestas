@@ -310,6 +310,7 @@ class UserService {
     async sendMail(data: any) {
         const accessToken = client.getAccessToken() as any
         const { email, name, message } = data
+        console.log(process.env.GMAIL_USER, process.env.GMAIL_PWD, process.env.SMTP_HOST)
         
         let transporter = nodemailer.createTransport({
             // service: 'gmail',
@@ -318,8 +319,8 @@ class UserService {
             port: 587,
             auth: {
                 // type: 'OAuth2',
-                // user: process.env.GMAIL_USER,
-                // pass: process.env.GMAIL_PWD,
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PWD,
                 // clientId: process.env.GOOGLE_CLIENT_ID,
                 // clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 // refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
