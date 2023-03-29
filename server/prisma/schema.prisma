@@ -43,12 +43,32 @@ model Pessoa {
 }
 
 model ResponsavelTecnico {
-  id         String   @id(map: "PK_bee78e8f1760ccf9cff402118a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome       String   @db.VarChar(100)
-  crea       String?  @db.VarChar(50)
-  id_projeto String?  @db.Uuid
-  projeto    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                String   @id(map: "PK_bee78e8f1760ccf9cff402118a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  crea              String?  @db.VarChar(50)
+  numero_art        Int?
+  id_pessoa         String?  @db.Uuid
+  pessoa            PessoaFisica? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_projeto        String?  @db.Uuid
+  projeto           Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  resp_exec         ResponsavelExecucao[]
+  resp_elab         ResponsavelElaboracao[]
   @@map("responsavel_tecnico")
+}
+
+model ResponsavelExecucao {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_resp_tecnico  String?  @db.Uuid
+  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poa     Poa[]
+  @@map("responsavel_execucao")
+}
+
+model ResponsavelElaboracao {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_resp_tecnico  String?  @db.Uuid
+  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poa              Poa[]
+  @@map("responsavel_elaboracao")
 }
 
 model PessoaFisica {
@@ -61,8 +81,24 @@ model PessoaFisica {
   data_nascimento DateTime?
   id_pessoa       String?   @unique @db.Uuid
   pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
+  proponete       Proponente[]
+  resp_tecnico    ResponsavelTecnico[]
+  detentor        Detentor[]
   @@map("pessoa_fisica")
+}
+
+model Proponente {
+  id              String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_pessoa       String?   @unique @db.Uuid
+  pessoa_fisica   PessoaFisica?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poa             Poa[]
+}
+
+model Detentor {
+  id              String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id_pessoa       String?   @unique @db.Uuid
+  pessoa_fisica   PessoaFisica?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  poa             Poa[]
 }
 
 model Telefone {
@@ -107,25 +143,24 @@ model SituacaoPoa {
 model Poa {
   id                  String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   descricao           String?
-  data_ultimo_plan    DateTime @db.Timestamp(6)
+  data_ultimo_plan    DateTime? @db.Timestamp(6)
   pmfs                String?
-  nome_resp_elab      String?
-  crea_resp_elab      String?
-  art_resp_elab       String?
-  nome_resp_exec      String?
-  crea_resp_exec      String?
-  art_resp_exec       String?
-  nome_detentor       String?
-  cpf_detentor        String? @db.VarChar(12)
-  nome_proponente     String?
-  cpf_proponente      String? @db.VarChar(12)
-  id_situacao         String? @db.Uuid
   corte_maximo        Float?
+  id_resp_exec        String? @db.Uuid
+  resp_exec           ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_resp_elab        String? @db.Uuid
+  resp_elab           ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_detentor         String? @db.Uuid
+  detentor            Detentor? @relation(fields: [id_detentor], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_proponente       String? @db.Uuid
+  proponente          Proponente? @relation(fields: [id_proponente], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_situacao         String? @db.Uuid
   situacao_poa        SituacaoPoa? @relation(fields: [id_situacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user_id             String  @db.Uuid()
   user                User  @relation(fields: [user_id], references: [id])
   id_projeto          String  @db.Uuid()
   projeto             Projeto  @relation(fields: [id_projeto], references: [id])
+  @@map("poa")
 }
 
 model Arvore {
