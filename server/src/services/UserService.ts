@@ -319,8 +319,8 @@ class UserService {
             port: 587,
             auth: {
                 type: 'OAuth2',
-                // user: 'michaelsoliveira@gmail.com',
-                // pass: 'nfljqnambwnchrrx',
+                // user: process.env.GMAIL_USER,
+                // pass: process.env.GMAIL_PWD,
                 clientId: process.env.GOOGLE_CLIENT_ID,
                 clientSecret: process.env.GOOGLE_CLIENT_SECRET,
                 refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
