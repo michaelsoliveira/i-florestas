@@ -262,7 +262,6 @@ export const authOptions: NextAuthOptions = {
           }
         }
         if (account) {
-          console.log(user)
           await findProvider({ ...token, ...account})
           return {
             provider: account.provider,
