@@ -1,70 +1,41 @@
-import { useCallback, useContext, useEffect, useState, CSSProperties, useMemo } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
-import { AuthContext } from "../../contexts/AuthContext"
-import { useModalContext } from "contexts/ModalContext"
-import { LoadingContext } from "contexts/LoadingContext"
-import { CsvDataService } from "services/create-csv"
-import { useAppDispatch, useAppSelector } from "store/hooks"
-import { RootState } from "store"
-import { OptionType, Select } from "../Select"
-import { ProjetoContext } from "contexts/ProjetoContext"
-import { setUmf } from "../../store/umfSlice"
-import { setUpa } from "../../store/upaSlice"
+import { Input } from "../atoms/input"
+import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
-import CsvImport from "../Utils/CsvImport"
-import { useCSVReader } from 'react-papaparse'
-import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
-import { Button } from "../Utils/Button"
+import { AuthContext } from "../../contexts/AuthContext"
+import { OptionType, Select } from '../Select'
+import { setUmf } from "../../store/umfSlice"
+import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { RootState } from "../../store"
+import { UpaType } from "types/IUpaType"
 
-const styles = {
-    csvReader: {
-      display: 'flex',
-      flexDirection: 'row',
-      marginBottom: 10,
-    } as CSSProperties,
-    progressBarBackgroundColor: {
-      backgroundColor: 'green',
-    } as CSSProperties,
-  };
+import { useModalContext } from "contexts/ModalContext"
+import { styles } from "../Utils/styles"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Index = () => {
+const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {
     
-    const [uploading, setUploading] = useState<boolean>(false)
+    const [filteredUpa, setFilteredPoas] = useState<UpaType[]>(currentPoas)
     const { client } = useContext(AuthContext)
+    const [checkedPoas, setCheckedPoas] = useState<any>([])
+    const [sorted, setSorted] = useState(false)
+    const [umfs, setUmfs] = useState<any>()
+    const umf = useAppSelector((state: RootState) => state.umf)
+    const [selectedUmf, setSelectedUmf] = useState<OptionType>()
+    const dispatch = useAppDispatch()
+    const { projeto } = useContext(ProjetoContext)
+
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
-    const { setLoading } = useContext(LoadingContext)
-    const [umfs, setUmfs] = useState<any>()
-    const [upas, setUpas] = useState<any>()
-    const umf = useAppSelector((state: RootState) => state.umf)
-    const upa = useAppSelector((state: RootState) => state.upa)
-    const ut = useAppSelector((state: RootState) => state.ut)
-    const [selectedUmf, setSelectedUmf] = useState<OptionType>()
-    const [selectedUpa, setSelectedUpa] = useState<OptionType>()
-    const [selectedUt, setSelectedUt] = useState<OptionType>()
-    const { projeto } = useContext(ProjetoContext)
-    const [columnData, setColumnData] = useState([])
-    const [rowData, setRowData] = useState([])
-    const [encoding, setEncoding] = useState('iso-8859-1')
-    const { CSVReader } = useCSVReader()
 
-    const dispatch = useAppDispatch()
-      
-    const columns = useMemo(() => columnData, [columnData])
-    
-    const data = useMemo(() => rowData, [rowData])
-
-    const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-
-    const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
-        const data = response.data
-        
-        callback(data?.map((upa: any) => ({
-            value: upa.id,
-            label: upa.descricao
-        })))
+    const poaById = (id?: string) => {
+        return currentPoas.find((ut: UpaType) => ut.id === id)
     }
+
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${poaById(id)?.descricao} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
+    
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/umf/search/q?nome=${inputValue}`)
@@ -76,49 +47,33 @@ const Index = () => {
         })))
     }
 
-    const defaultUmfsOptions = useCallback(async() => {
-        const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
+    const umfExits = umfs?.length
+
+    const loadUmf = useCallback(() => {
         
-            const { umfs } = response.data
-            setUmfs(umfs)
+        if (umf && umfExits > 0) {
+            setSelectedUmf({
+                value: umf?.id,
+                label: umf?.nome
+            })
+        } else {
+            setSelectedUmf({} as any)
+        }
+        
+    }, [umf, umfExits])
 
-            const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
-            
-            if (compareUmf) {
-                setSelectedUmf({
-                    value: umf?.id,
-                    label: umf?.nome
-                })
-            }
+    useEffect(() => {
+        async function defaultOptions() {
+            const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
+                const { umfs } = response.data
+                setUmfs(umfs)
+        }
 
-            if (umfs.length === 0) {
-                setSelectedUmf({
-                    value: '0',
-                    label: 'Nenhuma UMF Cadastrada'
-                })
-            } 
-    }, [client, projeto?.id, umf.id, umf?.nome])
-
-    const defaultUpasOptions = useCallback(async () => {
-        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
-            const { upas } = response.data
-            setUpas(upas)
-            if (upas.length === 0) {
-                setSelectedUpa({
-                    value: '0',
-                    label: 'Nenhuma UPA Cadastrada'
-                })
-            }
-
-            const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
-
-            if (compareUpa) {
-                setSelectedUpa({
-                    value: upa?.id,
-                    label: upa?.descricao
-                })
-            }
-    }, [client, umf?.id, upa?.descricao, upa.id])
+        loadUmf()
+        
+        defaultOptions()
+        setFilteredPoas(currentPoas)
+    }, [currentPoas, currentPage, client, umf, loadUmf, projeto?.id])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -126,23 +81,10 @@ const Index = () => {
             nome: umf.label
         }))
         setSelectedUmf(umf)
-
-        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
-        const { upas } = response.data
+        const response = await client.get(`/poa?orderBy=nome&order=asc&umf=${umf.value}`)
+        const { poas } = response.data
         
-        setUpas(upas)
-    }
-
-    const selectUpa = async (upa: any) => {
-        const upaSelected = upas.find((u: any) => u.id === upa.value)
-        
-        dispatch(setUpa({
-            id: upaSelected.id,
-            descricao: upaSelected.descricao,
-            tipo: Number.parseInt(upaSelected.tipo)
-        }))
-        setSelectedUpa(upa)
-        
+        setFilteredPoas(poas)
     }
 
     function getUmfsDefaultOptions() {
@@ -154,242 +96,246 @@ const Index = () => {
         })
     }
 
-    function getUpasDefaultOptions() {
-        return upas?.map((upa: any) => {
-            return {
-                label: upa.descricao,
-                value: upa.id
-            }
-        })
-    }
-
-    const deleteArvore = useCallback(async (id?: string) => {
+    async function deletePoa(id?: string) {
         try {
-           
+            await client.delete(`/poa/single/${id}`)
+                .then(() => {
+                    alertService.success('O POA foi deletada com SUCESSO!!!')
+                    loadPoas()
+                    hideModal()
+                })
         } catch (error) {
             console.log(error)
         }       
-    }, [])
-    
-    const deleteSingleModal = useCallback((id?: string) => {
-            showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número?`})
-        }, [deleteArvore, showModal])
+    }
+
+    const handleSearch = async (query: string) => {
+        const paginatedData = {
+            currentPage: 1,
+            perPage,
+            orderBy,
+            order,
+            search: query
+        }
+        onPageChanged({
+            umf: umf.id,
+            ...paginatedData
+        })
+    }
+
+    const sortPoas = () => {
+        let sortedUpas: any = []        
+        sortedUpas = filteredUpa.sort((a: any, b: any) => {
+            return sorted
+                ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
+                : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
+        })
         
-    const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
+        setSorted(!sorted)
+        setFilteredPoas(sortedUpas)    
+    }
 
-    useEffect(() => {
-        defaultUmfsOptions()
-        defaultUpasOptions()
-    }, [defaultUmfsOptions, defaultUpasOptions])
+    const handleSelectPoa = (evt: any) => {
+        const poaId = evt.target.value
 
-    const deleteArvores = async () => {
-        setLoading(true)
+        if (!checkedPoas.includes(poaId)) {
+            setCheckedPoas([...checkedPoas, poaId])
+        } else {
+            setCheckedPoas(checkedPoas.filter((checkedPoaId: any) => {
+                return checkedPoaId !== poaId
+            }))
+        }
+    }
+
+    const handleSelectAllUpas = () => {
+        if (checkedPoas?.length < currentPoas?.length) {
+            setCheckedPoas(currentPoas.map(({ id }: any) => id));
+        } else {
+            setCheckedPoas([]);
+        }
+    };
+
+    const deletePoas = async () => {
         try {
-           
-        setLoading(false)
+            await client.delete('/poa/multiples', { data: { ids: checkedPoas} })
+                .then((response: any) => {
+                    setCheckedPoas([])
+                    alertService.success('As POAs foram deletadas com SUCESSO!!!')
+                    loadPoas()  
+                    hideModal()
+                })
         } catch (error) {
             console.log(error)
         }
-    }
-
-    const handleImportTemplate = async () => {
-        const data = upa.tipo === 0 ? [
-            { ut: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, ponto_gps: 1, latitude: 2.565, longitude: 0.56, obs: '', comentario: '' },
-            { ut: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, ponto_gps: 2, latitude: 7.544, longitude: 1.24, obs: '', comentario: '' },
-            { ut: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, ponto_gps: 3, latitude: 14.224, longitude: 4.67, obs: '', comentario: ''},
-        ] : [
-            { ut: 1, faixa: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, orient_x: 'D', coord_x: 7.5, coord_y: 10, obs: '', comentario: '' },
-            { ut: 1, faixa: 1, numero_arvore: 2, especie: 'Abiu', dap: 15, altura: 17.3, qf: 1, orient_x: 'D', coord_x: 12.5, coord_y: 10, obs: '', comentario: '' },
-            { ut: 1, faixa: 1, numero_arvore: 3, especie: 'Especie Teste', dap: 13.5, altura: 15.4, qf: 1, orient_x: 'D', coord_x: 22.4, coord_y: 10, obs: '', comentario: ''},
-        ]
-        
-        CsvDataService.exportToCsv(upa.tipo === 0 ? 'template_inventario_gps' : 'template_inventario_xy', data)
-    }
-
-    const handleImportInventario = async () => {
-        try {
-            setLoading(true)
-            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
-                columns: columnData,
-                data: rowData
-            })
-            .then((result: any) => {
-                const { data } = result
-                setLoading(false)
-                alertService.success(data?.message)
-                console.log(result)
-            })
-        } catch(e) {
-
-        }
-    }
-
-    const handleFocusBack = () => {
-        setUploading(false)
-        window.removeEventListener('focus', handleFocusBack)
-    }
-
-    const onUploadAccepted = (result: any) => {
-        const columns = result.data[0].map((col: any, index: any) => {
-            const accessor = col.split(" ").join("_").toLowerCase()
-            if (accessor === 'ut' || accessor === 'especie') {
-                return {
-                    Header: col,
-                    accessor: col.split(" ").join("_").toLowerCase(),
-                    Filter: SelectColumnFilter
-                }
-            } else {
-                return {
-                    Header: col,
-                    accessor
-                }
-            }
-        })
-
-        const rows = result.data.slice(1).map((row: any) => {
-            return row.reduce((acc: any, curr: any, index: any) => {
-                acc[columns[index].accessor] = curr;
-                return acc;
-            }, {})
-        })
-        
-        setColumnData(columns)
-        setRowData(rows)
     }
 
     return (
         <div>
-            
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <div></div>
-
-                    <CSVReader 
-                        config={
-                            {
-                                encoding
-                            }
-                        }
-                        onUploadAccepted={onUploadAccepted}
-                    >
-                    {({
-                        getRootProps,
-                        acceptedFile,
-                        ProgressBar,
-                        getRemoveFileProps,
-                    }: any) => (
-                        <>
-                        <div className="lg:grid lg:grid-cols-4">
-                            <div className="px-2 w-36">
-                                <select
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
-                                    value={encoding}
-                                    onChange={e => {
-                                        setEncoding(String(e.target.value))
-                                    }}
-                                >
-                                    {["iso-8859-1", "utf-8"].map(pageSize => (
-                                    <option key={pageSize} value={pageSize}>
-                                        {pageSize}
-                                    </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="">
-                                <a 
-                                    {...getRootProps()} 
-                                    className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold px-4 inline-flex align-middle hover:cursor-pointer"
-                                >
-                                    <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                                    </svg>
-                                    <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
-                                </a>
-                                </div>
-                                <div className="lg:grid lg:grid-cols-2 lg:gap-2">
-                                   
-                                    { acceptedFile && (
-                                        <>
-                                            <div className="inline-block align-baseline">{acceptedFile.name}</div>
-                                            <Button {...getRemoveFileProps()}
-                                                className="text-red-700 hover:cursor-pointer justify-center w-24"
-                                            >
-                                                Remove
-                                            </Button>
-                                    </>
-                                    )}
-                                   
-                                </div>
-                                <div className="col-span-4 pt-1">
-                                    <ProgressBar style={styles.progressBarBackgroundColor} />
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </CSVReader>        
-
-                <div>
-                    <a
-                        onClick={handleImportTemplate}
-                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
-
-                    <span className="ml-2">Modelo</span>
-                    </a>
-                </div>
-                <a
-                    onClick={handleImportInventario}
+            <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
+                <h1 className="font-medium text-2xl font-roboto text-white">Plano Operacional Anual</h1>
+                <Link
+                    href='/poa/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
-                    Importar
-                </a>
+                    Adicionar
+                </Link>
             </div>
+            {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="pb-2">
-                        <h1 className="text-xl font-semibold">Importação do Inventário</h1>
-                    </div>
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
-                            <div>
+                        <div className="flex flex-row w-2/12 px-2 items-center justify-between">
+                            <div className="w-full">
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                            </div>
+                            <select
+                                value={perPage}
+                                onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
+                                id="perPage" 
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            >
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
+                            <div className="w-3/12 flex items-center">UMF: </div>
+                            <div className="w-9/12">
                                 <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione UMF...',
-                                            value: ''
-                                        }
-                                    }
+
+                                    placeholder='Selecione UMF...'
                                     selectedValue={selectedUmf}
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
-                                    label="UMF:"
+                                    // label="Volume da Árvore"
                                     callback={selectUmf}
-                                />
-                            </div>
-                            <div>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione UPA...',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={selectedUpa}
-                                    defaultOptions={getUpasDefaultOptions()}
-                                    options={loadUpas}
-                                    label="UPA:"
-                                    callback={(e) => {selectUpa(e)}}
+                                    initialData={{
+                                        label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                    }}
                                 />
                             </div>
                         </div>
-     
+                        <div className="w-60 px-4">Pesquisar UPA:</div>
+                        <div className="w-full px-4">
+                            <Input
+                                label="Pesquisar Upa"
+                                id="search"
+                                name="search"
+                                onChange={(e: any) => handleSearch(e.target.value)}
+                                className=
+                                'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50'
+                                
+                            />
+                        </div>
                     </div>
-            <div className="mt-6">
-                <Table columns={columns} data={data} />
+                    <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
+                        <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
+                            {checkedPoas.length > 0 && (
+                                <div className="py-4">
+                                    <button
+                                        className="px-4 py-2 bg-red-600 text-white rounded-md"
+                                        onClick={deleteMultModal}
+                                    >
+                                        Deletar
+                                    </button>
+                                </div>
+                            )}
+                    <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="w-1/12">
+                                <div className="flex justify-center">
+                                <input  
+                                    checked={checkedPoas?.length === currentPoas?.length}
+                                    onChange={handleSelectAllUpas}                
+                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                />
+                                </div>
+                            </th>
+                            <th
+                                className="w-1/12"
+                                onClick={() => sortPoas()}
+                            >
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    Ano
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>        
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                                Descrição
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                                Tipo de Coordenada
+                            </th>
+                            <th
+                                scope="col"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                                Modelo de Equação
+                            </th>           
+                            <th scope="col" className="relative w-1/12 px-6 py-3">
+                                <span className="sr-only">Edit</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredUpa?.map((upa: UpaType) => (
+                        <tr key={upa.id}>
+                            <td className="flex justify-center">
+                                <input                 
+                                    value={upa?.id}
+                                    checked={checkedPoas.includes(upa?.id)}
+                                    onChange={handleSelectPoa}
+                                    id="upaId"
+                                    type="checkbox"
+                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                />    
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <div className="flex flex-col items-starter">
+                                    <div className="text-sm font-medium text-gray-900">{upa?.ano}</div>
+                                </div>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <div className="text-sm text-gray-900">{upa?.descricao}</div>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>GPS</div>) : (<div>Cartesiano X Y</div>) }</div>
+                                </span>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{ upa?.equacao_volume?.nome }</div>
+                                </span>
+                            </td>   
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                <Link href={`/upa/update/${upa.id}`}>
+                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                </Link>
+                                <Link href="#" onClick={() => deleteSingleModal(upa.id)}>
+                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
+                                </Link>
+                            </td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </table>
+                </div>
             </div>
-        </div>    
+            </div>
+        )}
+            
     </div>
     )
 }
