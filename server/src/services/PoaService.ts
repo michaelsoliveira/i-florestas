@@ -139,7 +139,7 @@ class PoaService {
         }
     }
 
-    async deleteUpas(poas: string[]): Promise<any> {
+    async deletePoas(poas: string[]): Promise<any> {
         await prismaClient.poa.deleteMany({
             where: {
                 id: { in: poas}
