@@ -16,7 +16,7 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {
     
-    const [filteredUpa, setFilteredPoas] = useState<UpaType[]>(currentPoas)
+    const [filteredUpas, setFilteredPoas] = useState<any[]>(currentPoas)
     const { client } = useContext(AuthContext)
     const [checkedPoas, setCheckedPoas] = useState<any>([])
     const [sorted, setSorted] = useState(false)
@@ -30,7 +30,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     const { visible } = store
 
     const poaById = (id?: string) => {
-        return currentPoas.find((ut: UpaType) => ut.id === id)
+        return currentPoas.find((poa: any) => poa.id === id)
     }
 
     const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${poaById(id)?.descricao} ?` })
@@ -125,7 +125,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     const sortPoas = () => {
         let sortedUpas: any = []        
-        sortedUpas = filteredUpa.sort((a: any, b: any) => {
+        sortedUpas = filteredUpas.sort((a: any, b: any) => {
             return sorted
                 ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
                 : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
@@ -270,6 +270,10 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
                                 Descrição
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
                             </th>
                             <th
                                 scope="col"
@@ -289,7 +293,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUpa?.map((upa: UpaType) => (
+                        {filteredUpas?.map((upa: UpaType) => (
                         <tr key={upa.id}>
                             <td className="flex justify-center">
                                 <input                 
