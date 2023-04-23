@@ -20,6 +20,7 @@ var RoleController_1 = require("../controllers/RoleController");
 var PermissionController_1 = require("../controllers/PermissionController");
 var ArvoreController_1 = require("../controllers/ArvoreController");
 var ObservacaoArvoreController_1 = require("../controllers/ObservacaoArvoreController");
+var PoaController_1 = require("../controllers/PoaController");
 var routes = express_1["default"].Router();
 routes.get('/users', auth_middleware_1.Authentication(), new UserController_1.UserController().findAll);
 routes.get('/users/provider/find-by-email', auth_middleware_1.Authentication(), new UserController_1.UserController().findByEmail);
@@ -92,6 +93,14 @@ routes.get('/upa/search/q', auth_middleware_1.Authentication(), new UpaControlle
 routes.put('/upa/:id', auth_middleware_1.Authentication(), new UpaController_1.UpaController().update);
 routes["delete"]('/upa/single/:id', auth_middleware_1.Authentication(), new UpaController_1.UpaController()["delete"]);
 routes["delete"]('/upa/multiples', auth_middleware_1.Authentication(), new UpaController_1.UpaController().deleteUpas);
+//Upa
+routes.post('/poa/', auth_middleware_1.Authentication(), new PoaController_1.PoaController().store);
+routes.get('/poa/', auth_middleware_1.Authentication(), new PoaController_1.PoaController().findAll);
+routes.get('/poa/:id', auth_middleware_1.Authentication(), new PoaController_1.PoaController().findOne);
+routes.get('/poa/search/q', auth_middleware_1.Authentication(), new PoaController_1.PoaController().search);
+routes.put('/poa/:id', auth_middleware_1.Authentication(), new PoaController_1.PoaController().update);
+routes["delete"]('/poa/single/:id', auth_middleware_1.Authentication(), new PoaController_1.PoaController()["delete"]);
+routes["delete"]('/poa/multiples', auth_middleware_1.Authentication(), new PoaController_1.PoaController().deletePoas);
 //Ut
 routes.post('/ut/', auth_middleware_1.Authentication(), new UtController_1.UtController().store);
 routes.get('/ut/', auth_middleware_1.Authentication(), new UtController_1.UtController().findAll);
@@ -152,6 +161,5 @@ routes.get('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreControll
 routes.put('/arvore/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().update);
 routes["delete"]('/arvore/single/:id', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController()["delete"]);
 routes["delete"]('/arvore/multiples', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().deleteArvores);
-routes.post('/arvore/load-csv', multerConfig.single('file'), new ArvoreController_1.ArvoreController().loadCSV);
 routes.post('/arvore/import-inventario', auth_middleware_1.Authentication(), new ArvoreController_1.ArvoreController().importInventario);
 exports["default"] = routes;

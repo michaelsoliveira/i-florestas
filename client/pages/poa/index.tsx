@@ -6,16 +6,15 @@ import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
-import Index from "components/upa/Index"
-import { UpaType } from "types/IUpaType"
+import Index from "components/poa/Index"
 
-const UpaIndex = () => {
+const PoaIndex = () => {
     const { client } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUpas, setCurrentUpas] = useState<UpaType[]>([])
+    const [currentPoas, setCurrentPoas] = useState<any[]>([])
     const [totalPages, setTotalPages] = useState(0)
     const [orderBy, setOrderBy] = useState('descricao')
     const [order, setOrder] = useState('asc')
@@ -25,22 +24,22 @@ const UpaIndex = () => {
     const router = useRouter()
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const loadUpas = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
+    const loadPoas = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const url = `/upa?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : pagination.perPage}&orderBy=${orderBy}&order=${order}&umf=${umf.id}`
+        const url = `/poa?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : pagination.perPage}&orderBy=${orderBy}&order=${order}&umf=${umf.id}`
         
         const { data } = await client.get(url)
         
         setTotalItems(data?.count)
-        setCurrentUpas(data?.upas)
+        setCurrentPoas(data?.poas)
         setLoading(false)
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, umf.id])
 
     useEffect(() => {  
-        loadUpas(itemsPerPage)
-    }, [itemsPerPage, loadUpas])
+        loadPoas(itemsPerPage)
+    }, [itemsPerPage, loadPoas])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -54,7 +53,7 @@ const UpaIndex = () => {
             umf,
             search
         } = paginatedData
-        const url = `/upa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}&search=${search}`
+        const url = `/poa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}&search=${search}`
 
         if (search) {
             
@@ -67,7 +66,7 @@ const UpaIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/upa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}`)
+            var { data } = await client.get(`/poa?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&umf=${umf}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -83,7 +82,7 @@ const UpaIndex = () => {
         setOrderBy(orderBy)
         setOrder(order)
         setTotalItems(data?.count)
-        setCurrentUpas(data?.upas)
+        setCurrentPoas(data?.poas)
         setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
     }
 
@@ -100,9 +99,9 @@ const UpaIndex = () => {
     return (
     <div>
         <Index
-            currentUpas={currentUpas}
+            currentPoas={currentPoas}
             loading={loading}
-            loadUpas={loadUpas}
+            loadPoas={loadPoas}
             currentPage={currentPage}
             orderBy={orderBy}
             order={order}
@@ -123,4 +122,4 @@ const UpaIndex = () => {
     )
 }
 
-export default withAuthentication(UpaIndex)
+export default withAuthentication(PoaIndex)

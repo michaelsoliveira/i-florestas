@@ -84,7 +84,7 @@ export const planejamento = [
 {
     name: 'Cadastro do POA',
     description: 'Cadastro do Planejamento Operacional Anual',
-    href: '#',
+    href: '/poa',
     icon: ChartBarIcon,
 },
 {

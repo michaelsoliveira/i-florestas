@@ -35,7 +35,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteUpa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${upaById(id)?.descricao} ?` })
-    const deleteMultModal = () => showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
+    const deleteMultModal = () => showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UPAs selecionadas' })
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {

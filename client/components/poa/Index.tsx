@@ -8,7 +8,6 @@ import { OptionType, Select } from '../Select'
 import { setUmf } from "../../store/umfSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
-import { UpaType } from "types/IUpaType"
 
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
@@ -16,7 +15,7 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {
     
-    const [filteredUpas, setFilteredPoas] = useState<any[]>(currentPoas)
+    const [filteredPoas, setFilteredPoas] = useState<any[]>(currentPoas)
     const { client } = useContext(AuthContext)
     const [checkedPoas, setCheckedPoas] = useState<any>([])
     const [sorted, setSorted] = useState(false)
@@ -33,8 +32,8 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         return currentPoas.find((poa: any) => poa.id === id)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${poaById(id)?.descricao} ?` })
-    const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' })
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir o POA ${poaById(id)?.descricao} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os POAs selecionados' })
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -124,15 +123,15 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     const sortPoas = () => {
-        let sortedUpas: any = []        
-        sortedUpas = filteredUpas.sort((a: any, b: any) => {
+        let setedPoas: any = []        
+        setedPoas = filteredPoas.sort((a: any, b: any) => {
             return sorted
                 ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
                 : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         })
         
         setSorted(!sorted)
-        setFilteredPoas(sortedUpas)    
+        setFilteredPoas(setedPoas)    
     }
 
     const handleSelectPoa = (evt: any) => {
@@ -147,7 +146,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         }
     }
 
-    const handleSelectAllUpas = () => {
+    const handleSelectAllPoas = () => {
         if (checkedPoas?.length < currentPoas?.length) {
             setCheckedPoas(currentPoas.map(({ id }: any) => id));
         } else {
@@ -216,10 +215,10 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 />
                             </div>
                         </div>
-                        <div className="w-60 px-4">Pesquisar UPA:</div>
+                        <div className="w-60 px-4">Pesquisar POA:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Upa"
+                                label="Pesquisar Poa"
                                 id="search"
                                 name="search"
                                 onChange={(e: any) => handleSearch(e.target.value)}
@@ -248,17 +247,17 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 <div className="flex justify-center">
                                 <input  
                                     checked={checkedPoas?.length === currentPoas?.length}
-                                    onChange={handleSelectAllUpas}                
+                                    onChange={handleSelectAllPoas}                
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                                 />
                                 </div>
                             </th>
                             <th
-                                className="w-1/12"
+                                className="w-4/12"
                                 onClick={() => sortPoas()}
                             >
                                 <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Ano
+                                    Descricao
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
                                         : (<ChevronDownIcon className="w-5 h-5" />)
@@ -267,67 +266,55 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </th>
                             <th
                                 scope="col"
-                                className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Descrição
+                                Situação
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
                                     : (<ChevronDownIcon className="w-5 h-5" />)
                                 }
-                            </th>
+                            </th>   
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Tipo de Coordenada
-                            </th>
-                            <th
-                                scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                Modelo de Equação
-                            </th>           
+                                Data Último Planejamento
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </th>  
                             <th scope="col" className="relative w-1/12 px-6 py-3">
                                 <span className="sr-only">Edit</span>
                             </th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUpas?.map((upa: UpaType) => (
-                        <tr key={upa.id}>
+                        {filteredPoas?.map((poa: any) => (
+                        <tr key={poa.id}>
                             <td className="flex justify-center">
                                 <input                 
-                                    value={upa?.id}
-                                    checked={checkedPoas.includes(upa?.id)}
+                                    value={poa?.id}
+                                    checked={checkedPoas.includes(poa?.id)}
                                     onChange={handleSelectPoa}
-                                    id="upaId"
+                                    id="poaId"
                                     type="checkbox"
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 />    
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{upa?.ano}</div>
+                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa.nome}</div>
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{upa?.descricao}</div>
+                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan.toString()}</div>
                             </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>GPS</div>) : (<div>Cartesiano X Y</div>) }</div>
-                                </span>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.equacao_volume?.nome }</div>
-                                </span>
-                            </td>   
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                <Link href={`/upa/update/${upa.id}`}>
+                                <Link href={`/poa/update/${poa.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => deleteSingleModal(upa.id)}>
+                                <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>
