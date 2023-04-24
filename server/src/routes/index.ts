@@ -19,6 +19,7 @@ import { RoleController } from "../controllers/RoleController"
 import { PermissionController } from "../controllers/PermissionController"
 import { ArvoreController } from "../controllers/ArvoreController"
 import { ObservacaoArvoreController } from "../controllers/ObservacaoArvoreController"
+import { PoaController } from "../controllers/PoaController"
 
 const routes = express.Router()
 
@@ -101,6 +102,15 @@ routes.get('/upa/search/q', Authentication(), new UpaController().search)
 routes.put('/upa/:id', Authentication(), new UpaController().update)
 routes.delete('/upa/single/:id', Authentication(), new UpaController().delete)
 routes.delete('/upa/multiples', Authentication(), new UpaController().deleteUpas)
+
+//Upa
+routes.post('/poa/', Authentication(), new PoaController().store)
+routes.get('/poa/', Authentication(), new PoaController().findAll)
+routes.get('/poa/:id', Authentication(), new PoaController().findOne)
+routes.get('/poa/search/q', Authentication(), new PoaController().search)
+routes.put('/poa/:id', Authentication(), new PoaController().update)
+routes.delete('/poa/single/:id', Authentication(), new PoaController().delete)
+routes.delete('/poa/multiples', Authentication(), new PoaController().deletePoas)
 
 //Ut
 routes.post('/ut/', Authentication(), new UtController().store)

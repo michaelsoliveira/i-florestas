@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Upa } from "@prisma/client";
+import { Prisma, Poa } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface UpaType {
@@ -11,83 +11,59 @@ export interface UpaType {
     spatial_ref_sys: number;
 }
 
-class UpaService {
-    async create(data: UpaType, userId: string): Promise<Upa> {
+class PoaService {
+    async create(data: UpaType, userId: string): Promise<Poa> {
 
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
         const projeto = await getProjeto(userId)
         
-        const upaExists = await prismaClient.upa.findFirst({
+        const poaExists = await prismaClient.poa.findFirst({
             where: {
                 AND: [
-                        {
-                            descricao: data.descricao
-                        },
-                        {
-                            umf: {
+                        { descricao: data.descricao },
+                        {    
                             projeto: {
                                 id: projeto?.id
                             }
                         }
-                    }
                 ]
             }
         })
         
-        if (upaExists) {
-            throw new Error('Já existe uma UPA cadastrada com este nome')
+        if (poaExists) {
+            throw new Error('Já existe uma Poa cadastrada com este nome')
         }
         
-        const upa = await prismaClient.upa.create({
+        const poa = await prismaClient.poa.create({
             data: {
                 descricao: data.descricao,
-                ano: Number.parseInt(data.ano),
-                tipo: Number.parseInt(data.tipo),
-                umf: {
+                projeto: {
                     connect: {
-                        id: data.umf
+                        id: projeto?.id
                     }
                 },
-                equacao_volume: {
+                user: {
                     connect: {
-                        id: data.equacao_volume
-                    }
-                },
-                spatial_ref_sys: {
-                    connect: {
-                        srid: data.spatial_ref_sys
+                        id: user?.id
                     }
                 }
-                    
             }
         })
 
-        return upa
+        return poa
     }
 
-    async update(id: string, data: UpaType): Promise<Upa> {
-        await prismaClient.upa.update({
+    async update(id: string, data: UpaType): Promise<Poa> {
+        await prismaClient.poa.update({
             where: {
                 id
             },
             data: {
                 descricao: data.descricao,
-                ano: Number.parseInt(data.ano),
-                tipo: Number.parseInt(data.tipo),
-                umf: {
-                    connect: {
-                        id: data.umf
-                    }
-                },
-                equacao_volume: {
-                    connect: {
-                        id: data.equacao_volume
-                    }
-                },
-                spatial_ref_sys: {
-                    connect: {
-                        srid: data.spatial_ref_sys
-                    }
-                }
                     
             }
         })
@@ -96,7 +72,7 @@ class UpaService {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.upa.delete({
+        await prismaClient.poa.delete({
             where: {
                 id
             }
@@ -132,38 +108,30 @@ class UpaService {
                     contains: search ? search : ''
                 },
                 AND: [
-                {
-                    id_umf: umf
-                },
-                    {
-                        umf: {
-                        projeto: {
-                            id: projeto?.id
-                        }
+                // { id_umf: umf },
+                {    
+                    projeto: {
+                        id: projeto?.id
                     }
+                    
                 }   
             ]
         }
         
-        const [upas, total] = await prismaClient.$transaction([
-            prismaClient.upa.findMany({
+        const [poas, total] = await prismaClient.$transaction([
+            prismaClient.poa.findMany({
                 where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
                 orderBy: {
                     ...orderByTerm
-                },
-                include: {
-                    equacao_volume: true,
-                    spatial_ref_sys: true,
-                    umf: true
                 }
             }),
-            prismaClient.upa.count({ where })
+            prismaClient.poa.count({ where })
         ])
 
         return {
-            data: upas,
+            data: poas,
             perPage,
             page,
             skip,
@@ -171,24 +139,22 @@ class UpaService {
         }
     }
 
-    async deleteUpas(upas: string[]): Promise<any> {
-        await prismaClient.upa.deleteMany({
+    async deletePoas(poas: string[]): Promise<any> {
+        await prismaClient.poa.deleteMany({
             where: {
-                id: { in: upas}
+                id: { in: poas}
             }
         })
         
     }
 
-    async search(userId: string, q: any) : Promise<Upa[]> {
+    async search(userId: string, q: any) : Promise<Poa[]> {
         const projeto = await getProjeto(userId)
-        const upas = await prismaClient.upa.findMany({
+        const upas = await prismaClient.poa.findMany({
             where: {
                 AND: [{
-                    umf: {
                         projeto: {
-                            id: projeto?.id
-                        }
+                            id: projeto?.id 
                     },
                     descricao: {
                         mode: Prisma.QueryMode.insensitive,
@@ -214,4 +180,4 @@ class UpaService {
     }
 }
 
-export default new UpaService
+export default new PoaService

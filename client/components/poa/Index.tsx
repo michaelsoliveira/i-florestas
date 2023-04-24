@@ -3,23 +3,21 @@ import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
-import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
 import { OptionType, Select } from '../Select'
 import { setUmf } from "../../store/umfSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
-import { UpaType } from "types/IUpaType"
 
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
-const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
+const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {
     
-    const [filteredUpa, setFilteredUpa] = useState<UpaType[]>(currentUpas)
+    const [filteredPoas, setFilteredPoas] = useState<any[]>(currentPoas)
     const { client } = useContext(AuthContext)
-    const [checkedUpas, setCheckedUpas] = useState<any>([])
+    const [checkedPoas, setCheckedPoas] = useState<any>([])
     const [sorted, setSorted] = useState(false)
     const [umfs, setUmfs] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
@@ -30,12 +28,12 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
 
-    const upaById = (id?: string) => {
-        return currentUpas.find((ut: UpaType) => ut.id === id)
+    const poaById = (id?: string) => {
+        return currentPoas.find((poa: any) => poa.id === id)
     }
 
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar UPA', onConfirm: () => { deleteUpa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir a UPA ${upaById(id)?.descricao} ?` })
-    const deleteMultModal = () => showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UPAs selecionadas' })
+    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir o POA ${poaById(id)?.descricao} ?` })
+    const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os POAs selecionados' })
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -73,8 +71,8 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         loadUmf()
         
         defaultOptions()
-        setFilteredUpa(currentUpas)
-    }, [currentUpas, currentPage, client, umf, loadUmf, projeto?.id])
+        setFilteredPoas(currentPoas)
+    }, [currentPoas, currentPage, client, umf, loadUmf, projeto?.id])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -82,10 +80,10 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
             nome: umf.label
         }))
         setSelectedUmf(umf)
-        const response = await client.get(`/upa?orderBy=nome&order=asc&umf=${umf.value}`)
-        const { upas } = response.data
+        const response = await client.get(`/poa?orderBy=nome&order=asc&umf=${umf.value}`)
+        const { poas } = response.data
         
-        setFilteredUpa(upas)
+        setFilteredPoas(poas)
     }
 
     function getUmfsDefaultOptions() {
@@ -97,12 +95,12 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         })
     }
 
-    async function deleteUpa(id?: string) {
+    async function deletePoa(id?: string) {
         try {
-            await client.delete(`/upa/single/${id}`)
+            await client.delete(`/poa/single/${id}`)
                 .then(() => {
-                    alertService.success('A UPA foi deletada com SUCESSO!!!')
-                    loadUpas()
+                    alertService.success('O POA foi deletada com SUCESSO!!!')
+                    loadPoas()
                     hideModal()
                 })
         } catch (error) {
@@ -124,45 +122,45 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
         })
     }
 
-    const sortUpas = () => {
-        let sortedUpas: any = []        
-        sortedUpas = filteredUpa.sort((a: any, b: any) => {
+    const sortPoas = () => {
+        let setedPoas: any = []        
+        setedPoas = filteredPoas.sort((a: any, b: any) => {
             return sorted
                 ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
                 : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         })
         
         setSorted(!sorted)
-        setFilteredUpa(sortedUpas)    
+        setFilteredPoas(setedPoas)    
     }
 
-    const handleSelectUpa = (evt: any) => {
-        const upaId = evt.target.value
+    const handleSelectPoa = (evt: any) => {
+        const poaId = evt.target.value
 
-        if (!checkedUpas.includes(upaId)) {
-            setCheckedUpas([...checkedUpas, upaId])
+        if (!checkedPoas.includes(poaId)) {
+            setCheckedPoas([...checkedPoas, poaId])
         } else {
-            setCheckedUpas(checkedUpas.filter((checkedUpaId: any) => {
-                return checkedUpaId !== upaId
+            setCheckedPoas(checkedPoas.filter((checkedPoaId: any) => {
+                return checkedPoaId !== poaId
             }))
         }
     }
 
-    const handleSelectAllUpas = () => {
-        if (checkedUpas?.length < currentUpas?.length) {
-            setCheckedUpas(currentUpas.map(({ id }: any) => id));
+    const handleSelectAllPoas = () => {
+        if (checkedPoas?.length < currentPoas?.length) {
+            setCheckedPoas(currentPoas.map(({ id }: any) => id));
         } else {
-            setCheckedUpas([]);
+            setCheckedPoas([]);
         }
     };
 
-    const deleteUpas = async () => {
+    const deletePoas = async () => {
         try {
-            await client.delete('/upa/multiples', { data: { ids: checkedUpas} })
+            await client.delete('/poa/multiples', { data: { ids: checkedPoas} })
                 .then((response: any) => {
-                    setCheckedUpas([])
-                    alertService.success('As UPAs foram deletadas com SUCESSO!!!')
-                    loadUpas()  
+                    setCheckedPoas([])
+                    alertService.success('As POAs foram deletadas com SUCESSO!!!')
+                    loadPoas()  
                     hideModal()
                 })
         } catch (error) {
@@ -173,9 +171,9 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     return (
         <div>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Unidade de Planejamento Anual</h1>
+                <h1 className="font-medium text-2xl font-roboto text-white">Plano Operacional Anual</h1>
                 <Link
-                    href='/upa/add'
+                    href='/poa/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
@@ -217,10 +215,10 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 />
                             </div>
                         </div>
-                        <div className="w-60 px-4">Pesquisar UPA:</div>
+                        <div className="w-60 px-4">Pesquisar POA:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Upa"
+                                label="Pesquisar Poa"
                                 id="search"
                                 name="search"
                                 onChange={(e: any) => handleSearch(e.target.value)}
@@ -232,7 +230,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     </div>
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedUpas.length > 0 && (
+                            {checkedPoas.length > 0 && (
                                 <div className="py-4">
                                     <button
                                         className="px-4 py-2 bg-red-600 text-white rounded-md"
@@ -248,18 +246,18 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             <th className="w-1/12">
                                 <div className="flex justify-center">
                                 <input  
-                                    checked={checkedUpas?.length === currentUpas?.length}
-                                    onChange={handleSelectAllUpas}                
+                                    checked={checkedPoas?.length === currentPoas?.length}
+                                    onChange={handleSelectAllPoas}                
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
                                 />
                                 </div>
                             </th>
                             <th
-                                className="w-1/12"
-                                onClick={() => sortUpas()}
+                                className="w-4/12"
+                                onClick={() => sortPoas()}
                             >
                                 <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Ano
+                                    Descricao
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
                                         : (<ChevronDownIcon className="w-5 h-5" />)
@@ -268,63 +266,55 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </th>
                             <th
                                 scope="col"
-                                className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Descrição
-                            </th>
+                                Situação
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </th>   
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Tipo de Coordenada
-                            </th>
-                            <th
-                                scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                Modelo de Equação
-                            </th>           
+                                Data Último Planejamento
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </th>  
                             <th scope="col" className="relative w-1/12 px-6 py-3">
                                 <span className="sr-only">Edit</span>
                             </th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUpa?.map((upa: UpaType) => (
-                        <tr key={upa.id}>
+                        {filteredPoas?.map((poa: any) => (
+                        <tr key={poa.id}>
                             <td className="flex justify-center">
                                 <input                 
-                                    value={upa?.id}
-                                    checked={checkedUpas.includes(upa?.id)}
-                                    onChange={handleSelectUpa}
-                                    id="upaId"
+                                    value={poa?.id}
+                                    checked={checkedPoas.includes(poa?.id)}
+                                    onChange={handleSelectPoa}
+                                    id="poaId"
                                     type="checkbox"
                                     className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                                 />    
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{upa?.ano}</div>
+                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa.nome}</div>
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{upa?.descricao}</div>
+                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan.toString()}</div>
                             </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.tipo == 0 ? (<div>GPS</div>) : (<div>Cartesiano X Y</div>) }</div>
-                                </span>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <span className="text-sm font-medium text-gray-900">
-                                    <div className="text-sm text-gray-500">{ upa?.equacao_volume?.nome }</div>
-                                </span>
-                            </td>   
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                <Link href={`/upa/update/${upa.id}`}>
+                                <Link href={`/poa/update/${poa.id}`}>
                                     <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
-                                <Link href="#" onClick={() => deleteSingleModal(upa.id)}>
+                                <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
                                 </Link>
                             </td>
