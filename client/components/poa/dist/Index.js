@@ -152,18 +152,13 @@ var Index = function (_a) {
         });
     }); };
     function getUmfsDefaultOptions() {
-        var data = umfs === null || umfs === void 0 ? void 0 : umfs.map(function (umf) {
+        var data = umfs === null || umfs === void 0 ? void 0 : umfs.map(function (umf, idx) {
             return {
                 label: umf.nome,
                 value: umf.id
             };
         });
-        return __spreadArrays([
-            {
-                label: 'Todas',
-                value: 'todas'
-            }
-        ], data);
+        return [{ label: 'Todos', value: 'todos' }].concat(data);
     }
     function deletePoa(id) {
         return __awaiter(this, void 0, void 0, function () {

@@ -60,13 +60,19 @@ var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
 var poaSlice_1 = require("../../store/poaSlice");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
+var ModalContext_1 = require("contexts/ModalContext");
+var styles_1 = require("../Utils/styles");
+var outline_1 = require("@heroicons/react/outline");
+var Execucao_1 = require("../responsavel/Execucao");
+var Elaboracao_1 = require("../responsavel/Elaboracao");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
     var _c = react_1.useState(), upa = _c[0], setUpa = _c[1];
     var _d = react_1.useState(), respTecElab = _d[0], setRespTecElab = _d[1];
     var _e = react_1.useState(), respTecExec = _e[0], setRespTecExec = _e[1];
-    var _f = react_1.useState(), upas = _f[0], setUpas = _f[1];
+    var _f = react_1.useState(), respTecElabs = _f[0], setRespTecElabs = _f[1];
+    var _g = react_1.useState(), upas = _g[0], setUpas = _g[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
@@ -74,6 +80,45 @@ var AddEdit = function (_a) {
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
+    var showModal = ModalContext_1.useModalContext().showModal;
+    var loadProjetos = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, _a, projetos, error, message, projeto_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, client.get("projeto")];
+                case 1:
+                    response = _b.sent();
+                    _a = response.data, projetos = _a.projetos, error = _a.error, message = _a.message;
+                    return [4 /*yield*/, client.get('/projeto/active/get')];
+                case 2:
+                    projeto_1 = (_b.sent()).data.projeto;
+                    if (error) {
+                        console.log(message);
+                    }
+                    _b.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); }, [session, client]);
+    var respTecElabModal = function () {
+        showModal({
+            title: 'Novo Técnico Elaboração',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement(Elaboracao_1["default"], { reloadData: loadProjetos })
+        });
+    };
+    var addModal = function () {
+        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit, { reloadData: loadProjetos }) });
+    };
+    var respTecExecModal = function () {
+        showModal({
+            title: 'Novo Técnico Execução',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement(Execucao_1["default"], { reloadData: loadProjetos })
+        });
+    };
     var loadUpas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
@@ -155,26 +200,31 @@ var AddEdit = function (_a) {
     }, [session, isAddMode, client, id, setValue]);
     react_1.useEffect(function () {
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var upasResponse, upas_1;
+            var upasResponse, upas_1, respTecElabResponse, respTecElabs_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 2];
+                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
                         return [4 /*yield*/, client.get("/upa?orderBy=nome&order=asc")];
                     case 1:
                         upasResponse = _a.sent();
                         upas_1 = upasResponse.data.upas;
+                        return [4 /*yield*/, client.get("/poa/resp-tec-elabs?orderBy=nome&order=asc")];
+                    case 2:
+                        respTecElabResponse = _a.sent();
+                        respTecElabs_1 = respTecElabResponse.data.respTecElabs;
                         setUpas(upas_1);
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
+                        setRespTecElabs(respTecElabs_1);
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         }); };
         defaultOptions();
     }, [session, client, projeto]);
-    var selectedEquacao = function (data) {
-        setUpa(data);
-        setValue('upa', data === null || data === void 0 ? void 0 : data.value);
+    var selectedRespTecElab = function (data) {
+        setRespTecElab(data);
+        setValue('respTecElab', data === null || data === void 0 ? void 0 : data.value);
     };
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -196,6 +246,14 @@ var AddEdit = function (_a) {
             return {
                 label: upa.descricao,
                 value: upa.id
+            };
+        });
+    }
+    function getRespTecElabOptions() {
+        return respTecElabs === null || respTecElabs === void 0 ? void 0 : respTecElabs.map(function (respTecElab) {
+            return {
+                label: respTecElab.nome,
+                value: respTecElab.id
             };
         });
     }
@@ -250,43 +308,52 @@ var AddEdit = function (_a) {
         });
     }
     return (React.createElement("div", null,
-        React.createElement("div", { className: "py-6 flex flex-col justify-center sm:py-12 bg-gray-50" },
+        React.createElement("div", { className: "py-6 flex flex-col justify-center sm:py-4 bg-gray-50" },
             React.createElement("div", { className: "relative py-3 w-11/12 max-w-none lg:max-w-5xl mx-auto" },
                 React.createElement("div", { className: 'flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl' },
                     React.createElement("div", null,
-                        React.createElement(LinkBack_1.LinkBack, { href: "/upa", className: "flex flex-col relative left-0 ml-4" })),
+                        React.createElement(LinkBack_1.LinkBack, { href: "/poa", className: "flex flex-col relative left-0 ml-4" })),
                     React.createElement("div", null, isAddMode ? (React.createElement("h1", { className: 'text-xl' }, "Cadastrar POA")) : (React.createElement("h1", { className: 'text-xl' }, "Editar POA"))),
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'flex flex-col lg:flex-row md:flex-row space-x-0 md:space-x-4' },
-                            React.createElement("div", { className: 'w-4/12' },
+                        React.createElement("div", { className: 'grid grid-cols-1 md:grid-cols-4 md:flex-row gap-4' },
+                            React.createElement("div", { className: 'col-span-4 md:col-span-3 pr-4' },
                                 React.createElement(FormInput_1.FormInput, { name: "descricao", label: "Descricao", register: register, errors: errors, rules: {
                                         required: 'O campo nome é obrigatório',
                                         minLength: {
                                             value: 3,
                                             message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
                                         }
-                                    }, id: "ano", className: "pb-4" })),
-                            React.createElement("div", { className: 'lg:w-3/12' },
-                                React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors, className: "pb-4" }))),
-                        React.createElement("div", { className: "border border-gray-200 p-4 mt-4 rounded-md" },
-                            React.createElement("span", { className: "text-gray-700" }, "Respons\u00E1veis T\u00E9cnicos"),
-                            React.createElement("div", { className: "mt-2" },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Coordenadas"),
-                                React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(Select_1.Select, { placeholder: 'Selecione o Sistema de Coordenadas', selectedValue: sysRef, defaultOptions: getSysRefDefaultOptions(), options: loadSysRefs, label: "Sistema de Coordenada", callback: selectedSysRef }))))),
-                    React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4' },
-                        React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                            React.createElement("span", { className: "text-gray-700 py-2" }, "Coordenadas"),
-                            React.createElement("div", { className: 'mt-2' })),
-                        React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                            React.createElement("span", { className: "text-gray-700 py-2" }, "Equa\u00E7\u00E3o"),
-                            React.createElement("div", { className: 'mt-2' }))),
-                    React.createElement("div", { className: 'flex items-center justify-between pt-4' },
-                        React.createElement(Link_1.Link, { href: "/upa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
-                        React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar")))))));
+                                    }, id: "descricao" })),
+                            React.createElement("div", { className: 'col-span-1' },
+                                React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors })),
+                            React.createElement("div", { className: "border border-gray-200 p-4 rounded-md col-span-4 relative" },
+                                React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Respons\u00E1veis T\u00E9cnicos"),
+                                React.createElement("div", { className: 'flex flex-col md:flex-row lg:space-x-4' },
+                                    React.createElement("div", { className: "flex flex-row items-end" },
+                                        React.createElement("div", null,
+                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Elabora\u00E7\u00E3o", callback: selectedRespTecElab })),
+                                        React.createElement("div", { className: 'w-10' },
+                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm' },
+                                                React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecElabModal },
+                                                    React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" }))))),
+                                    React.createElement("div", { className: "flex flex-row items-end" },
+                                        React.createElement("div", null,
+                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Execu\u00E7\u00E3o", callback: selectedRespTecElab })),
+                                        React.createElement("div", { className: 'w-10' },
+                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm' },
+                                                React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecExecModal },
+                                                    React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" })))))))),
+                        React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4' },
+                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
+                                React.createElement("span", { className: "text-gray-700 py-2" }, "Detentor"),
+                                React.createElement("div", { className: 'mt-2' })),
+                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
+                                React.createElement("span", { className: "text-gray-700 py-2" }, "Proponente"),
+                                React.createElement("div", { className: 'mt-2' }))),
+                        React.createElement("div", { className: 'flex items-center justify-between pt-4' },
+                            React.createElement(Link_1.Link, { href: "/poa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
+                            React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));
 };
-div >
-;
 exports["default"] = AddEdit;

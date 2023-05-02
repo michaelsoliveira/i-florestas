@@ -1,6 +1,6 @@
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
@@ -12,6 +12,18 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks'
 import { RootState } from '../../store'
 import { setPoa } from "../../store/poaSlice"
 import { ProjetoContext } from 'contexts/ProjetoContext'
+import { useModalContext } from 'contexts/ModalContext'
+import { styles } from '../Utils/styles'
+import {
+    PlusIcon,
+    // PencilIcon,
+    // TrashIcon,
+    // InboxInIcon,
+    // UsersIcon,
+    // CalculatorIcon
+} from '@heroicons/react/outline'
+import Execucao from '../responsavel/Execucao'
+import Elaboracao from '../responsavel/Elaboracao'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -27,6 +39,47 @@ const AddEdit = ({ id }: any) => {
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
+    const { showModal } = useModalContext()
+
+    const loadProjetos = useCallback(async () => {
+
+        if (typeof session !== typeof undefined){
+            
+            const response = await client.get(`projeto`)
+            const { projetos, error, message } = response.data
+            
+            const { data: { projeto } } = await client.get('/projeto/active/get')
+
+
+            
+            if (error) {
+                console.log(message)
+            }
+
+            
+
+            
+        }
+    }, [session, client])
+
+    const respTecElabModal = () => {
+        showModal({
+            title: 'Novo Técnico Elaboração',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Elaboracao reloadData={loadProjetos} />
+        })
+    }
+
+    const addModal = () => {
+        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
+        content: <AddEdit reloadData={loadProjetos} /> })
+    }
+
+    const respTecExecModal = () => {
+        showModal({
+            title: 'Novo Técnico Execução',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Execucao reloadData={loadProjetos} />
+        })
+    }
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/projeto/${projeto?.id}/upa?search=${inputValue}`)
@@ -88,10 +141,10 @@ const AddEdit = ({ id }: any) => {
     useEffect(() => {
         const defaultOptions = async () => {
             if (typeof session !== typeof undefined){
-                const upasResponse = await client.get(`/upa/${projeto?.id}?orderBy=nome&order=asc`)
+                const upasResponse = await client.get(`/upa?orderBy=nome&order=asc`)
                 const { upas } = upasResponse.data
 
-                const respTecElabResponse = await client.get(`/poa/${projeto?.id}/resp-tec-elabs?orderBy=nome&order=asc`)
+                const respTecElabResponse = await client.get(`/poa/resp-tec-elabs?orderBy=nome&order=asc`)
                 const { respTecElabs } = respTecElabResponse.data
 
                 setUpas(upas)
@@ -176,13 +229,13 @@ const AddEdit = ({ id }: any) => {
 
     return (
         <div>
-            <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
+            <div className="py-6 flex flex-col justify-center sm:py-4 bg-gray-50">
                 
                 <div className="relative py-3 w-11/12 max-w-none lg:max-w-5xl mx-auto">
                     <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl'>
                         
                         <div>
-                            <LinkBack href="/upa" className="flex flex-col relative left-0 ml-4" />
+                            <LinkBack href="/poa" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
                             {isAddMode ? (
@@ -195,8 +248,9 @@ const AddEdit = ({ id }: any) => {
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='flex flex-col lg:flex-row md:flex-row space-x-0 md:space-x-4'>
-                                <div className='w-4/12'>
+                            <div className='grid grid-cols-1 md:grid-cols-4 md:flex-row gap-4'>
+                                
+                                <div className='col-span-4 md:col-span-3 pr-4'>
                                     <FormInput
                                         name="descricao"
                                         label="Descricao"
@@ -211,12 +265,11 @@ const AddEdit = ({ id }: any) => {
                                                 }
                                             }
                                         }
-                                        id="ano"
-                                        className="pb-4"
+                                        id="descricao"
                                     />
                                 </div>
                             
-                                <div className='lg:w-3/12'>
+                                <div className='col-span-1'>
                                     <FormInput
                                         id="pmfs"
                                         name="pmfs"
@@ -224,30 +277,57 @@ const AddEdit = ({ id }: any) => {
                                         type="text"
                                         register={register}
                                         errors={errors}
-                                        className="pb-4"
                                     />
                                 </div>
-
-                            <div className="border border-gray-200 p-4 mt-4 rounded-md">
-                                <span className="text-gray-700">Responsáveis Técnicos</span>
-                                <div className="mt-2">
-                                <span className="text-gray-700 py-2">Responsavel Tecnico Pela Elaboracao</span>
-                                        <div className='mt-2'>
+                                
+                                <div className="border border-gray-200 p-4 rounded-md col-span-4 relative">
+                                <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
+                                    <div className='flex flex-col md:flex-row lg:space-x-4'>
+                                        <div className="flex flex-row items-end">
+                                            <div>
+                                                <Select
+                                                    placeholder='CPF ou iniciais do nome'
+                                                    selectedValue={respTecElab}
+                                                    defaultOptions={getRespTecElabOptions()}
+                                                    options={loadRespTecElab}
+                                                    label="pela Elaboração"
+                                                    callback={selectedRespTecElab}
+                                                />
+                                            </div>
+                                            <div className='w-10'>
+                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm'>
+                                                    <Link href="#" className="" onClick={respTecElabModal}>
+                                                        <PlusIcon className="h-6 w-6" aria-hidden="true" />
+                                                    </Link>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-row items-end">
+                                            <div>
                                             <Select
-                                                placeholder='Selecione o Sistema de Coordenadas'
+                                                placeholder='CPF ou iniciais do nome'
                                                 selectedValue={respTecElab}
                                                 defaultOptions={getRespTecElabOptions()}
                                                 options={loadRespTecElab}
-                                                label="Sistema de Coordenada"
+                                                label="pela Execução"
                                                 callback={selectedRespTecElab}
                                             />
                                             </div>
+                                            <div className='w-10'>
+                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm'>
+                                                    <Link href="#" className="" onClick={respTecExecModal}>
+                                                        <PlusIcon className="h-6 w-6" aria-hidden="true" />
+                                                    </Link>
+                                                </span>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
-                            </div>
                             <div className='flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4'>
                                 <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
-                                    <span className="text-gray-700 py-2">Coordenadas</span>
+                                    <span className="text-gray-700 py-2">Detentor</span>
                                         <div className='mt-2'>
                                             {/* <Select
                                                 placeholder='Selecione o Sistema de Coordenadas'
@@ -260,7 +340,7 @@ const AddEdit = ({ id }: any) => {
                                             </div>
                                     </div>
                                     <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
-                                    <span className="text-gray-700 py-2">Equação</span>
+                                    <span className="text-gray-700 py-2">Proponente</span>
                                     <div className='mt-2'>
                                         {/* <Select
                                             placeholder='Selecione uma Equacao'
@@ -274,7 +354,7 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/upa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
+                                <Link href="/poa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
                                 <button className="w-1/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
                             </div>
                         </form>
