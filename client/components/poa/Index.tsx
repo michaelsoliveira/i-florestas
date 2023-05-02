@@ -87,12 +87,14 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     function getUmfsDefaultOptions() {
-        return umfs?.map((umf: any) => {
+        const data = umfs?.map((umf: any, idx: any) => {
             return {
                 label: umf.nome,
                 value: umf.id
             }
         })
+
+        return [{ label: 'Todos', value: 'todos' }].concat(data)
     }
 
     async function deletePoa(id?: string) {
