@@ -284,7 +284,7 @@ const AddEdit = ({ id }: any) => {
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
                                     <div className='flex flex-col md:flex-row lg:space-x-4'>
                                         <div className="flex flex-row items-end">
-                                            <div>
+                                            <div className='w-[300px]'>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={respTecElab}
@@ -294,8 +294,8 @@ const AddEdit = ({ id }: any) => {
                                                     callback={selectedRespTecElab}
                                                 />
                                             </div>
-                                            <div className='w-10'>
-                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm'>
+                                            <div className='w-10 mb-[1px]'>
+                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md'>
                                                     <Link href="#" className="" onClick={respTecElabModal}>
                                                         <PlusIcon className="h-6 w-6" aria-hidden="true" />
                                                     </Link>
@@ -303,7 +303,7 @@ const AddEdit = ({ id }: any) => {
                                             </div>
                                         </div>
                                         <div className="flex flex-row items-end">
-                                            <div>
+                                            <div className='w-[300px]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
                                                 selectedValue={respTecElab}
@@ -313,8 +313,8 @@ const AddEdit = ({ id }: any) => {
                                                 callback={selectedRespTecElab}
                                             />
                                             </div>
-                                            <div className='w-10'>
-                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm'>
+                                            <div className='w-10 mb-[1px]'>
+                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md'>
                                                     <Link href="#" className="" onClick={respTecExecModal}>
                                                         <PlusIcon className="h-6 w-6" aria-hidden="true" />
                                                     </Link>
@@ -325,7 +325,7 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                     </div>
                                 </div>
-                            <div className='flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4'>
+                            <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
                                 <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
                                     <span className="text-gray-700 py-2">Detentor</span>
                                         <div className='mt-2'>
@@ -351,6 +351,19 @@ const AddEdit = ({ id }: any) => {
                                             callback={selectedEquacao}
                                         /> */}
                                     </div>
+                                    </div>
+                                </div>
+                                <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4 mt-2'>
+                                    <span className="text-gray-700 py-2">UTs</span>
+                                    <div className='mt-2 w-[300px]'>
+                                        <Select
+                                            placeholder='Selecione a UMF'
+                                            selectedValue={respTecElab}
+                                            defaultOptions={getRespTecElabOptions()}
+                                            options={loadRespTecElab}
+                                            label="UMF"
+                                            callback={selectedRespTecElab}
+                                        />
                                     </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>
