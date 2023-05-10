@@ -68,66 +68,44 @@ var Elaboracao_1 = require("../responsavel/Elaboracao");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
-    var _c = react_1.useState(), upa = _c[0], setUpa = _c[1];
-    var _d = react_1.useState(), respTecElab = _d[0], setRespTecElab = _d[1];
-    var _e = react_1.useState(), respTecExec = _e[0], setRespTecExec = _e[1];
-    var _f = react_1.useState(), respTecElabs = _f[0], setRespTecElabs = _f[1];
-    var _g = react_1.useState(), upas = _g[0], setUpas = _g[1];
+    var _c = react_1.useState(), respTecElab = _c[0], setRespTecElab = _c[1];
+    var _d = react_1.useState(), respTecExec = _d[0], setRespTecExec = _d[1];
+    var _e = react_1.useState(), respTecElabs = _e[0], setRespTecElabs = _e[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
-    var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var dispatch = hooks_1.useAppDispatch();
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
     var showModal = ModalContext_1.useModalContext().showModal;
-    var loadProjetos = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, _a, projetos, error, message, projeto_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, client.get("projeto")];
-                case 1:
-                    response = _b.sent();
-                    _a = response.data, projetos = _a.projetos, error = _a.error, message = _a.message;
-                    return [4 /*yield*/, client.get('/projeto/active/get')];
-                case 2:
-                    projeto_1 = (_b.sent()).data.projeto;
-                    if (error) {
-                        console.log(message);
-                    }
-                    _b.label = 3;
-                case 3: return [2 /*return*/];
-            }
+    var _f = react_1.useState(), umfs = _f[0], setUmfs = _f[1];
+    var _g = react_1.useState(), upas = _g[0], setUpas = _g[1];
+    var _h = react_1.useState(), uts = _h[0], setUts = _h[1];
+    var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
+    var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
+    var ut = hooks_1.useAppSelector(function (state) { return state.ut; });
+    var _j = react_1.useState(), selectedUmf = _j[0], setSelectedUmf = _j[1];
+    var _k = react_1.useState(), selectedUpa = _k[0], setSelectedUpa = _k[1];
+    var _l = react_1.useState(), selectedUt = _l[0], setSelectedUt = _l[1];
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
+    var loadPoas = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            console.log('Submited Data');
+            return [2 /*return*/];
         });
-    }); }, [session, client]);
-    var respTecElabModal = function () {
-        showModal({
-            title: 'Novo Técnico Elaboração',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
-            content: React.createElement(Elaboracao_1["default"], { reloadData: loadProjetos })
-        });
-    };
-    var addModal = function () {
-        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement(AddEdit, { reloadData: loadProjetos }) });
-    };
-    var respTecExecModal = function () {
-        showModal({
-            title: 'Novo Técnico Execução',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
-            content: React.createElement(Execucao_1["default"], { reloadData: loadProjetos })
-        });
-    };
+    }); }, []);
+    var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
+    // const arvoreById = useCallback((id?: string) => {
+    //     return currentArvores.find((arvore: any) => arvore.id === id)
+    // }, [currentArvores])
     var loadUpas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, upas;
+        var response, data;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/upa?search=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/upa/search/q?descricao=" + inputValue)];
                 case 1:
                     response = _a.sent();
-                    upas = response.data.upas;
-                    callback(upas === null || upas === void 0 ? void 0 : upas.map(function (upa) { return ({
+                    data = response.data;
+                    callback(data === null || data === void 0 ? void 0 : data.map(function (upa) { return ({
                         value: upa.id,
                         label: upa.descricao
                     }); }));
@@ -135,6 +113,213 @@ var AddEdit = function (_a) {
             }
         });
     }); };
+    var loadUts = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/ut/search/q?numero_ut=" + inputValue)];
+                case 1:
+                    response = _a.sent();
+                    data = response.data;
+                    callback(data === null || data === void 0 ? void 0 : data.map(function (ut) { return ({
+                        value: ut.id,
+                        label: ut.numero_ut
+                    }); }));
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/umf/search/q?nome=" + inputValue)];
+                case 1:
+                    response = _a.sent();
+                    data = response.data;
+                    callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
+                        value: umf.id,
+                        label: umf.nome
+                    }); }));
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, umfs, compareUmf;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
+                case 1:
+                    response = _a.sent();
+                    umfs = response.data.umfs;
+                    setUmfs(umfs);
+                    compareUmf = umfs ? umfs.find(function (u) { return u.id === umf.id; }) : null;
+                    if (compareUmf) {
+                        setSelectedUmf({
+                            value: umf === null || umf === void 0 ? void 0 : umf.id,
+                            label: umf === null || umf === void 0 ? void 0 : umf.nome
+                        });
+                    }
+                    if (umfs.length === 0) {
+                        setSelectedUmf({
+                            value: '0',
+                            label: 'Nenhuma UMF Cadastrada'
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, projeto === null || projeto === void 0 ? void 0 : projeto.id, umf.id, umf === null || umf === void 0 ? void 0 : umf.nome]);
+    var defaultUpasOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, upas, compareUpa;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/upa?orderBy=descricao&order=asc&umf=" + (umf === null || umf === void 0 ? void 0 : umf.id))];
+                case 1:
+                    response = _a.sent();
+                    upas = response.data.upas;
+                    setUpas(upas);
+                    if (upas.length === 0) {
+                        setSelectedUpa({
+                            value: '0',
+                            label: 'Nenhuma UPA Cadastrada'
+                        });
+                    }
+                    compareUpa = upas ? upas.find(function (u) { return u.id === upa.id; }) : null;
+                    if (compareUpa) {
+                        setSelectedUpa({
+                            value: upa === null || upa === void 0 ? void 0 : upa.id,
+                            label: upa === null || upa === void 0 ? void 0 : upa.descricao
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, umf === null || umf === void 0 ? void 0 : umf.id, upa === null || upa === void 0 ? void 0 : upa.descricao, upa.id]);
+    var defaultUtsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, uts, compareUt;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + (upa === null || upa === void 0 ? void 0 : upa.id))];
+                case 1:
+                    response = _a.sent();
+                    uts = response.data.uts;
+                    setUts(uts);
+                    if (uts && uts.length === 0) {
+                        setSelectedUt({
+                            value: '0',
+                            label: 'Nenhuma UT Cadastrada'
+                        });
+                    }
+                    compareUt = uts ? uts.find(function (u) { return u.id === ut.id; }) : null;
+                    if (compareUt) {
+                        setSelectedUt({
+                            value: ut === null || ut === void 0 ? void 0 : ut.id,
+                            label: ut === null || ut === void 0 ? void 0 : ut.numero_ut.toString()
+                        });
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client, upa === null || upa === void 0 ? void 0 : upa.id, ut.id, ut === null || ut === void 0 ? void 0 : ut.numero_ut]);
+    var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, upas;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    // dispatch(setUmf({
+                    //     id: umf.value,
+                    //     nome: umf.label
+                    // }))
+                    setSelectedUmf(umf);
+                    return [4 /*yield*/, client.get("/upa?orderBy=descricao&order=asc&umf=" + umf.value)];
+                case 1:
+                    response = _a.sent();
+                    upas = response.data.upas;
+                    setUpas(upas);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var selectUpa = function (upa) { return __awaiter(void 0, void 0, void 0, function () {
+        var upaSelected, response, uts;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    upaSelected = upas.find(function (u) { return u.id === upa.value; });
+                    // dispatch(setUpa({
+                    //     id: upaSelected.id,
+                    //     descricao: upaSelected.descricao,
+                    //     tipo: Number.parseInt(upaSelected.tipo)
+                    // }))
+                    setSelectedUpa(upa);
+                    return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upaSelected.id)];
+                case 1:
+                    response = _a.sent();
+                    uts = response.data.uts;
+                    // dispatch(setUt({
+                    //     id: uts[0]?.id,
+                    //     numero_ut: uts[0].numero_ut
+                    // }))
+                    setUts(uts);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var selectUt = function (ut) { return __awaiter(void 0, void 0, void 0, function () {
+        var utSelected;
+        return __generator(this, function (_a) {
+            utSelected = uts.find(function (u) { return u.id === ut.value; });
+            // dispatch(setUt({
+            //     id: utSelected.id,
+            //     numero_ut: utSelected.numero_ut,
+            // }))
+            setSelectedUt(ut);
+            return [2 /*return*/];
+        });
+    }); };
+    function getUmfsDefaultOptions() {
+        return umfs === null || umfs === void 0 ? void 0 : umfs.map(function (umf) {
+            return {
+                label: umf.nome,
+                value: umf.id
+            };
+        });
+    }
+    function getUpasDefaultOptions() {
+        return upas === null || upas === void 0 ? void 0 : upas.map(function (upa) {
+            return {
+                label: upa.descricao,
+                value: upa.id
+            };
+        });
+    }
+    function getUtsDefaultOptions() {
+        return uts === null || uts === void 0 ? void 0 : uts.map(function (ut) {
+            return {
+                label: ut.numero_ut,
+                value: ut.id
+            };
+        });
+    }
+    var respTecElabModal = function () {
+        showModal({
+            title: 'Novo Técnico Elaboração',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement(Elaboracao_1["default"], { reloadData: loadPoas })
+        });
+    };
+    var addModal = function () {
+        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement("div", null, "Content") });
+    };
+    var respTecExecModal = function () {
+        showModal({
+            title: 'Novo Técnico Execução',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement(Execucao_1["default"], { reloadData: loadPoas })
+        });
+    };
     var loadRespTecElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, respTecElab;
         return __generator(this, function (_a) {
@@ -158,6 +343,8 @@ var AddEdit = function (_a) {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
+                            defaultUmfsOptions();
+                            defaultUpasOptions();
                             if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
                             return [4 /*yield*/, client.get("/poa/" + id)
                                 // setUpa({
@@ -239,14 +426,6 @@ var AddEdit = function (_a) {
                 }
                 return [2 /*return*/];
             });
-        });
-    }
-    function getUpasDefaultOptions() {
-        return upas === null || upas === void 0 ? void 0 : upas.map(function (upa) {
-            return {
-                label: upa.descricao,
-                value: upa.id
-            };
         });
     }
     function getRespTecElabOptions() {
@@ -332,26 +511,40 @@ var AddEdit = function (_a) {
                                 React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Respons\u00E1veis T\u00E9cnicos"),
                                 React.createElement("div", { className: 'flex flex-col md:flex-row lg:space-x-4' },
                                     React.createElement("div", { className: "flex flex-row items-end" },
-                                        React.createElement("div", null,
+                                        React.createElement("div", { className: 'w-[300px]' },
                                             React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Elabora\u00E7\u00E3o", callback: selectedRespTecElab })),
-                                        React.createElement("div", { className: 'w-10' },
-                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm' },
+                                        React.createElement("div", { className: 'w-10 mb-[1px]' },
+                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md' },
                                                 React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecElabModal },
                                                     React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" }))))),
                                     React.createElement("div", { className: "flex flex-row items-end" },
-                                        React.createElement("div", null,
+                                        React.createElement("div", { className: 'w-[300px]' },
                                             React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Execu\u00E7\u00E3o", callback: selectedRespTecElab })),
-                                        React.createElement("div", { className: 'w-10' },
-                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-sm' },
+                                        React.createElement("div", { className: 'w-10 mb-[1px]' },
+                                            React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md' },
                                                 React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecExecModal },
                                                     React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" })))))))),
-                        React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4' },
+                        React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4' },
                             React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Detentor"),
-                                React.createElement("div", { className: 'mt-2' })),
+                                React.createElement("span", { className: "text-gray-700 py-2" }, "Informa\u00E7\u00F5es"),
+                                React.createElement("div", { className: 'mt-2' },
+                                    React.createElement(FormInput_1.FormInput, { className: 'w-48', id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors }))),
                             React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
                                 React.createElement("span", { className: "text-gray-700 py-2" }, "Proponente"),
                                 React.createElement("div", { className: 'mt-2' }))),
+                        React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4 mt-2' },
+                            React.createElement("span", { className: "text-gray-700 py-2" }, "UTs"),
+                            React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4" },
+                                React.createElement("div", null,
+                                    React.createElement(Select_1.Select, { initialData: {
+                                            label: 'Selecione UMF...',
+                                            value: ''
+                                        }, selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, label: "UMF:", callback: function (e) { selectUmf(e); } })),
+                                React.createElement("div", null,
+                                    React.createElement(Select_1.Select, { initialData: {
+                                            label: 'Selecione UPA...',
+                                            value: ''
+                                        }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } })))),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
                             React.createElement(Link_1.Link, { href: "/poa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
                             React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));

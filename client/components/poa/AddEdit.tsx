@@ -27,68 +27,229 @@ import Elaboracao from '../responsavel/Elaboracao'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [upa, setUpa] = useState<OptionType>()
     const [respTecElab, setRespTecElab] = useState<OptionType>()
     const [respTecExec, setRespTecExec] = useState<OptionType>()
     const [respTecElabs, setRespTecElabs] = useState<any>()
-    const [upas, setUpas] = useState<any>()
     const { client } = useContext(AuthContext)
-    const { projeto } = useContext(ProjetoContext)
-    const umf = useAppSelector((state: RootState) => state.umf)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
     const { showModal } = useModalContext()
+    const [umfs, setUmfs] = useState<any>()
+    const [upas, setUpas] = useState<any>()
+    const [uts, setUts] = useState<any>()
+    const umf = useAppSelector((state: RootState) => state.umf)
+    const upa = useAppSelector((state: RootState) => state.upa)
+    const ut = useAppSelector((state: RootState) => state.ut)
+    const [selectedUmf, setSelectedUmf] = useState<OptionType>()
+    const [selectedUpa, setSelectedUpa] = useState<OptionType>()
+    const [selectedUt, setSelectedUt] = useState<OptionType>()
+    const { projeto } = useContext(ProjetoContext)
 
-    const loadProjetos = useCallback(async () => {
+    const loadPoas = useCallback(async () => {
+        console.log('Submited Data')
+    }, [])
 
-        if (typeof session !== typeof undefined){
+    const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+    // const arvoreById = useCallback((id?: string) => {
+    //     return currentArvores.find((arvore: any) => arvore.id === id)
+    // }, [currentArvores])
+
+    const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((upa: any) => ({
+            value: upa.id,
+            label: upa.descricao
+        })))
+    }
+
+    const loadUts = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/ut/search/q?numero_ut=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((ut: any) => ({
+            value: ut.id,
+            label: ut.numero_ut
+        })))
+    }
+
+    const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/umf/search/q?nome=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((umf: any) => ({
+            value: umf.id,
+            label: umf.nome
+        })))
+    }
+
+    const defaultUmfsOptions = useCallback(async() => {
+        const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
+        
+            const { umfs } = response.data
+            setUmfs(umfs)
+
+            const compareUmf = umfs ? umfs.find((u: any) => u.id === umf.id) : null
             
-            const response = await client.get(`projeto`)
-            const { projetos, error, message } = response.data
-            
-            const { data: { projeto } } = await client.get('/projeto/active/get')
-
-
-            
-            if (error) {
-                console.log(message)
+            if (compareUmf) {
+                setSelectedUmf({
+                    value: umf?.id,
+                    label: umf?.nome
+                })
             }
 
-            
+            if (umfs.length === 0) {
+                setSelectedUmf({
+                    value: '0',
+                    label: 'Nenhuma UMF Cadastrada'
+                })
+            } 
+    }, [client, projeto?.id, umf.id, umf?.nome])
 
-            
-        }
-    }, [session, client])
+    const defaultUpasOptions = useCallback(async () => {
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
+            const { upas } = response.data
+            setUpas(upas)
+            if (upas.length === 0) {
+                setSelectedUpa({
+                    value: '0',
+                    label: 'Nenhuma UPA Cadastrada'
+                })
+            }
+
+            const compareUpa = upas ? upas.find((u: any) => u.id === upa.id) : null
+
+            if (compareUpa) {
+                setSelectedUpa({
+                    value: upa?.id,
+                    label: upa?.descricao
+                })
+            }
+    }, [client, umf?.id, upa?.descricao, upa.id])
+
+    const defaultUtsOptions = useCallback(async () => {
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa?.id}`)
+        const { uts } = response.data
+            setUts(uts)
+            if (uts && uts.length === 0) {
+                setSelectedUt({
+                    value: '0',
+                    label: 'Nenhuma UT Cadastrada'
+                })
+            }
+
+            const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
+
+            if (compareUt) {
+                setSelectedUt({
+                    value: ut?.id,
+                    label: ut?.numero_ut.toString()
+                })
+            }
+    }, [client, upa?.id, ut.id, ut?.numero_ut])
+
+    const selectUmf = async (umf: any) => {
+        // dispatch(setUmf({
+        //     id: umf.value,
+        //     nome: umf.label
+        // }))
+        setSelectedUmf(umf)
+        const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
+        const { upas } = response.data
+        
+        setUpas(upas)
+    }
+
+    const selectUpa = async (upa: any) => {
+        const upaSelected = upas.find((u: any) => u.id === upa.value)
+        
+        // dispatch(setUpa({
+        //     id: upaSelected.id,
+        //     descricao: upaSelected.descricao,
+        //     tipo: Number.parseInt(upaSelected.tipo)
+        // }))
+        setSelectedUpa(upa)
+
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
+        const { uts } = response.data
+
+        // dispatch(setUt({
+        //     id: uts[0]?.id,
+        //     numero_ut: uts[0].numero_ut
+        // }))
+        
+        setUts(uts)
+        
+    }
+
+    const selectUt = async (ut: any) => {
+        
+        const utSelected = uts.find((u: any) => u.id === ut.value)
+
+        // dispatch(setUt({
+        //     id: utSelected.id,
+        //     numero_ut: utSelected.numero_ut,
+        // }))
+        
+        setSelectedUt(ut)
+        // const paginatedData = {
+        //     currentPage: 1,
+        //     perPage,
+        //     orderBy,
+        //     order,
+        //     totalItems: filteredArvores.length
+        // }
+        
+        // onPageChanged(paginatedData)
+    }
+
+    function getUmfsDefaultOptions() {
+        return umfs?.map((umf: any) => {
+            return {
+                label: umf.nome,
+                value: umf.id
+            }
+        })
+    }
+
+    function getUpasDefaultOptions() {
+        return upas?.map((upa: any) => {
+            return {
+                label: upa.descricao,
+                value: upa.id
+            }
+        })
+    }
+
+    function getUtsDefaultOptions() {
+        return uts?.map((ut: any) => {
+            return {
+                label: ut.numero_ut,
+                value: ut.id
+            }
+        })
+    }
 
     const respTecElabModal = () => {
         showModal({
             title: 'Novo Técnico Elaboração',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Elaboracao reloadData={loadProjetos} />
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Elaboracao reloadData={loadPoas} />
         })
     }
 
     const addModal = () => {
         showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
-        content: <AddEdit reloadData={loadProjetos} /> })
+        content: <div>Content</div> })
     }
 
     const respTecExecModal = () => {
         showModal({
             title: 'Novo Técnico Execução',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Execucao reloadData={loadProjetos} />
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Execucao reloadData={loadPoas} />
         })
-    }
-
-    const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/projeto/${projeto?.id}/upa?search=${inputValue}`)
-        const { upas } = response.data
-        
-        callback(upas?.map((upa: any) => ({
-            value: upa.id,
-            label: upa.descricao
-        })))
     }
 
     const loadRespTecElab = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -103,7 +264,8 @@ const AddEdit = ({ id }: any) => {
 
     useEffect(() => {        
         async function loadPoa() {
-            
+            defaultUmfsOptions()
+            defaultUpasOptions()
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: poa } = await client.get(`/poa/${id}`)
@@ -169,15 +331,6 @@ const AddEdit = ({ id }: any) => {
             alertService.error(error.message);
         }
         
-    }
-
-    function getUpasDefaultOptions() {
-        return upas?.map((upa: any) => {
-            return {
-                label: upa.descricao,
-                value: upa.id
-            }
-        })
     }
 
     function getRespTecElabOptions() {
@@ -327,44 +480,62 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                             <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
                                 <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
-                                    <span className="text-gray-700 py-2">Detentor</span>
+                                    <span className="text-gray-700 py-2">Informações</span>
                                         <div className='mt-2'>
-                                            {/* <Select
-                                                placeholder='Selecione o Sistema de Coordenadas'
-                                                selectedValue={sysRef}
-                                                defaultOptions={getSysRefDefaultOptions()}
-                                                options={loadSysRefs}
-                                                label="Sistema de Coordenada"
-                                                callback={selectedSysRef}
-                                            /> */}
-                                            </div>
+                                        <FormInput
+                                            className='w-48'
+                                                id="corte_maximo"
+                                                name="corte_maximo"
+                                                label="Corte Máximo"
+                                                type="text"
+                                                register={register}
+                                                errors={errors}
+                                            />
+                                        </div>
                                     </div>
                                     <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
                                     <span className="text-gray-700 py-2">Proponente</span>
                                     <div className='mt-2'>
-                                        {/* <Select
-                                            placeholder='Selecione uma Equacao'
-                                            selectedValue={equacao_volume}
-                                            defaultOptions={getUpasDefaultOptions()}
-                                            options={loadUpas}
-                                            label="Volume da Árvore"
-                                            callback={selectedEquacao}
-                                        /> */}
+                                        
                                     </div>
                                     </div>
                                 </div>
+                                
                                 <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4 mt-2'>
                                     <span className="text-gray-700 py-2">UTs</span>
-                                    <div className='mt-2 w-[300px]'>
-                                        <Select
-                                            placeholder='Selecione a UMF'
-                                            selectedValue={respTecElab}
-                                            defaultOptions={getRespTecElabOptions()}
-                                            options={loadRespTecElab}
-                                            label="UMF"
-                                            callback={selectedRespTecElab}
-                                        />
-                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
+                            {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UMF...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUmf}
+                                    defaultOptions={getUmfsDefaultOptions()}
+                                    options={loadUmfs}
+                                    label="UMF:"
+                                    callback={(e) => {selectUmf(e)}}
+                                />
+                            </div>
+                            <div>
+                                <Select
+                                    initialData={
+                                        {
+                                            label: 'Selecione UPA...',
+                                            value: ''
+                                        }
+                                    }
+                                    selectedValue={selectedUpa}
+                                    defaultOptions={getUpasDefaultOptions()}
+                                    options={loadUpas}
+                                    label="UPA:"
+                                    callback={(e) => {selectUpa(e)}}
+                                />
+                            </div>
+                        </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>
                                 <Link href="/poa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
