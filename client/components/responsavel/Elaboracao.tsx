@@ -1,125 +1,142 @@
-import { useForm } from 'react-hook-form'
-import { FormInput } from '@/components/FormInput'
-import { useCallback, useContext, useEffect } from 'react'
-import alertService from '../../services/alert'
-import { AuthContext } from 'contexts/AuthContext'
-import { useModalContext } from 'contexts/ModalContext'
+import { createRef, forwardRef, useCallback, useContext, useEffect, useState } from "react";
+import { useForm, useFormState } from 'react-hook-form'
+import { useRouter } from "next/router"
+import alertService from "../../services/alert";
+import { useSession } from "next-auth/react";
+import { AuthContext } from "../../contexts/AuthContext";
+import { Link } from "../Link";
+import RadioGroup from "../Form/RadioGroup";
+import Option from "../Form/Option";
+import PessoaFisica from "../../components/detentor/PessoaFisica";
+import Endereco from "../endereco";
+import { ProjetoContext } from "contexts/ProjetoContext";
 
-type AddEditType = {
-    reloadData: () => void;
-    data?: any;
-}
-
-export const Elaboracao = ({reloadData, data}: AddEditType) => {
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm()
-    const isAddMode = !data
+const Elaboracao =  forwardRef<any, any>(
+    function AddEdit(
+      { styles, userId, sendForm, redirect, projetoId, roles}, 
+      ref
+    ) {
+    const router = useRouter()
     const { client } = useContext(AuthContext)
-    const { hideModal } = useModalContext()
+    const { data: session } = useSession()
+    const [ tipoPessoa, setTipoPessoa ] = useState(0)
+    const [ detentor, setDetentor ] = useState<any>()
+    const { projeto } = useContext(ProjetoContext)
+    const [estado, setEstado] = useState<any>()
+    const isAddMode = !projeto?.pessoa
 
-    const loadData = useCallback(() => {
-        if (data) {
-            for (const [key, value] of Object.entries(data)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                })
-            }
-        } else {
-            reset()
+    const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
+
+    function onSelect(index: number) {
+        setTipoPessoa(index)
+    }
+
+    const formRef = createRef<any>()
+
+    const submitForm = () => {
+        if (formRef.current) {
+            formRef.current.handleSubmit()
         }
-    }, [data, reset, setValue])
+    } 
 
+    const loadResponsavel = useCallback(async () => {
 
-    useEffect(() => {
-        loadData()
-    }, [loadData])
+            const { data } = await client.get(`/detentor/${projeto?.id}`)
+            setDetentor(data)
+            if (data?.tipo === 'J') { 
+                setTipoPessoa(1) 
+            } else {
+                setTipoPessoa(0)
+            }
+
+            setEstado({
+                label: data?.endereco?.estado?.nome,
+                value: data?.endereco?.estado?.id
+            })
+
+            for (const [key, value] of Object.entries(data)) {
+                if (key === 'tipo' && value === 'F')
+                {
+                    setValue("pessoaFisica".concat(key), value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })                     
+                } else if (key === 'tipo' && value === 'J') {
+                    setValue("pessoaJuridica".concat(key), value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })                     
+                } else {
+                    setValue(key, value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    }) 
+                }
+                
+            }
+        
+    }, [projeto, client, setValue])
+    
+    useEffect(() => {  
+        loadResponsavel()
+    }, [loadResponsavel])
 
     async function onSubmit(data: any) {
-        const preparedData = {
-            ...data
-        }
-
         try {
             return isAddMode
-                ? createProjeto(preparedData)
-                : updateProjeto(data?.id, preparedData)
+                ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
+                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id })
         } catch (error: any) {
             alertService.error(error.message);
         }
+        
     }
 
-    async function createProjeto(data: any) {
-        await client.post(`projeto`, data)
+    async function createDetentor(data: any) {
+        await client.post('/detentor', data)
             .then((response: any) => {
-                const { error, message } = response.data
-                if (!error) {
-                    alertService.success(message);
-                    hideModal()
-                    reloadData()
-                } else {
+                const { error, detentor, message } = response.data
+                if (error) {
                     alertService.error(message)
+                } else {
+                    alertService.success(`Responsável Técnico cadastrada com SUCESSO!!!`);
+                    router.push(`/poa`)
                 }
             }) 
     }
 
-    async function updateProjeto(id: string, data: any) {
-
-        await client.put(`/projeto/${id}`, data)
+    async function updateDetentor(id: string, data: any) {
+        
+        await client.put(`/detentor/${id}`, data)
             .then((response: any) => {
-                const { error, message } = response.data
-                if (!error) {
-                    alertService.success(message);
-                    hideModal()
-                    reloadData()
-                } else {
-                    alertService.error(message)
-                }
+                const detentor = response.data
+                alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
+                router.push('/poa')
             })
     }
-
+    
     return (
-        <div className='mt-4 p-4 border-gray-200 border rounded-md'>
-            <form onSubmit={handleSubmit(onSubmit)} id="hook-form">
-                <div className='w-full'>
-                    <FormInput
-                        layout='floatLabel'
-                        id="nome"
-                        name="nome"
-                        label="Nome"
-                        register={register}
-                        errors={errors}
-                        rules={
-                            {
-                                required: 'O campo nome é obrigatório',
-                                minLength: {
-                                    value: 3,
-                                    message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                }
-                            }}
-                        className="lg:w-full pb-4"
-                    />
+        <div className="px-4 py-4">
+            <div className="mt-10 sm:mt-0">
+                <div className="md:grid md:grid-cols-2 md:gap-6">
+                    <div className="mt-5 md:mt-0 md:col-span-2">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="shadow sm:rounded-md">
+                        <div className="px-4 py-5 bg-white sm:p-6 w-full">
+                            <div className="grid grid-cols-6 gap-6 w-full">    
+                                <div className="col-span-6">
+                                    <PessoaFisica register={register} errors={errors} />
+                                    <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                    </div>
                 </div>
-                <FormInput
-                        layout='floatLabel'
-                        id="crea"
-                        name="crea"
-                        label="crea"
-                        register={register}
-                        errors={errors}
-                        rules={
-                            {
-                                required: 'O campo nome é obrigatório',
-                                minLength: {
-                                    value: 3,
-                                    message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                                }
-                            }}
-                        className="lg:w-24 pb-4"
-                    />
-                
-            </form>
+            </div>
         </div>
     )
-}
+})
 
 export default Elaboracao

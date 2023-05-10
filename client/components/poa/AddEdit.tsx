@@ -44,7 +44,7 @@ const AddEdit = ({ id }: any) => {
     const ut = useAppSelector((state: RootState) => state.ut)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
-    const [selectedUt, setSelectedUt] = useState<OptionType>()
+    const [checkedUts, setCheckedUts] = useState<any>([])
     const { projeto } = useContext(ProjetoContext)
 
     const loadPoas = useCallback(async () => {
@@ -63,16 +63,6 @@ const AddEdit = ({ id }: any) => {
         callback(data?.map((upa: any) => ({
             value: upa.id,
             label: upa.descricao
-        })))
-    }
-
-    const loadUts = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/ut/search/q?numero_ut=${inputValue}`)
-        const data = response.data
-        
-        callback(data?.map((ut: any) => ({
-            value: ut.id,
-            label: ut.numero_ut
         })))
     }
 
@@ -130,27 +120,6 @@ const AddEdit = ({ id }: any) => {
             }
     }, [client, umf?.id, upa?.descricao, upa.id])
 
-    const defaultUtsOptions = useCallback(async () => {
-        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa?.id}`)
-        const { uts } = response.data
-            setUts(uts)
-            if (uts && uts.length === 0) {
-                setSelectedUt({
-                    value: '0',
-                    label: 'Nenhuma UT Cadastrada'
-                })
-            }
-
-            const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
-
-            if (compareUt) {
-                setSelectedUt({
-                    value: ut?.id,
-                    label: ut?.numero_ut.toString()
-                })
-            }
-    }, [client, upa?.id, ut.id, ut?.numero_ut])
-
     const selectUmf = async (umf: any) => {
         // dispatch(setUmf({
         //     id: umf.value,
@@ -185,27 +154,6 @@ const AddEdit = ({ id }: any) => {
         
     }
 
-    const selectUt = async (ut: any) => {
-        
-        const utSelected = uts.find((u: any) => u.id === ut.value)
-
-        // dispatch(setUt({
-        //     id: utSelected.id,
-        //     numero_ut: utSelected.numero_ut,
-        // }))
-        
-        setSelectedUt(ut)
-        // const paginatedData = {
-        //     currentPage: 1,
-        //     perPage,
-        //     orderBy,
-        //     order,
-        //     totalItems: filteredArvores.length
-        // }
-        
-        // onPageChanged(paginatedData)
-    }
-
     function getUmfsDefaultOptions() {
         return umfs?.map((umf: any) => {
             return {
@@ -224,19 +172,36 @@ const AddEdit = ({ id }: any) => {
         })
     }
 
-    function getUtsDefaultOptions() {
-        return uts?.map((ut: any) => {
-            return {
-                label: ut.numero_ut,
-                value: ut.id
-            }
-        })
+    const handleSelectUt = (evt: any) => {
+        const utId = evt.target.value
+
+        if (!checkedUts.includes(utId)) {
+            setCheckedUts([...checkedUts, utId])
+        } else {
+            setCheckedUts(checkedUts.filter((checkedUtId: any) => {
+                return checkedUtId !== utId
+            }))
+        }
+    }
+
+    const handleSelectAllUts = () => {
+        if (checkedUts?.length < uts?.length) {
+            setCheckedUts(uts.map(({ id }: any) => id));
+        } else {
+            setCheckedUts([]);
+        }
+    };
+
+    const saveRespTecElab = () => {
+        console.log('salvou resp tec elab')
     }
 
     const respTecElabModal = () => {
         showModal({
             title: 'Novo Técnico Elaboração',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Elaboracao reloadData={loadPoas} />
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', onConfirm: saveRespTecElab,
+            content: <Elaboracao reloadData={loadPoas} />
         })
     }
 
@@ -298,7 +263,7 @@ const AddEdit = ({ id }: any) => {
         
         loadPoa()
 
-    }, [session, isAddMode, client, id, setValue])
+    }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
         const defaultOptions = async () => {
@@ -306,7 +271,7 @@ const AddEdit = ({ id }: any) => {
                 const upasResponse = await client.get(`/upa?orderBy=nome&order=asc`)
                 const { upas } = upasResponse.data
 
-                const respTecElabResponse = await client.get(`/poa/resp-tec-elabs?orderBy=nome&order=asc`)
+                const respTecElabResponse = await client.get(`/poa/resp-tec-elab?orderBy=nome&order=asc`)
                 const { respTecElabs } = respTecElabResponse.data
 
                 setUpas(upas)
@@ -432,6 +397,17 @@ const AddEdit = ({ id }: any) => {
                                         errors={errors}
                                     />
                                 </div>
+                                <div>
+                                    <FormInput
+                                        className='w-48'
+                                            id="corte_maximo"
+                                            name="corte_maximo"
+                                            label="Corte Máximo"
+                                            type="text"
+                                            register={register}
+                                            errors={errors}
+                                        />
+                                    </div>
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-4 relative">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
@@ -479,30 +455,14 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                 </div>
                             <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
-                                <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
-                                    <span className="text-gray-700 py-2">Informações</span>
-                                        <div className='mt-2'>
-                                        <FormInput
-                                            className='w-48'
-                                                id="corte_maximo"
-                                                name="corte_maximo"
-                                                label="Corte Máximo"
-                                                type="text"
-                                                register={register}
-                                                errors={errors}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4'>
-                                    <span className="text-gray-700 py-2">Proponente</span>
-                                    <div className='mt-2'>
+                                <div className='border border-gray-200 rounded-lg p-4 w-full'>
+                                    <span className="text-gray-700 py-2">Detentor</span>
                                         
-                                    </div>
                                     </div>
                                 </div>
                                 
-                                <div className='lg:w-1/2 border border-gray-200 rounded-lg p-4 mt-2'>
-                                    <span className="text-gray-700 py-2">UTs</span>
+                                <div className='border border-gray-200 rounded-lg p-4 mt-5 relative'>
+                                    <span className="text-gray-700 py-2 absolute -top-5 bg-white px-2">UTs</span>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
@@ -535,11 +495,56 @@ const AddEdit = ({ id }: any) => {
                                     callback={(e) => {selectUpa(e)}}
                                 />
                             </div>
-                        </div>
+                            <div id='uts'>
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th className="w-1/12">
+                                            <div className="flex justify-center">
+                                            <input  
+                                                checked={checkedUts?.length === uts?.length}
+                                                onChange={handleSelectAllUts}                
+                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                            />
+                                            </div>
+                                        </th>
+                                        <th
+                                            className="w-4/12"
+                                        >
+                                            <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                                UTs
+                                            </div>        
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {uts?.map((ut: any) => (
+                                    <tr key={ut.id}>
+                                        <td className="flex justify-center">
+                                            <input                 
+                                                value={ut?.id}
+                                                checked={checkedUts.includes(ut?.id)}
+                                                onChange={handleSelectUt}
+                                                id="poaId"
+                                                type="checkbox"
+                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                            />    
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                            <div className="flex flex-col items-starter">
+                                                <div className="text-sm font-medium text-gray-900">{ut?.numero_ut}</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    ))}
+                                </tbody>
+                                </table>
+                            </div>
+                            </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/poa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
-                                <button className="w-1/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                <Link href="/poa" className="text-center w-1/5 bg-gray-100 transition-all delay-150 hover:bg-gray-200 duration-200 p-3 rounded-md">Voltar</Link>
+                                <button className="w-1/5 bg-green-600 text-white p-3 rounded-md transition-all delay-150 hover:bg-green-700 duration-200">Salvar</button>
                             </div>
                         </form>
                     </div>

@@ -83,7 +83,7 @@ const Tabs = () => {
                   </span>
                   Cadastrar
                 </button>
-                </div>
+              </div>
               
               
             </Tab.Panel>
