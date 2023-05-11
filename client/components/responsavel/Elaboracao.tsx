@@ -13,7 +13,7 @@ import { ProjetoContext } from "contexts/ProjetoContext";
 
 const Elaboracao =  forwardRef<any, any>(
     function AddEdit(
-      { styles, userId, sendForm, redirect, projetoId, roles}, 
+      { responseData }, 
       ref
     ) {
     const router = useRouter()
@@ -30,14 +30,6 @@ const Elaboracao =  forwardRef<any, any>(
     function onSelect(index: number) {
         setTipoPessoa(index)
     }
-
-    const formRef = createRef<any>()
-
-    const submitForm = () => {
-        if (formRef.current) {
-            formRef.current.handleSubmit()
-        }
-    } 
 
     const loadResponsavel = useCallback(async () => {
 
@@ -82,6 +74,7 @@ const Elaboracao =  forwardRef<any, any>(
     }, [loadResponsavel])
 
     async function onSubmit(data: any) {
+        responseData(data)
         try {
             return isAddMode
                 ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
@@ -120,7 +113,7 @@ const Elaboracao =  forwardRef<any, any>(
             <div className="mt-10 sm:mt-0">
                 <div className="md:grid md:grid-cols-2 md:gap-6">
                     <div className="mt-5 md:mt-0 md:col-span-2">
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="shadow sm:rounded-md">
                         <div className="px-4 py-5 bg-white sm:p-6 w-full">
                             <div className="grid grid-cols-6 gap-6 w-full">    
@@ -132,6 +125,7 @@ const Elaboracao =  forwardRef<any, any>(
                         </div>
                         </div>
                     </form>
+                    
                     </div>
                 </div>
             </div>

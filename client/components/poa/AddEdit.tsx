@@ -1,6 +1,6 @@
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { createRef, useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
@@ -50,6 +50,19 @@ const AddEdit = ({ id }: any) => {
     const loadPoas = useCallback(async () => {
         console.log('Submited Data')
     }, [])
+
+    const formRef = createRef<any>()
+
+    const dataResponseElab = (data: any) => {
+        console.log(data)
+        if (formRef.current) {
+            formRef.current.submit()
+        }
+    } 
+
+    const returnData = (data: any) => {
+        console.log(data)
+    }
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     // const arvoreById = useCallback((id?: string) => {
@@ -192,28 +205,29 @@ const AddEdit = ({ id }: any) => {
         }
     };
 
-    const saveRespTecElab = () => {
-        console.log('salvou resp tec elab')
+    const responseTecElab = (data: any) => {
+        console.log(data)
+    }
+
+    const responseTecExec = (data: any) => {
+        console.log(data)
     }
 
     const respTecElabModal = () => {
         showModal({
             title: 'Novo Técnico Elaboração',
             size: 'max-w-4xl',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', onConfirm: saveRespTecElab,
-            content: <Elaboracao reloadData={loadPoas} />
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><Elaboracao responseData={responseTecElab} /></div>
         })
-    }
-
-    const addModal = () => {
-        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', 
-        content: <div>Content</div> })
     }
 
     const respTecExecModal = () => {
         showModal({
-            title: 'Novo Técnico Execução',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar', content: <Execucao reloadData={loadPoas} />
+            title: 'Novo Técnico Elaboração',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><Execucao responseData={responseTecExec} /></div>
         })
     }
 

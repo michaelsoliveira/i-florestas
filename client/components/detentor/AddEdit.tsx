@@ -77,8 +77,7 @@ const AddEdit = () => {
                 : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id })
         } catch (error: any) {
             alertService.error(error.message);
-        }
-        
+        } 
     }
 
     async function createDetentor(data: any) {
