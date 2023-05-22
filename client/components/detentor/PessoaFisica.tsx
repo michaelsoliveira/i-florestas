@@ -8,7 +8,7 @@ const PessoaFisica = ({register, errors}: any) => {
                         label="Nome"
                         register={register}
                         errors={errors}
-                        rules={ {required: 'O campo nome social é obrigatório'} }
+                        rules={ {required: 'O campo nome é obrigatório'} }
                         id="nome"
                         className="pb-4"
                     />
