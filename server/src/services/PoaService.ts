@@ -2,7 +2,7 @@ import { prismaClient } from "../database/prismaClient";
 import { Prisma, Poa } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
-export interface UpaType {
+export interface PoaType {
     descricao: string;
     ano: string;
     umf: string;
@@ -12,7 +12,7 @@ export interface UpaType {
 }
 
 class PoaService {
-    async create(data: UpaType, userId: string): Promise<Poa> {
+    async create(data: PoaType, userId: string): Promise<Poa> {
 
         const user = await prismaClient.user.findUnique({
             where: {
@@ -57,7 +57,7 @@ class PoaService {
         return poa
     }
 
-    async update(id: string, data: UpaType): Promise<Poa> {
+    async update(id: string, data: PoaType): Promise<Poa> {
         await prismaClient.poa.update({
             where: {
                 id
@@ -167,16 +167,16 @@ class PoaService {
     }
 
     async findById(id: string) : Promise<any> {
-        const upa = await prismaClient.upa.findUnique({ 
+        const poa = await prismaClient.poa.findUnique({ 
             where: { id },
             include: {
-                spatial_ref_sys: true,
-                equacao_volume: true,
-                umf: true
+                resp_elab: true,
+                resp_exec: true,
+                situacao_poa: true
             }
         })
 
-        return upa
+        return poa
     }
 }
 
