@@ -4,11 +4,10 @@ import { getProjeto } from "./ProjetoService";
 
 export interface PoaType {
     descricao: string;
-    ano: string;
-    umf: string;
-    equacao_volume: string;
-    tipo: string;
-    spatial_ref_sys: number;
+    corte_maximo: number;
+    resp_elab: string;
+    resp_exec: string;
+    situacao: string;
 }
 
 class PoaService {
@@ -41,6 +40,17 @@ class PoaService {
         const poa = await prismaClient.poa.create({
             data: {
                 descricao: data.descricao,
+                corte_maximo: data.corte_maximo,
+                resp_elab: {
+                    connect: {
+                        id: data.resp_elab
+                    }
+                },
+                resp_exec: {
+                    connect: {
+                        id: data.resp_exec
+                    }
+                },
                 projeto: {
                     connect: {
                         id: projeto?.id

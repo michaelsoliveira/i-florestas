@@ -88,6 +88,17 @@ var PoaService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.poa.create({
                                 data: {
                                     descricao: data.descricao,
+                                    corte_maximo: data.corte_maximo,
+                                    resp_elab: {
+                                        connect: {
+                                            id: data.resp_elab
+                                        }
+                                    },
+                                    resp_exec: {
+                                        connect: {
+                                            id: data.resp_exec
+                                        }
+                                    },
                                     projeto: {
                                         connect: {
                                             id: projeto === null || projeto === void 0 ? void 0 : projeto.id
@@ -205,7 +216,7 @@ var PoaService = /** @class */ (function () {
             });
         });
     };
-    PoaService.prototype.deleteUpas = function (poas) {
+    PoaService.prototype.deletePoas = function (poas) {
         return __awaiter(this, void 0, Promise, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -251,20 +262,20 @@ var PoaService = /** @class */ (function () {
     };
     PoaService.prototype.findById = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var upa;
+            var poa;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.poa.findUnique({
                             where: { id: id },
                             include: {
-                                spatial_ref_sys: true,
-                                equacao_volume: true,
-                                umf: true
+                                resp_elab: true,
+                                resp_exec: true,
+                                situacao_poa: true
                             }
                         })];
                     case 1:
-                        upa = _a.sent();
-                        return [2 /*return*/, upa];
+                        poa = _a.sent();
+                        return [2 /*return*/, poa];
                 }
             });
         });
