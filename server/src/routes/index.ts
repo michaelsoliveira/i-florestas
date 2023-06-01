@@ -4,6 +4,7 @@ import { UserController } from "../controllers/UserController"
 import { AuthController } from "../controllers/AuthController"
 import { Authentication } from "../middleware/auth.middleware"
 import { DetentorController } from "../controllers/DetentorController"
+import { ResponsavelController } from "../controllers/ResponsavelController"
 import { EspecieController } from "../controllers/EspecieController"
 import multer from 'multer'
 import { CategoriaEspecieController } from "../controllers/CategoriaEspecieController"
@@ -53,6 +54,13 @@ routes.get('/detentor/findAll/:projetoId', Authentication(), new DetentorControl
 routes.get('/detentor/:id', Authentication(), new DetentorController().findOne)
 routes.put('/detentor/:id', Authentication(), new DetentorController().update)
 routes.delete('/detentor/:id', Authentication(), new DetentorController().delete)
+
+//Responsavel
+routes.post('/responsavel', Authentication(), new ResponsavelController().store)
+routes.get('/responsavel/findAll/:projetoId', Authentication(), new ResponsavelController().findAll)
+routes.get('/responsavel/:id', Authentication(), new ResponsavelController().findOne)
+routes.put('/responsavel/:id', Authentication(), new ResponsavelController().update)
+routes.delete('/responsavel/:id', Authentication(), new ResponsavelController().delete)
 
 //Categoria
 routes.post('/categoria/', Authentication(), is(['admin', 'gerente']), new CategoriaEspecieController().store)

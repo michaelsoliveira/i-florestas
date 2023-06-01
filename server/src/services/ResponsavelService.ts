@@ -1,97 +1,83 @@
 
-import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
-import { Pessoa, TipoPessoa, User } from "@prisma/client"
-import { Console } from "console";
+import { Pessoa, ResponsavelExecucao, TipoPessoa } from "@prisma/client"
 
-class DetentorService {
-    async create(data: any): Promise<Pessoa> {     
-        const nome = data?.tipo === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
-        const { pessoaFisica, pessoaJuridica, endereco } = data
-
-        const where = data?.tipo === 'F' ? {
-            AND: {
-                pessoaFisica: {
-                    nome
-                },
-                projeto: {
-                    id: data?.id_projeto
-                }
-            }
-        } : {
-            AND: {
-                pessoaJuridica: {
-                    nome_fantasia: nome
-                },
-                projeto: {
-                    id: data?.id_projeto
-                }
-            }
-        }
-
-        const detentorExists = await prismaClient.pessoa.findFirst({
-            where
-        })
+class ResponsavelService {
+    async create(data: any): Promise<ResponsavelExecucao> {  
         
-        if (detentorExists) {
-            throw new Error("Já existe uma empresa cadastrado com estas informações")
-        }
-
-        const basicData = {
-            tipo: data?.tipo === 'F' ? TipoPessoa.F : TipoPessoa.J,
-            // telefone: {
-            //     create: {
-            //         numero: data?.telefone
-            //     }                    
-            // },
-            endereco: {
-                create:{
-                    cep: endereco?.cep,
-                    logradouro: endereco?.logradouro,
-                    bairro: endereco?.bairro,
-                    municipio: endereco?.municipio,
-                    estado: {
-                        connect: {
-                            id: endereco?.id_estado
+        const where = {
+            AND: [
+                {
+                    resp_tecnico: {
+                        pessoa: {
+                            nome: data?.nome
                         }
                     }
                 }
-            },
-            projeto: {
-                connect: {
-                    id: data?.id_projeto
-                }
-            }
+            ]
+        }
+        
+        const respTecExists = await prismaClient.responsavelExecucao.findFirst({
+            where
+        })
+           
+        
+        
+        const { pessoaFisica, pessoaJuridica, endereco } = data
+
+        
+        if (respTecExists) {
+            throw new Error("Já existe um Técnico cadastrado com estas informações")
         }
 
-        const preparedData = data?.tipo === 'F' ? {
-            pessoaFisica: {
+        const basicData = {
+            resp_tecnico: {
                 create: {
-                    nome: pessoaFisica?.nome,
-                    rg: pessoaFisica?.rg,
-                    cpf: pessoaFisica?.cpf
-                }
-            }
-        } : {
-            pessoaJuridica: {
-                create: {
-                    nome_fantasia: pessoaJuridica?.nome_fantasia,
-                    razao_social: pessoaJuridica?.razao_social,
-                    cnpj: pessoaJuridica?.cnpj,
-                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
-                    inscricao_federal: pessoaJuridica?.inscricao_federal
+                    crea: data?.crea,
+                    numero_art: data?.numero_art,
+                    pessoa: {
+                        create: {
+                            nome: pessoaFisica?.nome,
+                            rg: pessoaFisica?.rg,
+                            cpf: pessoaFisica?.cpf,
+                        },
+                        
+                    },
+                    projeto: {
+                        connect: {
+                            id: data?.id_projeto
+                        }
+                    }
                 }
             }
         }
         
-        const detentor = await prismaClient.pessoa.create({
-            data: {
-                ...basicData,
-                ...preparedData
-            },
-        })
+        const responsavel = data?.tipo === 'exec' 
+                ? await prismaClient.responsavelExecucao.create({
+                    data: {  resp_tecnico: {
+                        create: {
+                            crea: data?.crea,
+                            numero_art: data?.numero_art,
+                            pessoa: {
+                                create: {
+                                    nome: pessoaFisica?.nome,
+                                    rg: pessoaFisica?.rg,
+                                    cpf: pessoaFisica?.cpf,
+                                },
+                            },
+                            projeto: {
+                                connect: {
+                                    id: data?.id_projeto
+                                }
+                            }
+                        }
+                    } }
+                }) 
+                : await prismaClient.responsavelElaboracao.create({
+                    data: { ...basicData }
+                }) 
         
-        return detentor
+        return responsavel
     }
 
     async update(id: string, data: any): Promise<any> {
@@ -218,4 +204,4 @@ class DetentorService {
     }
 }
 
-export default new DetentorService()
+export default new ResponsavelService()

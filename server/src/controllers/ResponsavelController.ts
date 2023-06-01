@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
-import detentorService from "../services/DetentorService";
+import responsavelService from "../services/ResponsavelService";
 
-export class DetentorController {
+export class ResponsavelController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const detentor = await detentorService.create(request.body)
+            const responsavel = await responsavelService.create(request.body)
             return response.json({
                 error: false,
-                detentor,
+                responsavel,
                 message: null
             })
 
         } catch (error) {
             return response.json({
                 error: true,
-                detentor: null,
+                responsavel: null,
                 message: error.message
             })
         }
@@ -24,18 +24,18 @@ export class DetentorController {
         const { id } = request.params
         
          try {    
-             const detentor = await detentorService.update(id, request.body)
+             const responsavel = await responsavelService.update(id, request.body)
              
             return response.json({
                 error: false,
-                detentor,
+                responsavel,
                 message: null
             })
 
         } catch (error) {
             return response.json({
                 error: true,
-                detentor: null,
+                responsavel: null,
                 errorMessage: error.message
             })
         }
@@ -45,16 +45,16 @@ export class DetentorController {
         const { id } = request.params
 
         try {
-            await detentorService.delete(id)
+            await responsavelService.delete(id)
 
             return response.status(200).json({
                 error: false,
-                message: 'detentor deletada com Sucesso!!!'
+                message: 'responsavel deletada com Sucesso!!!'
             })
         } catch (error) {
             return response.json({
                 error: true,
-                detentor: null,
+                responsavel: null,
                 errorMessage: error.message
             })
         }
@@ -63,17 +63,17 @@ export class DetentorController {
     async findAll(request: Request, response: Response) {
         const { projetoId } = request.params
         try {
-            const detentores = await detentorService.getAll(projetoId)
+            const responsavels = await responsavelService.getAll(projetoId)
 
             return response.json({
                 error: false,
-                detentores,
+                responsavels,
                 message: null
             })
         } catch(error) {
             return response.json({
                 error: true,
-                detentores: [],
+                responsavels: [],
                 message: `Error: ${error.message}`
             })
         }
@@ -82,9 +82,9 @@ export class DetentorController {
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {
-            const detentor = await detentorService.findOne(id)
+            const responsavel = await responsavelService.findOne(id)
 
-            return response.json(detentor)
+            return response.json(responsavel)
         } catch(error) {
             return response.json(error.message)
         }
