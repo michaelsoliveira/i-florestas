@@ -5,76 +5,96 @@ import { Pessoa, ResponsavelExecucao, TipoPessoa } from "@prisma/client"
 class ResponsavelService {
     async create(data: any): Promise<ResponsavelExecucao> {  
         
-        const where = {
-            AND: [
-                {
-                    resp_tecnico: {
-                        pessoa: {
-                            nome: data?.nome
-                        }
-                    }
-                }
-            ]
-        }
-        
-        const respTecExists = await prismaClient.responsavelExecucao.findFirst({
-            where
-        })
-           
-        
-        
+        const nome = data?.tipoPessoa === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
         const { pessoaFisica, pessoaJuridica, endereco } = data
 
+        const where = data?.tipoPessoa === 'F' ? {
+            AND: {
+                pessoaFisica: {
+                    nome
+                },
+                projeto: {
+                    id: data?.id_projeto
+                }
+            }
+        } : {
+            AND: {
+                pessoaJuridica: {
+                    nome_fantasia: nome
+                },
+                projeto: {
+                    id: data?.id_projeto
+                }
+            }
+        }
+
+        const respTecExists = await prismaClient.responsavelTecnico.findFirst({
+            where
+        })
         
         if (respTecExists) {
             throw new Error("Já existe um Técnico cadastrado com estas informações")
         }
 
-        const basicData = {
-            resp_tecnico: {
+        const preparedData = data?.tipoPessoa === 'F' ? {
+            pessoaFisica: {
                 create: {
-                    crea: data?.crea,
-                    numero_art: data?.numero_art,
-                    pessoa: {
-                        create: {
-                            nome: pessoaFisica?.nome,
-                            rg: pessoaFisica?.rg,
-                            cpf: pessoaFisica?.cpf,
-                        },
-                        
-                    },
-                    projeto: {
-                        connect: {
-                            id: data?.id_projeto
-                        }
-                    }
+                    nome: pessoaFisica?.nome,
+                    rg: pessoaFisica?.rg,
+                    cpf: pessoaFisica?.cpf
+                }
+            }
+        } : {
+            pessoaJuridica: {
+                create: {
+                    nome_fantasia: pessoaJuridica?.nome_fantasia,
+                    razao_social: pessoaJuridica?.razao_social,
+                    cnpj: pessoaJuridica?.cnpj,
+                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
+                    inscricao_federal: pessoaJuridica?.inscricao_federal
                 }
             }
         }
-        
-        const responsavel = data?.tipo === 'exec' 
-                ? await prismaClient.responsavelExecucao.create({
-                    data: {  resp_tecnico: {
-                        create: {
-                            crea: data?.crea,
-                            numero_art: data?.numero_art,
-                            pessoa: {
-                                create: {
-                                    nome: pessoaFisica?.nome,
-                                    rg: pessoaFisica?.rg,
-                                    cpf: pessoaFisica?.cpf,
-                                },
-                            },
-                            projeto: {
+
+        const basicData = {
+            crea: data?.crea,
+            numero_art: data?.numero_art,
+            pessoa: {
+                create: {
+                    ...preparedData,
+                    tipo: data?.tipoPessoa === 'F' ? TipoPessoa.F : TipoPessoa.J,
+                    endereco: {
+                        create:{
+                            cep: endereco?.cep,
+                            logradouro: endereco?.logradouro,
+                            bairro: endereco?.bairro,
+                            municipio: endereco?.municipio,
+                            estado: {
                                 connect: {
-                                    id: data?.id_projeto
+                                    id: endereco?.id_estado
                                 }
                             }
                         }
+                    },    
+                }
+            },
+            projeto: {
+                connect: {
+                    id: data?.id_projeto
+                }
+            }
+        }
+
+        const responsavel = data?.tipoTecnico === 'exec' 
+                ? await prismaClient.responsavelExecucao.create({
+                    data: {  resp_tecnico: {
+                        create: { ...basicData }
                     } }
                 }) 
                 : await prismaClient.responsavelElaboracao.create({
-                    data: { ...basicData }
+                    data: {  resp_tecnico: {
+                        create: { ...basicData }
+                    } }
                 }) 
         
         return responsavel

@@ -40,6 +40,7 @@ model Pessoa {
   telefone              Telefone?       @relation(fields: [id_telefone], references: [id], onDelete: Cascade, onUpdate: NoAction)
   pessoaFisica          PessoaFisica?
   pessoaJuridica        PessoaJuridica?
+  resp_tecnico          ResponsavelTecnico[]
   @@map("pessoa")
 }
 
@@ -48,7 +49,7 @@ model ResponsavelTecnico {
   crea              String?  @db.VarChar(50)
   numero_art        Int?
   id_pessoa         String?  @db.Uuid
-  pessoa            PessoaFisica? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pessoa            Pessoa? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_projeto        String?  @db.Uuid
   projeto           Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   resp_exec         ResponsavelExecucao[]
@@ -83,7 +84,6 @@ model PessoaFisica {
   id_pessoa       String?   @unique @db.Uuid
   pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   proponete       Proponente[]
-  resp_tecnico    ResponsavelTecnico[]
   detentor        Detentor[]
   @@map("pessoa_fisica")
 }

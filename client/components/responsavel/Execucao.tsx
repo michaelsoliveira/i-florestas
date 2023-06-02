@@ -33,7 +33,7 @@ const Execucao =  forwardRef<any, any>(
 
     const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/detentor/${projeto?.id}`)
+            const { data } = await client.get(`/responsavel/${projeto?.id}`)
             setDetentor(data)
             if (data?.tipo === 'J') { 
                 setTipoPessoa(1) 
