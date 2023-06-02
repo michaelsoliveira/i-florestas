@@ -7,7 +7,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "../Link";
 import RadioGroup from "../Form/RadioGroup";
 import Option from "../Form/Option";
-import PessoaFisica from "../../components/detentor/PessoaFisica";
+import PessoaFisica from "../../components/Form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 
@@ -20,7 +20,7 @@ const Execucao =  forwardRef<any, any>(
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
-    const [ detentor, setDetentor ] = useState<any>()
+    const [ responsavel, setRespExecucao ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const [estado, setEstado] = useState<any>()
     const isAddMode = !projeto?.pessoa
@@ -33,8 +33,8 @@ const Execucao =  forwardRef<any, any>(
 
     const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel/${projeto?.id}`)
-            setDetentor(data)
+            const { data } = await client.get(`/responsavel/find-all/${projeto?.id}`)
+            setRespExecucao(data)
             if (data?.tipo === 'J') { 
                 setTipoPessoa(1) 
             } else {
@@ -78,7 +78,7 @@ const Execucao =  forwardRef<any, any>(
         try {
             return isAddMode
                 ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
-                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id })
+                : updateDetentor(responsavel?.id, { ...data, id_projeto: projeto?.id })
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -86,9 +86,9 @@ const Execucao =  forwardRef<any, any>(
     }
 
     async function createDetentor(data: any) {
-        await client.post('/detentor', data)
+        await client.post('/responsavel', data)
             .then((response: any) => {
-                const { error, detentor, message } = response.data
+                const { error, responsavel, message } = response.data
                 if (error) {
                     alertService.error(message)
                 } else {
@@ -100,9 +100,9 @@ const Execucao =  forwardRef<any, any>(
 
     async function updateDetentor(id: string, data: any) {
         
-        await client.put(`/detentor/${id}`, data)
+        await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
-                const detentor = response.data
+                const responsavel = response.data
                 alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
                 router.push('/poa')
             })

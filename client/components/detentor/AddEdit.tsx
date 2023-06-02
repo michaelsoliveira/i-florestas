@@ -7,8 +7,8 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "../Link";
 import RadioGroup from "../Form/RadioGroup";
 import Option from "../Form/Option";
-import PessoaFisica from "./PessoaFisica";
-import PessoaJuridica from "./PessoaJuridica";
+import PessoaFisica from "../Form/PessoaFisica";
+import PessoaJuridica from "../Form/PessoaJuridica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 

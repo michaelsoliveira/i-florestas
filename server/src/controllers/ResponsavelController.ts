@@ -63,17 +63,17 @@ export class ResponsavelController {
     async findAll(request: Request, response: Response) {
         const { projetoId } = request.params
         try {
-            const responsavels = await responsavelService.getAll(projetoId)
+            const responsaveis = await responsavelService.getAll(projetoId)
 
             return response.json({
                 error: false,
-                responsavels,
+                responsaveis,
                 message: null
             })
         } catch(error) {
             return response.json({
                 error: true,
-                responsavels: [],
+                responsaveis: [],
                 message: `Error: ${error.message}`
             })
         }
