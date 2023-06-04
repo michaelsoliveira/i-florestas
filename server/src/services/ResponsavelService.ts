@@ -187,10 +187,14 @@ class ResponsavelService {
     }
 
     async getAll(projetoId: any): Promise<any[]> {
-        const data = await prismaClient.pessoa.findMany({
+        const data = await prismaClient.responsavelTecnico.findMany({
             include: {
-                pessoaFisica: true,
-                pessoaJuridica: true
+                pessoa: {
+                    include: {
+                        pessoaFisica: true,
+                        pessoaJuridica: true
+                    }
+                }
             },
             where: {
                 projeto: {
