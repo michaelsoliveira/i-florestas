@@ -133,15 +133,15 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     const sortPoas = () => {
-        let setedPoas: any = []        
-        setedPoas = filteredPoas.sort((a: any, b: any) => {
+        let poas: any = []        
+        poas = filteredPoas.sort((a: any, b: any) => {
             return sorted
                 ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
                 : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         })
         
         setSorted(!sorted)
-        setFilteredPoas(setedPoas)    
+        setFilteredPoas(poas)    
     }
 
     const handleSelectPoa = (evt: any) => {

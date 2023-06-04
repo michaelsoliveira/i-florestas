@@ -206,14 +206,14 @@ var Index = function (_a) {
         });
     }); };
     var sortPoas = function () {
-        var setedPoas = [];
-        setedPoas = filteredPoas.sort(function (a, b) {
+        var poas = [];
+        poas = filteredPoas.sort(function (a, b) {
             return sorted
                 ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
                 : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
         });
         setSorted(!sorted);
-        setFilteredPoas(setedPoas);
+        setFilteredPoas(poas);
     };
     var handleSelectPoa = function (evt) {
         var poaId = evt.target.value;
