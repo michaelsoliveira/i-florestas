@@ -4,7 +4,7 @@ import { Pagination } from "components/Pagination"
 import { AuthContext } from "contexts/AuthContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { paginate, setCurrentPagePagination } from "store/paginationSlice"
-import Index from "@/components/categoria-especie/Index"
+import IndexCategory from "@/components/categoria-especie/Index"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
@@ -74,7 +74,7 @@ const CategoriaIndex = () => {
 
     return (
     <div>
-        <Index
+        <IndexCategory
             currentCategorias={currentCategorias}
             loading={loading}
             loadCategorias={() => loadCategorias(itemsPerPage)}
@@ -82,7 +82,7 @@ const CategoriaIndex = () => {
             onPageChanged={onPageChanged}
             perPage={itemsPerPage}
             changeItemsPerPage={changeItemsPerPage}
-            />
+        />
         <Pagination
             perPage={itemsPerPage}
             totalItems={totalItems}

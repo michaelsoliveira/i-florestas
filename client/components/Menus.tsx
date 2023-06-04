@@ -90,7 +90,7 @@ export const planejamento = [
 {
     name: 'Seleção de Árvores',
     description: 'Seleção de Árvores do POA',
-    href: '#',
+    href: '/process',
     icon: BellIcon,
     },
 ]

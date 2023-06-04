@@ -180,6 +180,8 @@ model Arvore {
   long_y          Float?
   faixa           Int?
   derrubada       Boolean @default(false)
+  motivo_nao_derrubada      String    @db.VarChar(120)
+  substituida     Boolean @default(false)
   secoes          Int?
   ponto_arvore    Unsupported("geometry")?
   ponto_gps       Int?
