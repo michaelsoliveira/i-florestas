@@ -181,7 +181,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     return (
         <div>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Plano Operacional Anual</h1>
+                <h1 className="font-medium text-2xl font-roboto text-white">Processamento do POA</h1>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">

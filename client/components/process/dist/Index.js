@@ -262,7 +262,7 @@ var Index = function (_a) {
     }); };
     return (React.createElement("div", null,
         React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
-            React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Plano Operacional Anual")),
+            React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Processamento do POA")),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
                 React.createElement("div", { className: "lg:flex lg:flex-wrap lg:w-5/12 px-4" },
