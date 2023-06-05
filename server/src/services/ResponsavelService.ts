@@ -1,29 +1,32 @@
 
 import { prismaClient } from "../database/prismaClient";
-import { Pessoa, ResponsavelExecucao, TipoPessoa } from "@prisma/client"
+import { Pessoa, ResponsavelElaboracao, ResponsavelExecucao, ResponsavelTecnico, TipoPessoa } from "@prisma/client"
 
 class ResponsavelService {
-    async create(data: any): Promise<ResponsavelExecucao> {  
-        
+    async create(data: any): Promise<ResponsavelTecnico> {  
         const nome = data?.tipoPessoa === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
         const { pessoaFisica, pessoaJuridica, endereco } = data
 
         const where = data?.tipoPessoa === 'F' ? {
-            AND: {
-                pessoaFisica: {
-                    nome
-                },
-                projeto: {
-                    id: data?.id_projeto
+            pessoa: {
+                AND: {
+                    pessoaFisica: {
+                        nome
+                    },
+                    projeto: {
+                        id: data?.id_projeto
+                    }
                 }
             }
         } : {
-            AND: {
-                pessoaJuridica: {
-                    nome_fantasia: nome
-                },
-                projeto: {
-                    id: data?.id_projeto
+            pessoa: {
+                AND: {
+                    pessoaJuridica: {
+                        nome_fantasia: nome
+                    },
+                    projeto: {
+                        id: data?.id_projeto
+                    }
                 }
             }
         }
@@ -56,6 +59,12 @@ class ResponsavelService {
             }
         }
 
+        const uf = endereco?.id_estado ? {
+            connect: {
+                id: endereco?.id_estado
+            }
+        } : undefined
+
         const basicData = {
             crea: data?.crea,
             numero_art: data?.numero_art,
@@ -69,13 +78,9 @@ class ResponsavelService {
                             logradouro: endereco?.logradouro,
                             bairro: endereco?.bairro,
                             municipio: endereco?.municipio,
-                            estado: {
-                                connect: {
-                                    id: endereco?.id_estado
-                                }
-                            }
+                            estado: uf
                         }
-                    },    
+                    },   
                 }
             },
             projeto: {
@@ -84,17 +89,13 @@ class ResponsavelService {
                 }
             }
         }
-
-        const responsavel = data?.tipoTecnico === 'exec' 
-                ? await prismaClient.responsavelExecucao.create({
-                    data: {  resp_tecnico: {
-                        create: { ...basicData }
-                    } }
+        console.log(basicData.pessoa)
+        const responsavel = data?.resp === 'exec' 
+                ? await prismaClient.responsavelTecnico.create({
+                    data: { ...basicData }
                 }) 
-                : await prismaClient.responsavelElaboracao.create({
-                    data: {  resp_tecnico: {
-                        create: { ...basicData }
-                    } }
+                : await prismaClient.responsavelTecnico.create({
+                    data: {  ...basicData }
                 }) 
         
         return responsavel
@@ -206,25 +207,29 @@ class ResponsavelService {
         return data;
     }
 
-    async findOne(id: string): Promise<Pessoa> {
-        const detentor = await prismaClient.pessoa.findFirst({
+    async findOne(id: string): Promise<ResponsavelTecnico> {
+        const responsavel = await prismaClient.responsavelTecnico.findFirst({
             include: {
-                pessoaFisica: true,
-                pessoaJuridica: true,
-                endereco: {
+                pessoa: {
                     include: {
-                        estado: true
+                        pessoaFisica: true,
+                        pessoaJuridica: true,
+                        endereco: {
+                            include: {
+                                estado: true
+                            }
+                        },
+                        telefone: true
                     }
-                },
-                telefone: true
+                }
             },
             where: {
-                id_projeto: id
+                id
             }
         })
-        if (!detentor) throw new Error("Detentor não encontrada"); 
+        if (!responsavel) throw new Error("Responsável Técnico não encontrada"); 
 
-        return detentor
+        return responsavel
     }
 }
 
