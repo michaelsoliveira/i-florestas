@@ -58,6 +58,7 @@ var react_2 = require("next-auth/react");
 var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var hooks_1 = require("../../store/hooks");
+var utSlice_1 = require("../../store/utSlice");
 var Map_1 = require("../maps/Map");
 var api_1 = require("@react-google-maps/api");
 exports.libraries = String(['places', 'geometry', 'drawing']);
@@ -70,6 +71,7 @@ var AddEdit = function (_a) {
     var session = react_2.useSession().data;
     var _d = react_1.useState(null), utLocation = _d[0], setUtLocation = _d[1];
     var router = router_1.useRouter();
+    var dispatch = hooks_1.useAppDispatch();
     var isAddMode = !id;
     var isLoaded = api_1.useJsApiLoader((_b = {
             id: 'google-map-script',
@@ -131,8 +133,12 @@ var AddEdit = function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, client.post('ut', __assign({ id_upa: upa.id }, data))
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
+                            var _a = response.data, error = _a.error, message = _a.message, ut = _a.ut;
                             if (!error) {
+                                dispatch(utSlice_1.setUt({
+                                    id: ut.id,
+                                    numero_ut: ut.numero_ut
+                                }));
                                 alert_1["default"].success(message);
                                 router.push('/ut');
                             }
@@ -163,8 +169,12 @@ var AddEdit = function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, client.put("/ut/" + id, __assign({ id_upa: upa.id }, data))
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
+                            var _a = response.data, error = _a.error, message = _a.message, ut = _a.ut;
                             if (!error) {
+                                dispatch(utSlice_1.setUt({
+                                    id: ut.id,
+                                    numero_ut: ut.numero_ut
+                                }));
                                 alert_1["default"].success(message);
                                 router.push('/ut');
                             }

@@ -54,7 +54,6 @@ const AddEdit = ({ id }: any) => {
     const formRef = createRef<any>()
 
     const dataResponseElab = (data: any) => {
-        console.log(data)
         if (formRef.current) {
             formRef.current.submit()
         }
@@ -88,6 +87,12 @@ const AddEdit = ({ id }: any) => {
             label: umf.nome
         })))
     }
+
+    const loadUts = useCallback(async () => {
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa.id}`)
+        const { uts } = response.data
+        setUts(uts)   
+    }, [upa, uts])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
@@ -134,10 +139,6 @@ const AddEdit = ({ id }: any) => {
     }, [client, umf?.id, upa?.descricao, upa.id])
 
     const selectUmf = async (umf: any) => {
-        // dispatch(setUmf({
-        //     id: umf.value,
-        //     nome: umf.label
-        // }))
         setSelectedUmf(umf)
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
         const { upas } = response.data
@@ -147,24 +148,11 @@ const AddEdit = ({ id }: any) => {
 
     const selectUpa = async (upa: any) => {
         const upaSelected = upas.find((u: any) => u.id === upa.value)
-        
-        // dispatch(setUpa({
-        //     id: upaSelected.id,
-        //     descricao: upaSelected.descricao,
-        //     tipo: Number.parseInt(upaSelected.tipo)
-        // }))
         setSelectedUpa(upa)
 
         const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
         const { uts } = response.data
-
-        // dispatch(setUt({
-        //     id: uts[0]?.id,
-        //     numero_ut: uts[0].numero_ut
-        // }))
-        
-        setUts(uts)
-        
+        setUts(uts)       
     }
 
     function getUmfsDefaultOptions() {
@@ -276,7 +264,7 @@ const AddEdit = ({ id }: any) => {
         }
         
         loadPoa()
-
+        loadUts()
     }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {

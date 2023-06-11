@@ -159,7 +159,6 @@ var AddEdit = function (_a) {
         loadUpa();
     }, [session, isAddMode, client, id, setValue, setEquacao]);
     react_1.useEffect(function () {
-        console.log(projeto);
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
             var eqResponse, equacoes_1, sysRefResponse, sysRefs_1;
             return __generator(this, function (_a) {
@@ -228,8 +227,13 @@ var AddEdit = function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, client.post('upa', __assign({ umf: umf.id }, data))
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
+                            var _a = response.data, error = _a.error, message = _a.message, upa = _a.upa;
                             if (!error) {
+                                dispatch(upaSlice_1.setUpa({
+                                    id: upa.id,
+                                    descricao: upa.descricao,
+                                    tipo: upa.tipo
+                                }));
                                 alert_1["default"].success(message);
                                 router.push('/upa');
                             }
@@ -297,10 +301,10 @@ var AddEdit = function (_a) {
                             React.createElement("div", { className: "mt-2" },
                                 React.createElement("label", { className: "inline-flex items-center" },
                                     React.createElement("input", __assign({}, register("tipo"), { type: "radio", className: "form-radio", name: "tipo", value: "0" })),
-                                    React.createElement("span", { className: "ml-2" }, "Cartesiano (X Y)")),
+                                    React.createElement("span", { className: "ml-2" }, "GPS")),
                                 React.createElement("label", { className: "inline-flex items-center ml-6" },
                                     React.createElement("input", __assign({}, register("tipo"), { type: "radio", className: "form-radio", name: "tipo", value: "1" })),
-                                    React.createElement("span", { className: "ml-2" }, "GPS")))),
+                                    React.createElement("span", { className: "ml-2" }, "Cartesiano (X Y)")))),
                         React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-4 lg:space-y-0 space-x-0 lg:space-x-4' },
                             React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
                                 React.createElement("span", { className: "text-gray-700 py-2" }, "Coordenadas"),

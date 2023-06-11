@@ -46,6 +46,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 exports.__esModule = true;
 var Select_1 = require("../Select");
 var FormInput_1 = require("../FormInput");
@@ -85,7 +92,7 @@ var AddEdit = function (_a) {
     var ut = hooks_1.useAppSelector(function (state) { return state.ut; });
     var _j = react_1.useState(), selectedUmf = _j[0], setSelectedUmf = _j[1];
     var _k = react_1.useState(), selectedUpa = _k[0], setSelectedUpa = _k[1];
-    var _l = react_1.useState(), selectedUt = _l[0], setSelectedUt = _l[1];
+    var _l = react_1.useState([]), checkedUts = _l[0], setCheckedUts = _l[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var loadPoas = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -93,6 +100,15 @@ var AddEdit = function (_a) {
             return [2 /*return*/];
         });
     }); }, []);
+    var formRef = react_1.createRef();
+    var dataResponseElab = function (data) {
+        if (formRef.current) {
+            formRef.current.submit();
+        }
+    };
+    var returnData = function (data) {
+        console.log(data);
+    };
     var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
     // const arvoreById = useCallback((id?: string) => {
     //     return currentArvores.find((arvore: any) => arvore.id === id)
@@ -108,22 +124,6 @@ var AddEdit = function (_a) {
                     callback(data === null || data === void 0 ? void 0 : data.map(function (upa) { return ({
                         value: upa.id,
                         label: upa.descricao
-                    }); }));
-                    return [2 /*return*/];
-            }
-        });
-    }); };
-    var loadUts = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/ut/search/q?numero_ut=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (ut) { return ({
-                        value: ut.id,
-                        label: ut.numero_ut
                     }); }));
                     return [2 /*return*/];
             }
@@ -145,6 +145,19 @@ var AddEdit = function (_a) {
             }
         });
     }); };
+    var loadUts = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, uts;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upa.id)];
+                case 1:
+                    response = _a.sent();
+                    uts = response.data.uts;
+                    setUts(uts);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [upa, uts]);
     var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, umfs, compareUmf;
         return __generator(this, function (_a) {
@@ -197,41 +210,11 @@ var AddEdit = function (_a) {
             }
         });
     }); }, [client, umf === null || umf === void 0 ? void 0 : umf.id, upa === null || upa === void 0 ? void 0 : upa.descricao, upa.id]);
-    var defaultUtsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response, uts, compareUt;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + (upa === null || upa === void 0 ? void 0 : upa.id))];
-                case 1:
-                    response = _a.sent();
-                    uts = response.data.uts;
-                    setUts(uts);
-                    if (uts && uts.length === 0) {
-                        setSelectedUt({
-                            value: '0',
-                            label: 'Nenhuma UT Cadastrada'
-                        });
-                    }
-                    compareUt = uts ? uts.find(function (u) { return u.id === ut.id; }) : null;
-                    if (compareUt) {
-                        setSelectedUt({
-                            value: ut === null || ut === void 0 ? void 0 : ut.id,
-                            label: ut === null || ut === void 0 ? void 0 : ut.numero_ut.toString()
-                        });
-                    }
-                    return [2 /*return*/];
-            }
-        });
-    }); }, [client, upa === null || upa === void 0 ? void 0 : upa.id, ut.id, ut === null || ut === void 0 ? void 0 : ut.numero_ut]);
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    // dispatch(setUmf({
-                    //     id: umf.value,
-                    //     nome: umf.label
-                    // }))
                     setSelectedUmf(umf);
                     return [4 /*yield*/, client.get("/upa?orderBy=descricao&order=asc&umf=" + umf.value)];
                 case 1:
@@ -248,35 +231,14 @@ var AddEdit = function (_a) {
             switch (_a.label) {
                 case 0:
                     upaSelected = upas.find(function (u) { return u.id === upa.value; });
-                    // dispatch(setUpa({
-                    //     id: upaSelected.id,
-                    //     descricao: upaSelected.descricao,
-                    //     tipo: Number.parseInt(upaSelected.tipo)
-                    // }))
                     setSelectedUpa(upa);
                     return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upaSelected.id)];
                 case 1:
                     response = _a.sent();
                     uts = response.data.uts;
-                    // dispatch(setUt({
-                    //     id: uts[0]?.id,
-                    //     numero_ut: uts[0].numero_ut
-                    // }))
                     setUts(uts);
                     return [2 /*return*/];
             }
-        });
-    }); };
-    var selectUt = function (ut) { return __awaiter(void 0, void 0, void 0, function () {
-        var utSelected;
-        return __generator(this, function (_a) {
-            utSelected = uts.find(function (u) { return u.id === ut.value; });
-            // dispatch(setUt({
-            //     id: utSelected.id,
-            //     numero_ut: utSelected.numero_ut,
-            // }))
-            setSelectedUt(ut);
-            return [2 /*return*/];
         });
     }); };
     function getUmfsDefaultOptions() {
@@ -295,29 +257,50 @@ var AddEdit = function (_a) {
             };
         });
     }
-    function getUtsDefaultOptions() {
-        return uts === null || uts === void 0 ? void 0 : uts.map(function (ut) {
-            return {
-                label: ut.numero_ut,
-                value: ut.id
-            };
-        });
-    }
+    var handleSelectUt = function (evt) {
+        var utId = evt.target.value;
+        if (!checkedUts.includes(utId)) {
+            setCheckedUts(__spreadArrays(checkedUts, [utId]));
+        }
+        else {
+            setCheckedUts(checkedUts.filter(function (checkedUtId) {
+                return checkedUtId !== utId;
+            }));
+        }
+    };
+    var handleSelectAllUts = function () {
+        if ((checkedUts === null || checkedUts === void 0 ? void 0 : checkedUts.length) < (uts === null || uts === void 0 ? void 0 : uts.length)) {
+            setCheckedUts(uts.map(function (_a) {
+                var id = _a.id;
+                return id;
+            }));
+        }
+        else {
+            setCheckedUts([]);
+        }
+    };
+    var responseTecElab = function (data) {
+        console.log(data);
+    };
+    var responseTecExec = function (data) {
+        console.log(data);
+    };
     var respTecElabModal = function () {
         showModal({
             title: 'Novo Técnico Elaboração',
+            size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
-            content: React.createElement(Elaboracao_1["default"], { reloadData: loadPoas })
+            content: React.createElement("div", null,
+                React.createElement(Elaboracao_1["default"], { responseData: responseTecElab }))
         });
-    };
-    var addModal = function () {
-        showModal({ title: 'Novo Projeto', type: "submit", hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar', content: React.createElement("div", null, "Content") });
     };
     var respTecExecModal = function () {
         showModal({
-            title: 'Novo Técnico Execução',
+            title: 'Novo Técnico Elaboração',
+            size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
-            content: React.createElement(Execucao_1["default"], { reloadData: loadPoas })
+            content: React.createElement("div", null,
+                React.createElement(Execucao_1["default"], { responseData: responseTecExec }))
         });
     };
     var loadRespTecElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
@@ -384,7 +367,8 @@ var AddEdit = function (_a) {
             });
         }
         loadPoa();
-    }, [session, isAddMode, client, id, setValue]);
+        loadUts();
+    }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions]);
     react_1.useEffect(function () {
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
             var upasResponse, upas_1, respTecElabResponse, respTecElabs_1;
@@ -396,7 +380,7 @@ var AddEdit = function (_a) {
                     case 1:
                         upasResponse = _a.sent();
                         upas_1 = upasResponse.data.upas;
-                        return [4 /*yield*/, client.get("/poa/resp-tec-elabs?orderBy=nome&order=asc")];
+                        return [4 /*yield*/, client.get("/poa/resp-tec-elab?orderBy=nome&order=asc")];
                     case 2:
                         respTecElabResponse = _a.sent();
                         respTecElabs_1 = respTecElabResponse.data.respTecElabs;
@@ -507,6 +491,8 @@ var AddEdit = function (_a) {
                                     }, id: "descricao" })),
                             React.createElement("div", { className: 'col-span-1' },
                                 React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors })),
+                            React.createElement("div", null,
+                                React.createElement(FormInput_1.FormInput, { className: 'w-48', id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors })),
                             React.createElement("div", { className: "border border-gray-200 p-4 rounded-md col-span-4 relative" },
                                 React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Respons\u00E1veis T\u00E9cnicos"),
                                 React.createElement("div", { className: 'flex flex-col md:flex-row lg:space-x-4' },
@@ -525,15 +511,10 @@ var AddEdit = function (_a) {
                                                 React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecExecModal },
                                                     React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" })))))))),
                         React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4' },
-                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Informa\u00E7\u00F5es"),
-                                React.createElement("div", { className: 'mt-2' },
-                                    React.createElement(FormInput_1.FormInput, { className: 'w-48', id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors }))),
-                            React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4' },
-                                React.createElement("span", { className: "text-gray-700 py-2" }, "Proponente"),
-                                React.createElement("div", { className: 'mt-2' }))),
-                        React.createElement("div", { className: 'lg:w-1/2 border border-gray-200 rounded-lg p-4 mt-2' },
-                            React.createElement("span", { className: "text-gray-700 py-2" }, "UTs"),
+                            React.createElement("div", { className: 'border border-gray-200 rounded-lg p-4 w-full' },
+                                React.createElement("span", { className: "text-gray-700 py-2" }, "Detentor"))),
+                        React.createElement("div", { className: 'border border-gray-200 rounded-lg p-4 mt-5 relative' },
+                            React.createElement("span", { className: "text-gray-700 py-2 absolute -top-5 bg-white px-2" }, "UTs"),
                             React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4" },
                                 React.createElement("div", null,
                                     React.createElement(Select_1.Select, { initialData: {
@@ -544,9 +525,24 @@ var AddEdit = function (_a) {
                                     React.createElement(Select_1.Select, { initialData: {
                                             label: 'Selecione UPA...',
                                             value: ''
-                                        }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } })))),
+                                        }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } })),
+                                React.createElement("div", { id: 'uts' },
+                                    React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
+                                        React.createElement("thead", { className: "bg-gray-50" },
+                                            React.createElement("tr", null,
+                                                React.createElement("th", { className: "w-1/12" },
+                                                    React.createElement("div", { className: "flex justify-center" },
+                                                        React.createElement("input", { checked: (checkedUts === null || checkedUts === void 0 ? void 0 : checkedUts.length) === (uts === null || uts === void 0 ? void 0 : uts.length), onChange: handleSelectAllUts, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
+                                                React.createElement("th", { className: "w-4/12" },
+                                                    React.createElement("div", { className: "flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" }, "UTs")))),
+                                        React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, uts === null || uts === void 0 ? void 0 : uts.map(function (ut) { return (React.createElement("tr", { key: ut.id },
+                                            React.createElement("td", { className: "flex justify-center" },
+                                                React.createElement("input", { value: ut === null || ut === void 0 ? void 0 : ut.id, checked: checkedUts.includes(ut === null || ut === void 0 ? void 0 : ut.id), onChange: handleSelectUt, id: "poaId", type: "checkbox", className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" })),
+                                            React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
+                                                React.createElement("div", { className: "flex flex-col items-starter" },
+                                                    React.createElement("div", { className: "text-sm font-medium text-gray-900" }, ut === null || ut === void 0 ? void 0 : ut.numero_ut))))); })))))),
                         React.createElement("div", { className: 'flex items-center justify-between pt-4' },
-                            React.createElement(Link_1.Link, { href: "/poa", className: "text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md" }, "Voltar"),
-                            React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md" }, "Salvar"))))))));
+                            React.createElement(Link_1.Link, { href: "/poa", className: "text-center w-1/5 bg-gray-100 transition-all delay-150 hover:bg-gray-200 duration-200 p-3 rounded-md" }, "Voltar"),
+                            React.createElement("button", { className: "w-1/5 bg-green-600 text-white p-3 rounded-md transition-all delay-150 hover:bg-green-700 duration-200" }, "Salvar"))))))));
 };
 exports["default"] = AddEdit;
