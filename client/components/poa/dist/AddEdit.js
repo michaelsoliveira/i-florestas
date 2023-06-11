@@ -329,18 +329,9 @@ var AddEdit = function (_a) {
                             defaultUmfsOptions();
                             defaultUpasOptions();
                             if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
-                            return [4 /*yield*/, client.get("/poa/" + id)
-                                // setUpa({
-                                //     label: poa?.upa?.descricao,
-                                //     value: poa?.upa?.id
-                                // })
-                            ];
+                            return [4 /*yield*/, client.get("/poa/" + id)];
                         case 1:
                             poa = (_c.sent()).data;
-                            // setUpa({
-                            //     label: poa?.upa?.descricao,
-                            //     value: poa?.upa?.id
-                            // })
                             for (_i = 0, _a = Object.entries(poa); _i < _a.length; _i++) {
                                 _b = _a[_i], key = _b[0], value = _b[1];
                                 switch (key) {
@@ -480,8 +471,8 @@ var AddEdit = function (_a) {
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'grid grid-cols-1 md:grid-cols-4 md:flex-row gap-4' },
-                            React.createElement("div", { className: 'col-span-4 md:col-span-3 pr-4' },
+                        React.createElement("div", { className: 'grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4' },
+                            React.createElement("div", { className: 'col-span-6 md:col-span-3' },
                                 React.createElement(FormInput_1.FormInput, { name: "descricao", label: "Descricao", register: register, errors: errors, rules: {
                                         required: 'O campo nome é obrigatório',
                                         minLength: {
@@ -489,11 +480,11 @@ var AddEdit = function (_a) {
                                             message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
                                         }
                                     }, id: "descricao" })),
-                            React.createElement("div", { className: 'col-span-1' },
+                            React.createElement("div", { className: 'col-span-2' },
                                 React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors })),
-                            React.createElement("div", null,
-                                React.createElement(FormInput_1.FormInput, { className: 'w-48', id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors })),
-                            React.createElement("div", { className: "border border-gray-200 p-4 rounded-md col-span-4 relative" },
+                            React.createElement("div", { className: 'col-span-1' },
+                                React.createElement(FormInput_1.FormInput, { id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors })),
+                            React.createElement("div", { className: "border border-gray-200 p-4 rounded-md col-span-6 relative" },
                                 React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Respons\u00E1veis T\u00E9cnicos"),
                                 React.createElement("div", { className: 'flex flex-col md:flex-row lg:space-x-4' },
                                     React.createElement("div", { className: "flex flex-row items-end" },
