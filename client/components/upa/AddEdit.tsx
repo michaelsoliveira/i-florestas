@@ -90,7 +90,6 @@ const AddEdit = ({ id }: any) => {
     }, [session, isAddMode, client, id, setValue, setEquacao])
 
     useEffect(() => {
-        console.log(projeto)
         const defaultOptions = async () => {
             if (typeof session !== typeof undefined){
                 const eqResponse = await client.get(`/projeto/${projeto?.id}/eq-volume?orderBy=nome&order=asc`)
@@ -153,8 +152,13 @@ const AddEdit = ({ id }: any) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, upa } = response.data
                 if (!error) {
+                    dispatch(setUpa({
+                        id: upa.id,
+                        descricao: upa.descricao,
+                        tipo: upa.tipo
+                    }))
                     alertService.success(message);
                     router.push('/upa')
                 } else {

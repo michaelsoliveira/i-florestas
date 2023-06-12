@@ -54,7 +54,6 @@ const AddEdit = ({ id }: any) => {
     const formRef = createRef<any>()
 
     const dataResponseElab = (data: any) => {
-        console.log(data)
         if (formRef.current) {
             formRef.current.submit()
         }
@@ -88,6 +87,12 @@ const AddEdit = ({ id }: any) => {
             label: umf.nome
         })))
     }
+
+    const loadUts = useCallback(async () => {
+        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa.id}`)
+        const { uts } = response.data
+        setUts(uts)   
+    }, [upa, uts])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
@@ -134,10 +139,6 @@ const AddEdit = ({ id }: any) => {
     }, [client, umf?.id, upa?.descricao, upa.id])
 
     const selectUmf = async (umf: any) => {
-        // dispatch(setUmf({
-        //     id: umf.value,
-        //     nome: umf.label
-        // }))
         setSelectedUmf(umf)
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf.value}`)
         const { upas } = response.data
@@ -147,24 +148,11 @@ const AddEdit = ({ id }: any) => {
 
     const selectUpa = async (upa: any) => {
         const upaSelected = upas.find((u: any) => u.id === upa.value)
-        
-        // dispatch(setUpa({
-        //     id: upaSelected.id,
-        //     descricao: upaSelected.descricao,
-        //     tipo: Number.parseInt(upaSelected.tipo)
-        // }))
         setSelectedUpa(upa)
 
         const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
         const { uts } = response.data
-
-        // dispatch(setUt({
-        //     id: uts[0]?.id,
-        //     numero_ut: uts[0].numero_ut
-        // }))
-        
-        setUts(uts)
-        
+        setUts(uts)       
     }
 
     function getUmfsDefaultOptions() {
@@ -248,12 +236,7 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: poa } = await client.get(`/poa/${id}`)
-                
-                // setUpa({
-                //     label: poa?.upa?.descricao,
-                //     value: poa?.upa?.id
-                // })
-               
+
                 for (const [key, value] of Object.entries(poa)) {
                     switch(key) {
                         // case 'equacao_volume': setValue('equacao_volume', upa.equacao_volume?.id);
@@ -276,7 +259,7 @@ const AddEdit = ({ id }: any) => {
         }
         
         loadPoa()
-
+        loadUts()
     }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
@@ -380,9 +363,9 @@ const AddEdit = ({ id }: any) => {
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='grid grid-cols-1 md:grid-cols-4 md:flex-row gap-4'>
+                            <div className='grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4'>
                                 
-                                <div className='col-span-4 md:col-span-3 pr-4'>
+                                <div className='col-span-6 md:col-span-3'>
                                     <FormInput
                                         name="descricao"
                                         label="Descricao"
@@ -401,7 +384,7 @@ const AddEdit = ({ id }: any) => {
                                     />
                                 </div>
                             
-                                <div className='col-span-1'>
+                                <div className='col-span-2'>
                                     <FormInput
                                         id="pmfs"
                                         name="pmfs"
@@ -411,9 +394,8 @@ const AddEdit = ({ id }: any) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div>
+                                <div className='col-span-1'>
                                     <FormInput
-                                        className='w-48'
                                             id="corte_maximo"
                                             name="corte_maximo"
                                             label="Corte Máximo"
@@ -423,7 +405,7 @@ const AddEdit = ({ id }: any) => {
                                         />
                                     </div>
                                 
-                                <div className="border border-gray-200 p-4 rounded-md col-span-4 relative">
+                                <div className="border border-gray-200 p-4 rounded-md col-span-6 relative">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
                                     <div className='flex flex-col md:flex-row lg:space-x-4'>
                                         <div className="flex flex-row items-end">
