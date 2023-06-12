@@ -231,13 +231,13 @@ const AddEdit = ({ id }: any) => {
         })
     }
 
-    const loadRespTecElab = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/poa/${projeto?.id}/resp-tec-elab?search=${inputValue}`)
-        const { respTecElab } = response.data
+    const loadResponsaveis = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/responsavel/find-all/${projeto?.id}?type=elab&search=${inputValue}`)
+        const { respElab } = response.data
         
         callback(upas?.map((upa: any) => ({
-            value: respTecElab.id,
-            label: respTecElab.nome
+            value: respElab.id,
+            label: respElab.nome
         })))
     }
 
@@ -432,7 +432,7 @@ const AddEdit = ({ id }: any) => {
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={respTecElab}
                                                     defaultOptions={getRespTecElabOptions()}
-                                                    options={loadRespTecElab}
+                                                    options={loadResponsaveis}
                                                     label="pela Elaboração"
                                                     callback={selectedRespTecElab}
                                                 />
@@ -451,7 +451,7 @@ const AddEdit = ({ id }: any) => {
                                                 placeholder='CPF ou iniciais do nome'
                                                 selectedValue={respTecElab}
                                                 defaultOptions={getRespTecElabOptions()}
-                                                options={loadRespTecElab}
+                                                options={loadResponsaveis}
                                                 label="pela Execução"
                                                 callback={selectedRespTecElab}
                                             />

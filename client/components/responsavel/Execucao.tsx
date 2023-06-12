@@ -10,6 +10,8 @@ import Option from "../Form/Option";
 import PessoaFisica from "../../components/Form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
+import PessoaJuridica from "../Form/PessoaJuridica";
+import { FormInput } from "../FormInput";
 
 const Execucao =  forwardRef<any, any>(
     function AddEdit(
@@ -20,7 +22,7 @@ const Execucao =  forwardRef<any, any>(
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
     const [ tipoPessoa, setTipoPessoa ] = useState(0)
-    const [ responsavel, setRespExecucao ] = useState<any>()
+    const [ responsavel, setResponsavel ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const [estado, setEstado] = useState<any>()
     const isAddMode = !projeto?.pessoa
@@ -34,7 +36,7 @@ const Execucao =  forwardRef<any, any>(
     const loadResponsavel = useCallback(async () => {
 
             const { data } = await client.get(`/responsavel/find-all/${projeto?.id}`)
-            setRespExecucao(data)
+            setResponsavel(data)
             if (data?.tipo === 'J') { 
                 setTipoPessoa(1) 
             } else {
@@ -77,15 +79,15 @@ const Execucao =  forwardRef<any, any>(
         responseData(data)
         try {
             return isAddMode
-                ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
-                : updateDetentor(responsavel?.id, { ...data, id_projeto: projeto?.id })
+                ? createResponsavel({...data, id_projeto: projeto?.id, tipoPessoa: tipoPessoa === 0 ? 'F' : 'J', resp: 'exec'})
+                : updateResponsavel(responsavel?.id, { ...data, id_projeto: projeto?.id, tipoPessoa: tipoPessoa === 0 ? 'F' : 'J', resp: 'exec' })
         } catch (error: any) {
             alertService.error(error.message);
         }
         
     }
 
-    async function createDetentor(data: any) {
+    async function createResponsavel(data: any) {
         await client.post('/responsavel', data)
             .then((response: any) => {
                 const { error, responsavel, message } = response.data
@@ -98,7 +100,7 @@ const Execucao =  forwardRef<any, any>(
             }) 
     }
 
-    async function updateDetentor(id: string, data: any) {
+    async function updateResponsavel(id: string, data: any) {
         
         await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
@@ -116,9 +118,56 @@ const Execucao =  forwardRef<any, any>(
                     <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="shadow sm:rounded-md">
                         <div className="px-4 py-5 bg-white sm:p-6 w-full">
-                            <div className="grid grid-cols-6 gap-6 w-full">    
+                            <div className="grid grid-cols-6 gap-6 w-full">   
+                                <div className="col-span-6 lg:col-span-3">
+                                    <div>
+                                        <RadioGroup labelText="Tipo">
+                                            {["Física", "Jurídica"].map((el, index) => (
+                                                <Option
+                                                    key={index}
+                                                    index={index}
+                                                    selectedIndex={tipoPessoa}
+                                                    onSelect={(index: any) => {
+                                                        setValue('tipo', index === 0 ? 'F' : 'J')
+                                                        onSelect(index)
+                                                    }}
+                                                >
+                                                    {el}
+                                                </Option> 
+                                            ))}
+                                        </RadioGroup>
+                                    </div>
+                                </div>   
                                 <div className="col-span-6">
+                                <div className="grid grid-cols-6 gap-4">
+                                    <div className="col-span-2">     
+                                        <FormInput
+                                            name="crea"
+                                            label="CREA"
+                                            register={register}
+                                            errors={errors}
+                                            rules={ {required: 'O campo nome é obrigatório'} }
+                                            id="nome"
+                                            className="pb-4"
+                                        />
+                                    </div> 
+                                    <div className="col-span-2">     
+                                        <FormInput
+                                            name="numero_art"
+                                            label="Número ART"
+                                            register={register}
+                                            errors={errors}
+                                            id="rg"
+                                            className="pb-4"
+                                        />
+                                    </div> 
+                                </div>
+                                    
+                                { tipoPessoa === 0 ? (
                                     <PessoaFisica register={register} errors={errors} />
+                                ) : (
+                                    <PessoaJuridica register={register} errors={errors} />
+                                )}
                                     <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>

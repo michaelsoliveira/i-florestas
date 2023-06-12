@@ -10,6 +10,7 @@ import Option from "../Form/Option";
 import PessoaFisica from "../Form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
+import PessoaJuridica from "../Form/PessoaJuridica";
 
 const Elaboracao =  forwardRef<any, any>(
     function AddEdit(
@@ -33,7 +34,7 @@ const Elaboracao =  forwardRef<any, any>(
 
     const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/detentor/${projeto?.id}`)
+            const { data } = await client.get(`/responsavel/find-all/${projeto?.id}`)
             setDetentor(data)
             if (data?.tipo === 'J') { 
                 setTipoPessoa(1) 
@@ -116,9 +117,32 @@ const Elaboracao =  forwardRef<any, any>(
                     <form id="hook-form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="shadow sm:rounded-md">
                         <div className="px-4 py-5 bg-white sm:p-6 w-full">
-                            <div className="grid grid-cols-6 gap-6 w-full">    
+                            <div className="grid grid-cols-6 gap-6 w-full">   
+                                <div className="col-span-6 lg:col-span-3">
+                                    <div>
+                                        <RadioGroup labelText="Tipo">
+                                            {["Física", "Jurídica"].map((el, index) => (
+                                                <Option
+                                                    key={index}
+                                                    index={index}
+                                                    selectedIndex={tipoPessoa}
+                                                    onSelect={(index: any) => {
+                                                        setValue('tipo', index === 0 ? 'F' : 'J')
+                                                        onSelect(index)
+                                                    }}
+                                                >
+                                                    {el}
+                                                </Option> 
+                                            ))}
+                                        </RadioGroup>
+                                    </div>
+                                </div>   
                                 <div className="col-span-6">
+                                { tipoPessoa === 0 ? (
                                     <PessoaFisica register={register} errors={errors} />
+                                ) : (
+                                    <PessoaJuridica register={register} errors={errors} />
+                                )}
                                     <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>
