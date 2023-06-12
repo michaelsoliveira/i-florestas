@@ -62,8 +62,9 @@ export class ResponsavelController {
 
     async findAll(request: Request, response: Response) {
         const { projetoId } = request.params
+        const { tipo } = request.query
         try {
-            const responsaveis = await responsavelService.getAll(projetoId)
+            const responsaveis = await responsavelService.getAll(projetoId, tipo)
 
             return response.json({
                 error: false,

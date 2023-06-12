@@ -41,14 +41,14 @@ class PoaService {
             data: {
                 descricao: data.descricao,
                 corte_maximo: data.corte_maximo,
-                resp_elab: {
-                    connect: {
-                        id: data.resp_elab
-                    }
-                },
                 resp_exec: {
                     connect: {
-                        id: data.resp_exec
+                        id: data?.resp_exec
+                    }
+                },
+                resp_elab: {
+                    connect: {
+                        id: data?.resp_elab
                     }
                 },
                 projeto: {
@@ -74,7 +74,17 @@ class PoaService {
             },
             data: {
                 descricao: data.descricao,
-                    
+                corte_maximo: data.corte_maximo,
+                resp_exec: {
+                    connect: {
+                        id: data?.resp_exec
+                    }
+                },
+                resp_elab: {
+                    connect: {
+                        id: data?.resp_elab
+                    }
+                }  
             }
         })
 

@@ -1,28 +1,17 @@
 
 import { prismaClient } from "../database/prismaClient";
-import { Pessoa, ResponsavelElaboracao, ResponsavelExecucao, ResponsavelTecnico, TipoPessoa } from "@prisma/client"
+import { ResponsavelTecnico, TipoPessoa } from "@prisma/client"
 
 class ResponsavelService {
     async create(data: any): Promise<ResponsavelTecnico> {  
-        const nome = data?.tipoPessoa === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
-        const { pessoaFisica, pessoaJuridica, endereco } = data
+        const nome = data?.pessoaFisica?.nome
+        const { pessoaFisica, endereco } = data
 
-        const where = data?.tipoPessoa === 'F' ? {
+        const where = {
             pessoa: {
                 AND: {
                     pessoaFisica: {
                         nome
-                    },
-                    projeto: {
-                        id: data?.id_projeto
-                    }
-                }
-            }
-        } : {
-            pessoa: {
-                AND: {
-                    pessoaJuridica: {
-                        nome_fantasia: nome
                     },
                     projeto: {
                         id: data?.id_projeto
@@ -39,26 +28,6 @@ class ResponsavelService {
             throw new Error("Já existe um Técnico cadastrado com estas informações")
         }
 
-        const preparedData = data?.tipoPessoa === 'F' ? {
-            pessoaFisica: {
-                create: {
-                    nome: pessoaFisica?.nome,
-                    rg: pessoaFisica?.rg,
-                    cpf: pessoaFisica?.cpf
-                }
-            }
-        } : {
-            pessoaJuridica: {
-                create: {
-                    nome_fantasia: pessoaJuridica?.nome_fantasia,
-                    razao_social: pessoaJuridica?.razao_social,
-                    cnpj: pessoaJuridica?.cnpj,
-                    inscricao_estadual: pessoaJuridica?.inscricao_estadual,
-                    inscricao_federal: pessoaJuridica?.inscricao_federal
-                }
-            }
-        }
-
         const uf = endereco?.id_estado ? {
             connect: {
                 id: endereco?.id_estado
@@ -67,11 +36,18 @@ class ResponsavelService {
 
         const basicData = {
             crea: data?.crea,
-            numero_art: data?.numero_art,
+            numero_art: Number.parseInt(data?.numero_art),
+            tipo: data?.tipo,
             pessoa: {
                 create: {
-                    ...preparedData,
-                    tipo: data?.tipoPessoa === 'F' ? TipoPessoa.F : TipoPessoa.J,
+                    pessoaFisica: {
+                        create: {
+                            nome: pessoaFisica?.nome,
+                            rg: pessoaFisica?.rg,
+                            cpf: pessoaFisica?.cpf
+                        }
+                    },
+                    tipo: TipoPessoa.F,
                     endereco: {
                         create:{
                             cep: endereco?.cep,
@@ -89,12 +65,8 @@ class ResponsavelService {
                 }
             }
         }
-        console.log(basicData.pessoa)
-        const responsavel = data?.resp === 'exec' 
-                ? await prismaClient.responsavelTecnico.create({
-                    data: { ...basicData }
-                }) 
-                : await prismaClient.responsavelTecnico.create({
+
+        const responsavel = await prismaClient.responsavelTecnico.create({
                     data: {  ...basicData }
                 }) 
         
@@ -187,20 +159,24 @@ class ResponsavelService {
         })
     }
 
-    async getAll(projetoId: any): Promise<any[]> {
+    async getAll(projetoId: any, tipo: any): Promise<any[]> {
         const data = await prismaClient.responsavelTecnico.findMany({
             include: {
                 pessoa: {
                     include: {
-                        pessoaFisica: true,
-                        pessoaJuridica: true
+                        pessoaFisica: true
                     }
                 }
             },
             where: {
-                projeto: {
-                    id: projetoId
-                }
+                AND: [
+                    {
+                        projeto: {
+                            id: projetoId
+                        }
+                    },
+                    { tipo }
+                ]
             }
         })
 

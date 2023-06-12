@@ -30,6 +30,7 @@ const AddEdit = ({ id }: any) => {
     const [respTecElab, setRespTecElab] = useState<OptionType>()
     const [respTecExec, setRespTecExec] = useState<OptionType>()
     const [respTecElabs, setRespTecElabs] = useState<any>()
+    const [respTecExecs, setRespTecExecs] = useState<any>()
     const { client } = useContext(AuthContext)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
@@ -212,20 +213,30 @@ const AddEdit = ({ id }: any) => {
 
     const respTecExecModal = () => {
         showModal({
-            title: 'Novo Técnico Elaboração',
+            title: 'Novo Técnico Execução',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
             content: <div><Execucao responseData={responseTecExec} /></div>
         })
     }
 
-    const loadResponsaveis = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/responsavel/find-all/${projeto?.id}?type=elab&search=${inputValue}`)
-        const { respElab } = response.data
+    const loadRespElab = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=elab&search=${inputValue}`)
+        const { responsaveis } = response.data
         
-        callback(upas?.map((upa: any) => ({
-            value: respElab.id,
-            label: respElab.nome
+        callback(responsaveis?.map((responsavel: any) => ({
+            value: responsavel.id,
+            label: responsavel.pessoa.pessoaFisica.nome
+        })))
+    }
+
+    const loadRespExec = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=exec&search=${inputValue}`)
+        const { responsaveis } = response.data
+        
+        callback(responsaveis?.map((responsavel: any) => ({
+            value: responsavel.id,
+            label: responsavel.pessoa.pessoaFisica.nome
         })))
     }
 
@@ -268,11 +279,29 @@ const AddEdit = ({ id }: any) => {
                 const upasResponse = await client.get(`/upa?orderBy=nome&order=asc`)
                 const { upas } = upasResponse.data
 
-                const respTecElabResponse = await client.get(`/poa/resp-tec-elab?orderBy=nome&order=asc`)
-                const { respTecElabs } = respTecElabResponse.data
+                const respExec = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=exec&orderBy=nome&order=asc`)
+                const { responsaveis : resp_tec_exec } = respExec.data
+                const respElab = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=elab&orderBy=nome&order=asc`)
+                const { responsaveis : resp_tec_elab } = respElab.data
+                console.log(resp_tec_elab)
+
+                const responsaveisElab = resp_tec_elab.map((resp: any) => {
+                    return {
+                        id: resp.id,
+                        nome: resp.pessoa.pessoaFisica.nome
+                    }
+                })
+
+                const responsaveisExec = resp_tec_exec.map((resp: any) => {
+                    return {
+                        id: resp.id,
+                        nome: resp.pessoa.pessoaFisica.nome
+                    }
+                })
 
                 setUpas(upas)
-                setRespTecElabs(respTecElabs)
+                setRespTecElabs(responsaveisElab)
+                setRespTecExecs(responsaveisExec)
             }
         }
         defaultOptions()    
@@ -281,7 +310,12 @@ const AddEdit = ({ id }: any) => {
 
     const selectedRespTecElab = (data: any) => {
         setRespTecElab(data)
-        setValue('respTecElab', data?.value)
+        setValue('resp_elab', data?.value)
+    }
+
+    const selectedRespTecExec = (data: any) => {
+        setRespTecExec(data)
+        setValue('resp_exec', data?.value)
     }
 
     async function onSubmit(data: any) {
@@ -300,6 +334,15 @@ const AddEdit = ({ id }: any) => {
             return {
                 label: respTecElab.nome,
                 value: respTecElab.id
+            }
+        })
+    }
+
+    function getRespTecExecOptions() {
+        return respTecExecs?.map((respTecExec: any) => {
+            return {
+                label: respTecExec.nome,
+                value: respTecExec.id
             }
         })
     }
@@ -414,7 +457,7 @@ const AddEdit = ({ id }: any) => {
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={respTecElab}
                                                     defaultOptions={getRespTecElabOptions()}
-                                                    options={loadResponsaveis}
+                                                    options={loadRespElab}
                                                     label="pela Elaboração"
                                                     callback={selectedRespTecElab}
                                                 />
@@ -431,11 +474,11 @@ const AddEdit = ({ id }: any) => {
                                             <div className='w-[300px]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
-                                                selectedValue={respTecElab}
-                                                defaultOptions={getRespTecElabOptions()}
-                                                options={loadResponsaveis}
+                                                selectedValue={respTecExec}
+                                                defaultOptions={getRespTecExecOptions()}
+                                                options={loadRespExec}
                                                 label="pela Execução"
-                                                callback={selectedRespTecElab}
+                                                callback={selectedRespTecExec}
                                             />
                                             </div>
                                             <div className='w-10 mb-[1px]'>
