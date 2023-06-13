@@ -70,6 +70,13 @@ const equacoesVolume: Prisma.EquacaoVolumeCreateInput[] = [
   },
 ]
 
+const situacoesPoa: Prisma.SituacaoPoaCreateInput[] = [
+  { nome: 'Novo' },
+  { nome: 'Validade' },
+  { nome: 'Processado' },
+  { nome: 'Finalizado/Fechado' },
+]
+
 const estados: Prisma.EstadoCreateInput[] = [
   {
     uf: 'AC',

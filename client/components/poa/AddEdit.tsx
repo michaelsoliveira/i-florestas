@@ -27,8 +27,8 @@ import Elaboracao from '../responsavel/Elaboracao'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [respTecElab, setRespTecElab] = useState<OptionType>()
-    const [respTecExec, setRespTecExec] = useState<OptionType>()
+    const [resp_elab, setRespTecElab] = useState<OptionType>()
+    const [resp_exec, setRespTecExec] = useState<OptionType>()
     const [respTecElabs, setRespTecElabs] = useState<any>()
     const [respTecExecs, setRespTecExecs] = useState<any>()
     const { client } = useContext(AuthContext)
@@ -221,8 +221,8 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadRespElab = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=elab&search=${inputValue}`)
-        const { responsaveis } = response.data
+        const response = await client.get(`/responsavel?tipo=elab&search=${inputValue}`)
+        const { data: responsaveis } = response.data
         
         callback(responsaveis?.map((responsavel: any) => ({
             value: responsavel.id,
@@ -231,8 +231,8 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadRespExec = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=exec&search=${inputValue}`)
-        const { responsaveis } = response.data
+        const response = await client.get(`/responsavel?tipo=exec&search=${inputValue}`)
+        const { data: responsaveis } = response.data
         
         callback(responsaveis?.map((responsavel: any) => ({
             value: responsavel.id,
@@ -247,11 +247,11 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: poa } = await client.get(`/poa/${id}`)
-
+                console.log(poa)
                 for (const [key, value] of Object.entries(poa)) {
                     switch(key) {
-                        // case 'equacao_volume': setValue('equacao_volume', upa.equacao_volume?.id);
-                        // break;
+                        case 'resp_exec': setValue('resp_exec', poa.resp_exec?.id);
+                        break;
                         // case 'spatial_ref_sys': setValue('spatial_ref_sys', upa.spatial_ref_sys?.srid);
                         // break;
                         // case 'umf': setValue('umf', upa.umf?.id);
@@ -266,6 +266,8 @@ const AddEdit = ({ id }: any) => {
                         }
                     }
                 }
+            } else {
+                setValue('corte_maximo', 30)
             }
         }
         
@@ -279,11 +281,10 @@ const AddEdit = ({ id }: any) => {
                 const upasResponse = await client.get(`/upa?orderBy=nome&order=asc`)
                 const { upas } = upasResponse.data
 
-                const respExec = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=exec&orderBy=nome&order=asc`)
-                const { responsaveis : resp_tec_exec } = respExec.data
-                const respElab = await client.get(`/responsavel/find-all/${projeto?.id}?tipo=elab&orderBy=nome&order=asc`)
-                const { responsaveis : resp_tec_elab } = respElab.data
-                console.log(resp_tec_elab)
+                const respExec = await client.get(`/responsavel?tipo=exec`)
+                const { data : resp_tec_exec } = respExec.data
+                const respElab = await client.get(`/responsavel?tipo=elab`)
+                const { data : resp_tec_elab } = respElab.data
 
                 const responsaveisElab = resp_tec_elab.map((resp: any) => {
                     return {
@@ -357,6 +358,7 @@ const AddEdit = ({ id }: any) => {
                     alertService.success(message);
                     router.push('/poa')
                 } else {
+                    console.log(message)
                     alertService.error(message)
                 }
             }) 
@@ -455,7 +457,7 @@ const AddEdit = ({ id }: any) => {
                                             <div className='w-[300px]'>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
-                                                    selectedValue={respTecElab}
+                                                    selectedValue={resp_exec}
                                                     defaultOptions={getRespTecElabOptions()}
                                                     options={loadRespElab}
                                                     label="pela Elaboração"
@@ -474,7 +476,7 @@ const AddEdit = ({ id }: any) => {
                                             <div className='w-[300px]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
-                                                selectedValue={respTecExec}
+                                                selectedValue={resp_elab}
                                                 defaultOptions={getRespTecExecOptions()}
                                                 options={loadRespExec}
                                                 label="pela Execução"

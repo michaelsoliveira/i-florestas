@@ -57,7 +57,7 @@ routes.delete('/detentor/:id', Authentication(), new DetentorController().delete
 
 //Responsavel
 routes.post('/responsavel', Authentication(), new ResponsavelController().store)
-routes.get('/responsavel/find-all/:projetoId', Authentication(), new ResponsavelController().findAll)
+routes.get('/responsavel', Authentication(), new ResponsavelController().findAll)
 routes.get('/responsavel/:id', Authentication(), new ResponsavelController().findOne)
 routes.put('/responsavel/:id', Authentication(), new ResponsavelController().update)
 routes.delete('/responsavel/:id', Authentication(), new ResponsavelController().delete)

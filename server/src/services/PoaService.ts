@@ -42,12 +42,12 @@ class PoaService {
                 descricao: data.descricao,
                 corte_maximo: data.corte_maximo,
                 resp_exec: {
-                    connect: {
+                    create: {
                         id: data?.resp_exec
                     }
                 },
                 resp_elab: {
-                    connect: {
+                    create: {
                         id: data?.resp_elab
                     }
                 },
@@ -140,6 +140,43 @@ class PoaService {
         
         const [poas, total] = await prismaClient.$transaction([
             prismaClient.poa.findMany({
+                include: {
+                    situacao_poa: true,
+                    resp_elab: {
+                        include: {
+                            resp_tecnico: {
+                                include: {
+                                    pessoa: {
+                                        include: {
+                                            pessoaFisica: {
+                                                select: {
+                                                    nome: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    resp_exec: {
+                        include: {
+                            resp_tecnico: {
+                                include: {
+                                    pessoa: {
+                                        include: {
+                                            pessoaFisica: {
+                                                select: {
+                                                    nome: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,

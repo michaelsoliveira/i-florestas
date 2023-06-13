@@ -61,20 +61,18 @@ export class ResponsavelController {
     }
 
     async findAll(request: Request, response: Response) {
-        const { projetoId } = request.params
-        const { tipo } = request.query
         try {
-            const responsaveis = await responsavelService.getAll(projetoId, tipo)
+            const { data } = await responsavelService.getAll(request.query, request.user?.id)
 
             return response.json({
                 error: false,
-                responsaveis,
+                data,
                 message: null
             })
         } catch(error) {
             return response.json({
                 error: true,
-                responsaveis: [],
+                data: [],
                 message: `Error: ${error.message}`
             })
         }

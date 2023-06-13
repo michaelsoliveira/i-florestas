@@ -1,6 +1,7 @@
 
 import { prismaClient } from "../database/prismaClient";
-import { ResponsavelTecnico, TipoPessoa } from "@prisma/client"
+import { Prisma, ResponsavelTecnico, TipoPessoa } from "@prisma/client"
+import { getProjeto } from "./ProjetoService";
 
 class ResponsavelService {
     async create(data: any): Promise<ResponsavelTecnico> {  
@@ -159,7 +160,73 @@ class ResponsavelService {
         })
     }
 
-    async getAll(projetoId: any, tipo: any): Promise<any[]> {
+    async getAll(query?: any, userId?: any): Promise<any> {
+        const projeto = getProjeto(userId) as any
+        const { perPage, page, search, tipo } = query
+        const skip = (page - 1) * perPage
+        
+        const where = search ?
+            {
+                AND: [{
+                        pessoa: {
+                            pessoaFisica: {
+                                nome: {
+                                    mode: Prisma.QueryMode.insensitive, contains: search
+                                }
+                            }
+                        },
+                    },
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        },
+                    }, 
+                    { tipo }
+                ]
+            } : {
+                AND: [
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        }
+                    },
+                    { tipo }
+                ]
+            }
+
+        const [data, total] = await prismaClient.$transaction([
+            prismaClient.responsavelTecnico.findMany({
+                include: {
+                    pessoa: {
+                        include: {
+                            pessoaFisica: true
+                        }
+                    }
+                },
+                where,
+                take: perPage ? parseInt(perPage) : 50,
+                skip: skip ? skip : 0,
+                orderBy: {
+                    pessoa: {
+                        pessoaFisica: {
+                            nome: 'asc'
+                        }
+                    }
+                }
+            }),
+            prismaClient.responsavelTecnico.count({where})
+        ])
+                        
+        return {
+            data,
+            perPage,
+            page,
+            skip,
+            count: total
+        }
+    }
+
+    async getAll1(projetoId: any, tipo: any): Promise<any[]> {
         const data = await prismaClient.responsavelTecnico.findMany({
             include: {
                 pessoa: {

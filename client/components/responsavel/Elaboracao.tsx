@@ -26,9 +26,9 @@ const Elaboracao =  forwardRef<any, any>(
 
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
-    const loadResponsavel = useCallback(async () => {
+    const loadResponsaveis = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel/find-all/${projeto?.id}`)
+            const { data } = await client.get(`/responsavel?tipo=elab`)
             setResponsavel(data)
 
             setEstado({
@@ -46,8 +46,8 @@ const Elaboracao =  forwardRef<any, any>(
     }, [projeto, client, setValue])
     
     useEffect(() => {  
-        loadResponsavel()
-    }, [loadResponsavel])
+        loadResponsaveis()
+    }, [loadResponsaveis])
 
     async function onSubmit(data: any) {
         responseData(data)
