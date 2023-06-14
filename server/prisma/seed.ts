@@ -72,7 +72,7 @@ const equacoesVolume: Prisma.EquacaoVolumeCreateInput[] = [
 
 const situacoesPoa: Prisma.SituacaoPoaCreateInput[] = [
   { nome: 'Novo' },
-  { nome: 'Validade' },
+  { nome: 'Validado' },
   { nome: 'Processado' },
   { nome: 'Finalizado/Fechado' },
 ]
@@ -237,6 +237,13 @@ async function main() {
       data: r
     })
     console.log(`Created role with id: ${role.id}`)
+  }
+
+  for (const s of situacoesPoa) {
+    const situacaoPoa = await prisma.situacaoPoa.create({
+      data: s
+    })
+    console.log(`Created role with id: ${situacaoPoa.id}`)
   }
 
   const roleAdmin = await prisma.role.findFirst({

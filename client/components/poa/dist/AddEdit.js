@@ -75,24 +75,25 @@ var Elaboracao_1 = require("../responsavel/Elaboracao");
 var AddEdit = function (_a) {
     var id = _a.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
-    var _c = react_1.useState(), respTecElab = _c[0], setRespTecElab = _c[1];
-    var _d = react_1.useState(), respTecExec = _d[0], setRespTecExec = _d[1];
-    var _e = react_1.useState(), respTecElabs = _e[0], setRespTecElabs = _e[1];
+    var _c = react_1.useState(), resp_elab = _c[0], setRespElab = _c[1];
+    var _d = react_1.useState(), resp_exec = _d[0], setRespExec = _d[1];
+    var _e = react_1.useState(), respElabs = _e[0], setRespElabs = _e[1];
+    var _f = react_1.useState(), respExecs = _f[0], setRespExecs = _f[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var dispatch = hooks_1.useAppDispatch();
     var session = react_2.useSession().data;
     var router = router_1.useRouter();
     var isAddMode = !id;
     var showModal = ModalContext_1.useModalContext().showModal;
-    var _f = react_1.useState(), umfs = _f[0], setUmfs = _f[1];
-    var _g = react_1.useState(), upas = _g[0], setUpas = _g[1];
-    var _h = react_1.useState(), uts = _h[0], setUts = _h[1];
+    var _g = react_1.useState(), umfs = _g[0], setUmfs = _g[1];
+    var _h = react_1.useState(), upas = _h[0], setUpas = _h[1];
+    var _j = react_1.useState(), uts = _j[0], setUts = _j[1];
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
     var ut = hooks_1.useAppSelector(function (state) { return state.ut; });
-    var _j = react_1.useState(), selectedUmf = _j[0], setSelectedUmf = _j[1];
-    var _k = react_1.useState(), selectedUpa = _k[0], setSelectedUpa = _k[1];
-    var _l = react_1.useState([]), checkedUts = _l[0], setCheckedUts = _l[1];
+    var _k = react_1.useState(), selectedUmf = _k[0], setSelectedUmf = _k[1];
+    var _l = react_1.useState(), selectedUpa = _l[0], setSelectedUpa = _l[1];
+    var _m = react_1.useState([]), checkedUts = _m[0], setCheckedUts = _m[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
     var loadPoas = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -296,24 +297,40 @@ var AddEdit = function (_a) {
     };
     var respTecExecModal = function () {
         showModal({
-            title: 'Novo Técnico Elaboração',
+            title: 'Novo Técnico Execução',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
             content: React.createElement("div", null,
                 React.createElement(Execucao_1["default"], { responseData: responseTecExec }))
         });
     };
-    var loadRespTecElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, respTecElab;
+    var loadRespElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, responsaveis;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/poa/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "/resp-tec-elab?search=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/responsavel?tipo=elab&search=" + inputValue)];
                 case 1:
                     response = _a.sent();
-                    respTecElab = response.data.respTecElab;
-                    callback(upas === null || upas === void 0 ? void 0 : upas.map(function (upa) { return ({
-                        value: respTecElab.id,
-                        label: respTecElab.nome
+                    responsaveis = response.data.data;
+                    callback(responsaveis === null || responsaveis === void 0 ? void 0 : responsaveis.map(function (responsavel) { return ({
+                        value: responsavel.id,
+                        label: responsavel.pessoa.pessoaFisica.nome
+                    }); }));
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var loadRespExec = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, responsaveis;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/responsavel?tipo=exec&search=" + inputValue)];
+                case 1:
+                    response = _a.sent();
+                    responsaveis = response.data.data;
+                    callback(responsaveis === null || responsaveis === void 0 ? void 0 : responsaveis.map(function (responsavel) { return ({
+                        value: responsavel.id,
+                        label: responsavel.pessoa.pessoaFisica.nome
                     }); }));
                     return [2 /*return*/];
             }
@@ -321,28 +338,35 @@ var AddEdit = function (_a) {
     }); };
     react_1.useEffect(function () {
         function loadPoa() {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
             return __awaiter(this, void 0, void 0, function () {
-                var poa, _i, _a, _b, key, value;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
+                var poa, _i, _o, _p, key, value;
+                return __generator(this, function (_q) {
+                    switch (_q.label) {
                         case 0:
                             defaultUmfsOptions();
                             defaultUpasOptions();
                             if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
                             return [4 /*yield*/, client.get("/poa/" + id)];
                         case 1:
-                            poa = (_c.sent()).data;
-                            for (_i = 0, _a = Object.entries(poa); _i < _a.length; _i++) {
-                                _b = _a[_i], key = _b[0], value = _b[1];
+                            poa = (_q.sent()).data;
+                            setRespElab({
+                                label: (_d = (_c = (_b = (_a = poa.resp_elab) === null || _a === void 0 ? void 0 : _a.resp_tecnico) === null || _b === void 0 ? void 0 : _b.pessoa) === null || _c === void 0 ? void 0 : _c.pessoaFisica) === null || _d === void 0 ? void 0 : _d.nome,
+                                value: (_e = poa === null || poa === void 0 ? void 0 : poa.resp_elab) === null || _e === void 0 ? void 0 : _e.id
+                            });
+                            setRespExec({
+                                label: (_j = (_h = (_g = (_f = poa.resp_exec) === null || _f === void 0 ? void 0 : _f.resp_tecnico) === null || _g === void 0 ? void 0 : _g.pessoa) === null || _h === void 0 ? void 0 : _h.pessoaFisica) === null || _j === void 0 ? void 0 : _j.nome,
+                                value: (_k = poa.resp_exec) === null || _k === void 0 ? void 0 : _k.id
+                            });
+                            for (_i = 0, _o = Object.entries(poa); _i < _o.length; _i++) {
+                                _p = _o[_i], key = _p[0], value = _p[1];
                                 switch (key) {
-                                    // case 'equacao_volume': setValue('equacao_volume', upa.equacao_volume?.id);
-                                    // break;
-                                    // case 'spatial_ref_sys': setValue('spatial_ref_sys', upa.spatial_ref_sys?.srid);
-                                    // break;
-                                    // case 'umf': setValue('umf', upa.umf?.id);
-                                    // break;
-                                    // case 'tipo': setValue('tipo', upa?.tipo.toString());
-                                    // break;
+                                    case 'resp_exec':
+                                        setValue('resp_exec', (_l = poa.resp_exec) === null || _l === void 0 ? void 0 : _l.id);
+                                        break;
+                                    case 'resp_elab':
+                                        setValue('resp_elab', (_m = poa.resp_elab) === null || _m === void 0 ? void 0 : _m.id);
+                                        break;
                                     default: {
                                         setValue(key, value, {
                                             shouldValidate: true,
@@ -351,8 +375,11 @@ var AddEdit = function (_a) {
                                     }
                                 }
                             }
-                            _c.label = 2;
-                        case 2: return [2 /*return*/];
+                            return [3 /*break*/, 3];
+                        case 2:
+                            setValue('corte_maximo', 30);
+                            _q.label = 3;
+                        case 3: return [2 /*return*/];
                     }
                 });
             });
@@ -362,31 +389,52 @@ var AddEdit = function (_a) {
     }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions]);
     react_1.useEffect(function () {
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var upasResponse, upas_1, respTecElabResponse, respTecElabs_1;
+            var upasResponse, upas_1, respExec, resp_tec_exec, respElab, resp_tec_elab, responsaveisElab, responsaveisExec;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 3];
+                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 4];
                         return [4 /*yield*/, client.get("/upa?orderBy=nome&order=asc")];
                     case 1:
                         upasResponse = _a.sent();
                         upas_1 = upasResponse.data.upas;
-                        return [4 /*yield*/, client.get("/poa/resp-tec-elab?orderBy=nome&order=asc")];
+                        return [4 /*yield*/, client.get("/responsavel?tipo=exec")];
                     case 2:
-                        respTecElabResponse = _a.sent();
-                        respTecElabs_1 = respTecElabResponse.data.respTecElabs;
+                        respExec = _a.sent();
+                        resp_tec_exec = respExec.data.data;
+                        return [4 /*yield*/, client.get("/responsavel?tipo=elab")];
+                    case 3:
+                        respElab = _a.sent();
+                        resp_tec_elab = respElab.data.data;
+                        responsaveisElab = resp_tec_elab.map(function (resp) {
+                            return {
+                                id: resp.id,
+                                nome: resp.pessoa.pessoaFisica.nome
+                            };
+                        });
+                        responsaveisExec = resp_tec_exec.map(function (resp) {
+                            return {
+                                id: resp.id,
+                                nome: resp.pessoa.pessoaFisica.nome
+                            };
+                        });
                         setUpas(upas_1);
-                        setRespTecElabs(respTecElabs_1);
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        setRespElabs(responsaveisElab);
+                        setRespExecs(responsaveisExec);
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         }); };
         defaultOptions();
     }, [session, client, projeto]);
     var selectedRespTecElab = function (data) {
-        setRespTecElab(data);
-        setValue('respTecElab', data === null || data === void 0 ? void 0 : data.value);
+        setRespElab(data);
+        setValue('resp_elab', data === null || data === void 0 ? void 0 : data.value);
+    };
+    var selectedRespTecExec = function (data) {
+        setRespExec(data);
+        setValue('resp_exec', data === null || data === void 0 ? void 0 : data.value);
     };
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -397,6 +445,7 @@ var AddEdit = function (_a) {
                             : updatePoa(id, data)];
                 }
                 catch (error) {
+                    console.log(error.message);
                     alert_1["default"].error(error.message);
                 }
                 return [2 /*return*/];
@@ -404,10 +453,18 @@ var AddEdit = function (_a) {
         });
     }
     function getRespTecElabOptions() {
-        return respTecElabs === null || respTecElabs === void 0 ? void 0 : respTecElabs.map(function (respTecElab) {
+        return respElabs === null || respElabs === void 0 ? void 0 : respElabs.map(function (respTecElab) {
             return {
                 label: respTecElab.nome,
                 value: respTecElab.id
+            };
+        });
+    }
+    function getRespTecExecOptions() {
+        return respExecs === null || respExecs === void 0 ? void 0 : respExecs.map(function (respTecExec) {
+            return {
+                label: respTecExec.nome,
+                value: respTecExec.id
             };
         });
     }
@@ -423,6 +480,7 @@ var AddEdit = function (_a) {
                                 router.push('/poa');
                             }
                             else {
+                                console.log(message);
                                 alert_1["default"].error(message);
                             }
                         })];
@@ -489,14 +547,14 @@ var AddEdit = function (_a) {
                                 React.createElement("div", { className: 'flex flex-col md:flex-row lg:space-x-4' },
                                     React.createElement("div", { className: "flex flex-row items-end" },
                                         React.createElement("div", { className: 'w-[300px]' },
-                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Elabora\u00E7\u00E3o", callback: selectedRespTecElab })),
+                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_elab, defaultOptions: getRespTecElabOptions(), options: loadRespElab, label: "pela Elabora\u00E7\u00E3o", callback: selectedRespTecElab })),
                                         React.createElement("div", { className: 'w-10 mb-[1px]' },
                                             React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md' },
                                                 React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecElabModal },
                                                     React.createElement(outline_1.PlusIcon, { className: "h-6 w-6", "aria-hidden": "true" }))))),
                                     React.createElement("div", { className: "flex flex-row items-end" },
                                         React.createElement("div", { className: 'w-[300px]' },
-                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: respTecElab, defaultOptions: getRespTecElabOptions(), options: loadRespTecElab, label: "pela Execu\u00E7\u00E3o", callback: selectedRespTecElab })),
+                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_exec, defaultOptions: getRespTecExecOptions(), options: loadRespExec, label: "pela Execu\u00E7\u00E3o", callback: selectedRespTecExec })),
                                         React.createElement("div", { className: 'w-10 mb-[1px]' },
                                             React.createElement("span", { className: 'flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md' },
                                                 React.createElement(Link_1.Link, { href: "#", className: "", onClick: respTecExecModal },

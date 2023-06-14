@@ -27,10 +27,10 @@ import Elaboracao from '../responsavel/Elaboracao'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    const [resp_elab, setRespTecElab] = useState<OptionType>()
-    const [resp_exec, setRespTecExec] = useState<OptionType>()
-    const [respTecElabs, setRespTecElabs] = useState<any>()
-    const [respTecExecs, setRespTecExecs] = useState<any>()
+    const [resp_elab, setRespElab] = useState<OptionType>()
+    const [resp_exec, setRespExec] = useState<OptionType>()
+    const [respElabs, setRespElabs] = useState<any>()
+    const [respExecs, setRespExecs] = useState<any>()
     const { client } = useContext(AuthContext)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
@@ -247,17 +247,23 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: poa } = await client.get(`/poa/${id}`)
-                console.log(poa)
+                
+                setRespElab({
+                    label: poa.resp_elab?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
+                    value: poa?.resp_elab?.id
+                })
+
+                setRespExec({
+                    label: poa.resp_exec?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
+                    value: poa.resp_exec?.id
+                })
+
                 for (const [key, value] of Object.entries(poa)) {
                     switch(key) {
                         case 'resp_exec': setValue('resp_exec', poa.resp_exec?.id);
                         break;
-                        // case 'spatial_ref_sys': setValue('spatial_ref_sys', upa.spatial_ref_sys?.srid);
-                        // break;
-                        // case 'umf': setValue('umf', upa.umf?.id);
-                        // break;
-                        // case 'tipo': setValue('tipo', upa?.tipo.toString());
-                        // break;
+                        case 'resp_elab': setValue('resp_elab', poa.resp_elab?.id);
+                        break;
                         default: {
                             setValue(key, value, {
                                 shouldValidate: true,
@@ -301,8 +307,8 @@ const AddEdit = ({ id }: any) => {
                 })
 
                 setUpas(upas)
-                setRespTecElabs(responsaveisElab)
-                setRespTecExecs(responsaveisExec)
+                setRespElabs(responsaveisElab)
+                setRespExecs(responsaveisExec)
             }
         }
         defaultOptions()    
@@ -310,12 +316,12 @@ const AddEdit = ({ id }: any) => {
     }, [session, client, projeto])
 
     const selectedRespTecElab = (data: any) => {
-        setRespTecElab(data)
+        setRespElab(data)
         setValue('resp_elab', data?.value)
     }
 
     const selectedRespTecExec = (data: any) => {
-        setRespTecExec(data)
+        setRespExec(data)
         setValue('resp_exec', data?.value)
     }
 
@@ -325,13 +331,14 @@ const AddEdit = ({ id }: any) => {
                 ? createPoa(data)
                 : updatePoa(id, data)
         } catch (error: any) {
+            console.log(error.message)
             alertService.error(error.message);
         }
         
     }
 
     function getRespTecElabOptions() {
-        return respTecElabs?.map((respTecElab: any) => {
+        return respElabs?.map((respTecElab: any) => {
             return {
                 label: respTecElab.nome,
                 value: respTecElab.id
@@ -340,7 +347,7 @@ const AddEdit = ({ id }: any) => {
     }
 
     function getRespTecExecOptions() {
-        return respTecExecs?.map((respTecExec: any) => {
+        return respExecs?.map((respTecExec: any) => {
             return {
                 label: respTecExec.nome,
                 value: respTecExec.id
@@ -457,7 +464,7 @@ const AddEdit = ({ id }: any) => {
                                             <div className='w-[300px]'>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
-                                                    selectedValue={resp_exec}
+                                                    selectedValue={resp_elab}
                                                     defaultOptions={getRespTecElabOptions()}
                                                     options={loadRespElab}
                                                     label="pela Elaboração"
@@ -476,7 +483,7 @@ const AddEdit = ({ id }: any) => {
                                             <div className='w-[300px]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
-                                                selectedValue={resp_elab}
+                                                selectedValue={resp_exec}
                                                 defaultOptions={getRespTecExecOptions()}
                                                 options={loadRespExec}
                                                 label="pela Execução"

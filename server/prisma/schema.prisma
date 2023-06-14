@@ -133,10 +133,10 @@ model Poa {
   pmfs                String?
   corte_maximo        Float?
   id_detentor         String? @db.Uuid
-  id_resp_exec        String? @db.Uuid
-  resp_exec           ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_resp_elab        String? @db.Uuid
-  resp_elab           ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_resp_exec       String? @db.Uuid
+  resp_exec          ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_resp_elab       String? @db.Uuid
+  resp_elab          ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: Cascade, onUpdate: Cascade)
   detentor            Detentor? @relation(fields: [id_detentor], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_proponente       String? @db.Uuid
   proponente          Proponente? @relation(fields: [id_proponente], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -152,16 +152,16 @@ model Poa {
 model ResponsavelExecucao {
   id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   id_resp_tecnico  String?  @db.Uuid
-  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  poa     Poa[]
+  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  poa             Poa[]
   @@map("responsavel_execucao")
 }
 
 model ResponsavelElaboracao {
   id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   id_resp_tecnico  String?  @db.Uuid
-  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  poa              Poa[]
+  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  poa             Poa[]
   @@map("responsavel_elaboracao")
 }
 
