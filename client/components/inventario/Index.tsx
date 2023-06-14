@@ -217,7 +217,7 @@ const Index = () => {
                 const { data } = result
                 setLoading(false)
                 alertService.success(data?.message)
-                console.log(result)
+                console.log(data?.message)
             })
         } catch(e) {
 

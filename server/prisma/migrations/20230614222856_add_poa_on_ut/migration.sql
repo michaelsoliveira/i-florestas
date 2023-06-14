@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "ut" ADD COLUMN     "id_poa" UUID;
+
+-- AddForeignKey
+ALTER TABLE "ut" ADD CONSTRAINT "FK_cb45ccb0356c31c3bf2f00b0099" FOREIGN KEY ("id_poa") REFERENCES "poa"("id") ON DELETE CASCADE ON UPDATE CASCADE;

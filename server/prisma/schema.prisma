@@ -146,6 +146,7 @@ model Poa {
   user                User  @relation(fields: [user_id], references: [id])
   id_projeto          String  @db.Uuid()
   projeto             Projeto  @relation(fields: [id_projeto], references: [id])
+  ut                  Ut[]
   @@map("poa")
 }
 
@@ -429,6 +430,8 @@ model Ut {
   origem             Unsupported("geometry")?
   id_upa             String?                  @db.Uuid
   upa                Upa?                     @relation(fields: [id_upa], references: [id], onDelete: Cascade, map: "FK_cb45ccb0356c31c3bf2f00b0086")
+  id_poa             String?                  @db.Uuid
+  poa                Poa?                     @relation(fields: [id_poa], references: [id], onDelete: Cascade, map: "FK_cb45ccb0356c31c3bf2f00b0099")
   arvore             Arvore[]
   @@map("ut")
 }

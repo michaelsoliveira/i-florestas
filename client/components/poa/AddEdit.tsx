@@ -233,7 +233,7 @@ const AddEdit = ({ id }: any) => {
     const loadRespExec = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/responsavel?tipo=exec&search=${inputValue}`)
         const { data: responsaveis } = response.data
-        
+        console.log(responsaveis)
         callback(responsaveis?.map((responsavel: any) => ({
             value: responsavel.id,
             label: responsavel.pessoa.pessoaFisica.nome

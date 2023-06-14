@@ -9,6 +9,7 @@ export interface PoaType {
     resp_elab: string;
     resp_exec: string;
     situacao: string;
+    uts: any
 }
 
 class PoaService {
@@ -85,12 +86,56 @@ class PoaService {
             }
         })
 
+        const uts = data?.uts && await prismaClient.ut.updateMany({
+            where: {
+                id: {
+                    in: data?.uts
+                }
+            },
+            data: {
+                id_poa: poa.id
+            }
+        })
+
         return poa
     }
 
     async update(id: string, data: any): Promise<Poa> {
-        console.log(data)
-        const [poa, resp_elab, resp_exec] = await prismaClient.$transaction([
+        
+        data?.resp_exec !== data?.id_resp_exec &&
+        
+            await prismaClient.responsavelExecucao.update({
+                data: {
+                    id_resp_tecnico: data?.resp_exec
+                },
+                where: {
+                    id: data?.id_resp_exec
+                }
+            })
+
+        data?.resp_elab !== data?.id_resp_elab &&
+        
+            await prismaClient.responsavelElaboracao.update({
+                data: {
+                    id_resp_tecnico: data?.resp_elab
+                },
+                where: {
+                    id: data?.id_resp_elab
+                }
+            })
+
+            const uts = data?.uts && await prismaClient.ut.updateMany({
+                where: {
+                    id: {
+                        in: data?.uts
+                    }
+                },
+                data: {
+                    id_poa: id
+                }
+            })
+
+        const poa = await 
             prismaClient.poa.update({
                 where: {
                     id
@@ -100,32 +145,7 @@ class PoaService {
                     corte_maximo: data.corte_maximo,
                     pmfs: data?.pmfs,
                 }
-            }),
-            prismaClient.responsavelElaboracao.update({
-                data: {
-                    resp_tecnico: {
-                        connect: {
-                            id: data?.resp_elab
-                        }
-                    }
-                },
-                where: {
-                    id: data?.resp_elab
-                }
-            }),
-            prismaClient.responsavelExecucao.update({
-                data: {
-                    resp_tecnico: {
-                        connect: {
-                            id: data?.resp_exec
-                        }
-                    }
-                },
-                where: {
-                    id: data?.resp_exec
-                }
             })
-        ])
 
         return poa
     }

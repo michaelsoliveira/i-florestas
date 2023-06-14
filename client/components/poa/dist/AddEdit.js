@@ -328,6 +328,7 @@ var AddEdit = function (_a) {
                 case 1:
                     response = _a.sent();
                     responsaveis = response.data.data;
+                    console.log(responsaveis);
                     callback(responsaveis === null || responsaveis === void 0 ? void 0 : responsaveis.map(function (responsavel) { return ({
                         value: responsavel.id,
                         label: responsavel.pessoa.pessoaFisica.nome
