@@ -113,6 +113,12 @@ var equacoesVolume = [
         expressao: 'EXP(-8.86102 + 1.93181 * LN(DAP) + 0.78683 * LN(ALTURA))'
     },
 ];
+var situacoesPoa = [
+    { nome: 'Novo' },
+    { nome: 'Validado' },
+    { nome: 'Processado' },
+    { nome: 'Finalizado/Fechado' },
+];
 var estados = [
     {
         uf: 'AC',
@@ -252,13 +258,13 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, roleAdmin, user, _b, _c, _d, _e, projeto, detentor, _f, observacoes_1, obs, obsModelo, _g, equacoesModelo_1, eqModelo, equacaoModelo, _h, equacoesVolume_1, eqVolume, equacaoVolume;
-        return __generator(this, function (_j) {
-            switch (_j.label) {
+        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, _b, situacoesPoa_1, s, situacaoPoa, roleAdmin, projeto, user, _c, _d, _e, _f, detentor, _g, observacoes_1, obs, obsModelo, _h, equacoesModelo_1, eqModelo, equacaoModelo, _j, equacoesVolume_1, eqVolume, equacaoVolume;
+        return __generator(this, function (_k) {
+            switch (_k.label) {
                 case 0:
                     console.log("Start seeding ...");
                     _i = 0, estados_1 = estados;
-                    _j.label = 1;
+                    _k.label = 1;
                 case 1:
                     if (!(_i < estados_1.length)) return [3 /*break*/, 4];
                     e = estados_1[_i];
@@ -266,9 +272,9 @@ function main() {
                             data: e
                         })];
                 case 2:
-                    estado = _j.sent();
+                    estado = _k.sent();
                     console.log("Created estado with id: " + estado.id);
-                    _j.label = 3;
+                    _k.label = 3;
                 case 3:
                     _i++;
                     return [3 /*break*/, 1];
@@ -280,9 +286,9 @@ function main() {
                         }
                     })];
                 case 5:
-                    ufAP = _j.sent();
+                    ufAP = _k.sent();
                     _a = 0, roles_1 = roles;
-                    _j.label = 6;
+                    _k.label = 6;
                 case 6:
                     if (!(_a < roles_1.length)) return [3 /*break*/, 9];
                     r = roles_1[_a];
@@ -290,61 +296,74 @@ function main() {
                             data: r
                         })];
                 case 7:
-                    role = _j.sent();
+                    role = _k.sent();
                     console.log("Created role with id: " + role.id);
-                    _j.label = 8;
+                    _k.label = 8;
                 case 8:
                     _a++;
                     return [3 /*break*/, 6];
-                case 9: return [4 /*yield*/, prisma.role.findFirst({
+                case 9:
+                    _b = 0, situacoesPoa_1 = situacoesPoa;
+                    _k.label = 10;
+                case 10:
+                    if (!(_b < situacoesPoa_1.length)) return [3 /*break*/, 13];
+                    s = situacoesPoa_1[_b];
+                    return [4 /*yield*/, prisma.situacaoPoa.create({
+                            data: s
+                        })];
+                case 11:
+                    situacaoPoa = _k.sent();
+                    console.log("Created role with id: " + situacaoPoa.id);
+                    _k.label = 12;
+                case 12:
+                    _b++;
+                    return [3 /*break*/, 10];
+                case 13: return [4 /*yield*/, prisma.role.findFirst({
                         where: {
                             name: {
                                 equals: 'Admin'
                             }
                         }
                     })];
-                case 10:
-                    roleAdmin = _j.sent();
-                    _c = (_b = prisma.user).create;
-                    _d = {};
-                    _e = {
+                case 14:
+                    roleAdmin = _k.sent();
+                    return [4 /*yield*/, prisma.projeto.create({
+                            data: {
+                                nome: 'Projeto Inicial'
+                            }
+                        })];
+                case 15:
+                    projeto = _k.sent();
+                    _d = (_c = prisma.user).create;
+                    _e = {};
+                    _f = {
                         username: 'michaelsoliveira',
                         email: 'michaelsoliveira@gmail.com'
                     };
                     return [4 /*yield*/, bcryptjs_1["default"].hash('Fms237691', 10)];
-                case 11: return [4 /*yield*/, _c.apply(_b, [(_d.data = (_e.password = _j.sent(),
-                            _e.users_roles = {
-                                create: {
-                                    roles: {
-                                        connect: {
-                                            id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
-                                        }
-                                    }
-                                }
-                            },
-                            _e),
-                            _d)])];
-                case 12:
-                    user = _j.sent();
-                    console.log("Created user admin with id: " + user.id);
-                    return [4 /*yield*/, prisma.projeto.create({
-                            data: {
-                                nome: 'Projeto Teste',
-                                projeto_users: {
-                                    create: [
-                                        {
-                                            users: {
-                                                connect: {
-                                                    id: user === null || user === void 0 ? void 0 : user.id
-                                                }
+                case 16: return [4 /*yield*/, _d.apply(_c, [(_e.data = (_f.password = _k.sent(),
+                            _f.id_projeto_active = projeto === null || projeto === void 0 ? void 0 : projeto.id,
+                            _f.users_roles = {
+                                create: [
+                                    {
+                                        projeto: {
+                                            connect: {
+                                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                            }
+                                        },
+                                        roles: {
+                                            connect: {
+                                                id: roleAdmin === null || roleAdmin === void 0 ? void 0 : roleAdmin.id
                                             }
                                         }
-                                    ]
-                                }
-                            }
-                        })];
-                case 13:
-                    projeto = _j.sent();
+                                    }
+                                ]
+                            },
+                            _f),
+                            _e)])];
+                case 17:
+                    user = _k.sent();
+                    console.log("Created user admin with id: " + user.id);
                     return [4 /*yield*/, prisma.pessoa.create({
                             include: {
                                 pessoaJuridica: true
@@ -376,46 +395,46 @@ function main() {
                                 }
                             }
                         })];
-                case 14:
-                    detentor = _j.sent();
+                case 18:
+                    detentor = _k.sent();
                     console.log("Detentor criada com o id: " + detentor.id);
-                    _f = 0, observacoes_1 = observacoes;
-                    _j.label = 15;
-                case 15:
-                    if (!(_f < observacoes_1.length)) return [3 /*break*/, 18];
-                    obs = observacoes_1[_f];
+                    _g = 0, observacoes_1 = observacoes;
+                    _k.label = 19;
+                case 19:
+                    if (!(_g < observacoes_1.length)) return [3 /*break*/, 22];
+                    obs = observacoes_1[_g];
                     return [4 /*yield*/, prisma.observacaoArvore.create({
                             data: __assign({}, obs)
                         })];
-                case 16:
-                    obsModelo = _j.sent();
-                    console.log("Created observacao with id: " + obsModelo.id);
-                    _j.label = 17;
-                case 17:
-                    _f++;
-                    return [3 /*break*/, 15];
-                case 18:
-                    _g = 0, equacoesModelo_1 = equacoesModelo;
-                    _j.label = 19;
-                case 19:
-                    if (!(_g < equacoesModelo_1.length)) return [3 /*break*/, 22];
-                    eqModelo = equacoesModelo_1[_g];
-                    return [4 /*yield*/, prisma.equacaoModelo.create({
-                            data: __assign({}, eqModelo)
-                        })];
                 case 20:
-                    equacaoModelo = _j.sent();
-                    console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
-                    _j.label = 21;
+                    obsModelo = _k.sent();
+                    console.log("Created observacao with id: " + obsModelo.id);
+                    _k.label = 21;
                 case 21:
                     _g++;
                     return [3 /*break*/, 19];
                 case 22:
-                    _h = 0, equacoesVolume_1 = equacoesVolume;
-                    _j.label = 23;
+                    _h = 0, equacoesModelo_1 = equacoesModelo;
+                    _k.label = 23;
                 case 23:
-                    if (!(_h < equacoesVolume_1.length)) return [3 /*break*/, 26];
-                    eqVolume = equacoesVolume_1[_h];
+                    if (!(_h < equacoesModelo_1.length)) return [3 /*break*/, 26];
+                    eqModelo = equacoesModelo_1[_h];
+                    return [4 /*yield*/, prisma.equacaoModelo.create({
+                            data: __assign({}, eqModelo)
+                        })];
+                case 24:
+                    equacaoModelo = _k.sent();
+                    console.log("Created user Equa\u00E7\u00E3o Modelo with id: " + equacaoModelo.id);
+                    _k.label = 25;
+                case 25:
+                    _h++;
+                    return [3 /*break*/, 23];
+                case 26:
+                    _j = 0, equacoesVolume_1 = equacoesVolume;
+                    _k.label = 27;
+                case 27:
+                    if (!(_j < equacoesVolume_1.length)) return [3 /*break*/, 30];
+                    eqVolume = equacoesVolume_1[_j];
                     return [4 /*yield*/, prisma.equacaoVolume.create({
                             data: __assign(__assign({}, eqVolume), { projeto: {
                                     connect: {
@@ -423,14 +442,14 @@ function main() {
                                     }
                                 } })
                         })];
-                case 24:
-                    equacaoVolume = _j.sent();
+                case 28:
+                    equacaoVolume = _k.sent();
                     console.log("Created user Equa\u00E7\u00E3o Volume with id: " + equacaoVolume.id);
-                    _j.label = 25;
-                case 25:
-                    _h++;
-                    return [3 /*break*/, 23];
-                case 26:
+                    _k.label = 29;
+                case 29:
+                    _j++;
+                    return [3 /*break*/, 27];
+                case 30:
                     console.log("Seeding finished.");
                     return [2 /*return*/];
             }

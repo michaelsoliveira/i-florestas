@@ -125,7 +125,7 @@ class ArvoreService {
                     }
                 }
             }) as any
-
+            
             const data = await Promise.all(dt.map(async (arv: any): Promise<any> => {
                 const dap = arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap)
 
@@ -141,7 +141,7 @@ class ArvoreService {
                     }
                 })
 
-                const ut = await prismaClient.ut.findFirst({
+                const ut = arv?.ut && await prismaClient.ut.findFirst({
                     where: {
                         AND: [
                                 { numero_ut: parseInt(arv?.ut) },
@@ -154,22 +154,24 @@ class ArvoreService {
                     faixa: parseInt(arv?.faixa),
                     orient_x: arv?.orient_x,
                 } : {
-                    ponto_gps: parseInt(arv?.ponto_gps),
-                    lat_x: parseFloat(arv?.latitude.replace(",", ".")),
-                    long_y: parseFloat(arv?.longitude.replace(",", ".")),
+                    ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
+                    lat_x: parseFloat(arv?.latitude?.replace(",", ".")),
+                    long_y: parseFloat(arv?.longitude?.replace(",", ".")),
                 }
 
                 return {
-                    numero_arvore: parseInt(arv?.numero_arvore),
+                    numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
                     dap: arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap),
                     altura: parseFloat(arv?.altura),
-                    fuste: parseInt(arv?.qf),
+                    fuste: arv?.qf && parseInt(arv?.qf),
                     volume,
                     ...preparedData,
                     id_ut: ut?.id,
                     id_especie: especie?.id
                 }
             }))
+
+            console.log(data)
 
             await prismaClient.arvore.createMany({
                 data

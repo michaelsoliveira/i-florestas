@@ -234,6 +234,7 @@ var ArvoreController = /** @class */ (function () {
                         data = request.body;
                         importedData = data.data;
                         upaId = request.query.upaId;
+                        console.log(data);
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({
                                 where: {
                                     id: upaId
