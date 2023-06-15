@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var express_1 = require("express");
 var cookie_parser_1 = require("cookie-parser");
-require("./database");
 var routes_1 = require("./routes");
 var cors_1 = require("cors");
 var app = express_1["default"]();
@@ -47,7 +46,7 @@ app.get('/ia', function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, cross_fetch_1["default"]('http://localhost:5000/flask', {
+                case 0: return [4 /*yield*/, cross_fetch_1["default"]('http://127.0.0.1:5000/home', {
                         method: 'GET'
                     })
                         .then(function (res) {
@@ -73,6 +72,7 @@ var corsOptions = {
     optionsSuccessStatus: 200
 };
 app.use(cors_1["default"](corsOptions));
+app.use(express_1["default"].json({ limit: '50mb' }));
 // app.use(cors())
 app.use(cookie_parser_1["default"]());
 app.use(express_1["default"].json());

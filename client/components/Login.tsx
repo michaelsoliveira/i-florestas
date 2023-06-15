@@ -15,7 +15,6 @@ export default Login;
 
 function Login({ csrfToken }: any) {
   const { hideModal } = useModalContext()
-  const { data: session } = useSession()
     const router = useRouter();
 
     // form validation rules 

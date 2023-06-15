@@ -2,17 +2,18 @@ import { prismaClient } from "../database/prismaClient";
 import { Prisma, Poa } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
-export interface UpaType {
+export interface PoaType {
     descricao: string;
-    ano: string;
-    umf: string;
-    equacao_volume: string;
-    tipo: string;
-    spatial_ref_sys: number;
+    pmfs: string;
+    corte_maximo: number;
+    resp_elab: string;
+    resp_exec: string;
+    situacao: string;
+    uts: any
 }
 
 class PoaService {
-    async create(data: UpaType, userId: string): Promise<Poa> {
+    async create(data: PoaType, userId: string): Promise<Poa> {
 
         const user = await prismaClient.user.findUnique({
             where: {
@@ -37,10 +38,41 @@ class PoaService {
         if (poaExists) {
             throw new Error('Já existe uma Poa cadastrada com este nome')
         }
+
+        const situacaoPoa = await prismaClient.situacaoPoa.findFirst({
+            where: {
+                nome: { contains: 'Novo' }
+            }
+        })
         
         const poa = await prismaClient.poa.create({
             data: {
                 descricao: data.descricao,
+                corte_maximo: data.corte_maximo,
+                pmfs: data.pmfs,
+                situacao_poa: {
+                    connect: {
+                        id: situacaoPoa?.id
+                    }
+                },
+                resp_elab: {
+                    create: {
+                        resp_tecnico: {
+                            connect: {
+                                id: data?.resp_elab
+                            }
+                        }
+                    }
+                },
+                resp_exec: {
+                    create: {
+                        resp_tecnico: {
+                            connect: {
+                                id: data?.resp_exec
+                            }
+                        }
+                    }
+                },
                 projeto: {
                     connect: {
                         id: projeto?.id
@@ -54,21 +86,68 @@ class PoaService {
             }
         })
 
-        return poa
-    }
-
-    async update(id: string, data: UpaType): Promise<Poa> {
-        await prismaClient.poa.update({
+        const uts = data?.uts && await prismaClient.ut.updateMany({
             where: {
-                id
+                id: {
+                    in: data?.uts
+                }
             },
             data: {
-                descricao: data.descricao,
-                    
+                id_poa: poa.id
             }
         })
 
-        return this.findById(id)
+        return poa
+    }
+
+    async update(id: string, data: any): Promise<Poa> {
+        
+        data?.resp_exec !== data?.id_resp_exec &&
+        
+            await prismaClient.responsavelExecucao.update({
+                data: {
+                    id_resp_tecnico: data?.resp_exec
+                },
+                where: {
+                    id: data?.id_resp_exec
+                }
+            })
+
+        data?.resp_elab !== data?.id_resp_elab &&
+        
+            await prismaClient.responsavelElaboracao.update({
+                data: {
+                    id_resp_tecnico: data?.resp_elab
+                },
+                where: {
+                    id: data?.id_resp_elab
+                }
+            })
+
+            const uts = data?.uts && await prismaClient.ut.updateMany({
+                where: {
+                    id: {
+                        in: data?.uts
+                    }
+                },
+                data: {
+                    id_poa: id
+                }
+            })
+
+        const poa = await 
+            prismaClient.poa.update({
+                where: {
+                    id
+                },
+                data: {
+                    descricao: data.descricao,
+                    corte_maximo: data.corte_maximo,
+                    pmfs: data?.pmfs,
+                }
+            })
+
+        return poa
     }
 
     async delete(id: string): Promise<void> {
@@ -120,6 +199,9 @@ class PoaService {
         
         const [poas, total] = await prismaClient.$transaction([
             prismaClient.poa.findMany({
+                include: {
+                    situacao_poa: true
+                },
                 where,
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
@@ -167,16 +249,48 @@ class PoaService {
     }
 
     async findById(id: string) : Promise<any> {
-        const upa = await prismaClient.upa.findUnique({ 
+        const poa = await prismaClient.poa.findUnique({ 
             where: { id },
             include: {
-                spatial_ref_sys: true,
-                equacao_volume: true,
-                umf: true
+                resp_elab: {
+                    include: {
+                        resp_tecnico: {
+                            include: {
+                                pessoa: {
+                                    include: {
+                                        pessoaFisica: {
+                                            select: {
+                                                nome: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                resp_exec: {
+                    include: {
+                        resp_tecnico: {
+                            include: {
+                                pessoa: {
+                                    include: {
+                                        pessoaFisica: {
+                                            select: {
+                                                nome: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                situacao_poa: true
             }
         })
 
-        return upa
+        return poa
     }
 }
 

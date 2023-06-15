@@ -7,7 +7,7 @@ const app = express()
 import fetch from 'cross-fetch'
 
 app.get('/ia', async function(req, res) {
-  await fetch('http://localhost:5000/flask', {
+  await fetch('http://127.0.0.1:5000/home', {
     method: 'GET'
   })
   .then(res => {

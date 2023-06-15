@@ -6,6 +6,7 @@ import paginationReducer from "./paginationSlice";
 import umfReducer from './umfSlice'
 import upaReducer from './upaSlice'
 import utReducer from './utSlice'
+import poaReducer from './poaSlice'
 import { loadState } from "./browser-storage";
 
 export const store = configureStore({
@@ -17,7 +18,8 @@ export const store = configureStore({
         pagination: paginationReducer,
         umf: umfReducer,
         upa: upaReducer,
-        ut: utReducer
+        ut: utReducer,
+        poa: poaReducer
     },
     preloadedState: loadState()
 })

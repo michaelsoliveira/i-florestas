@@ -4,25 +4,6 @@ import { prismaClient } from "../database/prismaClient";
 import { Pessoa, TipoPessoa, User } from "@prisma/client"
 import { Console } from "console";
 
-interface EmpresaRequest {
-    razao_social: string,
-    nome: string,
-    cpf_cnpj: string,
-    rg_inscricao: string,
-    inscricao_federal: string,
-    resp_tecnico: string,
-    crea_resp: string,
-    cep: string,
-    logradouro: string,
-    complemento: string,
-    municipio: string,
-    estado: string,
-    telefone: string,
-    reg_ambiental: string;
-    tipo: TipoPessoa;
-    id_projeto: string;
-}
-
 class DetentorService {
     async create(data: any): Promise<Pessoa> {     
         const nome = data?.tipo === 'F' ? data?.pessoaFisica?.nome : data?.pessoaJuridica?.nome_fantasia
@@ -114,7 +95,6 @@ class DetentorService {
     }
 
     async update(id: string, data: any): Promise<any> {
-        console.log(data)
         const { pessoaFisica, pessoaJuridica, endereco } = data
         const basicData = {
             tipo: data?.tipo,

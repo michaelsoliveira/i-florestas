@@ -47,45 +47,85 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.Execucao = void 0;
-var react_hook_form_1 = require("react-hook-form");
-var FormInput_1 = require("@/components/FormInput");
 var react_1 = require("react");
+var react_hook_form_1 = require("react-hook-form");
+var router_1 = require("next/router");
 var alert_1 = require("../../services/alert");
-var AuthContext_1 = require("contexts/AuthContext");
-var ModalContext_1 = require("contexts/ModalContext");
-exports.Execucao = function (_a) {
-    var reloadData = _a.reloadData, data = _a.data;
-    var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue, reset = _b.reset;
-    var isAddMode = !data;
+var react_2 = require("next-auth/react");
+var AuthContext_1 = require("../../contexts/AuthContext");
+var PessoaFisica_1 = require("../../components/detentor/PessoaFisica");
+var endereco_1 = require("../endereco");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var Execucao = react_1.forwardRef(function AddEdit(_a, ref) {
+    var _this = this;
+    var responseData = _a.responseData;
+    var router = router_1.useRouter();
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
-    var hideModal = ModalContext_1.useModalContext().hideModal;
-    var loadData = react_1.useCallback(function () {
-        if (data) {
-            for (var _i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
-                var _b = _a[_i], key = _b[0], value = _b[1];
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                });
+    var session = react_2.useSession().data;
+    var _b = react_1.useState(0), tipoPessoa = _b[0], setTipoPessoa = _b[1];
+    var _c = react_1.useState(), detentor = _c[0], setDetentor = _c[1];
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
+    var _d = react_1.useState(), estado = _d[0], setEstado = _d[1];
+    var isAddMode = !(projeto === null || projeto === void 0 ? void 0 : projeto.pessoa);
+    var _e = react_hook_form_1.useForm(), register = _e.register, handleSubmit = _e.handleSubmit, reset = _e.reset, errors = _e.formState.errors, setValue = _e.setValue;
+    function onSelect(index) {
+        setTipoPessoa(index);
+    }
+    var loadResponsavel = react_1.useCallback(function () { return __awaiter(_this, void 0, void 0, function () {
+        var data, _i, _a, _b, key, value;
+        var _c, _d, _e, _f;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
+                case 0: return [4 /*yield*/, client.get("/responsavel/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id))];
+                case 1:
+                    data = (_g.sent()).data;
+                    setDetentor(data);
+                    if ((data === null || data === void 0 ? void 0 : data.tipo) === 'J') {
+                        setTipoPessoa(1);
+                    }
+                    else {
+                        setTipoPessoa(0);
+                    }
+                    setEstado({
+                        label: (_d = (_c = data === null || data === void 0 ? void 0 : data.endereco) === null || _c === void 0 ? void 0 : _c.estado) === null || _d === void 0 ? void 0 : _d.nome,
+                        value: (_f = (_e = data === null || data === void 0 ? void 0 : data.endereco) === null || _e === void 0 ? void 0 : _e.estado) === null || _f === void 0 ? void 0 : _f.id
+                    });
+                    for (_i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
+                        _b = _a[_i], key = _b[0], value = _b[1];
+                        if (key === 'tipo' && value === 'F') {
+                            setValue("pessoaFisica".concat(key), value, {
+                                shouldValidate: true,
+                                shouldDirty: true
+                            });
+                        }
+                        else if (key === 'tipo' && value === 'J') {
+                            setValue("pessoaJuridica".concat(key), value, {
+                                shouldValidate: true,
+                                shouldDirty: true
+                            });
+                        }
+                        else {
+                            setValue(key, value, {
+                                shouldValidate: true,
+                                shouldDirty: true
+                            });
+                        }
+                    }
+                    return [2 /*return*/];
             }
-        }
-        else {
-            reset();
-        }
-    }, [data, reset, setValue]);
+        });
+    }); }, [projeto, client, setValue]);
     react_1.useEffect(function () {
-        loadData();
-    }, [loadData]);
+        loadResponsavel();
+    }, [loadResponsavel]);
     function onSubmit(data) {
         return __awaiter(this, void 0, void 0, function () {
-            var preparedData;
             return __generator(this, function (_a) {
-                preparedData = __assign({}, data);
+                responseData(data);
                 try {
                     return [2 /*return*/, isAddMode
-                            ? createProjeto(preparedData)
-                            : updateProjeto(data === null || data === void 0 ? void 0 : data.id, preparedData)];
+                            ? createDetentor(__assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id, tipo: tipoPessoa === 0 ? 'F' : 'J' }))
+                            : updateDetentor(detentor === null || detentor === void 0 ? void 0 : detentor.id, __assign(__assign({}, data), { id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id }))];
                 }
                 catch (error) {
                     alert_1["default"].error(error.message);
@@ -94,20 +134,19 @@ exports.Execucao = function (_a) {
             });
         });
     }
-    function createProjeto(data) {
+    function createDetentor(data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.post("projeto", data)
+                    case 0: return [4 /*yield*/, client.post('/detentor', data)
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
-                            if (!error) {
-                                alert_1["default"].success(message);
-                                hideModal();
-                                reloadData();
+                            var _a = response.data, error = _a.error, detentor = _a.detentor, message = _a.message;
+                            if (error) {
+                                alert_1["default"].error(message);
                             }
                             else {
-                                alert_1["default"].error(message);
+                                alert_1["default"].success("Respons\u00E1vel T\u00E9cnico cadastrada com SUCESSO!!!");
+                                router.push("/poa");
                             }
                         })];
                     case 1:
@@ -117,21 +156,15 @@ exports.Execucao = function (_a) {
             });
         });
     }
-    function updateProjeto(id, data) {
+    function updateDetentor(id, data) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, client.put("/projeto/" + id, data)
+                    case 0: return [4 /*yield*/, client.put("/detentor/" + id, data)
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
-                            if (!error) {
-                                alert_1["default"].success(message);
-                                hideModal();
-                                reloadData();
-                            }
-                            else {
-                                alert_1["default"].error(message);
-                            }
+                            var detentor = response.data;
+                            alert_1["default"].success("Respons\u00E1vel T\u00E9cnico atualizada com SUCESSO!!!");
+                            router.push('/poa');
                         })];
                     case 1:
                         _a.sent();
@@ -140,22 +173,16 @@ exports.Execucao = function (_a) {
             });
         });
     }
-    return (React.createElement("div", { className: 'mt-4 p-4 border-gray-200 border rounded-md' },
-        React.createElement("form", { onSubmit: handleSubmit(onSubmit), id: "hook-form" },
-            React.createElement("div", { className: 'w-full' },
-                React.createElement(FormInput_1.FormInput, { layout: 'floatLabel', id: "nome", name: "nome", label: "Nome", register: register, errors: errors, rules: {
-                        required: 'O campo nome é obrigatório',
-                        minLength: {
-                            value: 3,
-                            message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                        }
-                    }, className: "lg:w-full pb-4" })),
-            React.createElement(FormInput_1.FormInput, { layout: 'floatLabel', id: "crea", name: "crea", label: "crea", register: register, errors: errors, rules: {
-                    required: 'O campo nome é obrigatório',
-                    minLength: {
-                        value: 3,
-                        message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
-                    }
-                }, className: "lg:w-24 pb-4" }))));
-};
-exports["default"] = exports.Execucao;
+    return (React.createElement("div", { className: "px-4 py-4" },
+        React.createElement("div", { className: "mt-10 sm:mt-0" },
+            React.createElement("div", { className: "md:grid md:grid-cols-2 md:gap-6" },
+                React.createElement("div", { className: "mt-5 md:mt-0 md:col-span-2" },
+                    React.createElement("form", { id: "hook-form", onSubmit: handleSubmit(onSubmit) },
+                        React.createElement("div", { className: "shadow sm:rounded-md" },
+                            React.createElement("div", { className: "px-4 py-5 bg-white sm:p-6 w-full" },
+                                React.createElement("div", { className: "grid grid-cols-6 gap-6 w-full" },
+                                    React.createElement("div", { className: "col-span-6" },
+                                        React.createElement(PessoaFisica_1["default"], { register: register, errors: errors }),
+                                        React.createElement(endereco_1["default"], { value: estado, setValue: setValue, register: register, errors: errors })))))))))));
+});
+exports["default"] = Execucao;

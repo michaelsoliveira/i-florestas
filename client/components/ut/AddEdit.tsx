@@ -8,8 +8,9 @@ import { AuthContext } from '../../contexts/AuthContext'
 import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
-import { useAppSelector } from '../../store/hooks'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { RootState } from '../../store'
+import { setUt } from "../../store/utSlice"
 import Map from '../maps/Map'
 import { useJsApiLoader } from '@react-google-maps/api'
 
@@ -22,6 +23,7 @@ const AddEdit = ({ id }: any) => {
     const { data: session } = useSession()
     const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral | null>(null)
     const router = useRouter()
+    const dispatch = useAppDispatch()
     const isAddMode = !id
 
     const { isLoaded } = useJsApiLoader({
@@ -73,8 +75,12 @@ const AddEdit = ({ id }: any) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, ut } = response.data
                 if (!error) {
+                    dispatch(setUt({
+                        id: ut.id,
+                        numero_ut: ut.numero_ut,
+                    }))
                     alertService.success(message);
                     router.push('/ut')
                 } else {
@@ -96,8 +102,12 @@ const AddEdit = ({ id }: any) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, ut } = response.data
                 if (!error) {
+                    dispatch(setUt({
+                        id: ut.id,
+                        numero_ut: ut.numero_ut,
+                    }))
                     alertService.success(message);
                     router.push('/ut')
                 } else {

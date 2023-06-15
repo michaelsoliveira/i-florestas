@@ -35,7 +35,7 @@ export class DetentorController {
         } catch (error) {
             return response.json({
                 error: true,
-                empresa: null,
+                detentor: null,
                 errorMessage: error.message
             })
         }
@@ -49,12 +49,12 @@ export class DetentorController {
 
             return response.status(200).json({
                 error: false,
-                message: 'Empresa deletada com Sucesso!!!'
+                message: 'detentor deletada com Sucesso!!!'
             })
         } catch (error) {
             return response.json({
                 error: true,
-                empresa: null,
+                detentor: null,
                 errorMessage: error.message
             })
         }
@@ -63,17 +63,17 @@ export class DetentorController {
     async findAll(request: Request, response: Response) {
         const { projetoId } = request.params
         try {
-            const empresas = await detentorService.getAll(projetoId)
+            const detentores = await detentorService.getAll(projetoId)
 
             return response.json({
                 error: false,
-                empresas,
+                detentores,
                 message: null
             })
         } catch(error) {
             return response.json({
                 error: true,
-                empresas: [],
+                detentores: [],
                 message: `Error: ${error.message}`
             })
         }
@@ -82,9 +82,9 @@ export class DetentorController {
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {
-            const empresa = await detentorService.findOne(id)
+            const detentor = await detentorService.findOne(id)
 
-            return response.json(empresa)
+            return response.json(detentor)
         } catch(error) {
             return response.json(error.message)
         }

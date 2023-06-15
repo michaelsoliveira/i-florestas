@@ -63,6 +63,14 @@ export class PoaController {
         }
     }
 
+    async getRespTecElab(request: Request, response: Response) {
+        try {
+
+        } catch(e) {
+
+        }
+    }
+
     async findAll(request: Request, response: Response) {
         try {
             const { data, perPage, page, orderBy, order, skip, count } = await poaService.getAll(request.user?.id, request.query)
@@ -81,7 +89,7 @@ export class PoaController {
         } catch(error) {
             return response.json({
                 error: false,
-                upas: [],
+                poas: [],
                 message: error.message
             })
         }
@@ -110,8 +118,8 @@ export class PoaController {
     async findOne(request: Request, response: Response) : Promise<Response>{
         const { id } = request.params
         try {
-            const upa = await poaService.findById(id)
-            return response.json(upa)
+            const poa = await poaService.findById(id)
+            return response.json(poa)
         } catch(error) {
             return response.json(error.message)
         }

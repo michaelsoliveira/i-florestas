@@ -190,7 +190,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             perPage,
             orderBy,
             order,
-            totalItems: filteredArvores.length
+            totalItems: filteredArvores ? filteredArvores.length : 0
         }
         
         onPageChanged(paginatedData)
