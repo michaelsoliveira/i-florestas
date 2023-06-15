@@ -93,7 +93,7 @@ const AddEdit = ({ id }: any) => {
         const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa.id}`)
         const { uts } = response.data
         setUts(uts)   
-    }, [upa, uts])
+    }, [upa, uts, client])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
