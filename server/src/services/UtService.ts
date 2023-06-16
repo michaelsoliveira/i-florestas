@@ -151,17 +151,18 @@ class UtService {
         
         let orderByTerm = {}
         
-        const orderByElement = orderBy ? orderBy.split('.') : {}
-        if (orderByElement instanceof Array) {
-            orderByTerm = orderByElement.length == 2 ? 
-            {
+        if (orderBy.includes('.')) {
+            const orderByElement = orderBy.split('.')
+            orderByTerm = {
                 [orderByElement[1]]: order,
-            } : {}
+            }
         } else {
             orderByTerm = {
-                [orderByElement]: order
+                [orderBy]: order
             }
         }
+
+        console.log(orderByTerm)
 
         const where = search ? 
                 {

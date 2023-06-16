@@ -50,7 +50,6 @@ const Elaboracao =  forwardRef<any, any>(
     }, [loadResponsaveis])
 
     async function onSubmit(data: any) {
-        responseData(data)
         try {
             return isAddMode
                 ? create({...data, id_projeto: projeto?.id, tipo: 'elab'})

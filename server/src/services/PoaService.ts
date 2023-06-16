@@ -124,7 +124,16 @@ class PoaService {
                 }
             })
 
-            const uts = data?.uts && await prismaClient.ut.updateMany({
+            await prismaClient.ut.updateMany({
+                where: {
+                    id_poa: id
+                },
+                data: {
+                    id_poa: null
+                }
+            })
+
+            data?.uts && await prismaClient.ut.updateMany({
                 where: {
                     id: {
                         in: data?.uts
@@ -151,6 +160,26 @@ class PoaService {
     }
 
     async delete(id: string): Promise<void> {
+        const poa = prismaClient.poa.findFirst({
+            include: {
+                ut: true
+            },
+            where: {
+                id
+            }
+        }) as any
+
+        await prismaClient.ut.updateMany({
+            where: {
+                id: {
+                    in: poa.ut
+                }
+            },
+            data: {
+                id_poa: poa.id
+            }
+        })
+
         await prismaClient.poa.delete({
             where: {
                 id
@@ -187,7 +216,6 @@ class PoaService {
                     contains: search ? search : ''
                 },
                 AND: [
-                // { id_umf: umf },
                 {    
                     projeto: {
                         id: projeto?.id
@@ -286,7 +314,8 @@ class PoaService {
                         }
                     }
                 },
-                situacao_poa: true
+                situacao_poa: true,
+                ut: true
             }
         })
 

@@ -68,7 +68,14 @@ class ResponsavelService {
         }
 
         const responsavel = await prismaClient.responsavelTecnico.create({
-                    data: {  ...basicData }
+                    data: {  ...basicData },
+                    include: {
+                        pessoa: {
+                            include: {
+                                pessoaFisica: true
+                            }
+                        }
+                    }
                 }) 
         
         return responsavel
