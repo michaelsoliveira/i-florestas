@@ -37,7 +37,7 @@ class ResponsavelService {
 
         const basicData = {
             crea: data?.crea,
-            numero_art: Number.parseInt(data?.numero_art),
+            numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
             tipo: data?.tipo,
             pessoa: {
                 create: {
