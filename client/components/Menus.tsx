@@ -16,6 +16,8 @@ import {
     MapIcon,
     BellIcon,
     TableIcon,
+    TagIcon,
+    GlobeAltIcon
 } from '@heroicons/react/outline'
 
 export const resources = [
@@ -85,13 +87,13 @@ export const planejamento = [
     name: 'Cadastro do POA',
     description: 'Cadastro do Planejamento Operacional Anual',
     href: '/poa',
-    icon: ChartBarIcon,
+    icon: GlobeAltIcon,
 },
 {
     name: 'Seleção de Árvores',
     description: 'Seleção de Árvores do POA',
     href: '/process',
-    icon: BellIcon,
+    icon: TagIcon,
     },
 ]
 
