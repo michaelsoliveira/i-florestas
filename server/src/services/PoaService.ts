@@ -101,6 +101,8 @@ class PoaService {
     }
 
     async update(id: string, data: any): Promise<Poa> {
+
+        console.log(data)
         
         data?.resp_exec !== data?.id_resp_exec &&
         

@@ -82,25 +82,36 @@ class ResponsavelService {
     }
 
     async update(id: string, data: any): Promise<any> {
-        const { pessoaFisica, pessoaJuridica, endereco } = data
+        const { pessoaFisica, endereco } = data
+        const uf = endereco?.id_estado ? {
+            connect: {
+                id: endereco?.id_estado
+            }
+        } : undefined
+        
         const basicData = {
+            crea: data?.crea,
+            numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
             tipo: data?.tipo,
-            // telefone: {
-            //     update: {
-            //         numero: data?.telefone
-            //     }                    
-            // },
-            endereco: {
-                update:{
-                    cep: endereco?.cep,
-                    logradouro: endereco?.logradouro,
-                    bairro: endereco?.bairro,
-                    municipio: endereco?.municipio,
-                    estado: {
-                        connect: {
-                            id: endereco?.id_estado
+            pessoa: {
+                update: {
+                    pessoaFisica: {
+                        create: {
+                            nome: pessoaFisica?.nome,
+                            rg: pessoaFisica?.rg,
+                            cpf: pessoaFisica?.cpf
                         }
-                    }
+                    },
+                    tipo: TipoPessoa.F,
+                    endereco: {
+                        create:{
+                            cep: endereco?.cep,
+                            logradouro: endereco?.logradouro,
+                            bairro: endereco?.bairro,
+                            municipio: endereco?.municipio,
+                            estado: uf
+                        }
+                    },   
                 }
             },
             projeto: {
@@ -109,48 +120,10 @@ class ResponsavelService {
                 }
             }
         }
-
-        const preparedData = data?.tipo === 'F' ? {
-            pessoaFisica: {
-                upsert: {
-                    update: {
-                        nome: pessoaFisica?.nome,
-                        rg: pessoaFisica?.rg,
-                        cpf: pessoaFisica?.cpf
-                    },
-                    create: {
-                        nome: pessoaFisica?.nome,
-                        rg: pessoaFisica?.rg,
-                        cpf: pessoaFisica?.cpf
-                    }
-                }
-            }
-        } : {
-            pessoaJuridica: {
-                upsert: {
-                    update: {
-                        nome_fantasia: pessoaJuridica?.nome_fantasia,
-                        razao_social: pessoaJuridica?.razao_social,
-                        cnpj: pessoaJuridica?.cnpj,
-                        inscricao_estadual: pessoaJuridica?.inscricao_estadual,
-                        inscricao_federal: pessoaJuridica?.inscricao_federal
-                    },
-                    create: {
-                        nome_fantasia: pessoaJuridica?.nome_fantasia,
-                        razao_social: pessoaJuridica?.razao_social,
-                        cnpj: pessoaJuridica?.cnpj,
-                        inscricao_estadual: pessoaJuridica?.inscricao_estadual,
-                        inscricao_federal: pessoaJuridica?.inscricao_federal
-                    }
-                }
-                
-            }
-        }
         
         const detentor = await prismaClient.pessoa.update({
             data: {
                 ...basicData,
-                ...preparedData
             },
             where: {
                 id

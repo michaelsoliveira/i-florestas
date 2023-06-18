@@ -23,6 +23,8 @@ model CategoriaEspecie {
   criterio_volume   Float?
   id_projeto        String?   @db.Uuid
   projeto           Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_poa            String?   @db.Uuid
+  poa               Poa?  @relation(fields: [id_poa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   especie           Especie[]
   @@map("categoria_especie")
 }
@@ -133,10 +135,10 @@ model Poa {
   pmfs                String?
   corte_maximo        Float?
   id_detentor         String? @db.Uuid
-  id_resp_exec       String? @db.Uuid
-  resp_exec          ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  id_resp_elab       String? @db.Uuid
-  resp_elab          ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_resp_exec        String? @db.Uuid
+  resp_exec           ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_resp_elab        String? @db.Uuid
+  resp_elab           ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: Cascade, onUpdate: Cascade)
   detentor            Detentor? @relation(fields: [id_detentor], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_proponente       String? @db.Uuid
   proponente          Proponente? @relation(fields: [id_proponente], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -147,6 +149,7 @@ model Poa {
   id_projeto          String  @db.Uuid()
   projeto             Projeto  @relation(fields: [id_projeto], references: [id])
   ut                  Ut[]
+  categoria_especie   CategoriaEspecie[]
   @@map("poa")
 }
 

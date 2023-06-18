@@ -158,10 +158,11 @@ var PoaService = /** @class */ (function () {
     };
     PoaService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, _b, uts, _c, poa;
+            var _a, _b, _c, poa;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
+                        console.log(data);
                         _a = (data === null || data === void 0 ? void 0 : data.resp_exec) !== (data === null || data === void 0 ? void 0 : data.id_resp_exec);
                         if (!_a) return [3 /*break*/, 2];
                         return [4 /*yield*/, prismaClient_1.prismaClient.responsavelExecucao.update({
@@ -192,8 +193,18 @@ var PoaService = /** @class */ (function () {
                         _d.label = 4;
                     case 4:
                         _b;
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
+                                where: {
+                                    id_poa: id
+                                },
+                                data: {
+                                    id_poa: null
+                                }
+                            })];
+                    case 5:
+                        _d.sent();
                         _c = (data === null || data === void 0 ? void 0 : data.uts);
-                        if (!_c) return [3 /*break*/, 6];
+                        if (!_c) return [3 /*break*/, 7];
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
                                 where: {
                                     id: {
@@ -204,11 +215,11 @@ var PoaService = /** @class */ (function () {
                                     id_poa: id
                                 }
                             })];
-                    case 5:
-                        _c = (_d.sent());
-                        _d.label = 6;
                     case 6:
-                        uts = _c;
+                        _c = (_d.sent());
+                        _d.label = 7;
+                    case 7:
+                        _c;
                         return [4 /*yield*/, prismaClient_1.prismaClient.poa.update({
                                 where: {
                                     id: id
@@ -219,7 +230,7 @@ var PoaService = /** @class */ (function () {
                                     pmfs: data === null || data === void 0 ? void 0 : data.pmfs
                                 }
                             })];
-                    case 7:
+                    case 8:
                         poa = _d.sent();
                         return [2 /*return*/, poa];
                 }
@@ -228,17 +239,39 @@ var PoaService = /** @class */ (function () {
     };
     PoaService.prototype["delete"] = function (id) {
         return __awaiter(this, void 0, Promise, function () {
+            var poa;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.poa["delete"]({
+                    case 0:
+                        poa = prismaClient_1.prismaClient.poa.findFirst({
+                            include: {
+                                ut: true
+                            },
                             where: {
                                 id: id
                             }
-                        })
-                            .then(function (response) {
-                            console.log(response);
-                        })];
+                        });
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
+                                where: {
+                                    id: {
+                                        "in": poa.ut
+                                    }
+                                },
+                                data: {
+                                    id_poa: poa.id
+                                }
+                            })];
                     case 1:
+                        _a.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.poa["delete"]({
+                                where: {
+                                    id: id
+                                }
+                            })
+                                .then(function (response) {
+                                console.log(response);
+                            })];
+                    case 2:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -275,7 +308,6 @@ var PoaService = /** @class */ (function () {
                                 contains: search ? search : ''
                             },
                             AND: [
-                                // { id_umf: umf },
                                 {
                                     projeto: {
                                         id: projeto === null || projeto === void 0 ? void 0 : projeto.id
@@ -394,7 +426,8 @@ var PoaService = /** @class */ (function () {
                                         }
                                     }
                                 },
-                                situacao_poa: true
+                                situacao_poa: true,
+                                ut: true
                             }
                         })];
                     case 1:

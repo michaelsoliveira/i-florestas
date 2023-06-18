@@ -198,8 +198,8 @@ const AddEdit = ({ id }: any) => {
     };
 
     const responseTecElab = async (data: any) => {
-        loadResponsaveis()
-        
+        loadResponsaveis()        
+        setValue('resp_elab', data?.id)
         setRespElab({
             label: data?.pessoa?.pessoaFisica?.nome,
             value: data?.id
@@ -208,7 +208,7 @@ const AddEdit = ({ id }: any) => {
 
     const responseTecExec = (data: any) => {
         loadResponsaveis()
-
+        setValue('resp_exec', data?.id)
         setRespExec({
             label: data?.pessoa?.pessoaFisica?.nome,
             value: data?.id
@@ -263,12 +263,12 @@ const AddEdit = ({ id }: any) => {
                 
                 setRespElab({
                     label: poa.resp_elab?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa?.resp_elab?.id
+                    value: poa?.resp_elab?.id_resp_tecnico
                 })
 
                 setRespExec({
                     label: poa.resp_exec?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa.resp_exec?.id
+                    value: poa.resp_exec?.id_resp_tecnico
                 })
 
                 setCheckedUts(poa?.ut.map(({ id }: any) => id));
@@ -351,7 +351,6 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function createPoa(data: any) {
-        console.log(data)
         await client.post('poa', {
             ...data
         })
@@ -374,7 +373,6 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function updatePoa(id: string, data: any) {
-        console.log(data)
         await client.put(`/poa/${id}`, {
             ...data
         })

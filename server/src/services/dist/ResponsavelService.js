@@ -49,34 +49,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var prismaClient_1 = require("../database/prismaClient");
 var client_1 = require("@prisma/client");
+var ProjetoService_1 = require("./ProjetoService");
 var ResponsavelService = /** @class */ (function () {
     function ResponsavelService() {
     }
     ResponsavelService.prototype.create = function (data) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, Promise, function () {
-            var nome, pessoaFisica, pessoaJuridica, endereco, where, respTecExists, preparedData, basicData, responsavel, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var nome, pessoaFisica, endereco, where, respTecExists, uf, basicData, responsavel;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        nome = (data === null || data === void 0 ? void 0 : data.tipoPessoa) === 'F' ? (_a = data === null || data === void 0 ? void 0 : data.pessoaFisica) === null || _a === void 0 ? void 0 : _a.nome : (_b = data === null || data === void 0 ? void 0 : data.pessoaJuridica) === null || _b === void 0 ? void 0 : _b.nome_fantasia;
-                        pessoaFisica = data.pessoaFisica, pessoaJuridica = data.pessoaJuridica, endereco = data.endereco;
-                        where = (data === null || data === void 0 ? void 0 : data.tipoPessoa) === 'F' ? {
-                            AND: {
-                                pessoaFisica: {
-                                    nome: nome
-                                },
-                                projeto: {
-                                    id: data === null || data === void 0 ? void 0 : data.id_projeto
-                                }
-                            }
-                        } : {
-                            AND: {
-                                pessoaJuridica: {
-                                    nome_fantasia: nome
-                                },
-                                projeto: {
-                                    id: data === null || data === void 0 ? void 0 : data.id_projeto
+                        nome = (_a = data === null || data === void 0 ? void 0 : data.pessoaFisica) === null || _a === void 0 ? void 0 : _a.nome;
+                        pessoaFisica = data.pessoaFisica, endereco = data.endereco;
+                        where = {
+                            pessoa: {
+                                AND: {
+                                    pessoaFisica: {
+                                        nome: nome
+                                    },
+                                    projeto: {
+                                        id: data === null || data === void 0 ? void 0 : data.id_projeto
+                                    }
                                 }
                             }
                         };
@@ -84,46 +78,39 @@ var ResponsavelService = /** @class */ (function () {
                                 where: where
                             })];
                     case 1:
-                        respTecExists = _d.sent();
+                        respTecExists = _b.sent();
                         if (respTecExists) {
                             throw new Error("Já existe um Técnico cadastrado com estas informações");
                         }
-                        preparedData = (data === null || data === void 0 ? void 0 : data.tipoPessoa) === 'F' ? {
-                            pessoaFisica: {
-                                create: {
-                                    nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
-                                    rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
-                                    cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
-                                }
+                        uf = (endereco === null || endereco === void 0 ? void 0 : endereco.id_estado) ? {
+                            connect: {
+                                id: endereco === null || endereco === void 0 ? void 0 : endereco.id_estado
                             }
-                        } : {
-                            pessoaJuridica: {
-                                create: {
-                                    nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
-                                    razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
-                                    cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
-                                    inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
-                                    inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
-                                }
-                            }
-                        };
+                        } : undefined;
                         basicData = {
                             crea: data === null || data === void 0 ? void 0 : data.crea,
-                            numero_art: data === null || data === void 0 ? void 0 : data.numero_art,
+                            numero_art: (data === null || data === void 0 ? void 0 : data.numero_art) ? Number.parseInt(data === null || data === void 0 ? void 0 : data.numero_art) : 0,
+                            tipo: data === null || data === void 0 ? void 0 : data.tipo,
                             pessoa: {
-                                create: __assign(__assign({}, preparedData), { tipo: (data === null || data === void 0 ? void 0 : data.tipoPessoa) === 'F' ? client_1.TipoPessoa.F : client_1.TipoPessoa.J, endereco: {
+                                create: {
+                                    pessoaFisica: {
+                                        create: {
+                                            nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
+                                            rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
+                                            cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
+                                        }
+                                    },
+                                    tipo: client_1.TipoPessoa.F,
+                                    endereco: {
                                         create: {
                                             cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep,
                                             logradouro: endereco === null || endereco === void 0 ? void 0 : endereco.logradouro,
                                             bairro: endereco === null || endereco === void 0 ? void 0 : endereco.bairro,
                                             municipio: endereco === null || endereco === void 0 ? void 0 : endereco.municipio,
-                                            estado: {
-                                                connect: {
-                                                    id: endereco === null || endereco === void 0 ? void 0 : endereco.id_estado
-                                                }
-                                            }
+                                            estado: uf
                                         }
-                                    } })
+                                    }
+                                }
                             },
                             projeto: {
                                 connect: {
@@ -131,25 +118,18 @@ var ResponsavelService = /** @class */ (function () {
                                 }
                             }
                         };
-                        if (!((data === null || data === void 0 ? void 0 : data.tipoTecnico) === 'exec')) return [3 /*break*/, 3];
-                        return [4 /*yield*/, prismaClient_1.prismaClient.responsavelExecucao.create({
-                                data: { resp_tecnico: {
-                                        create: __assign({}, basicData)
-                                    } }
+                        return [4 /*yield*/, prismaClient_1.prismaClient.responsavelTecnico.create({
+                                data: __assign({}, basicData),
+                                include: {
+                                    pessoa: {
+                                        include: {
+                                            pessoaFisica: true
+                                        }
+                                    }
+                                }
                             })];
                     case 2:
-                        _c = _d.sent();
-                        return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, prismaClient_1.prismaClient.responsavelElaboracao.create({
-                            data: { resp_tecnico: {
-                                    create: __assign({}, basicData)
-                                } }
-                        })];
-                    case 4:
-                        _c = _d.sent();
-                        _d.label = 5;
-                    case 5:
-                        responsavel = _c;
+                        responsavel = _b.sent();
                         return [2 /*return*/, responsavel];
                 }
             });
@@ -157,27 +137,37 @@ var ResponsavelService = /** @class */ (function () {
     };
     ResponsavelService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var pessoaFisica, pessoaJuridica, endereco, basicData, preparedData, detentor;
+            var pessoaFisica, endereco, uf, basicData, detentor;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        pessoaFisica = data.pessoaFisica, pessoaJuridica = data.pessoaJuridica, endereco = data.endereco;
+                        pessoaFisica = data.pessoaFisica, endereco = data.endereco;
+                        uf = (endereco === null || endereco === void 0 ? void 0 : endereco.id_estado) ? {
+                            connect: {
+                                id: endereco === null || endereco === void 0 ? void 0 : endereco.id_estado
+                            }
+                        } : undefined;
                         basicData = {
+                            crea: data === null || data === void 0 ? void 0 : data.crea,
+                            numero_art: (data === null || data === void 0 ? void 0 : data.numero_art) ? Number.parseInt(data === null || data === void 0 ? void 0 : data.numero_art) : 0,
                             tipo: data === null || data === void 0 ? void 0 : data.tipo,
-                            // telefone: {
-                            //     update: {
-                            //         numero: data?.telefone
-                            //     }                    
-                            // },
-                            endereco: {
+                            pessoa: {
                                 update: {
-                                    cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep,
-                                    logradouro: endereco === null || endereco === void 0 ? void 0 : endereco.logradouro,
-                                    bairro: endereco === null || endereco === void 0 ? void 0 : endereco.bairro,
-                                    municipio: endereco === null || endereco === void 0 ? void 0 : endereco.municipio,
-                                    estado: {
-                                        connect: {
-                                            id: endereco === null || endereco === void 0 ? void 0 : endereco.id_estado
+                                    pessoaFisica: {
+                                        create: {
+                                            nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
+                                            rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
+                                            cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
+                                        }
+                                    },
+                                    tipo: client_1.TipoPessoa.F,
+                                    endereco: {
+                                        create: {
+                                            cep: endereco === null || endereco === void 0 ? void 0 : endereco.cep,
+                                            logradouro: endereco === null || endereco === void 0 ? void 0 : endereco.logradouro,
+                                            bairro: endereco === null || endereco === void 0 ? void 0 : endereco.bairro,
+                                            municipio: endereco === null || endereco === void 0 ? void 0 : endereco.municipio,
+                                            estado: uf
                                         }
                                     }
                                 }
@@ -188,43 +178,8 @@ var ResponsavelService = /** @class */ (function () {
                                 }
                             }
                         };
-                        preparedData = (data === null || data === void 0 ? void 0 : data.tipo) === 'F' ? {
-                            pessoaFisica: {
-                                upsert: {
-                                    update: {
-                                        nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
-                                        rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
-                                        cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
-                                    },
-                                    create: {
-                                        nome: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.nome,
-                                        rg: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.rg,
-                                        cpf: pessoaFisica === null || pessoaFisica === void 0 ? void 0 : pessoaFisica.cpf
-                                    }
-                                }
-                            }
-                        } : {
-                            pessoaJuridica: {
-                                upsert: {
-                                    update: {
-                                        nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
-                                        razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
-                                        cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
-                                        inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
-                                        inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
-                                    },
-                                    create: {
-                                        nome_fantasia: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.nome_fantasia,
-                                        razao_social: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.razao_social,
-                                        cnpj: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.cnpj,
-                                        inscricao_estadual: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_estadual,
-                                        inscricao_federal: pessoaJuridica === null || pessoaJuridica === void 0 ? void 0 : pessoaJuridica.inscricao_federal
-                                    }
-                                }
-                            }
-                        };
                         return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.update({
-                                data: __assign(__assign({}, basicData), preparedData),
+                                data: __assign({}, basicData),
                                 where: {
                                     id: id
                                 }
@@ -252,20 +207,99 @@ var ResponsavelService = /** @class */ (function () {
             });
         });
     };
-    ResponsavelService.prototype.getAll = function (projetoId) {
+    ResponsavelService.prototype.getAll = function (query, userId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var projeto, perPage, page, search, tipo, skip, where, _a, data, total;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        projeto = ProjetoService_1.getProjeto(userId);
+                        perPage = query.perPage, page = query.page, search = query.search, tipo = query.tipo;
+                        skip = (page - 1) * perPage;
+                        where = search ?
+                            {
+                                AND: [{
+                                        pessoa: {
+                                            pessoaFisica: {
+                                                nome: {
+                                                    mode: client_1.Prisma.QueryMode.insensitive, contains: search
+                                                }
+                                            }
+                                        }
+                                    }, {
+                                        projeto: {
+                                            id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                        }
+                                    },
+                                    { tipo: tipo }
+                                ]
+                            } : {
+                            AND: [
+                                {
+                                    projeto: {
+                                        id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                    }
+                                },
+                                { tipo: tipo }
+                            ]
+                        };
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
+                                prismaClient_1.prismaClient.responsavelTecnico.findMany({
+                                    include: {
+                                        pessoa: {
+                                            include: {
+                                                pessoaFisica: true
+                                            }
+                                        }
+                                    },
+                                    where: where,
+                                    take: perPage ? parseInt(perPage) : 50,
+                                    skip: skip ? skip : 0,
+                                    orderBy: {
+                                        pessoa: {
+                                            pessoaFisica: {
+                                                nome: 'asc'
+                                            }
+                                        }
+                                    }
+                                }),
+                                prismaClient_1.prismaClient.responsavelTecnico.count({ where: where })
+                            ])];
+                    case 1:
+                        _a = _b.sent(), data = _a[0], total = _a[1];
+                        return [2 /*return*/, {
+                                data: data,
+                                perPage: perPage,
+                                page: page,
+                                skip: skip,
+                                count: total
+                            }];
+                }
+            });
+        });
+    };
+    ResponsavelService.prototype.getAll1 = function (projetoId, tipo) {
         return __awaiter(this, void 0, Promise, function () {
             var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.findMany({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.responsavelTecnico.findMany({
                             include: {
-                                pessoaFisica: true,
-                                pessoaJuridica: true
+                                pessoa: {
+                                    include: {
+                                        pessoaFisica: true
+                                    }
+                                }
                             },
                             where: {
-                                projeto: {
-                                    id: projetoId
-                                }
+                                AND: [
+                                    {
+                                        projeto: {
+                                            id: projetoId
+                                        }
+                                    },
+                                    { tipo: tipo }
+                                ]
                             }
                         })];
                     case 1:
@@ -277,29 +311,33 @@ var ResponsavelService = /** @class */ (function () {
     };
     ResponsavelService.prototype.findOne = function (id) {
         return __awaiter(this, void 0, Promise, function () {
-            var detentor;
+            var responsavel;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.pessoa.findFirst({
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.responsavelTecnico.findFirst({
                             include: {
-                                pessoaFisica: true,
-                                pessoaJuridica: true,
-                                endereco: {
+                                pessoa: {
                                     include: {
-                                        estado: true
+                                        pessoaFisica: true,
+                                        pessoaJuridica: true,
+                                        endereco: {
+                                            include: {
+                                                estado: true
+                                            }
+                                        },
+                                        telefone: true
                                     }
-                                },
-                                telefone: true
+                                }
                             },
                             where: {
-                                id_projeto: id
+                                id: id
                             }
                         })];
                     case 1:
-                        detentor = _a.sent();
-                        if (!detentor)
-                            throw new Error("Detentor não encontrada");
-                        return [2 /*return*/, detentor];
+                        responsavel = _a.sent();
+                        if (!responsavel)
+                            throw new Error("Responsável Técnico não encontrada");
+                        return [2 /*return*/, responsavel];
                 }
             });
         });
