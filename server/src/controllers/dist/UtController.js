@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.UtController = void 0;
-var ut_service_1 = require("../services/ut.service");
+var UtService_1 = require("../services/UtService");
 var UtController = /** @class */ (function () {
     function UtController() {
     }
@@ -49,7 +49,7 @@ var UtController = /** @class */ (function () {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, ut_service_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                        return [4 /*yield*/, UtService_1["default"].create(request.body, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
                     case 1:
                         ut = _b.sent();
                         return [2 /*return*/, response.json({
@@ -80,7 +80,7 @@ var UtController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ut_service_1["default"].update(id, request.body)];
+                        return [4 /*yield*/, UtService_1["default"].update(id, request.body)];
                     case 2:
                         ut = _a.sent();
                         return [2 /*return*/, response.json({
@@ -111,12 +111,12 @@ var UtController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ut_service_1["default"]["delete"](id)];
+                        return [4 /*yield*/, UtService_1["default"]["delete"](id)];
                     case 2:
                         _a.sent();
                         return [2 /*return*/, response.status(200).json({
                                 error: false,
-                                message: 'UPA deletada com Sucesso!!!'
+                                message: 'UT deletada com Sucesso!!!'
                             })];
                     case 3:
                         error_3 = _a.sent();
@@ -133,22 +133,20 @@ var UtController = /** @class */ (function () {
     UtController.prototype.findAll = function (request, response) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var _b, data, perPage, page, orderBy, order, skip, count, error_4;
+            var _b, data, perPage, page, skip, count, error_4;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         _c.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, ut_service_1["default"].getAll(request.query, (_a = request.user) === null || _a === void 0 ? void 0 : _a.id)];
+                        return [4 /*yield*/, UtService_1["default"].getAll((_a = request.user) === null || _a === void 0 ? void 0 : _a.id, request.query)];
                     case 1:
-                        _b = _c.sent(), data = _b.data, perPage = _b.perPage, page = _b.page, orderBy = _b.orderBy, order = _b.order, skip = _b.skip, count = _b.count;
+                        _b = _c.sent(), data = _b.data, perPage = _b.perPage, page = _b.page, skip = _b.skip, count = _b.count;
                         return [2 /*return*/, response.json({
                                 error: false,
                                 uts: data,
                                 perPage: perPage,
                                 page: page,
                                 skip: skip,
-                                orderBy: orderBy,
-                                order: order,
                                 count: count,
                                 message: null
                             })];
@@ -156,7 +154,7 @@ var UtController = /** @class */ (function () {
                         error_4 = _c.sent();
                         return [2 /*return*/, response.json({
                                 error: false,
-                                uts: [],
+                                data: [],
                                 message: error_4.message
                             })];
                     case 3: return [2 /*return*/];
@@ -164,14 +162,14 @@ var UtController = /** @class */ (function () {
             });
         });
     };
-    UtController.prototype.deleteUpas = function (request, response) {
+    UtController.prototype.deleteUts = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var ids;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         ids = request.body.ids;
-                        return [4 /*yield*/, ut_service_1["default"].deleteUts(ids)];
+                        return [4 /*yield*/, UtService_1["default"].deleteUts(ids)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, response.json({
@@ -184,23 +182,24 @@ var UtController = /** @class */ (function () {
         });
     };
     UtController.prototype.search = function (request, response) {
+        var _a, _b;
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, uts, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var numero_ut, uts, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         numero_ut = request.query.numero_ut;
                         if (!numero_ut) return [3 /*break*/, 2];
-                        return [4 /*yield*/, ut_service_1["default"].search(numero_ut)];
+                        return [4 /*yield*/, UtService_1["default"].search((_a = request.user) === null || _a === void 0 ? void 0 : _a.id, numero_ut)];
                     case 1:
-                        _a = _b.sent();
+                        _c = _d.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, ut_service_1["default"].getAll()];
+                    case 2: return [4 /*yield*/, UtService_1["default"].getAll((_b = request.user) === null || _b === void 0 ? void 0 : _b.id)];
                     case 3:
-                        _a = _b.sent();
-                        _b.label = 4;
+                        _c = _d.sent();
+                        _d.label = 4;
                     case 4:
-                        uts = _a;
+                        uts = _c;
                         return [2 /*return*/, response.json(uts)];
                 }
             });
@@ -216,7 +215,7 @@ var UtController = /** @class */ (function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ut_service_1["default"].findById(id)];
+                        return [4 /*yield*/, UtService_1["default"].findById(id)];
                     case 2:
                         upa = _a.sent();
                         return [2 /*return*/, response.json(upa)];

@@ -9,6 +9,11 @@ import { styles } from "../Utils/styles"
 
 import { useModalContext } from "contexts/ModalContext"
 import Modal from "../Modal"
+import { OptionType, Select } from "../Select"
+import { useAppDispatch, useAppSelector } from "store/hooks"
+import { RootState } from "store"
+import { ProjetoContext } from "contexts/ProjetoContext"
+import { setPoa } from "store/poaSlice"
 
 const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
@@ -19,6 +24,87 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     const { client } = useContext(AuthContext)
     const [checkedCategorias, setCheckedCategorias] = useState<any>([])
     const [sorted, setSorted] = useState(false)
+    const [poas, setPoas] = useState<any>()
+    const poa = useAppSelector((state: RootState) => state.poa)
+    const [selectedPoa, setSelectedPoa] = useState<OptionType>()
+    const dispatch = useAppDispatch()
+    const { projeto } = useContext(ProjetoContext)
+
+    const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/poa/search/q?nome=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((poa: any) => ({
+            value: poa.id,
+            label: poa.nome
+        })))
+    }
+
+    const poaExists = poas?.length
+
+    const loadPoa = useCallback(() => {
+        
+        if (poa && poaExists > 0) {
+            setSelectedPoa({
+                value: poa?.id,
+                label: poa?.descricao
+            })
+        } else {
+            setSelectedPoa({} as any)
+        }
+        
+    }, [poa, poaExists])
+
+    useEffect(() => {
+        async function defaultOptions() {
+            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
+                const { poas } = response.data
+                setPoas(poas)
+                if (poas.length === 0) {
+                    setSelectedPoa({
+                        value: '0',
+                        label: 'Nenhum POA Cadastrada'
+                    })
+                }
+        }
+
+        loadPoa()
+        
+        defaultOptions()
+
+    }, [currentPage, client, poa, loadPoa, projeto?.id])
+
+    const selectPoa = async (poa: any) => {
+        console.log(poa)
+        dispatch(setPoa({
+            id: poa.value,
+            descricao: poa.label,
+            data_ultimo_plan: new Date(0),
+            pmfs: ''
+        }))
+        setSelectedPoa(poa)
+
+        const response = await client.get(`/categoria?orderBy=nome&order=asc&poa=${poa.value}`)
+        const { categorias } = response.data
+        
+        setFilteredCategorias(categorias)
+    }
+
+    function getPoasDefaultOptions() {
+        const data = poas && poas?.map((poa: any, idx: any) => {
+            return {
+                label: poa.descricao,
+                value: poa.id
+            }
+        })
+
+        if (data instanceof Array) {
+            return [{ label: 'Padrão', value: '' }, ...data]
+        } else {
+            return []
+        }
+           
+    }
 
     const { hideModal, showModal, store } = useModalContext()
     const { visible } = store
@@ -141,6 +227,26 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                                 <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
+                        </div>
+
+                        <div className="flex flex-row w-4/12 lg:flex-col lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg px-4">
+                        
+                            <div className="lg:flex lg:flex-wrap">
+                                <div className="flex items-center pr-4">POA: </div>
+                                <div className="w-60">
+                                    <Select
+
+                                        placeholder='Selecione o POA...'
+                                        selectedValue={selectedPoa}
+                                        defaultOptions={getPoasDefaultOptions()}
+                                        options={loadPoas}
+                                        callback={selectPoa}
+                                        initialData={{
+                                            label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                        }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="w-60 px-4">Pesquisar Categoria:</div>
                         <div className="w-full px-4">

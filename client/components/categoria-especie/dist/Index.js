@@ -51,6 +51,10 @@ var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var styles_1 = require("../Utils/styles");
 var ModalContext_1 = require("contexts/ModalContext");
+var Select_1 = require("../Select");
+var hooks_1 = require("store/hooks");
+var ProjetoContext_1 = require("contexts/ProjetoContext");
+var poaSlice_1 = require("store/poaSlice");
 var Index = function (_a) {
     var currentCategorias = _a.currentCategorias, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadCategorias = _a.loadCategorias;
     var _b = react_1.useState(currentCategorias), filteredCategorias = _b[0], setFilteredCategorias = _b[1];
@@ -60,7 +64,101 @@ var Index = function (_a) {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _f = react_1.useState([]), checkedCategorias = _f[0], setCheckedCategorias = _f[1];
     var _g = react_1.useState(false), sorted = _g[0], setSorted = _g[1];
-    var _h = ModalContext_1.useModalContext(), hideModal = _h.hideModal, showModal = _h.showModal, store = _h.store;
+    var _h = react_1.useState(), poas = _h[0], setPoas = _h[1];
+    var poa = hooks_1.useAppSelector(function (state) { return state.poa; });
+    var _j = react_1.useState(), selectedPoa = _j[0], setSelectedPoa = _j[1];
+    var dispatch = hooks_1.useAppDispatch();
+    var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
+    var loadPoas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/poa/search/q?nome=" + inputValue)];
+                case 1:
+                    response = _a.sent();
+                    data = response.data;
+                    callback(data === null || data === void 0 ? void 0 : data.map(function (poa) { return ({
+                        value: poa.id,
+                        label: poa.nome
+                    }); }));
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var poaExists = poas === null || poas === void 0 ? void 0 : poas.length;
+    var loadPoa = react_1.useCallback(function () {
+        if (poa && poaExists > 0) {
+            setSelectedPoa({
+                value: poa === null || poa === void 0 ? void 0 : poa.id,
+                label: poa === null || poa === void 0 ? void 0 : poa.descricao
+            });
+        }
+        else {
+            setSelectedPoa({});
+        }
+    }, [poa, poaExists]);
+    react_1.useEffect(function () {
+        function defaultOptions() {
+            return __awaiter(this, void 0, void 0, function () {
+                var response, poas;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, client.get("/poa?orderBy=descricao&order=asc")];
+                        case 1:
+                            response = _a.sent();
+                            poas = response.data.poas;
+                            setPoas(poas);
+                            if (poas.length === 0) {
+                                setSelectedPoa({
+                                    value: '0',
+                                    label: 'Nenhum POA Cadastrada'
+                                });
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        loadPoa();
+        defaultOptions();
+    }, [currentPage, client, poa, loadPoa, projeto === null || projeto === void 0 ? void 0 : projeto.id]);
+    var selectPoa = function (poa) { return __awaiter(void 0, void 0, void 0, function () {
+        var response, categorias;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log(poa);
+                    dispatch(poaSlice_1.setPoa({
+                        id: poa.value,
+                        descricao: poa.label,
+                        data_ultimo_plan: new Date(0),
+                        pmfs: ''
+                    }));
+                    setSelectedPoa(poa);
+                    return [4 /*yield*/, client.get("/categoria?orderBy=nome&order=asc&poa=" + poa.value)];
+                case 1:
+                    response = _a.sent();
+                    categorias = response.data.categorias;
+                    setFilteredCategorias(categorias);
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    function getPoasDefaultOptions() {
+        var data = poas && (poas === null || poas === void 0 ? void 0 : poas.map(function (poa, idx) {
+            return {
+                label: poa.descricao,
+                value: poa.id
+            };
+        }));
+        if (data instanceof Array) {
+            return __spreadArrays([{ label: 'Padrão', value: '' }], data);
+        }
+        else {
+            return [];
+        }
+    }
+    var _k = ModalContext_1.useModalContext(), hideModal = _k.hideModal, showModal = _k.showModal, store = _k.store;
     var visible = store.visible;
     var categoriaById = react_1.useCallback(function (id) {
         return currentCategorias.find(function (categoria) { return categoria.id === id; });
@@ -177,6 +275,13 @@ var Index = function (_a) {
                         React.createElement("option", { value: "20" }, "20"),
                         React.createElement("option", { value: "50" }, "50"),
                         React.createElement("option", { value: "100" }, "100"))),
+                React.createElement("div", { className: "flex flex-row w-4/12 lg:flex-col lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg px-4" },
+                    React.createElement("div", { className: "lg:flex lg:flex-wrap" },
+                        React.createElement("div", { className: "flex items-center pr-4" }, "POA: "),
+                        React.createElement("div", { className: "w-60" },
+                            React.createElement(Select_1.Select, { placeholder: 'Selecione o POA...', selectedValue: selectedPoa, defaultOptions: getPoasDefaultOptions(), options: loadPoas, callback: selectPoa, initialData: {
+                                    label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                } })))),
                 React.createElement("div", { className: "w-60 px-4" }, "Pesquisar Categoria:"),
                 React.createElement("div", { className: "w-full px-4" },
                     React.createElement(input_1.Input, { label: "Pesquisar Esp\u00E9cie", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
