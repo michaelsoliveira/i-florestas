@@ -294,7 +294,7 @@ const AddEdit = ({ id }: any) => {
         
         loadPoa()
         loadUts()
-    }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions])
+    }, [session, isAddMode, client, id, loadUts, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
         const defaultOptions = async () => {
@@ -308,7 +308,7 @@ const AddEdit = ({ id }: any) => {
         }
         defaultOptions()    
         
-    }, [session, client, projeto])
+    }, [session, client, projeto, loadResponsaveis])
 
     const selectedRespTecElab = (data: any) => {
         setRespElab(data)
