@@ -96,7 +96,7 @@ const AddEdit = ({ id }: any) => {
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
         setUts(uts)   
-    }, [upa, uts, client])
+    }, [upa, client])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
@@ -294,7 +294,7 @@ const AddEdit = ({ id }: any) => {
         
         loadPoa()
         loadUts()
-    }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions])
+    }, [session, isAddMode, client, id, loadUts, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
         const defaultOptions = async () => {
@@ -308,7 +308,7 @@ const AddEdit = ({ id }: any) => {
         }
         defaultOptions()    
         
-    }, [session, client, projeto])
+    }, [session, client, projeto, loadResponsaveis])
 
     const selectedRespTecElab = (data: any) => {
         setRespElab(data)
