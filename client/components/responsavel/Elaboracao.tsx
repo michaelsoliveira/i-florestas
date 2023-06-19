@@ -43,14 +43,13 @@ const Elaboracao =  forwardRef<any, any>(
                 }) 
             }
         
-    }, [projeto, client, setValue])
+    }, [projeto, client, setValue, projeto])
     
     useEffect(() => {  
         loadResponsaveis()
     }, [loadResponsaveis])
 
     async function onSubmit(data: any) {
-        responseData(data)
         try {
             return isAddMode
                 ? create({...data, id_projeto: projeto?.id, tipo: 'elab'})

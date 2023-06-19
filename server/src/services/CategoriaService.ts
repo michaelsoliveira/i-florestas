@@ -61,7 +61,7 @@ class CategoriaService {
 
     async getAll(userId: string, query?: any): Promise<any> {
         const projeto = getProjeto(userId) as any
-        const { perPage, page, search, orderBy, order } = query
+        const { perPage, page, search, orderBy, order, poa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
         
@@ -86,12 +86,23 @@ class CategoriaService {
                             projeto: {
                                 id: projeto?.id
                             }
+                        },
+                        {
+                            id_poa:  poa ? poa : null
                         }
                     ]
             } : {
-                projeto: {
-                    id: projeto?.id
-                }
+                AND: [
+                    {
+                        id_poa:  poa ? poa : null
+                    },
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        }
+                    }
+                ]
+                
             }
         const [data, total] = await prismaClient.$transaction([
             prismaClient.categoriaEspecie.findMany({
@@ -100,7 +111,7 @@ class CategoriaService {
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
             }),
-            prismaClient.categoriaEspecie.count()
+            prismaClient.categoriaEspecie.count({where})
         ])
 
         return {

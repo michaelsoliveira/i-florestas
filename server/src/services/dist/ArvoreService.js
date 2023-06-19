@@ -232,7 +232,6 @@ var ArvoreService = /** @class */ (function () {
                             }); }))];
                     case 2:
                         data = _a.sent();
-                        console.log(data);
                         return [4 /*yield*/, prismaClient_1.prismaClient.arvore.createMany({
                                 data: data
                             })];

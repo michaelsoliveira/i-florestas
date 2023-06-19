@@ -171,8 +171,6 @@ class ArvoreService {
                 }
             }))
 
-            console.log(data)
-
             await prismaClient.arvore.createMany({
                 data
             })

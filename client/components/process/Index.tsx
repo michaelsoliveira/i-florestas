@@ -280,11 +280,11 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa.nome}</div>
+                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa?.nome}</div>
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan.toString()}</div>
+                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan?.toString()}</div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                 <Link href={`/poa/update/${poa.id}`}>

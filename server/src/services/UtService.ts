@@ -146,22 +146,8 @@ class UtService {
 
         const projeto = await getProjeto(userId)
 
-        const { perPage, page, search, orderBy, order, upa } = query
+        const { perPage, page, search, upa } = query
         const skip = (page - 1) * perPage
-        
-        let orderByTerm = {}
-        
-        const orderByElement = orderBy ? orderBy.split('.') : {}
-        if (orderByElement instanceof Array) {
-            orderByTerm = orderByElement.length == 2 ? 
-            {
-                [orderByElement[1]]: order,
-            } : {}
-        } else {
-            orderByTerm = {
-                [orderByElement]: order
-            }
-        }
 
         const where = search ? 
                 {
@@ -197,7 +183,7 @@ class UtService {
                 take: perPage ? parseInt(perPage) : 10,
                 skip: skip ? skip : 0,
                 orderBy: {
-                    ...orderByTerm
+                    numero_ut: 'asc'
                 },
                 include: {
                     upa: false

@@ -95,25 +95,36 @@ var AddEdit = function (_a) {
     var _l = react_1.useState(), selectedUpa = _l[0], setSelectedUpa = _l[1];
     var _m = react_1.useState([]), checkedUts = _m[0], setCheckedUts = _m[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
-    var loadPoas = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+    var loadResponsaveis = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var respExec, resp_tec_exec, respElab, resp_tec_elab, responsaveisElab, responsaveisExec;
         return __generator(this, function (_a) {
-            console.log('Submited Data');
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/responsavel?tipo=exec")];
+                case 1:
+                    respExec = _a.sent();
+                    resp_tec_exec = respExec.data.data;
+                    return [4 /*yield*/, client.get("/responsavel?tipo=elab")];
+                case 2:
+                    respElab = _a.sent();
+                    resp_tec_elab = respElab.data.data;
+                    responsaveisElab = resp_tec_elab.map(function (resp) {
+                        return {
+                            id: resp.id,
+                            nome: resp.pessoa.pessoaFisica.nome
+                        };
+                    });
+                    responsaveisExec = resp_tec_exec.map(function (resp) {
+                        return {
+                            id: resp.id,
+                            nome: resp.pessoa.pessoaFisica.nome
+                        };
+                    });
+                    setRespElabs(responsaveisElab);
+                    setRespExecs(responsaveisExec);
+                    return [2 /*return*/];
+            }
         });
-    }); }, []);
-    var formRef = react_1.createRef();
-    var dataResponseElab = function (data) {
-        if (formRef.current) {
-            formRef.current.submit();
-        }
-    };
-    var returnData = function (data) {
-        console.log(data);
-    };
-    var styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
-    // const arvoreById = useCallback((id?: string) => {
-    //     return currentArvores.find((arvore: any) => arvore.id === id)
-    // }, [currentArvores])
+    }); }, [client]);
     var loadUpas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -150,7 +161,7 @@ var AddEdit = function (_a) {
         var response, uts;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/ut?orderBy=nome&order=asc&upa=" + upa.id)];
+                case 0: return [4 /*yield*/, client.get("/ut?orderBy=numero_ut&order=asc&upa=" + upa.id)];
                 case 1:
                     response = _a.sent();
                     uts = response.data.uts;
@@ -158,7 +169,7 @@ var AddEdit = function (_a) {
                     return [2 /*return*/];
             }
         });
-    }); }, [upa, uts]);
+    }); }, [upa, uts, client]);
     var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, umfs, compareUmf;
         return __generator(this, function (_a) {
@@ -280,11 +291,26 @@ var AddEdit = function (_a) {
             setCheckedUts([]);
         }
     };
-    var responseTecElab = function (data) {
-        console.log(data);
-    };
+    var responseTecElab = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            loadResponsaveis();
+            setValue('resp_elab', data === null || data === void 0 ? void 0 : data.id);
+            setRespElab({
+                label: (_b = (_a = data === null || data === void 0 ? void 0 : data.pessoa) === null || _a === void 0 ? void 0 : _a.pessoaFisica) === null || _b === void 0 ? void 0 : _b.nome,
+                value: data === null || data === void 0 ? void 0 : data.id
+            });
+            return [2 /*return*/];
+        });
+    }); };
     var responseTecExec = function (data) {
-        console.log(data);
+        var _a, _b;
+        loadResponsaveis();
+        setValue('resp_exec', data === null || data === void 0 ? void 0 : data.id);
+        setRespExec({
+            label: (_b = (_a = data === null || data === void 0 ? void 0 : data.pessoa) === null || _a === void 0 ? void 0 : _a.pessoaFisica) === null || _b === void 0 ? void 0 : _b.nome,
+            value: data === null || data === void 0 ? void 0 : data.id
+        });
     };
     var respTecElabModal = function () {
         showModal({
@@ -328,7 +354,6 @@ var AddEdit = function (_a) {
                 case 1:
                     response = _a.sent();
                     responsaveis = response.data.data;
-                    console.log(responsaveis);
                     callback(responsaveis === null || responsaveis === void 0 ? void 0 : responsaveis.map(function (responsavel) { return ({
                         value: responsavel.id,
                         label: responsavel.pessoa.pessoaFisica.nome
@@ -353,12 +378,16 @@ var AddEdit = function (_a) {
                             poa = (_q.sent()).data;
                             setRespElab({
                                 label: (_d = (_c = (_b = (_a = poa.resp_elab) === null || _a === void 0 ? void 0 : _a.resp_tecnico) === null || _b === void 0 ? void 0 : _b.pessoa) === null || _c === void 0 ? void 0 : _c.pessoaFisica) === null || _d === void 0 ? void 0 : _d.nome,
-                                value: (_e = poa === null || poa === void 0 ? void 0 : poa.resp_elab) === null || _e === void 0 ? void 0 : _e.id
+                                value: (_e = poa === null || poa === void 0 ? void 0 : poa.resp_elab) === null || _e === void 0 ? void 0 : _e.id_resp_tecnico
                             });
                             setRespExec({
                                 label: (_j = (_h = (_g = (_f = poa.resp_exec) === null || _f === void 0 ? void 0 : _f.resp_tecnico) === null || _g === void 0 ? void 0 : _g.pessoa) === null || _h === void 0 ? void 0 : _h.pessoaFisica) === null || _j === void 0 ? void 0 : _j.nome,
-                                value: (_k = poa.resp_exec) === null || _k === void 0 ? void 0 : _k.id
+                                value: (_k = poa.resp_exec) === null || _k === void 0 ? void 0 : _k.id_resp_tecnico
                             });
+                            setCheckedUts(poa === null || poa === void 0 ? void 0 : poa.ut.map(function (_a) {
+                                var id = _a.id;
+                                return id;
+                            }));
                             for (_i = 0, _o = Object.entries(poa); _i < _o.length; _i++) {
                                 _p = _o[_i], key = _p[0], value = _p[1];
                                 switch (key) {
@@ -390,40 +419,19 @@ var AddEdit = function (_a) {
     }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions]);
     react_1.useEffect(function () {
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
-            var upasResponse, upas_1, respExec, resp_tec_exec, respElab, resp_tec_elab, responsaveisElab, responsaveisExec;
+            var upasResponse, upas_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 4];
+                        if (!(typeof session !== typeof undefined)) return [3 /*break*/, 2];
                         return [4 /*yield*/, client.get("/upa?orderBy=nome&order=asc")];
                     case 1:
                         upasResponse = _a.sent();
                         upas_1 = upasResponse.data.upas;
-                        return [4 /*yield*/, client.get("/responsavel?tipo=exec")];
-                    case 2:
-                        respExec = _a.sent();
-                        resp_tec_exec = respExec.data.data;
-                        return [4 /*yield*/, client.get("/responsavel?tipo=elab")];
-                    case 3:
-                        respElab = _a.sent();
-                        resp_tec_elab = respElab.data.data;
-                        responsaveisElab = resp_tec_elab.map(function (resp) {
-                            return {
-                                id: resp.id,
-                                nome: resp.pessoa.pessoaFisica.nome
-                            };
-                        });
-                        responsaveisExec = resp_tec_exec.map(function (resp) {
-                            return {
-                                id: resp.id,
-                                nome: resp.pessoa.pessoaFisica.nome
-                            };
-                        });
                         setUpas(upas_1);
-                        setRespElabs(responsaveisElab);
-                        setRespExecs(responsaveisExec);
-                        _a.label = 4;
-                    case 4: return [2 /*return*/];
+                        loadResponsaveis();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
                 }
             });
         }); };
@@ -442,8 +450,8 @@ var AddEdit = function (_a) {
             return __generator(this, function (_a) {
                 try {
                     return [2 /*return*/, isAddMode
-                            ? createPoa(data)
-                            : updatePoa(id, data)];
+                            ? createPoa(__assign(__assign({}, data), { uts: checkedUts }))
+                            : updatePoa(id, __assign(__assign({}, data), { uts: checkedUts }))];
                 }
                 catch (error) {
                     console.log(error.message);
@@ -475,8 +483,14 @@ var AddEdit = function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, client.post('poa', __assign({}, data))
                             .then(function (response) {
-                            var _a = response.data, error = _a.error, message = _a.message;
+                            var _a = response.data, error = _a.error, message = _a.message, poa = _a.poa;
                             if (!error) {
+                                dispatch(poaSlice_1.setPoa({
+                                    id: poa.id,
+                                    descricao: poa.descricao,
+                                    data_ultimo_plan: poa.data_ultimo_plan,
+                                    pmfs: poa.pmfs
+                                }));
                                 alert_1["default"].success(message);
                                 router.push('/poa');
                             }

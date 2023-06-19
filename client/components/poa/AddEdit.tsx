@@ -48,26 +48,29 @@ const AddEdit = ({ id }: any) => {
     const [checkedUts, setCheckedUts] = useState<any>([])
     const { projeto } = useContext(ProjetoContext)
 
-    const loadPoas = useCallback(async () => {
-        console.log('Submited Data')
-    }, [])
+    const loadResponsaveis = useCallback(async () => {
+        const respExec = await client.get(`/responsavel?tipo=exec`)
+        const { data : resp_tec_exec } = respExec.data
+        const respElab = await client.get(`/responsavel?tipo=elab`)
+        const { data : resp_tec_elab } = respElab.data
 
-    const formRef = createRef<any>()
+        const responsaveisElab = resp_tec_elab.map((resp: any) => {
+            return {
+                id: resp.id,
+                nome: resp.pessoa.pessoaFisica.nome
+            }
+        })
 
-    const dataResponseElab = (data: any) => {
-        if (formRef.current) {
-            formRef.current.submit()
-        }
-    } 
+        const responsaveisExec = resp_tec_exec.map((resp: any) => {
+            return {
+                id: resp.id,
+                nome: resp.pessoa.pessoaFisica.nome
+            }
+        })
 
-    const returnData = (data: any) => {
-        console.log(data)
-    }
-
-    const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-    // const arvoreById = useCallback((id?: string) => {
-    //     return currentArvores.find((arvore: any) => arvore.id === id)
-    // }, [currentArvores])
+        setRespElabs(responsaveisElab)
+        setRespExecs(responsaveisExec)
+    }, [client])
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
@@ -90,10 +93,10 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadUts = useCallback(async () => {
-        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa.id}`)
+        const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
         setUts(uts)   
-    }, [upa, uts])
+    }, [upa, uts, client])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
@@ -194,12 +197,22 @@ const AddEdit = ({ id }: any) => {
         }
     };
 
-    const responseTecElab = (data: any) => {
-        console.log(data)
+    const responseTecElab = async (data: any) => {
+        loadResponsaveis()        
+        setValue('resp_elab', data?.id)
+        setRespElab({
+            label: data?.pessoa?.pessoaFisica?.nome,
+            value: data?.id
+        })
     }
 
     const responseTecExec = (data: any) => {
-        console.log(data)
+        loadResponsaveis()
+        setValue('resp_exec', data?.id)
+        setRespExec({
+            label: data?.pessoa?.pessoaFisica?.nome,
+            value: data?.id
+        })
     }
 
     const respTecElabModal = () => {
@@ -233,7 +246,7 @@ const AddEdit = ({ id }: any) => {
     const loadRespExec = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/responsavel?tipo=exec&search=${inputValue}`)
         const { data: responsaveis } = response.data
-        console.log(responsaveis)
+
         callback(responsaveis?.map((responsavel: any) => ({
             value: responsavel.id,
             label: responsavel.pessoa.pessoaFisica.nome
@@ -250,13 +263,15 @@ const AddEdit = ({ id }: any) => {
                 
                 setRespElab({
                     label: poa.resp_elab?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa?.resp_elab?.id
+                    value: poa?.resp_elab?.id_resp_tecnico
                 })
 
                 setRespExec({
                     label: poa.resp_exec?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa.resp_exec?.id
+                    value: poa.resp_exec?.id_resp_tecnico
                 })
+
+                setCheckedUts(poa?.ut.map(({ id }: any) => id));
 
                 for (const [key, value] of Object.entries(poa)) {
                     switch(key) {
@@ -286,29 +301,9 @@ const AddEdit = ({ id }: any) => {
             if (typeof session !== typeof undefined){
                 const upasResponse = await client.get(`/upa?orderBy=nome&order=asc`)
                 const { upas } = upasResponse.data
-
-                const respExec = await client.get(`/responsavel?tipo=exec`)
-                const { data : resp_tec_exec } = respExec.data
-                const respElab = await client.get(`/responsavel?tipo=elab`)
-                const { data : resp_tec_elab } = respElab.data
-
-                const responsaveisElab = resp_tec_elab.map((resp: any) => {
-                    return {
-                        id: resp.id,
-                        nome: resp.pessoa.pessoaFisica.nome
-                    }
-                })
-
-                const responsaveisExec = resp_tec_exec.map((resp: any) => {
-                    return {
-                        id: resp.id,
-                        nome: resp.pessoa.pessoaFisica.nome
-                    }
-                })
-
                 setUpas(upas)
-                setRespElabs(responsaveisElab)
-                setRespExecs(responsaveisExec)
+
+                loadResponsaveis()
             }
         }
         defaultOptions()    
@@ -328,8 +323,8 @@ const AddEdit = ({ id }: any) => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createPoa(data)
-                : updatePoa(id, data)
+                ? createPoa({...data, uts: checkedUts})
+                : updatePoa(id, {...data, uts: checkedUts})
         } catch (error: any) {
             console.log(error.message)
             alertService.error(error.message);
@@ -360,8 +355,14 @@ const AddEdit = ({ id }: any) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message } = response.data
+                const { error, message, poa } = response.data
                 if (!error) {
+                    dispatch(setPoa({
+                        id: poa.id,
+                        descricao: poa.descricao,
+                        data_ultimo_plan: poa.data_ultimo_plan,
+                        pmfs: poa.pmfs
+                    }))
                     alertService.success(message);
                     router.push('/poa')
                 } else {
@@ -372,9 +373,7 @@ const AddEdit = ({ id }: any) => {
     }
 
     async function updatePoa(id: string, data: any) {
-        
         await client.put(`/poa/${id}`, {
-            // umf: umf.id,
             ...data
         })
             .then((response: any) => {

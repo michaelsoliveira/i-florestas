@@ -86,7 +86,41 @@ class PoaService {
             }
         })
 
-        const uts = data?.uts && await prismaClient.ut.updateMany({
+        //Criterios padrão
+        const criterios = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                AND: [
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        }
+                    },
+                    {
+                        id_poa: undefined
+                    }
+                ]
+            }
+        })
+
+        await prismaClient.categoriaEspecie.createMany({
+            data: criterios.map((criterio: any) => {
+                return {
+                    nome: criterio?.nome,
+                    criterio_fuste: criterio?.criterio_fuste,
+                    criterio_dminc: criterio?.criterio_dminc,
+                    criterio_dmaxc: criterio?.criterio_dmaxc,
+                    criterio_n_min: criterio?.criterio_n_min,
+                    criterio_perc_min: criterio?.criterio_perc_min,
+                    preservar: criterio?.preservar,
+                    criterio_altura: criterio?.criterio_altura,
+                    criterio_volume: criterio?.criterio_volume,
+                    id_projeto: projeto?.id,
+                    id_poa: poa?.id
+                }
+            })
+        })
+
+        data?.uts && await prismaClient.ut.updateMany({
             where: {
                 id: {
                     in: data?.uts
@@ -101,6 +135,8 @@ class PoaService {
     }
 
     async update(id: string, data: any): Promise<Poa> {
+
+        console.log(data)
         
         data?.resp_exec !== data?.id_resp_exec &&
         
@@ -124,7 +160,16 @@ class PoaService {
                 }
             })
 
-            const uts = data?.uts && await prismaClient.ut.updateMany({
+            await prismaClient.ut.updateMany({
+                where: {
+                    id_poa: id
+                },
+                data: {
+                    id_poa: null
+                }
+            })
+
+            data?.uts && await prismaClient.ut.updateMany({
                 where: {
                     id: {
                         in: data?.uts
@@ -151,6 +196,26 @@ class PoaService {
     }
 
     async delete(id: string): Promise<void> {
+        const poa = prismaClient.poa.findFirst({
+            include: {
+                ut: true
+            },
+            where: {
+                id
+            }
+        }) as any
+
+        await prismaClient.ut.updateMany({
+            where: {
+                id: {
+                    in: poa.ut
+                }
+            },
+            data: {
+                id_poa: poa.id
+            }
+        })
+
         await prismaClient.poa.delete({
             where: {
                 id
@@ -187,7 +252,6 @@ class PoaService {
                     contains: search ? search : ''
                 },
                 AND: [
-                // { id_umf: umf },
                 {    
                     projeto: {
                         id: projeto?.id
@@ -286,7 +350,8 @@ class PoaService {
                         }
                     }
                 },
-                situacao_poa: true
+                situacao_poa: true,
+                ut: true
             }
         })
 
