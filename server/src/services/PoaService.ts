@@ -86,7 +86,41 @@ class PoaService {
             }
         })
 
-        const uts = data?.uts && await prismaClient.ut.updateMany({
+        //Criterios padrão
+        const criterios = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                AND: [
+                    {
+                        projeto: {
+                            id: projeto?.id
+                        }
+                    },
+                    {
+                        id_poa: undefined
+                    }
+                ]
+            }
+        })
+
+        await prismaClient.categoriaEspecie.createMany({
+            data: criterios.map((criterio: any) => {
+                return {
+                    nome: criterio?.nome,
+                    criterio_fuste: criterio?.criterio_fuste,
+                    criterio_dminc: criterio?.criterio_dminc,
+                    criterio_dmaxc: criterio?.criterio_dmaxc,
+                    criterio_n_min: criterio?.criterio_n_min,
+                    criterio_perc_min: criterio?.criterio_perc_min,
+                    preservar: criterio?.preservar,
+                    criterio_altura: criterio?.criterio_altura,
+                    criterio_volume: criterio?.criterio_volume,
+                    id_projeto: projeto?.id,
+                    id_poa: poa?.id
+                }
+            })
+        })
+
+        data?.uts && await prismaClient.ut.updateMany({
             where: {
                 id: {
                     in: data?.uts

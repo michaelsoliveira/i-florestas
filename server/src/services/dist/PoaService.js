@@ -55,7 +55,7 @@ var PoaService = /** @class */ (function () {
     }
     PoaService.prototype.create = function (data, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var user, projeto, poaExists, situacaoPoa, poa, uts, _a;
+            var user, projeto, poaExists, situacaoPoa, poa, criterios, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
@@ -131,11 +131,48 @@ var PoaService = /** @class */ (function () {
                                         }
                                     }
                                 }
-                            })];
+                            })
+                            //Criterios padrão
+                        ];
                     case 5:
                         poa = _b.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.findMany({
+                                where: {
+                                    AND: [
+                                        {
+                                            projeto: {
+                                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                            }
+                                        },
+                                        {
+                                            id_poa: undefined
+                                        }
+                                    ]
+                                }
+                            })];
+                    case 6:
+                        criterios = _b.sent();
+                        return [4 /*yield*/, prismaClient_1.prismaClient.categoriaEspecie.createMany({
+                                data: criterios.map(function (criterio) {
+                                    return {
+                                        nome: criterio === null || criterio === void 0 ? void 0 : criterio.nome,
+                                        criterio_fuste: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_fuste,
+                                        criterio_dminc: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_dminc,
+                                        criterio_dmaxc: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_dmaxc,
+                                        criterio_n_min: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_n_min,
+                                        criterio_perc_min: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_perc_min,
+                                        preservar: criterio === null || criterio === void 0 ? void 0 : criterio.preservar,
+                                        criterio_altura: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_altura,
+                                        criterio_volume: criterio === null || criterio === void 0 ? void 0 : criterio.criterio_volume,
+                                        id_projeto: projeto === null || projeto === void 0 ? void 0 : projeto.id,
+                                        id_poa: poa === null || poa === void 0 ? void 0 : poa.id
+                                    };
+                                })
+                            })];
+                    case 7:
+                        _b.sent();
                         _a = (data === null || data === void 0 ? void 0 : data.uts);
-                        if (!_a) return [3 /*break*/, 7];
+                        if (!_a) return [3 /*break*/, 9];
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
                                 where: {
                                     id: {
@@ -146,11 +183,11 @@ var PoaService = /** @class */ (function () {
                                     id_poa: poa.id
                                 }
                             })];
-                    case 6:
+                    case 8:
                         _a = (_b.sent());
-                        _b.label = 7;
-                    case 7:
-                        uts = _a;
+                        _b.label = 9;
+                    case 9:
+                        _a;
                         return [2 /*return*/, poa];
                 }
             });
