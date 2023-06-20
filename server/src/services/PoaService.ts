@@ -56,21 +56,13 @@ class PoaService {
                     }
                 },
                 resp_elab: {
-                    create: {
-                        resp_tecnico: {
-                            connect: {
-                                id: data?.resp_elab
-                            }
-                        }
-                    }
+                    connect: {
+                        id: data?.resp_elab
+                    } 
                 },
                 resp_exec: {
-                    create: {
-                        resp_tecnico: {
-                            connect: {
-                                id: data?.resp_exec
-                            }
-                        }
+                    connect: {
+                        id: data?.resp_exec
                     }
                 },
                 projeto: {
@@ -96,7 +88,7 @@ class PoaService {
                         }
                     },
                     {
-                        id_poa: undefined
+                        id_poa: null
                     }
                 ]
             }
@@ -136,30 +128,6 @@ class PoaService {
 
     async update(id: string, data: any): Promise<Poa> {
 
-        console.log(data)
-        
-        data?.resp_exec !== data?.id_resp_exec &&
-        
-            await prismaClient.responsavelExecucao.update({
-                data: {
-                    id_resp_tecnico: data?.resp_exec
-                },
-                where: {
-                    id: data?.id_resp_exec
-                }
-            })
-
-        data?.resp_elab !== data?.id_resp_elab &&
-        
-            await prismaClient.responsavelElaboracao.update({
-                data: {
-                    id_resp_tecnico: data?.resp_elab
-                },
-                where: {
-                    id: data?.id_resp_elab
-                }
-            })
-
             await prismaClient.ut.updateMany({
                 where: {
                     id_poa: id
@@ -186,6 +154,8 @@ class PoaService {
                     id
                 },
                 data: {
+                    resp_exec: { connect: { id: data?.resp_exec } },
+                    resp_elab: { connect: { id: data?.resp_elab } },
                     descricao: data.descricao,
                     corte_maximo: data.corte_maximo,
                     pmfs: data?.pmfs,
@@ -318,15 +288,11 @@ class PoaService {
             include: {
                 resp_elab: {
                     include: {
-                        resp_tecnico: {
+                        pessoa: {
                             include: {
-                                pessoa: {
-                                    include: {
-                                        pessoaFisica: {
-                                            select: {
-                                                nome: true
-                                            }
-                                        }
+                                pessoaFisica: {
+                                    select: {
+                                        nome: true
                                     }
                                 }
                             }
@@ -335,15 +301,11 @@ class PoaService {
                 },
                 resp_exec: {
                     include: {
-                        resp_tecnico: {
+                        pessoa: {
                             include: {
-                                pessoa: {
-                                    include: {
-                                        pessoaFisica: {
-                                            select: {
-                                                nome: true
-                                            }
-                                        }
+                                pessoaFisica: {
+                                    select: {
+                                        nome: true
                                     }
                                 }
                             }

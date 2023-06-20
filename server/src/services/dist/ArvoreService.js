@@ -184,12 +184,14 @@ var ArvoreService = /** @class */ (function () {
                             })];
                     case 1:
                         eqVolume_1 = _a.sent();
-                        return [4 /*yield*/, Promise.all(dt.map(function (arv) { return __awaiter(_this, void 0, Promise, function () {
+                        console.log(dt.length);
+                        return [4 /*yield*/, Promise.all(dt.map(function (arv, idx) { return __awaiter(_this, void 0, Promise, function () {
                                 var dap, scope, volume, especie, ut, _a, preparedData;
                                 var _b, _c;
                                 return __generator(this, function (_d) {
                                     switch (_d.label) {
                                         case 0:
+                                            if (!(idx < dt.length - 1)) return [3 /*break*/, 4];
                                             dap = (arv === null || arv === void 0 ? void 0 : arv.cap) ? parseFloat(arv === null || arv === void 0 ? void 0 : arv.cap) / Math.PI : parseFloat(arv === null || arv === void 0 ? void 0 : arv.dap);
                                             scope = {
                                                 DAP: dap,
@@ -227,6 +229,7 @@ var ArvoreService = /** @class */ (function () {
                                                 long_y: parseFloat((_c = arv === null || arv === void 0 ? void 0 : arv.longitude) === null || _c === void 0 ? void 0 : _c.replace(",", "."))
                                             };
                                             return [2 /*return*/, __assign(__assign({ numero_arvore: (arv === null || arv === void 0 ? void 0 : arv.numero_arvore) && parseInt(arv === null || arv === void 0 ? void 0 : arv.numero_arvore), dap: (arv === null || arv === void 0 ? void 0 : arv.cap) ? parseFloat(arv === null || arv === void 0 ? void 0 : arv.cap) / Math.PI : parseFloat(arv === null || arv === void 0 ? void 0 : arv.dap), altura: parseFloat(arv === null || arv === void 0 ? void 0 : arv.altura), fuste: (arv === null || arv === void 0 ? void 0 : arv.qf) && parseInt(arv === null || arv === void 0 ? void 0 : arv.qf), volume: volume }, preparedData), { id_ut: ut === null || ut === void 0 ? void 0 : ut.id, id_especie: especie === null || especie === void 0 ? void 0 : especie.id })];
+                                        case 4: return [2 /*return*/];
                                     }
                                 });
                             }); }))];

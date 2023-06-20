@@ -103,21 +103,13 @@ var PoaService = /** @class */ (function () {
                                         }
                                     },
                                     resp_elab: {
-                                        create: {
-                                            resp_tecnico: {
-                                                connect: {
-                                                    id: data === null || data === void 0 ? void 0 : data.resp_elab
-                                                }
-                                            }
+                                        connect: {
+                                            id: data === null || data === void 0 ? void 0 : data.resp_elab
                                         }
                                     },
                                     resp_exec: {
-                                        create: {
-                                            resp_tecnico: {
-                                                connect: {
-                                                    id: data === null || data === void 0 ? void 0 : data.resp_exec
-                                                }
-                                            }
+                                        connect: {
+                                            id: data === null || data === void 0 ? void 0 : data.resp_exec
                                         }
                                     },
                                     projeto: {
@@ -145,7 +137,7 @@ var PoaService = /** @class */ (function () {
                                             }
                                         },
                                         {
-                                            id_poa: undefined
+                                            id_poa: null
                                         }
                                     ]
                                 }
@@ -195,53 +187,21 @@ var PoaService = /** @class */ (function () {
     };
     PoaService.prototype.update = function (id, data) {
         return __awaiter(this, void 0, Promise, function () {
-            var _a, _b, _c, poa;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        console.log(data);
-                        _a = (data === null || data === void 0 ? void 0 : data.resp_exec) !== (data === null || data === void 0 ? void 0 : data.id_resp_exec);
-                        if (!_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, prismaClient_1.prismaClient.responsavelExecucao.update({
-                                data: {
-                                    id_resp_tecnico: data === null || data === void 0 ? void 0 : data.resp_exec
-                                },
-                                where: {
-                                    id: data === null || data === void 0 ? void 0 : data.id_resp_exec
-                                }
-                            })];
+            var _a, poa;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
+                            where: {
+                                id_poa: id
+                            },
+                            data: {
+                                id_poa: null
+                            }
+                        })];
                     case 1:
-                        _a = (_d.sent());
-                        _d.label = 2;
-                    case 2:
-                        _a;
-                        _b = (data === null || data === void 0 ? void 0 : data.resp_elab) !== (data === null || data === void 0 ? void 0 : data.id_resp_elab);
-                        if (!_b) return [3 /*break*/, 4];
-                        return [4 /*yield*/, prismaClient_1.prismaClient.responsavelElaboracao.update({
-                                data: {
-                                    id_resp_tecnico: data === null || data === void 0 ? void 0 : data.resp_elab
-                                },
-                                where: {
-                                    id: data === null || data === void 0 ? void 0 : data.id_resp_elab
-                                }
-                            })];
-                    case 3:
-                        _b = (_d.sent());
-                        _d.label = 4;
-                    case 4:
-                        _b;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
-                                where: {
-                                    id_poa: id
-                                },
-                                data: {
-                                    id_poa: null
-                                }
-                            })];
-                    case 5:
-                        _d.sent();
-                        _c = (data === null || data === void 0 ? void 0 : data.uts);
-                        if (!_c) return [3 /*break*/, 7];
+                        _b.sent();
+                        _a = (data === null || data === void 0 ? void 0 : data.uts);
+                        if (!_a) return [3 /*break*/, 3];
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.updateMany({
                                 where: {
                                     id: {
@@ -252,23 +212,25 @@ var PoaService = /** @class */ (function () {
                                     id_poa: id
                                 }
                             })];
-                    case 6:
-                        _c = (_d.sent());
-                        _d.label = 7;
-                    case 7:
-                        _c;
+                    case 2:
+                        _a = (_b.sent());
+                        _b.label = 3;
+                    case 3:
+                        _a;
                         return [4 /*yield*/, prismaClient_1.prismaClient.poa.update({
                                 where: {
                                     id: id
                                 },
                                 data: {
+                                    resp_exec: { connect: { id: data === null || data === void 0 ? void 0 : data.resp_exec } },
+                                    resp_elab: { connect: { id: data === null || data === void 0 ? void 0 : data.resp_elab } },
                                     descricao: data.descricao,
                                     corte_maximo: data.corte_maximo,
                                     pmfs: data === null || data === void 0 ? void 0 : data.pmfs
                                 }
                             })];
-                    case 8:
-                        poa = _d.sent();
+                    case 4:
+                        poa = _b.sent();
                         return [2 /*return*/, poa];
                 }
             });
@@ -431,15 +393,11 @@ var PoaService = /** @class */ (function () {
                             include: {
                                 resp_elab: {
                                     include: {
-                                        resp_tecnico: {
+                                        pessoa: {
                                             include: {
-                                                pessoa: {
-                                                    include: {
-                                                        pessoaFisica: {
-                                                            select: {
-                                                                nome: true
-                                                            }
-                                                        }
+                                                pessoaFisica: {
+                                                    select: {
+                                                        nome: true
                                                     }
                                                 }
                                             }
@@ -448,15 +406,11 @@ var PoaService = /** @class */ (function () {
                                 },
                                 resp_exec: {
                                     include: {
-                                        resp_tecnico: {
+                                        pessoa: {
                                             include: {
-                                                pessoa: {
-                                                    include: {
-                                                        pessoaFisica: {
-                                                            select: {
-                                                                nome: true
-                                                            }
-                                                        }
+                                                pessoaFisica: {
+                                                    select: {
+                                                        nome: true
                                                     }
                                                 }
                                             }

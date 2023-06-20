@@ -169,7 +169,7 @@ var AddEdit = function (_a) {
                     return [2 /*return*/];
             }
         });
-    }); }, [upa, uts, client]);
+    }); }, [upa, client]);
     var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, umfs, compareUmf;
         return __generator(this, function (_a) {
@@ -334,7 +334,7 @@ var AddEdit = function (_a) {
         var response, responsaveis;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/responsavel?tipo=elab&search=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/responsavel?search=" + inputValue)];
                 case 1:
                     response = _a.sent();
                     responsaveis = response.data.data;
@@ -350,7 +350,7 @@ var AddEdit = function (_a) {
         var response, responsaveis;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/responsavel?tipo=exec&search=" + inputValue)];
+                case 0: return [4 /*yield*/, client.get("/responsavel?search=" + inputValue)];
                 case 1:
                     response = _a.sent();
                     responsaveis = response.data.data;
@@ -364,38 +364,38 @@ var AddEdit = function (_a) {
     }); };
     react_1.useEffect(function () {
         function loadPoa() {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
             return __awaiter(this, void 0, void 0, function () {
-                var poa, _i, _o, _p, key, value;
-                return __generator(this, function (_q) {
-                    switch (_q.label) {
+                var poa, _i, _j, _k, key, value;
+                return __generator(this, function (_l) {
+                    switch (_l.label) {
                         case 0:
                             defaultUmfsOptions();
                             defaultUpasOptions();
                             if (!(!isAddMode && typeof session !== typeof undefined)) return [3 /*break*/, 2];
                             return [4 /*yield*/, client.get("/poa/" + id)];
                         case 1:
-                            poa = (_q.sent()).data;
+                            poa = (_l.sent()).data;
                             setRespElab({
-                                label: (_d = (_c = (_b = (_a = poa.resp_elab) === null || _a === void 0 ? void 0 : _a.resp_tecnico) === null || _b === void 0 ? void 0 : _b.pessoa) === null || _c === void 0 ? void 0 : _c.pessoaFisica) === null || _d === void 0 ? void 0 : _d.nome,
-                                value: (_e = poa === null || poa === void 0 ? void 0 : poa.resp_elab) === null || _e === void 0 ? void 0 : _e.id_resp_tecnico
+                                label: (_c = (_b = (_a = poa.resp_elab) === null || _a === void 0 ? void 0 : _a.pessoa) === null || _b === void 0 ? void 0 : _b.pessoaFisica) === null || _c === void 0 ? void 0 : _c.nome,
+                                value: poa === null || poa === void 0 ? void 0 : poa.id_resp_elab
                             });
                             setRespExec({
-                                label: (_j = (_h = (_g = (_f = poa.resp_exec) === null || _f === void 0 ? void 0 : _f.resp_tecnico) === null || _g === void 0 ? void 0 : _g.pessoa) === null || _h === void 0 ? void 0 : _h.pessoaFisica) === null || _j === void 0 ? void 0 : _j.nome,
-                                value: (_k = poa.resp_exec) === null || _k === void 0 ? void 0 : _k.id_resp_tecnico
+                                label: (_f = (_e = (_d = poa.resp_exec) === null || _d === void 0 ? void 0 : _d.pessoa) === null || _e === void 0 ? void 0 : _e.pessoaFisica) === null || _f === void 0 ? void 0 : _f.nome,
+                                value: poa.id_resp_exec
                             });
                             setCheckedUts(poa === null || poa === void 0 ? void 0 : poa.ut.map(function (_a) {
                                 var id = _a.id;
                                 return id;
                             }));
-                            for (_i = 0, _o = Object.entries(poa); _i < _o.length; _i++) {
-                                _p = _o[_i], key = _p[0], value = _p[1];
+                            for (_i = 0, _j = Object.entries(poa); _i < _j.length; _i++) {
+                                _k = _j[_i], key = _k[0], value = _k[1];
                                 switch (key) {
                                     case 'resp_exec':
-                                        setValue('resp_exec', (_l = poa.resp_exec) === null || _l === void 0 ? void 0 : _l.id);
+                                        setValue('resp_exec', (_g = poa.resp_exec) === null || _g === void 0 ? void 0 : _g.id);
                                         break;
                                     case 'resp_elab':
-                                        setValue('resp_elab', (_m = poa.resp_elab) === null || _m === void 0 ? void 0 : _m.id);
+                                        setValue('resp_elab', (_h = poa.resp_elab) === null || _h === void 0 ? void 0 : _h.id);
                                         break;
                                     default: {
                                         setValue(key, value, {
@@ -408,7 +408,7 @@ var AddEdit = function (_a) {
                             return [3 /*break*/, 3];
                         case 2:
                             setValue('corte_maximo', 30);
-                            _q.label = 3;
+                            _l.label = 3;
                         case 3: return [2 /*return*/];
                     }
                 });
@@ -416,7 +416,7 @@ var AddEdit = function (_a) {
         }
         loadPoa();
         loadUts();
-    }, [session, isAddMode, client, id, setValue, defaultUmfsOptions, defaultUpasOptions]);
+    }, [session, isAddMode, client, id, loadUts, setValue, defaultUmfsOptions, defaultUpasOptions]);
     react_1.useEffect(function () {
         var defaultOptions = function () { return __awaiter(void 0, void 0, void 0, function () {
             var upasResponse, upas_1;
@@ -436,7 +436,7 @@ var AddEdit = function (_a) {
             });
         }); };
         defaultOptions();
-    }, [session, client, projeto]);
+    }, [session, client, projeto, loadResponsaveis]);
     var selectedRespTecElab = function (data) {
         setRespElab(data);
         setValue('resp_elab', data === null || data === void 0 ? void 0 : data.value);

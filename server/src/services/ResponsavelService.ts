@@ -92,7 +92,6 @@ class ResponsavelService {
         const basicData = {
             crea: data?.crea,
             numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
-            tipo: data?.tipo,
             pessoa: {
                 update: {
                     pessoaFisica: {
@@ -142,7 +141,7 @@ class ResponsavelService {
 
     async getAll(query?: any, userId?: any): Promise<any> {
         const projeto = getProjeto(userId) as any
-        const { perPage, page, search, tipo } = query
+        const { perPage, page, search } = query
         const skip = (page - 1) * perPage
         
         const where = search ?
@@ -160,18 +159,14 @@ class ResponsavelService {
                         projeto: {
                             id: projeto?.id
                         },
-                    }, 
-                    { tipo }
+                    }
                 ]
             } : {
-                AND: [
-                    {
-                        projeto: {
-                            id: projeto?.id
-                        }
-                    },
-                    { tipo }
-                ]
+
+                projeto: {
+                    id: projeto?.id
+                }
+             
             }
 
         const [data, total] = await prismaClient.$transaction([
@@ -221,8 +216,7 @@ class ResponsavelService {
                         projeto: {
                             id: projetoId
                         }
-                    },
-                    { tipo }
+                    }
                 ]
             }
         })

@@ -118,7 +118,7 @@ export class ArvoreController {
         const data = request.body
         const { data: importedData } = data
         const { upaId }: any = request.query
-        console.log(data)
+        
         const upa = await prismaClient.upa.findUnique({
             where: {
                 id: upaId

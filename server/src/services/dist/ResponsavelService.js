@@ -150,7 +150,6 @@ var ResponsavelService = /** @class */ (function () {
                         basicData = {
                             crea: data === null || data === void 0 ? void 0 : data.crea,
                             numero_art: (data === null || data === void 0 ? void 0 : data.numero_art) ? Number.parseInt(data === null || data === void 0 ? void 0 : data.numero_art) : 0,
-                            tipo: data === null || data === void 0 ? void 0 : data.tipo,
                             pessoa: {
                                 update: {
                                     pessoaFisica: {
@@ -209,12 +208,12 @@ var ResponsavelService = /** @class */ (function () {
     };
     ResponsavelService.prototype.getAll = function (query, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var projeto, perPage, page, search, tipo, skip, where, _a, data, total;
+            var projeto, perPage, page, search, skip, where, _a, data, total;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         projeto = ProjetoService_1.getProjeto(userId);
-                        perPage = query.perPage, page = query.page, search = query.search, tipo = query.tipo;
+                        perPage = query.perPage, page = query.page, search = query.search;
                         skip = (page - 1) * perPage;
                         where = search ?
                             {
@@ -230,18 +229,12 @@ var ResponsavelService = /** @class */ (function () {
                                         projeto: {
                                             id: projeto === null || projeto === void 0 ? void 0 : projeto.id
                                         }
-                                    },
-                                    { tipo: tipo }
+                                    }
                                 ]
                             } : {
-                            AND: [
-                                {
-                                    projeto: {
-                                        id: projeto === null || projeto === void 0 ? void 0 : projeto.id
-                                    }
-                                },
-                                { tipo: tipo }
-                            ]
+                            projeto: {
+                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                            }
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.responsavelTecnico.findMany({
@@ -297,8 +290,7 @@ var ResponsavelService = /** @class */ (function () {
                                         projeto: {
                                             id: projetoId
                                         }
-                                    },
-                                    { tipo: tipo }
+                                    }
                                 ]
                             }
                         })];

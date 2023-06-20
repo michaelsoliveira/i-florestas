@@ -51,12 +51,11 @@ model ResponsavelTecnico {
   crea              String?  @db.VarChar(50)
   numero_art        Int?
   id_pessoa         String?  @db.Uuid
-  tipo              String?  @db.VarChar(5)
   pessoa            Pessoa? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_projeto        String?  @db.Uuid
   projeto           Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  resp_exec         ResponsavelExecucao[]
-  resp_elab         ResponsavelElaboracao[]
+  resp_execs        Poa[] @relation("resp_exec")
+  resp_elabs        Poa[] @relation("resp_elab")
   @@map("responsavel_tecnico")
 }
 
@@ -138,9 +137,9 @@ model Poa {
   corte_maximo        Float?
   id_detentor         String? @db.Uuid
   id_resp_exec        String? @db.Uuid
-  resp_exec           ResponsavelExecucao? @relation(fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resp_exec           ResponsavelTecnico? @relation("resp_exec", fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)
   id_resp_elab        String? @db.Uuid
-  resp_elab           ResponsavelElaboracao? @relation(fields: [id_resp_elab], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  resp_elab           ResponsavelTecnico? @relation("resp_elab", fields: [id_resp_elab], references: [id], onDelete: Cascade, onUpdate: Cascade)
   detentor            Detentor? @relation(fields: [id_detentor], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_proponente       String? @db.Uuid
   proponente          Proponente? @relation(fields: [id_proponente], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -153,22 +152,6 @@ model Poa {
   ut                  Ut[]
   categoria_especie   CategoriaEspecie[]
   @@map("poa")
-}
-
-model ResponsavelExecucao {
-  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  id_resp_tecnico  String?  @db.Uuid
-  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  poa             Poa[]
-  @@map("responsavel_execucao")
-}
-
-model ResponsavelElaboracao {
-  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  id_resp_tecnico  String?  @db.Uuid
-  resp_tecnico     ResponsavelTecnico? @relation(fields: [id_resp_tecnico], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  poa             Poa[]
-  @@map("responsavel_elaboracao")
 }
 
 model Arvore {

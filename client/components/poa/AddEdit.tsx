@@ -234,7 +234,7 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadRespElab = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/responsavel?tipo=elab&search=${inputValue}`)
+        const response = await client.get(`/responsavel?search=${inputValue}`)
         const { data: responsaveis } = response.data
         
         callback(responsaveis?.map((responsavel: any) => ({
@@ -244,7 +244,7 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadRespExec = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/responsavel?tipo=exec&search=${inputValue}`)
+        const response = await client.get(`/responsavel?search=${inputValue}`)
         const { data: responsaveis } = response.data
 
         callback(responsaveis?.map((responsavel: any) => ({
@@ -262,13 +262,13 @@ const AddEdit = ({ id }: any) => {
                 const { data: poa } = await client.get(`/poa/${id}`)
                 
                 setRespElab({
-                    label: poa.resp_elab?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa?.resp_elab?.id_resp_tecnico
+                    label: poa.resp_elab?.pessoa?.pessoaFisica?.nome,
+                    value: poa?.id_resp_elab
                 })
 
                 setRespExec({
-                    label: poa.resp_exec?.resp_tecnico?.pessoa?.pessoaFisica?.nome,
-                    value: poa.resp_exec?.id_resp_tecnico
+                    label: poa.resp_exec?.pessoa?.pessoaFisica?.nome,
+                    value: poa.id_resp_exec
                 })
 
                 setCheckedUts(poa?.ut.map(({ id }: any) => id));
