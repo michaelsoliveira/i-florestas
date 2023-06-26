@@ -326,6 +326,9 @@ class ArvoreService {
             }
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
+                include: {
+                    especie: true,
+                },
                 where,
                 orderBy: orderByTerm,
                 take: perPage ? parseInt(perPage) : 50,
