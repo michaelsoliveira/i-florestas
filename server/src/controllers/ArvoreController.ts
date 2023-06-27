@@ -124,12 +124,14 @@ export class ArvoreController {
                 id: upaId
             }
         })
-        console.log(columns)
-        const checkData = Object.keys(data.columns)
-
+        //console.log(columns, upa)
+        const rows = columns.map((row: any) => {
+            return row.accessor
+        })
+        console.log(rows)
         try {
 
-            if (checkData.includes('faixa') && upa?.tipo === 0) {
+            if (rows.includes('faixa') && upa?.tipo === 0) {
                 return response.json({
                     error: true,
                     message: 'Inventário diferente do tipo da UPA'
@@ -144,7 +146,10 @@ export class ArvoreController {
                 message: 'Árvores importadas com sucesso!!!'
             })
         } catch (error) {
-            return response.json(error.message)
+            return response.json({
+                error: true,
+                message: error
+            })
         }
 
     }

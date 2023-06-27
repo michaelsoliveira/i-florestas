@@ -179,7 +179,7 @@ class ArvoreService {
 
         } catch(error) {
             console.log(error?.message)
-            return error
+            return error.message
         }
         
     }
