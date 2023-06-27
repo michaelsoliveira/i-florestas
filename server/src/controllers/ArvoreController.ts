@@ -116,7 +116,7 @@ export class ArvoreController {
 
     async importInventario(request: Request, response: Response) {
         const data = request.body
-        const { data: importedData } = data
+        const { data: importedData, columns } = data
         const { upaId }: any = request.query
         
         const upa = await prismaClient.upa.findUnique({
@@ -124,7 +124,7 @@ export class ArvoreController {
                 id: upaId
             }
         })
-
+        console.log(columns)
         const checkData = Object.keys(data.columns)
 
         try {

@@ -614,7 +614,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     </td>
                                     <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.long_y}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.especie?.nome}</div>
                                     </span>
                                     </td>
                                 </>

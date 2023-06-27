@@ -125,7 +125,7 @@ class ArvoreService {
                     }
                 }
             }) as any
-            console.log(dt.length)
+            
             const data = await Promise.all(dt.map(async (arv: any, idx: number): Promise<any> => {
                 while (idx < dt.length-1) {
                     const dap = arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap)
@@ -171,7 +171,6 @@ class ArvoreService {
                         id_especie: especie?.id
                     }
                 }
-                
             }))
 
             await prismaClient.arvore.createMany({
