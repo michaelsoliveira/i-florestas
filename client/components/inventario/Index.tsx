@@ -15,6 +15,7 @@ import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
 import { Button } from "../Utils/Button"
+import SelectableRow from "../Utils/SelectableRow"
 
 const styles = {
     csvReader: {
