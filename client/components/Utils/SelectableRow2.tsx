@@ -36,8 +36,9 @@ const Mails = () => {
   return (
     <table>
       <tbody>
-        {mails.map((m) => (
+        {mails.map((m: any, index: any) => (
           <MailSummary
+            key={index}
             {...m}
             active={active === m.id}
             onClick={() => {
