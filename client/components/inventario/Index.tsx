@@ -216,7 +216,11 @@ const Index = () => {
             .then((result: any) => {
                 const { data } = result
                 setLoading(false)
-                alertService.success(data?.message)
+                if (!data.error) {
+                    alertService.success(data?.message)
+                } else {
+                    alertService.warn(data?.message)
+                }
                 console.log(data?.message)
             })
         } catch(e) {

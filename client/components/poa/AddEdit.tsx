@@ -503,7 +503,7 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                             <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
                                 <div className='border border-gray-200 rounded-lg p-4 w-full'>
-                                    <span className="text-gray-700 py-2">Detentor</span>
+                                    <span className="text-gray-700 py-2">Critérios</span>
                                         
                                     </div>
                                 </div>
