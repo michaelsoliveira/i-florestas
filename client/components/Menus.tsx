@@ -85,7 +85,7 @@ export const solutions = [
 export const planejamento = [
 {
     name: 'Cadastro do POA',
-    description: 'Cadastro do Planejamento Operacional Anual',
+    description: 'Planejamento Operacional Anual',
     href: '/poa',
     icon: GlobeAltIcon,
 },
@@ -120,12 +120,12 @@ export const inventario = [
         href: '/arvore',
         icon: ChartBarIcon,
     },
-    {
-        name: 'Linkar GPS',
-        description: 'Linka as posições do GPS com as árvores',
-        href: '#',
-        icon: MapIcon
-    },
+    //{
+    //    name: 'Linkar GPS',
+    //    description: 'Linka as posições do GPS com as árvores',
+    //    href: '#',
+    //    icon: MapIcon
+    //},
     {
         name: 'Importar Inventário',
         description: 'Realizar importação de inventário a partir de um dataset',

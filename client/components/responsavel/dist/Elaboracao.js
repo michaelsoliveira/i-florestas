@@ -57,7 +57,7 @@ var endereco_1 = require("../endereco");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
 var FormInput_1 = require("../FormInput");
 var ModalContext_1 = require("contexts/ModalContext");
-var Execucao = react_1.forwardRef(function AddEdit(_a, ref) {
+var Elaboracao = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
     var responseData = _a.responseData;
     var router = router_1.useRouter();
@@ -169,4 +169,4 @@ var Execucao = react_1.forwardRef(function AddEdit(_a, ref) {
                                         React.createElement(PessoaFisica_1["default"], { register: register, errors: errors }),
                                         React.createElement(endereco_1["default"], { value: estado, setValue: setValue, register: register, errors: errors })))))))))));
 });
-exports["default"] = Execucao;
+exports["default"] = Elaboracao;

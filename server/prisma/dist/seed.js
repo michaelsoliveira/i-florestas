@@ -258,7 +258,7 @@ var estados = [
 ];
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, _b, situacoesPoa_1, s, situacaoPoa, roleAdmin, projeto, user, _c, _d, _e, _f, detentor, _g, observacoes_1, obs, obsModelo, _h, equacoesModelo_1, eqModelo, equacaoModelo, _j, equacoesVolume_1, eqVolume, equacaoVolume;
+        var _i, estados_1, e, estado, ufAP, _a, roles_1, r, role, _b, situacoesPoa_1, s, situacaoPoa, roleAdmin, projeto, categorias, user, _c, _d, _e, _f, detentor, _g, observacoes_1, obs, obsModelo, _h, equacoesModelo_1, eqModelo, equacaoModelo, _j, equacoesVolume_1, eqVolume, equacaoVolume;
         return __generator(this, function (_k) {
             switch (_k.label) {
                 case 0:
@@ -334,6 +334,152 @@ function main() {
                         })];
                 case 15:
                     projeto = _k.sent();
+                    categorias = [
+                        {
+                            nome: 'Não definida',
+                            criterio_fuste: 999,
+                            criterio_dminc: 999,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 999,
+                            criterio_perc_min: 999,
+                            preservar: true,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'COMERCIAL 50+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 50,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 3,
+                            criterio_perc_min: 10,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'COMERCIAL 55+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 55,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 3,
+                            criterio_perc_min: 10,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'COMERCIAL 70+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 70,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 3,
+                            criterio_perc_min: 10,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'VULNERAVEL 50+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 50,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 4,
+                            criterio_perc_min: 15,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'VULNERAVEL 55+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 55,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 4,
+                            criterio_perc_min: 15,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'VULNERAVEL 70+',
+                            criterio_fuste: 2,
+                            criterio_dminc: 70,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 4,
+                            criterio_perc_min: 15,
+                            preservar: false,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'PROTEGIDA',
+                            criterio_fuste: 999,
+                            criterio_dminc: 999,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 999,
+                            criterio_perc_min: 999,
+                            preservar: true,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        },
+                        {
+                            nome: 'NÃO SELECIONADA',
+                            criterio_fuste: 999,
+                            criterio_dminc: 999,
+                            criterio_dmaxc: 999,
+                            criterio_n_min: 999,
+                            criterio_perc_min: 999,
+                            preservar: true,
+                            criterio_altura: 999,
+                            criterio_volume: 999,
+                            projeto: {
+                                connect: {
+                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                }
+                            }
+                        }
+                    ];
                     _d = (_c = prisma.user).create;
                     _e = {};
                     _f = {

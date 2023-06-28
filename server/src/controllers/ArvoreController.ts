@@ -116,20 +116,22 @@ export class ArvoreController {
 
     async importInventario(request: Request, response: Response) {
         const data = request.body
-        const { data: importedData } = data
+        const { data: importedData, columns } = data
         const { upaId }: any = request.query
-        console.log(data)
+        
         const upa = await prismaClient.upa.findUnique({
             where: {
                 id: upaId
             }
         })
-
-        const checkData = Object.keys(data.columns)
-
+        //console.log(columns, upa)
+        const rows = columns.map((row: any) => {
+            return row.accessor
+        })
+        console.log(rows)
         try {
 
-            if (checkData.includes('faixa') && upa?.tipo === 0) {
+            if (rows.includes('faixa') && upa?.tipo === 0) {
                 return response.json({
                     error: true,
                     message: 'Inventário diferente do tipo da UPA'
@@ -144,7 +146,10 @@ export class ArvoreController {
                 message: 'Árvores importadas com sucesso!!!'
             })
         } catch (error) {
-            return response.json(error.message)
+            return response.json({
+                error: true,
+                message: error
+            })
         }
 
     }

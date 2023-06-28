@@ -140,6 +140,8 @@ function Table({ columns, data }: any) {
     usePagination,  // new
   )
 
+  const isEven = (idx: number) => idx % 2 === 0
+
   // Render the UI for your table
   return (
     <>
@@ -202,7 +204,7 @@ function Table({ columns, data }: any) {
                   {page.map((row, i) => {  // new
                     prepareRow(row)
                     return (
-                      <tr {...row.getRowProps()} key={i}>
+                      <tr {...row.getRowProps()} key={i} className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>
                         {row.cells.map((cell: any, key: any) => {
                           return (
                             <td

@@ -28,7 +28,7 @@ const Execucao =  forwardRef<any, any>(
 
     const loadResponsaveis = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel?tipo=exec`)
+            const { data } = await client.get(`/responsavel`)
             setResponsavel(data)
 
             setEstado({
@@ -52,8 +52,8 @@ const Execucao =  forwardRef<any, any>(
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? create({...data, id_projeto: projeto?.id, tipo: 'exec'})
-                : update(responsavel?.id, { ...data, id_projeto: projeto?.id, tipo: 'exec' })
+                ? create({...data, id_projeto: projeto?.id})
+                : update(responsavel?.id, { ...data, id_projeto: projeto?.id})
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -78,7 +78,7 @@ const Execucao =  forwardRef<any, any>(
 
     async function update(id: string, data: any) {
         
-        await client.put(`/responsavel/${id}`, {...data, tipo: 'exec'})
+        await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
                 const responsavel = response.data
                 alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);

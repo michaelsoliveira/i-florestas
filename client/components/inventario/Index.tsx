@@ -15,6 +15,7 @@ import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
 import { Button } from "../Utils/Button"
+import SelectableRow from "../Utils/SelectableRow"
 
 const styles = {
     csvReader: {
@@ -216,7 +217,11 @@ const Index = () => {
             .then((result: any) => {
                 const { data } = result
                 setLoading(false)
-                alertService.success(data?.message)
+                if (!data.error) {
+                    alertService.success(data?.message)
+                } else {
+                    alertService.warn(data?.message)
+                }
                 console.log(data?.message)
             })
         } catch(e) {
