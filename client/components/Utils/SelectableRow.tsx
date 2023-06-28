@@ -1,72 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import "./styles.css";
 
-function SelectItem({ data, onSelect }: any) {
-  const [isSelected, setIsSelected] = useState(false);
-
-  const handleClick = () => {
-    setIsSelected(!isSelected);
-    onSelect(data, !isSelected);
-  };
-
-  return (
-    <tr onClick={handleClick} style={{ background: isSelected ? 'lightblue' : 'white' }}>
-      {Object.values(data).map((value, index) => (
-        <td key={index}>{value}</td>
-      ))}
-    </tr>
-  );
+export default function App() {
+  return <Mails />;
 }
 
-function SelectableRow() {
-  const [selectedRows, setSelectedRows] = useState([]);
-
-  const handleRowSelect = (rowData: any, isSelected: any) => {
-    if (isSelected) {
-      setSelectedRows((prevSelectedRows): any => [...prevSelectedRows, rowData]);
-    } else {
-      setSelectedRows((prevSelectedRows) =>
-        prevSelectedRows.filter((row) => row !== rowData)
-      );
+const Mails = () => {
+  const mails = [
+    {
+      id: 0,
+      from: "John Doe",
+      subject: "Subject",
+      data: new Date()
+    },
+    {
+      id: 1,
+      from: "John Doe",
+      subject: "Subject",
+      data: new Date()
+    },
+    {
+      id: 2,
+      from: "John Doe",
+      subject: "Subject",
+      data: new Date()
     }
-  };
-
-  const rowData = [
-    { id: 1, name: 'John Doe', age: 25 },
-    { id: 2, name: 'Jane Smith', age: 30 },
-    { id: 3, name: 'Bob Johnson', age: 35 },
   ];
 
+  const [active, setActive] = useState();
+
+  const setActiveRow = (id: any) => {
+    setActive(id);
+  };
+
   return (
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Age</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rowData.map((row, index) => (
-            <SelectItem
-              key={index}
-              data={row}
-              onSelect={handleRowSelect}
-            />
-          ))}
-        </tbody>
-      </table>
-
-      <div>
-        <h3>Selected Rows:</h3>
-        <ul>
-          {selectedRows.map((row: any, index) => (
-            <li key={index}>{row.name}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+    <table>
+      <tbody>
+        {mails.map((m: any, index: any) => (
+          <MailSummary
+            key={index}
+            {...m}
+            active={active === m.id}
+            onClick={() => {
+              setActiveRow(m.id);
+            }}
+          />
+        ))}
+      </tbody>
+    </table>
   );
-}
+};
 
-export default SelectableRow;
+const MailSummary = ({ id, from, subject, date, active, onClick }: any) => {
+  return (
+    <tr onClick={onClick} className={`${active ? "active" : "not-active"}`}>
+      <td>{from}</td>
+      <td>{subject}</td>
+      <td>{date}</td>
+      <td>{active.toString()}</td>
+    </tr>
+  );
+};
