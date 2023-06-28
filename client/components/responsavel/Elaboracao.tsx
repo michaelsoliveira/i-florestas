@@ -43,7 +43,7 @@ const Elaboracao =  forwardRef<any, any>(
                 }) 
             }
         
-    }, [projeto, client, setValue])
+    }, [client, setValue])
     
     useEffect(() => {  
         loadResponsaveis()

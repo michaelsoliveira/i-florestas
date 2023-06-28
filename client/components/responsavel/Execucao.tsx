@@ -43,7 +43,7 @@ const Execucao =  forwardRef<any, any>(
                 }) 
             }
         
-    }, [projeto, client, setValue])
+    }, [client, setValue])
     
     useEffect(() => {  
         loadResponsaveis()

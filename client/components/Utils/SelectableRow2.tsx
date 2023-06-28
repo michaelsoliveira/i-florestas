@@ -29,7 +29,7 @@ const Mails = () => {
 
   const [active, setActive] = useState();
 
-  const setActiveRow = (id) => {
+  const setActiveRow = (id: any) => {
     setActive(id);
   };
 
@@ -50,7 +50,7 @@ const Mails = () => {
   );
 };
 
-const MailSummary = ({ id, from, subject, date, active, onClick }) => {
+const MailSummary = ({ id, from, subject, date, active, onClick }: any) => {
   return (
     <tr onClick={onClick} className={`${active ? "active" : "not-active"}`}>
       <td>{from}</td>
