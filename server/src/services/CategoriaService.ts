@@ -153,9 +153,8 @@ class CategoriaService {
     async getByPoa(poaId: string) : Promise<CategoriaEspecie[]> {
         const categorias = await prismaClient.categoriaEspecie.findMany({
             where: {
-                poa: {
-                    id: poaId
-                }
+                id_poa: poaId ? poaId : null
+                
             }
         })
 

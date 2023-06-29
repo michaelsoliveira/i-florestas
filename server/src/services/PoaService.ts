@@ -82,20 +82,7 @@ class PoaService {
 
         }
         //Criterios padrão
-        const criterios = data?.categorias?.length > 0 ? await prismaClient.categoriaEspecie.findMany({
-            where: {
-                AND: [
-                    {
-                        projeto: {
-                            id: projeto?.id
-                        }
-                    },
-                    {
-                        id_poa: null
-                    }
-                ]
-            }
-        }) : await prismaClient.categoriaEspecie.findMany({
+        const criterios = await prismaClient.categoriaEspecie.findMany({
             where: {
                 id: {
                     in: data?.categorias
