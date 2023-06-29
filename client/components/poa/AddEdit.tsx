@@ -503,12 +503,21 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                             <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
                                 <div className='border border-gray-200 rounded-lg p-4 w-full'>
-                                    <span className="text-gray-700 py-2">Critérios</span>
-                                        
+                                    <div className="flex items-center">
+                                        <input
+                                        id="import-criterios"
+                                        name="import_criterios"
+                                        type="checkbox"
+                                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor="import-criterios" className="ml-2 block text-sm text-gray-900">
+                                            Deseja importar critérios de outro POA?
+                                        </label>
                                     </div>
                                 </div>
-                                
-                                <div className='border border-gray-200 rounded-lg p-4 mt-5 relative'>
+                            </div>
+                            
+                            <div className='border border-gray-200 rounded-lg p-4 mt-5 relative'>
                                     <span className="text-gray-700 py-2 absolute -top-5 bg-white px-2">UTs</span>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
