@@ -9,7 +9,8 @@ export interface PoaType {
     resp_elab: string;
     resp_exec: string;
     situacao: string;
-    uts: any
+    uts: any;
+    categorias: any;
 }
 
 class PoaService {
@@ -77,9 +78,11 @@ class PoaService {
                 }
             }
         })
+        if (data?.categorias) {
 
+        }
         //Criterios padrão
-        const criterios = await prismaClient.categoriaEspecie.findMany({
+        const criterios = !data?.categorias ? await prismaClient.categoriaEspecie.findMany({
             where: {
                 AND: [
                     {
@@ -91,6 +94,12 @@ class PoaService {
                         id_poa: null
                     }
                 ]
+            }
+        }) : await prismaClient.categoriaEspecie.findMany({
+            where: {
+                id: {
+                    in: data?.categorias
+                }
             }
         })
 

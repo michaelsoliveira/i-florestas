@@ -150,6 +150,18 @@ class CategoriaService {
         return data
     }
 
+    async getByPoa(poaId: string) : Promise<CategoriaEspecie[]> {
+        const categorias = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                poa: {
+                    id: poaId
+                }
+            }
+        })
+
+        return categorias
+    }
+
     async findById(id: string) : Promise<any> {
         const categoria = await prismaClient.categoriaEspecie.findUnique({ where: { id } })
 

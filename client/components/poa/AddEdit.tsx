@@ -1,6 +1,6 @@
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
-import { createRef, useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import alertService from '../../services/alert'
@@ -31,6 +31,7 @@ const AddEdit = ({ id }: any) => {
     const [resp_exec, setRespExec] = useState<OptionType>()
     const [respElabs, setRespElabs] = useState<any>()
     const [respExecs, setRespExecs] = useState<any>()
+    const [includeCategories, setIncludeCategories] = useState<any>(false)
     const { client } = useContext(AuthContext)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
@@ -40,13 +41,89 @@ const AddEdit = ({ id }: any) => {
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
     const [uts, setUts] = useState<any>()
+    const [categorias, setCategorias] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const ut = useAppSelector((state: RootState) => state.ut)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [checkedUts, setCheckedUts] = useState<any>([])
+    const [checkedCategorias, setCheckedCategorias] = useState<any>([])
     const { projeto } = useContext(ProjetoContext)
+    const [poas, setPoas] = useState<any>()
+    const poa = useAppSelector((state: RootState) => state.poa)
+    const [selectedPoa, setSelectedPoa] = useState<OptionType>()
+
+    const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const response = await client.get(`/poa/search/q?nome=${inputValue}`)
+        const data = response.data
+        
+        callback(data?.map((poa: any) => ({
+            value: poa.id,
+            label: poa.nome
+        })))
+    }
+
+    const poaExists = poas?.length
+
+    const loadPoa = useCallback(() => {
+        
+        if (poa && poaExists > 0) {
+            setSelectedPoa({
+                value: poa?.id,
+                label: poa?.descricao
+            })
+        } else {
+            setSelectedPoa({} as any)
+        }
+        
+    }, [poa, poaExists])
+
+    useEffect(() => {
+        async function defaultOptions() {
+            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
+                const { poas } = response.data
+                
+                if (poas.length === 0) {
+                    setSelectedPoa({
+                        value: '0',
+                        label: 'Nenhum POA Cadastrada'
+                    })
+                } else {
+                    setPoas(poas)
+                }
+        }
+
+        loadPoa()
+        
+        defaultOptions()
+
+    }, [client, poa, loadPoa, projeto?.id])
+
+    const selectPoa = async (poa: any) => {
+        dispatch(setPoa({
+            id: poa.value,
+            descricao: poa.label,
+            data_ultimo_plan: new Date(0),
+            pmfs: ''
+        }))
+        setSelectedPoa(poa)
+        const response = await client.get(`/categoria/get-by-poa?poaId=${poa.value}`)
+        const { categorias } = response.data
+        
+        setCategorias(categorias)
+    }
+
+    function getPoasDefaultOptions() {
+        const data = poas?.map((poa: any, idx: any) => {
+            return {
+                label: poa.descricao,
+                value: poa.id
+            }
+        })
+
+        return data
+    }
 
     const loadResponsaveis = useCallback(async () => {
         const respExec = await client.get(`/responsavel?tipo=exec`)
@@ -96,6 +173,12 @@ const AddEdit = ({ id }: any) => {
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
         setUts(uts)   
+    }, [upa, client])
+
+    const loadCategorias = useCallback(async () => {
+        const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
+        const { categorias } = response.data
+        setCategorias(categorias)   
     }, [upa, client])
 
     const defaultUmfsOptions = useCallback(async() => {
@@ -189,13 +272,33 @@ const AddEdit = ({ id }: any) => {
         }
     }
 
+    const handleSelectAllCategorias = () => {
+        if (checkedCategorias?.length < categorias?.length) {
+            setCheckedCategorias(categorias.map(({ id }: any) => id));
+        } else {
+            setCheckedCategorias([]);
+        }
+    }
+
+    const handleSelectCategoria = (evt: any) => {
+        const categoriaId = evt.target.value
+
+        if (!checkedCategorias.includes(categoriaId)) {
+            setCheckedCategorias([...checkedCategorias, categoriaId])
+        } else {
+            setCheckedCategorias(checkedCategorias.filter((checkedId: any) => {
+                return checkedId !== categoriaId
+            }))
+        }
+    }
+
     const handleSelectAllUts = () => {
         if (checkedUts?.length < uts?.length) {
             setCheckedUts(uts.map(({ id }: any) => id));
         } else {
             setCheckedUts([]);
         }
-    };
+    }
 
     const responseTecElab = async (data: any) => {
         loadResponsaveis()        
@@ -294,7 +397,8 @@ const AddEdit = ({ id }: any) => {
         
         loadPoa()
         loadUts()
-    }, [session, isAddMode, client, id, loadUts, setValue, defaultUmfsOptions, defaultUpasOptions])
+        loadCategorias()
+    }, [session, isAddMode, client, id, loadUts, loadCategorias, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
         const defaultOptions = async () => {
@@ -323,7 +427,7 @@ const AddEdit = ({ id }: any) => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createPoa({...data, uts: checkedUts})
+                ? createPoa({...data, uts: checkedUts, categorias: checkedCategorias})
                 : updatePoa(id, {...data, uts: checkedUts})
         } catch (error: any) {
             console.log(error.message)
@@ -501,101 +605,243 @@ const AddEdit = ({ id }: any) => {
                                     </div>
                                     </div>
                                 </div>
-                            <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
-                                <div className='border border-gray-200 rounded-lg p-4 w-full'>
-                                    <div className="flex items-center">
-                                        <input
-                                        id="import-criterios"
-                                        name="import_criterios"
-                                        type="checkbox"
-                                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                                        />
-                                        <label htmlFor="import-criterios" className="ml-2 block text-sm text-gray-900">
-                                            Deseja importar critérios de outro POA?
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div className='border border-gray-200 rounded-lg p-4 mt-5 relative'>
-                                    <span className="text-gray-700 py-2 absolute -top-5 bg-white px-2">UTs</span>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
-                            {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
-                            <div>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione UMF...',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={selectedUmf}
-                                    defaultOptions={getUmfsDefaultOptions()}
-                                    options={loadUmfs}
-                                    label="UMF:"
-                                    callback={(e) => {selectUmf(e)}}
-                                />
-                            </div>
-                            <div>
-                                <Select
-                                    initialData={
-                                        {
-                                            label: 'Selecione UPA...',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={selectedUpa}
-                                    defaultOptions={getUpasDefaultOptions()}
-                                    options={loadUpas}
-                                    label="UPA:"
-                                    callback={(e) => {selectUpa(e)}}
-                                />
-                            </div>
-                            <div id='uts'>
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="w-1/12">
-                                            <div className="flex justify-center">
-                                            <input  
-                                                checked={checkedUts?.length === uts?.length}
-                                                onChange={handleSelectAllUts}                
-                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                            />
-                                            </div>
-                                        </th>
-                                        <th
-                                            className="w-4/12"
-                                        >
-                                            <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                                UTs
-                                            </div>        
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {uts?.map((ut: any) => (
-                                    <tr key={ut.id}>
-                                        <td className="flex justify-center">
-                                            <input                 
-                                                value={ut?.id}
-                                                checked={checkedUts.includes(ut?.id)}
-                                                onChange={handleSelectUt}
-                                                id="poaId"
+                                {isAddMode && (
+                                    <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
+                                        <div className='border border-gray-200 rounded-lg p-4 w-full'>
+                                            <div className="flex items-center">
+                                                <input
+                                                id="import-criterios"
+                                                name="import_criterios"
                                                 type="checkbox"
-                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                            />    
-                                        </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                                            <div className="flex flex-col items-starter">
-                                                <div className="text-sm font-medium text-gray-900">{ut?.numero_ut}</div>
+                                                value={includeCategories}
+                                                onChange={() => setIncludeCategories((current: any) => !current)}
+                                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                                />
+                                                <label htmlFor="import-criterios" className="ml-2 block text-sm text-gray-900">
+                                                    Deseja importar critérios de outro POA?
+                                                </label>
                                             </div>
-                                        </td>
-                                    </tr>
-                                    ))}
-                                </tbody>
-                                </table>
-                            </div>
+                                            {includeCategories && (
+                                            <div>
+                                                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
+                                                <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
+                                                    <span className="w-3/12 flex items-center">POA: </span>
+                                                    <div className="w-9/12">
+                                                        <Select
+                        
+                                                            placeholder='Selecione o POA...'
+                                                            selectedValue={selectedPoa}
+                                                            defaultOptions={getPoasDefaultOptions()}
+                                                            options={loadPoas}
+                                                            callback={selectPoa}
+                                                            initialData={{
+                                                                label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                       </div>     
+                                            <div id='categorias'>
+                                            <table className="min-w-full divide-y divide-gray-200">
+                                                <thead className="bg-gray-50">
+                                                    <tr>
+                                                        <th className="w-1/12">
+                                                            <div className="flex justify-center">
+                                                            <input  
+                                                                checked={checkedCategorias?.length === categorias?.length}
+                                                                onChange={handleSelectAllCategorias}                
+                                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                                            />
+                                                            </div>
+                                                        </th>
+                                                        <th
+                                                            className="w-4/12"
+                                                        >
+                                                            <span className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                                                Nome
+                                                            </span>        
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        >
+                                                            Fuste
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        >
+                                                            Diametro Mínimo
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                                        >
+                                                            Diametro Máximo
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                                        >
+                                                            Altura
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                                        >
+                                                            Volume
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                                        >
+                                                            Preservada
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-white divide-y divide-gray-200">
+                                                    {categorias?.map((categoria: any) => (
+                                                    <tr key={categoria.id}>
+                                                        <td className="flex justify-center">
+                                                            <input                 
+                                                                value={categoria?.id}
+                                                                checked={checkedCategorias.includes(categoria?.id)}
+                                                                onChange={handleSelectCategoria}
+                                                                id="poaId"
+                                                                type="checkbox"
+                                                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                            />    
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <div className="flex flex-col items-starter">
+                                                                <div className="text-sm font-medium text-gray-900">{categoria?.nome}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <div className="text-sm text-gray-900">{categoria?.criterio_fuste}</div>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm text-gray-500">{categoria?.criterio_dminc}</div>
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm text-gray-500">{categoria?.criterio_dmaxc}</div>
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm text-gray-500">{categoria?.criterio_altura}</div>
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm text-gray-500">{categoria?.criterio_volume}</div>
+                                                            </span>
+                                                        </td> 
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm text-gray-500">
+                                                                    {
+                                                                        categoria?.preservar
+                                                                            ? (<div>Sim</div>)
+                                                                            : (<div>Não</div>)
+                                                                    }
+                                                                </div>
+                                                            </span>
+                                                        </td>  
+                                                    </tr>
+                                                    ))}
+                                                </tbody>
+                                                </table>
+                                            </div>
+                                            </div>
+                                        )}
+                                        </div>
+                                    </div>
+                                    
+                                )}
+                                
+                                <div className='border border-gray-200 rounded-lg p-4 mt-5 relative'>
+                                        <span className="text-gray-700 py-2 absolute -top-5 bg-white px-2">UTs</span>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
+                                {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
+                                <div>
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Selecione UMF...',
+                                                value: ''
+                                            }
+                                        }
+                                        selectedValue={selectedUmf}
+                                        defaultOptions={getUmfsDefaultOptions()}
+                                        options={loadUmfs}
+                                        label="UMF:"
+                                        callback={(e) => {selectUmf(e)}}
+                                    />
+                                </div>
+                                <div>
+                                    <Select
+                                        initialData={
+                                            {
+                                                label: 'Selecione UPA...',
+                                                value: ''
+                                            }
+                                        }
+                                        selectedValue={selectedUpa}
+                                        defaultOptions={getUpasDefaultOptions()}
+                                        options={loadUpas}
+                                        label="UPA:"
+                                        callback={(e) => {selectUpa(e)}}
+                                    />
+                                </div>
+                            <div id='uts'>
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="w-1/12">
+                                                <div className="flex justify-center">
+                                                <input  
+                                                    checked={checkedUts?.length === uts?.length}
+                                                    onChange={handleSelectAllUts}                
+                                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                                />
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="w-4/12"
+                                            >
+                                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                                    UTs
+                                                </div>        
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {uts?.map((ut: any) => (
+                                        <tr key={ut.id}>
+                                            <td className="flex justify-center">
+                                                <input                 
+                                                    value={ut?.id}
+                                                    checked={checkedUts.includes(ut?.id)}
+                                                    onChange={handleSelectUt}
+                                                    id="poaId"
+                                                    type="checkbox"
+                                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                                />    
+                                            </td>
+                                            <td className="px-3 py-2 whitespace-nowrap">
+                                                <div className="flex flex-col items-starter">
+                                                    <div className="text-sm font-medium text-gray-900">{ut?.numero_ut}</div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                </div>
                             </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>

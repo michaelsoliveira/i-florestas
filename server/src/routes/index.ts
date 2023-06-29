@@ -65,6 +65,7 @@ routes.delete('/responsavel/:id', Authentication(), new ResponsavelController().
 //Categoria
 routes.post('/categoria/', Authentication(), is(['admin', 'gerente']), new CategoriaEspecieController().store)
 routes.get('/categoria/', Authentication(), new CategoriaEspecieController().findAll)
+routes.get('/categoria/get-by-poa/', Authentication(), new CategoriaEspecieController().getByPoa)
 routes.get('/categoria/:id', Authentication(), new CategoriaEspecieController().findOne)
 routes.get('/categoria/search/q', Authentication(), new CategoriaEspecieController().search)
 routes.put('/categoria/:id', Authentication(), new CategoriaEspecieController().update)
