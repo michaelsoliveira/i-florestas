@@ -86,6 +86,25 @@ export class CategoriaEspecieController {
         return response.json(categorias)
     }
 
+    async getByPoa(request: Request, response: Response) {
+        const { poaId }: any = request.query
+
+        try {
+            const categorias = await categoriaService.getByPoa(poaId)
+
+            return response.json({
+                error: false,
+                categorias
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                categorias: [],
+                message: error.message
+            })
+        }
+    }
+
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {
