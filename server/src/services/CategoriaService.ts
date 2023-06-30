@@ -60,7 +60,8 @@ class CategoriaService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
-        const projeto = getProjeto(userId) as any
+        const projeto = await getProjeto(userId) as any
+        
         const { perPage, page, search, orderBy, order, poa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -153,9 +154,8 @@ class CategoriaService {
     async getByPoa(poaId: string) : Promise<CategoriaEspecie[]> {
         const categorias = await prismaClient.categoriaEspecie.findMany({
             where: {
-                poa: {
-                    id: poaId
-                }
+                id_poa: poaId ? poaId : null
+                
             }
         })
 

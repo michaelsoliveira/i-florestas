@@ -96,7 +96,7 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const projeto = getProjeto(userId) as any
+        const projeto = await getProjeto(userId) as any
         const { perPage, page, order, search, orderBy } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
