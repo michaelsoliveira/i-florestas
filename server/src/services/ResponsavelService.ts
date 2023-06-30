@@ -140,7 +140,7 @@ class ResponsavelService {
     }
 
     async getAll(query?: any, userId?: any): Promise<any> {
-        const projeto = getProjeto(userId) as any
+        const projeto = await getProjeto(userId) as any
         const { perPage, page, search } = query
         const skip = (page - 1) * perPage
         

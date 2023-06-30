@@ -182,7 +182,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                             item.visible && (!item.subMenu  ?
                             (<a
                                 key={key}
-                                    href={item.subMenu.href}
+                                    href={item.href}
                                     onClick={(evt: any) => {
                                         evt.preventDefault()
                                         changeCurrentParent(key, item.href)

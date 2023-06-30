@@ -25,7 +25,7 @@ type UserACLRequest = {
 
 export class CreateUserACLService {
   async execute({ id, roles, permissions }: UserACLRequest): Promise<User | Error> {
-    const projeto = getProjeto(id) as any
+    const projeto = await getProjeto(id) as any
     const user = await prismaClient.user.findUnique({
       where: {
         id

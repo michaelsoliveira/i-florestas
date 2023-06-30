@@ -21,16 +21,17 @@ const CategoriaIndex = () => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const router = useRouter()
+    const poa = useAppSelector((state: RootState) => state.poa)
     
     const loadCategorias = useCallback(async (itemsPerPage) => {
         setLoading(true)
         const currentPagePagination = pagination.name === 'categoria' && pagination.currentPage ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}`)
+        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&poa=${poa?.id}`)
         setTotalItems(data?.count)
         setCurrentCategorias(data?.categorias)
         setLoading(false)
-    }, [client, pagination.currentPage, pagination.name])
+    }, [client, pagination.currentPage, pagination.name, poa.id])
 
     useEffect(() => {
         loadCategorias(itemsPerPage)

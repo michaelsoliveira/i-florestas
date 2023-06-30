@@ -67,15 +67,20 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                     })
                 }
         }
-
-        loadPoa()
+        async function loadCategoriasOptions() {
+            const response = await client.get(`/categoria?orderBy=nome&order=asc&poa=${poa?.id}`)
+            const { categorias } = response.data
+            setFilteredCategorias(categorias)
+        }
         
+        loadPoa()
+        loadCategoriasOptions()
         defaultOptions()
 
-    }, [currentPage, client, poa, loadPoa, projeto?.id])
+    }, [currentPage, client, poa, poa?.id, loadPoa, projeto?.id])
 
     const selectPoa = async (poa: any) => {
-        console.log(poa)
+
         dispatch(setPoa({
             id: poa.value,
             descricao: poa.label,
@@ -91,14 +96,14 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     }
 
     function getPoasDefaultOptions() {
-        const data = poas && poas?.map((poa: any, idx: any) => {
+        const data = poas && poas?.map((p: any) => {
             return {
-                label: poa.descricao,
-                value: poa.id
+                label: p.descricao,
+                value: p.id
             }
         })
 
-        if (data instanceof Array) {
+        if (data?.length > 0) {
             return [{ label: 'Padrão', value: '' }, ...data]
         } else {
             return []
@@ -132,10 +137,6 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
         }, [categoriaById, deleteCategoria, showModal])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Categorias', onConfirm: deleteCategorias, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Categorias Selecionadas?' })
-
-    useEffect(() => {
-        setFilteredCategorias(currentCategorias)
-    }, [currentCategorias, currentPage])
 
     function toogleDeleteModal(id: string) {
         const categoria = currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
