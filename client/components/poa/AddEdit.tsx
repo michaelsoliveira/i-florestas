@@ -178,7 +178,7 @@ const AddEdit = ({ id }: any) => {
         const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
         const { categorias } = response.data
         setCategorias(categorias)   
-    }, [upa, client, poa.id])
+    }, [client, poa.id])
 
     const defaultUmfsOptions = useCallback(async() => {
         const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
