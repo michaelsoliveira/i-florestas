@@ -79,27 +79,6 @@ const AddEdit = ({ id }: any) => {
         
     }, [poa, poaExists])
 
-    useEffect(() => {
-        async function defaultOptions() {
-            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
-                const { poas } = response.data
-                
-                if (poas.length === 0) {
-                    setSelectedPoa({
-                        value: '',
-                        label: 'Nenhum POA Cadastrada'
-                    })
-                } else {
-                    setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-                }
-        }
-
-        loadPoa()
-        
-        defaultOptions()
-
-    }, [client, poa, loadPoa, projeto?.id])
-
     const selectPoa = async (poa: any) => {
         dispatch(setPoa({
             id: poa.value,
@@ -168,11 +147,59 @@ const AddEdit = ({ id }: any) => {
         })))
     }
 
-    const loadUts = useCallback(async () => {
+    const loadData = useCallback(async () => {
+        const { data: poa } = await client.get(`/poa/${id}`)
+        if (!isAddMode && typeof session !== typeof undefined) {
+
+            setRespElab({
+                label: poa.resp_elab?.pessoa?.pessoaFisica?.nome,
+                value: poa?.id_resp_elab
+            })
+
+            setRespExec({
+                label: poa.resp_exec?.pessoa?.pessoaFisica?.nome,
+                value: poa.id_resp_exec
+            })
+
+            if (poa?.ut) {
+                setCheckedUts(poa?.ut.map(({ id }: any) => id));    
+            }
+            
+            for (const [key, value] of Object.entries(poa)) {
+                switch(key) {
+                    case 'resp_exec': setValue('resp_exec', poa.resp_exec?.id);
+                    break;
+                    case 'resp_elab': setValue('resp_elab', poa.resp_elab?.id);
+                    break;
+                    default: {
+                        setValue(key, value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        })
+                    }
+                }
+            }
+        } else {
+            setValue('corte_maximo', 30)
+        }
+
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
-        setUts(uts)   
-    }, [upa, client])
+
+        const filteredUts = uts.filter((ut: any) => {
+            
+            if (isAddMode) {
+                return ut.id_poa === null
+            } else {
+                if (poa.ut?.length) {
+                    return ut
+                } else {
+                    return ut.id_poa === null
+                }
+            }
+        })
+        setUts(filteredUts) 
+    }, [client, session, isAddMode, id, setCheckedUts, upa.id, setValue])
 
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
@@ -355,49 +382,29 @@ const AddEdit = ({ id }: any) => {
         })))
     }
 
-    useEffect(() => {        
-        async function loadPoa() {
-            defaultUmfsOptions()
-            defaultUpasOptions()
-            if (!isAddMode && typeof session !== typeof undefined) {
+    useEffect(() => { 
+        async function defaultOptions() {
+            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
+                const { poas } = response.data
                 
-                const { data: poa } = await client.get(`/poa/${id}`)
-                
-                setRespElab({
-                    label: poa.resp_elab?.pessoa?.pessoaFisica?.nome,
-                    value: poa?.id_resp_elab
-                })
-
-                setRespExec({
-                    label: poa.resp_exec?.pessoa?.pessoaFisica?.nome,
-                    value: poa.id_resp_exec
-                })
-
-                setCheckedUts(poa?.ut.map(({ id }: any) => id));
-
-                for (const [key, value] of Object.entries(poa)) {
-                    switch(key) {
-                        case 'resp_exec': setValue('resp_exec', poa.resp_exec?.id);
-                        break;
-                        case 'resp_elab': setValue('resp_elab', poa.resp_elab?.id);
-                        break;
-                        default: {
-                            setValue(key, value, {
-                                shouldValidate: true,
-                                shouldDirty: true
-                            })
-                        }
-                    }
+                if (poas.length === 0) {
+                    setSelectedPoa({
+                        value: '',
+                        label: 'Nenhum POA Cadastrada'
+                    })
+                } else {
+                    setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
                 }
-            } else {
-                setValue('corte_maximo', 30)
-            }
         }
         
+        loadData()
         loadPoa()
-        loadUts()
+        defaultOptions()       
+        defaultUmfsOptions()
+        defaultUpasOptions()
+      
         loadCategorias()
-    }, [session, isAddMode, client, id, loadUts, loadCategorias, setValue, defaultUmfsOptions, defaultUpasOptions])
+    }, [session, client, poa, isAddMode, projeto?.id, id, loadData, loadPoa, loadCategorias, setValue, defaultUmfsOptions, defaultUpasOptions])
 
     useEffect(() => {
         const defaultOptions = async () => {
