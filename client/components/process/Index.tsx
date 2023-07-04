@@ -165,7 +165,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 <div
                                     id='btn-resp'
                                     onClick={PlanejarPOA}
-                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/6"
+                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/6 lg:w-1/6"
                                 >
                                     Planejar POA
                                 </div>
