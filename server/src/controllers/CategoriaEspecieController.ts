@@ -90,7 +90,7 @@ export class CategoriaEspecieController {
         const { poaId }: any = request.query
 
         try {
-            const categorias = await categoriaService.getByPoa(poaId)
+            const categorias = await categoriaService.getByPoa(poaId, request.user?.id)
 
             return response.json({
                 error: false,
