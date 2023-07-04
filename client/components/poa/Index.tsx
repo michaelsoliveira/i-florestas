@@ -182,7 +182,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
-                <div className="flex flex-col p-6">
+                <div className="flex flex-col p-6 lg:px-16">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
@@ -267,26 +267,30 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 </div>        
                             </th>
                             <th
+                                className="w-[5rem]"
                                 scope="col"
-                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                             >
-                                Situação
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    Situação
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>
                             </th>   
                             <th
                                 scope="col"
-                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-[5rem]"
                             >
-                                Data Último Planejamento
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                    Data Último Planejamento
+                                    {sorted
+                                        ? (<ChevronUpIcon className="w-5 h-5" />)
+                                        : (<ChevronDownIcon className="w-5 h-5" />)
+                                    }
+                                </div>
                             </th>  
-                            <th scope="col" className="relative w-1/12 px-6 py-3">
+                            <th scope="col" className="w-1/12 px-6 py-3">
                                 <span className="sr-only">Edit</span>
                             </th>
                         </tr>

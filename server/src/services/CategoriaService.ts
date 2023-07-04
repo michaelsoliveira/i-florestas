@@ -71,8 +71,30 @@ class CategoriaService {
     }
 
     async update(id: string, data: CategoriaType): Promise<CategoriaEspecie> {
+        const { 
+                nome, 
+                criterio_fuste, 
+                criterio_dminc, 
+                criterio_dmaxc,
+                criterio_n_min,
+                criterio_perc_min,
+                preservar,
+                criterio_altura,
+                criterio_volume
+            } = data
+
         const categoria = await prismaClient.categoriaEspecie.update({
-            data,
+            data: { 
+                nome, 
+                criterio_fuste, 
+                criterio_dminc, 
+                criterio_dmaxc,
+                criterio_n_min,
+                criterio_perc_min,
+                preservar,
+                criterio_altura,
+                criterio_volume
+            },
             where: {
                 id
             }
