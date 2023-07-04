@@ -17,7 +17,7 @@ import { setPoa } from "store/poaSlice"
 
 const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
-    const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>(currentCategorias)
+    const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>([])
     const [selectedCategoria, setSelectedCategoria] = useState<CategoriaEspecieType>()
     const [uploading, setUploading] = useState<boolean>(false)
     const [openModal, setOpenModal] = useState<boolean>(false)
@@ -55,29 +55,23 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
         
     }, [poa, poaExists])
 
+    const defaultOptions = useCallback(async () => {
+        const response = await client.get(`/poa?orderBy=descricao&order=asc`)
+            const { poas } = response.data
+            //setPoas(poas)
+            setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
+            const { data } = await client.get(`/categoria?poa=${poa?.id}`)
+            setFilteredCategorias(data?.categorias)
+    },[])
+
+    
+
     useEffect(() => {
-        async function defaultOptions() {
-            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
-                const { poas } = response.data
-                setPoas(poas)
-                if (poas.length === 0) {
-                    setSelectedPoa({
-                        value: '',
-                        label: 'Padrão'
-                    })
-                }
-        }
-        async function loadCategoriasOptions() {
-            const response = await client.get(`/categoria?orderBy=nome&order=asc&poa=${poa?.id}`)
-            const { categorias } = response.data
-            setFilteredCategorias(categorias)
-        }
-        
+        //setFilteredCategorias(currentCategorias)
         loadPoa()
-        loadCategoriasOptions()
         defaultOptions()
 
-    }, [currentPage, client, poa, poa?.id, loadPoa, projeto?.id])
+    }, [currentPage, client, poa, poa?.id, defaultOptions, loadPoa, projeto?.id])
 
     const selectPoa = async (poa: any) => {
 
@@ -103,11 +97,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
             }
         })
 
-        if (data?.length > 0) {
-            return [{ label: 'Padrão', value: '' }, ...data]
-        } else {
-            return []
-        }
+        return data
            
     }
 
@@ -155,7 +145,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
 
     const sortCategorias = () => {
         let sortedCategorias: any = []        
-        sortedCategorias = filteredCategorias.sort((a: any, b: any) => {
+        sortedCategorias = currentCategorias.sort((a: any, b: any) => {
             return sorted
                 ? a.nome.toLowerCase().localeCompare(b.nome.toLowerCase())
                 : b.nome.toLowerCase().localeCompare(a.nome.toLowerCase());
@@ -340,7 +330,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredCategorias?.map((categoria: CategoriaEspecieType) => (
+                        {currentCategorias?.map((categoria: CategoriaEspecieType) => (
                         <tr key={categoria.id}>
                             <td className="flex justify-center">
                                 <input                 

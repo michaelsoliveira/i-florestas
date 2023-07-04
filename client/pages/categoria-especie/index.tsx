@@ -48,7 +48,7 @@ const CategoriaIndex = () => {
         } = paginatedData
 
         if (search) {
-            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}&search=${search.toLowerCase()}&poa=${poa?.id}`)
             paginatedData = {
                 ...paginatedData,
                 totalPages: Math.ceil(data?.count / perPage),

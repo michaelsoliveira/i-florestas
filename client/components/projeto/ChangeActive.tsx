@@ -10,6 +10,7 @@ import { setUmf } from 'store/umfSlice';
 import { setUpa } from 'store/upaSlice';
 import { useAppDispatch } from 'store/hooks';
 import * as Yup from 'yup'
+import { setPoa } from 'store/poaSlice';
 
 type ChangeActiveType = {
     callback?: any;
@@ -104,6 +105,13 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     tipo: 0
                 }))
             }
+
+            dispath(setPoa({
+                id: '',
+                descricao: 'Padrão',
+                data_ultimo_plan: new Date(),
+                pmfs: ''
+            }))
                 
             setProjeto(projetoResponse?.projeto)
             hideModal()

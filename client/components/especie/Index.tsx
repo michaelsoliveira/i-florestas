@@ -14,7 +14,7 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
-    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
+    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>([])
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
@@ -57,7 +57,8 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
-    }, [currentEspecies, currentPage])
+        
+    }, [currentEspecies])
 
     const deleteEspecies = async () => {
         setLoading(true)
