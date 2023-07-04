@@ -1,8 +1,6 @@
 
-import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
 import { Pessoa, TipoPessoa, User } from "@prisma/client"
-import { Console } from "console";
 
 class DetentorService {
     async create(data: any): Promise<Pessoa> {     
