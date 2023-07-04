@@ -378,7 +378,7 @@ const AddEdit = ({ id }: any) => {
             }
         }
         defaultOptions()  
-    }, [])
+    }, [client, session])
 
     useEffect(() => { 
         async function defaultOptions() {
