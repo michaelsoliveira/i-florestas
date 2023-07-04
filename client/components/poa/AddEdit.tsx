@@ -185,20 +185,16 @@ const AddEdit = ({ id }: any) => {
 
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
-
+        const utsUncheked = uts.filter((ut: any) => ut.id_poa === null)
         const filteredUts = uts.filter((ut: any) => {
             
-            if (isAddMode) {
-                return ut.id_poa === null
-            } else {
-                if (poa.ut?.length) {
-                    return ut
-                } else {
-                    return ut.id_poa === null
-                }
+            if (poa.ut?.length > 0) {
+                return poa.ut?.map((u: any) => u.id).includes(ut.id)
             }
+            
         })
-        setUts(filteredUts) 
+        
+        setUts([...filteredUts, ...utsUncheked]) 
     }, [client, session, isAddMode, id, setCheckedUts, upa.id, setValue])
 
     const loadCategorias = useCallback(async () => {
