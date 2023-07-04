@@ -9,6 +9,8 @@ import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
+import { useAppSelector } from 'store/hooks'
+import { RootState } from 'store'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -17,6 +19,7 @@ const AddEdit = ({ id }: any) => {
     const router = useRouter()
     const isAddMode = !id
     const { projeto } = useContext(ProjetoContext)
+    const poa = useAppSelector((state: RootState) => state.poa)
 
     useEffect(() => {        
         async function loadCategoria() {
@@ -39,7 +42,7 @@ const AddEdit = ({ id }: any) => {
     }, [session, isAddMode, client, id, setValue])
 
     async function onSubmit(data: any) {
-        const preparedData = { ...data, id_projeto: projeto?.id }
+        const preparedData = { ...data, id_projeto: projeto?.id, id_poa: poa.id }
         try {
             return isAddMode
                 ? createCategoria(preparedData)

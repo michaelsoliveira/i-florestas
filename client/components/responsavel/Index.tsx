@@ -5,7 +5,7 @@ import alertService from "../../services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link } from "../Link";
-import PessoaFisica from "../../components/Form/PessoaFisica";
+import PessoaFisica from "../Form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 import { FormInput } from "../FormInput";
