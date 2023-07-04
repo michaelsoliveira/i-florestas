@@ -199,7 +199,7 @@ const AddEdit = ({ id }: any) => {
             }
         })
         setUts(filteredUts) 
-    }, [client, session, isAddMode, id, setCheckedUts])
+    }, [client, session, isAddMode, id, setCheckedUts, upa.id, setValue])
 
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
