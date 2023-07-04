@@ -22,8 +22,7 @@ import {
     // UsersIcon,
     // CalculatorIcon
 } from '@heroicons/react/outline'
-import Execucao from '../responsavel/Execucao'
-import Elaboracao from '../responsavel/Elaboracao'
+import AddResponsavel from '../responsavel/Index'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -340,21 +339,12 @@ const AddEdit = ({ id }: any) => {
         })
     }
 
-    const respTecElabModal = () => {
+    const addResponsavel = () => {
         showModal({
-            title: 'Novo Técnico Elaboração',
+            title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <div><Elaboracao responseData={responseTecElab} /></div>
-        })
-    }
-
-    const respTecExecModal = () => {
-        showModal({
-            title: 'Novo Técnico Execução',
-            size: 'max-w-4xl',
-            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <div><Execucao responseData={responseTecExec} /></div>
+            content: <div><AddResponsavel responseData={responseTecElab} /></div>
         })
     }
 
@@ -562,11 +552,19 @@ const AddEdit = ({ id }: any) => {
                                         />
                                     </div>
                                 
-                                <div className="border border-gray-200 p-4 rounded-md col-span-6 relative">
+                                <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
-                                    <div className='flex flex-col md:flex-row lg:space-x-4'>
-                                        <div className="flex flex-row items-end">
-                                            <div className='w-[300px]'>
+                                    <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
+                                        <span
+                                            id='btn-resp'
+                                            onClick={addResponsavel}
+                                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5"
+                                        >
+                                            Adicionar
+                                        </span>
+                                        <div className="flex flex-row items-center">
+                                        
+                                            <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={resp_elab}
@@ -576,16 +574,9 @@ const AddEdit = ({ id }: any) => {
                                                     callback={selectedRespTecElab}
                                                 />
                                             </div>
-                                            <div className='w-10 mb-[1px]'>
-                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md'>
-                                                    <Link href="#" className="" onClick={respTecElabModal}>
-                                                        <PlusIcon className="h-6 w-6" aria-hidden="true" />
-                                                    </Link>
-                                                </span>
-                                            </div>
                                         </div>
-                                        <div className="flex flex-row items-end">
-                                            <div className='w-[300px]'>
+                                        <div className="flex flex-row items-center">
+                                            <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
                                                 selectedValue={resp_exec}
@@ -595,14 +586,6 @@ const AddEdit = ({ id }: any) => {
                                                 callback={selectedRespTecExec}
                                             />
                                             </div>
-                                            <div className='w-10 mb-[1px]'>
-                                                <span className='flex items-center justify-center h-9 w-9 bg-green-400 rounded-r-md'>
-                                                    <Link href="#" className="" onClick={respTecExecModal}>
-                                                        <PlusIcon className="h-6 w-6" aria-hidden="true" />
-                                                    </Link>
-                                                </span>
-                                            </div>
-                                            
                                         </div>
                                     </div>
                                     </div>

@@ -23,7 +23,7 @@ import {
     // CalculatorIcon
 } from '@heroicons/react/outline'
 import Execucao from '../responsavel/Execucao'
-import Elaboracao from '../responsavel/Elaboracao'
+import Elaboracao from '../responsavel/Index'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
