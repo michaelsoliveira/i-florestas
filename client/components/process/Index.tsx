@@ -72,8 +72,8 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
             setPoas(poas)
             if (poas.length === 0) {
                 setSelectedPoa({
-                    value: '0',
-                    label: 'Nenhum POA Cadastrada'
+                    value: '',
+                    label: 'Padrão'
                 })
             }
         }
