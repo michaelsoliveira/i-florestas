@@ -30,7 +30,7 @@ export class EspecieController {
             return response.json({
                 error: false,
                 especie,
-                message: `Especie ${especie.nome} atualizada com SUCESSO!!!`
+                message: `Especie ${especie?.nome} atualizada com SUCESSO!!!`
             })
 
         } catch (error) {

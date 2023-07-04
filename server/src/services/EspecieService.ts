@@ -1,7 +1,5 @@
-import { Especie } from "../entities/Especie";
-import { getRepository, ILike } from "typeorm";
 import { prismaClient } from "../database/prismaClient";
-import { Prisma } from "@prisma/client";
+import { Prisma, Especie } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -12,7 +10,7 @@ export interface EspecieType {
 }
 
 class EspecieService {
-    async create(dataRequest: any, projetoId?: string): Promise<any> {
+    async create(dataRequest: any, projetoId?: string): Promise<Especie> {
         const { nome, nome_cientifico, nome_orgao, id_projeto } = dataRequest
         const especieExists = await prismaClient.especie.findFirst({ 
             where: { 
@@ -52,7 +50,7 @@ class EspecieService {
         return especie
     }
 
-    async update(id: string, dataRequest: EspecieType): Promise<Especie> {
+    async update(id: string, dataRequest: EspecieType): Promise<Especie | null> {
         const { nome, nome_cientifico, nome_orgao } = dataRequest
         const preparedData = {
                 nome,
@@ -159,7 +157,7 @@ class EspecieService {
         }
     }
 
-    async findById(id: string) : Promise<any> {
+    async findById(id: string) : Promise<Especie | null> {
         const especie = await prismaClient.especie.findUnique({
             include: {
                 categoria_especie: {
