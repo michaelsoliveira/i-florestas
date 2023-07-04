@@ -102,22 +102,9 @@ const PoaIndex = () => {
             currentPoas={currentPoas}
             loading={loading}
             loadPoas={loadPoas}
-            currentPage={currentPage}
-            orderBy={orderBy}
-            order={order}
             onPageChanged={onPageChanged}
-            perPage={itemsPerPage}
             changeItemsPerPage={changeItemsPerPage}
             />
-        <Pagination
-            perPage={itemsPerPage}
-            totalItems={totalItems}
-            orderBy={orderBy}
-            order={order}
-            currentPage={currentPage}
-            onPageChanged={onPageChanged}    
-            pageNeighbours={3}
-        />
     </div>
     )
 }

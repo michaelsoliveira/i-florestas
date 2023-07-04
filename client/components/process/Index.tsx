@@ -12,6 +12,7 @@ import { RootState } from "../../store"
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
+import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 
 const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading }: any) => {
     
@@ -20,6 +21,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     const [checkedPoas, setCheckedPoas] = useState<any>([])
     const [sorted, setSorted] = useState(false)
     const [poas, setPoas] = useState<any>()
+    const [categorias, setCategorias] = useState<any>()
     const poa = useAppSelector((state: RootState) => state.poa)
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
@@ -31,10 +33,6 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     const poaById = (id?: string) => {
         return currentPoas.find((poa: any) => poa.id === id)
     }
-
-    const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir o POA ${poaById(id)?.descricao} ?` })
-    const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os POAs selecionados' })
-    
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -61,24 +59,30 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         
     }, [poa, poaExists])
 
+    const loadCategorias = useCallback(async () => {
+        const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
+        const { categorias } = response.data
+        setCategorias(categorias)   
+    }, [client, poa.id])
+
     useEffect(() => {
         async function defaultOptions() {
             const response = await client.get(`/poa?orderBy=descricao&order=asc`)
-                const { poas } = response.data
-                setPoas(poas)
-                if (poas.length === 0) {
-                    setSelectedPoa({
-                        value: '0',
-                        label: 'Nenhum POA Cadastrada'
-                    })
-                }
+            const { poas } = response.data
+            setPoas(poas)
+            if (poas.length === 0) {
+                setSelectedPoa({
+                    value: '0',
+                    label: 'Nenhum POA Cadastrada'
+                })
+            }
         }
 
         loadPoa()
-        
+        loadCategorias()
         defaultOptions()
         setFilteredPoas(currentPoas)
-    }, [currentPoas, currentPage, client, poa, loadPoa, projeto?.id])
+    }, [currentPoas, currentPage, client, poa, loadCategorias, loadPoa, projeto?.id])
 
     const selectPoa = async (poa: any) => {
         dispatch(setPoa({
@@ -88,10 +92,9 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
             pmfs: ''
         }))
         setSelectedPoa(poa)
-        const response = await client.get(`/poa?orderBy=nome&order=asc&umf=${poa.value}`)
-        const { poas } = response.data
-        
-        setFilteredPoas(poas)
+        const response = await client.get(`/categoria/get-by-poa?poaId=${poa.value}`)
+        const { categorias } = response.data
+        setCategorias(categorias)
     }
 
     function getPoasDefaultOptions() {
@@ -118,64 +121,8 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         }       
     }
 
-    const handleSearch = async (query: string) => {
-        const paginatedData = {
-            currentPage: 1,
-            perPage,
-            orderBy,
-            order,
-            search: query
-        }
-        onPageChanged({
-            poa: poa.id,
-            ...paginatedData
-        })
-    }
-
-    const sortPoas = () => {
-        let poas: any = []        
-        poas = filteredPoas.sort((a: any, b: any) => {
-            return sorted
-                ? a.descricao.toLowerCase().localeCompare(b.descricao.toLowerCase())
-                : b.descricao.toLowerCase().localeCompare(a.descricao.toLowerCase());
-        })
-        
-        setSorted(!sorted)
-        setFilteredPoas(poas)    
-    }
-
-    const handleSelectPoa = (evt: any) => {
-        const poaId = evt.target.value
-
-        if (!checkedPoas.includes(poaId)) {
-            setCheckedPoas([...checkedPoas, poaId])
-        } else {
-            setCheckedPoas(checkedPoas.filter((checkedPoaId: any) => {
-                return checkedPoaId !== poaId
-            }))
-        }
-    }
-
-    const handleSelectAllPoas = () => {
-        if (checkedPoas?.length < currentPoas?.length) {
-            setCheckedPoas(currentPoas.map(({ id }: any) => id));
-        } else {
-            setCheckedPoas([]);
-        }
-    };
-
-    const deletePoas = async () => {
-        try {
-            await client.delete('/poa/multiples', { data: { ids: checkedPoas} })
-                .then((response: any) => {
-                    setCheckedPoas([])
-                    alertService.success('As POAs foram deletadas com SUCESSO!!!')
-                    
-                    hideModal()
-                })
-        } catch (error) {
-            console.log(error)
-        }
+    function PlanejarPOA(event: any): void {
+        console.log('Planejar POA')
     }
 
     return (
@@ -184,12 +131,12 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                 <h1 className="font-medium text-2xl font-roboto text-white">Processamento do POA</h1>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
-                <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        
-                        <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
-                            <div className="w-3/12 flex items-center">POA: </div>
-                            <div className="w-9/12">
+                <div className="flex flex-col p-6 mx-auto">
+                    
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
+                        <div className="lg:flex lg:flex-wrap lg:w-6/12 px-4">
+                            <span className="w-3/12 flex items-center">POA: </span>
+                            <div className="w-3/4">
                                 <Select
 
                                     placeholder='Selecione o POA...'
@@ -198,112 +145,36 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                     options={loadPoas}
                                     callback={selectPoa}
                                     initialData={{
-                                        label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
+                                        label: 'Entre com as iniciais do POA ...', value: ''
                                     }}
                                 />
                             </div>
                         </div>
+                    </div>     
+                    {categorias && (
+                        <div className="overflow-x-auto border border-gray-300 rounded-md">
+                            <CriterioPoa 
+                                categorias={categorias} 
+                            />
+                        </div>
+                    )}
+
+                    <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
+                        <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
+                            <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
+                                <div
+                                    id='btn-resp'
+                                    onClick={PlanejarPOA}
+                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/6"
+                                >
+                                    Planejar POA
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
-                        <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
-                            {checkedPoas.length > 0 && (
-                                <div className="py-4">
-                                    <button
-                                        className="px-4 py-2 bg-red-600 text-white rounded-md"
-                                        onClick={deleteMultModal}
-                                    >
-                                        Deletar
-                                    </button>
-                                </div>
-                            )}
-                    <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="w-1/12">
-                                <div className="flex justify-center">
-                                <input  
-                                    checked={checkedPoas?.length === currentPoas?.length}
-                                    onChange={handleSelectAllPoas}                
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                />
-                                </div>
-                            </th>
-                            <th
-                                className="w-4/12"
-                                onClick={() => sortPoas()}
-                            >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Descricao
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>        
-                            </th>
-                            <th
-                                scope="col"
-                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                Situação
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </th>   
-                            <th
-                                scope="col"
-                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                Data Último Planejamento
-                                {sorted
-                                    ? (<ChevronUpIcon className="w-5 h-5" />)
-                                    : (<ChevronDownIcon className="w-5 h-5" />)
-                                }
-                            </th>  
-                            <th scope="col" className="relative w-1/12 px-6 py-3">
-                                <span className="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredPoas?.map((poa: any) => (
-                        <tr key={poa.id}>
-                            <td className="flex justify-center">
-                                <input                 
-                                    value={poa?.id}
-                                    checked={checkedPoas.includes(poa?.id)}
-                                    onChange={handleSelectPoa}
-                                    id="poaId"
-                                    type="checkbox"
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                />    
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa?.nome}</div>
-                                </div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan?.toString()}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                <Link href={`/poa/update/${poa.id}`}>
-                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                                </Link>
-                                <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
-                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
-                                </Link>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-            </div>
-        )}
-            
-    </div>
+            )}
+                
+        </div>
     )
 }
 

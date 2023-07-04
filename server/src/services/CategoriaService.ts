@@ -12,20 +12,39 @@ export interface CategoriaType {
     criterio_n_min?: number;
     criterio_perc_min?: number;
     preservar?: boolean;
-    criterio_ltura?: number;
+    criterio_altura?: number;
     criterio_volume?: number;
     id_projeto: string;
+    id_poa: string;
 }
 
 class CategoriaService {
     async create(data: CategoriaType): Promise<CategoriaEspecie> {
+        const { nome, 
+                criterio_fuste, 
+                criterio_dminc, 
+                criterio_dmaxc,
+                criterio_n_min,
+                criterio_perc_min,
+                preservar,
+                criterio_altura,
+                criterio_volume,
+                id_projeto } = data
+        const where = data?.id_poa ? { 
+            AND: [
+                { nome: data.nome },
+                { id_projeto: data?.id_projeto },
+                { id_poa: data?.id_poa }
+            ]
+        } : {
+            AND: [
+                { nome: data.nome },
+                { id_projeto: data?.id_projeto }
+            ]
+        }
+
         const categoriaExists = await prismaClient.categoriaEspecie.findFirst({ 
-            where: { 
-                AND: {
-                    nome: data.nome,
-                    id_projeto: data?.id_projeto
-                }
-            } 
+            where
         })
 
         if (categoriaExists) {
@@ -33,7 +52,19 @@ class CategoriaService {
         }
 
         const categoria = await prismaClient.categoriaEspecie.create({
-            data
+            data : data?.id_poa ? data : 
+                {   
+                    nome, 
+                    criterio_fuste, 
+                    criterio_dminc, 
+                    criterio_dmaxc,
+                    criterio_n_min,
+                    criterio_perc_min,
+                    preservar,
+                    criterio_altura,
+                    criterio_volume,
+                    id_projeto 
+                }
         })
 
         return categoria
