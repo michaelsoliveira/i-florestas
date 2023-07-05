@@ -113,9 +113,7 @@ class CategoriaService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
-        const projeto = await getProjeto(userId) as any
-        
-        const { perPage, page, search, orderBy, order, poa } = query
+        const { perPage, page, search, orderBy, order, poa, projetoId } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
         
@@ -138,7 +136,7 @@ class CategoriaService {
                         },
                         {
                             projeto: {
-                                id: projeto?.id
+                                id: projetoId
                             }
                         },
                         {
@@ -152,7 +150,7 @@ class CategoriaService {
                     },
                     {
                         projeto: {
-                            id: projeto?.id
+                            id: projetoId
                         }
                     }
                 ]

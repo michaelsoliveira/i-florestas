@@ -17,7 +17,7 @@ import { setPoa } from "store/poaSlice"
 
 const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
-    const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>([])
+    const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>(currentCategorias)
     const [selectedCategoria, setSelectedCategoria] = useState<CategoriaEspecieType>()
     const [uploading, setUploading] = useState<boolean>(false)
     const [openModal, setOpenModal] = useState<boolean>(false)
@@ -58,20 +58,14 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     const defaultOptions = useCallback(async () => {
         const response = await client.get(`/poa?orderBy=descricao&order=asc`)
             const { poas } = response.data
-            //setPoas(poas)
             setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-            const { data } = await client.get(`/categoria?poa=${poa?.id}`)
-            setFilteredCategorias(data?.categorias)
     },[])
 
-    
-
     useEffect(() => {
-        //setFilteredCategorias(currentCategorias)
         loadPoa()
         defaultOptions()
-
-    }, [currentPage, client, poa, poa?.id, defaultOptions, loadPoa, projeto?.id])
+        setFilteredCategorias(currentCategorias)
+    }, [loadPoa, defaultOptions, setFilteredCategorias])
 
     const selectPoa = async (poa: any) => {
 

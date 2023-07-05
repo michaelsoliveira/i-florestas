@@ -14,7 +14,7 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
-    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>([])
+    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
@@ -57,8 +57,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
-        
-    }, [currentEspecies])
+    }, [setFilteredEspecies])
 
     const deleteEspecies = async () => {
         setLoading(true)
@@ -133,7 +132,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
             perPage,
             orderBy,
             order,
-            search: evt.target.value
+            search: evt.target.value,
         }
         
         setSearchInput(evt.target.value)
@@ -339,7 +338,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEspecies?.map((especie: any) => (
+                        {currentEspecies?.map((especie: any) => (
                             <tr key={especie.id}>
                             <td className="flex justify-center">
                             <input                 
