@@ -59,13 +59,13 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
         const response = await client.get(`/poa?orderBy=descricao&order=asc`)
             const { poas } = response.data
             setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-    },[])
+    },[client])
 
     useEffect(() => {
         loadPoa()
         defaultOptions()
         setFilteredCategorias(currentCategorias)
-    }, [loadPoa, defaultOptions, setFilteredCategorias])
+    }, [loadPoa, defaultOptions, currentCategorias])
 
     const selectPoa = async (poa: any) => {
 

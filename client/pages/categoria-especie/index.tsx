@@ -29,9 +29,7 @@ const CategoriaIndex = () => {
         setLoading(true)
         const currentPagePagination = pagination.name === 'categoria' && pagination.currentPage ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        console.log(projeto)
         const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&poa=${poa?.id}&projetoId=${projeto?.id}`)
-        console.log(data)
         setTotalItems(data?.count)
         setCurrentCategorias(data?.categorias)
         setLoading(false)
@@ -39,7 +37,7 @@ const CategoriaIndex = () => {
 
     useEffect(() => {
         loadCategorias(itemsPerPage)
-    }, [itemsPerPage, loadCategorias])
+    }, [loadCategorias, itemsPerPage])
 
     const onPageChanged = async (paginatedData: any) => {
         
