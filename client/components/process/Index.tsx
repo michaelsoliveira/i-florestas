@@ -60,7 +60,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }, [poa, poaExists])
 
     const loadCategorias = useCallback(async () => {
-        const response = await client.get(`/categoria/get-by-poa?poaId=${poa?.id}`)
+        const response = await client.get(`/categoria?poa=${poa?.id}`)
         const { categorias } = response.data
         setCategorias(categorias)   
     }, [client, poa.id])
@@ -69,19 +69,15 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         async function defaultOptions() {
             const response = await client.get(`/poa?orderBy=descricao&order=asc`)
             const { poas } = response.data
-            setPoas(poas)
-            if (poas.length === 0) {
-                setSelectedPoa({
-                    value: '',
-                    label: 'Padrão'
-                })
-            }
+            setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
+            
         }
 
         loadPoa()
         loadCategorias()
         defaultOptions()
         setFilteredPoas(currentPoas)
+
     }, [currentPoas, currentPage, client, poa, loadCategorias, loadPoa, projeto?.id])
 
     const selectPoa = async (poa: any) => {

@@ -8,6 +8,7 @@ import IndexCategory from "@/components/categoria-especie/Index"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
+import { ProjetoContext } from "contexts/ProjetoContext"
 
 
 const CategoriaIndex = () => {
@@ -22,16 +23,19 @@ const CategoriaIndex = () => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const poa = useAppSelector((state: RootState) => state.poa)
+    const { projeto } = useContext(ProjetoContext)
     
     const loadCategorias = useCallback(async (itemsPerPage) => {
         setLoading(true)
         const currentPagePagination = pagination.name === 'categoria' && pagination.currentPage ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&poa=${poa?.id}`)
+        console.log(projeto)
+        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&poa=${poa?.id}&projetoId=${projeto?.id}`)
+        console.log(data)
         setTotalItems(data?.count)
         setCurrentCategorias(data?.categorias)
         setLoading(false)
-    }, [client, pagination.currentPage, pagination.name, poa.id])
+    }, [client, pagination.currentPage, pagination.name, poa.id, projeto?.id])
 
     useEffect(() => {
         loadCategorias(itemsPerPage)
@@ -48,14 +52,14 @@ const CategoriaIndex = () => {
         } = paginatedData
 
         if (search) {
-            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}&search=${search.toLowerCase()}&poa=${poa?.id}&projetoId=${projeto?.id}`)
             paginatedData = {
                 ...paginatedData,
                 totalPages: Math.ceil(data?.count / perPage),
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}`)
+            var { data } = await client.get(`/categoria?page=${currentPage}&perPage=${perPage}&projetoId=${projeto?.id}`)
             paginatedData = { name, ...paginatedData }
         }
 

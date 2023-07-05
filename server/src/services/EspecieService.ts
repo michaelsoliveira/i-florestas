@@ -94,8 +94,7 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const projeto = await getProjeto(userId) as any
-        const { perPage, page, order, search, orderBy } = query
+        const { perPage, page, order, search, orderBy, projetoId } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
         
@@ -117,12 +116,12 @@ class EspecieService {
                     },
                     {
                     projeto: {
-                        id: projeto?.id
+                        id: projetoId
                     }
                 }]
             } : {
                 projeto: {
-                    id: projeto?.id
+                    id: projetoId
                 }
             }
 

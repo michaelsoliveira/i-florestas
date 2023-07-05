@@ -57,7 +57,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
-    }, [currentEspecies, currentPage])
+    }, [setFilteredEspecies])
 
     const deleteEspecies = async () => {
         setLoading(true)
@@ -132,7 +132,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
             perPage,
             orderBy,
             order,
-            search: evt.target.value
+            search: evt.target.value,
         }
         
         setSearchInput(evt.target.value)
@@ -338,7 +338,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredEspecies?.map((especie: any) => (
+                        {currentEspecies?.map((especie: any) => (
                             <tr key={especie.id}>
                             <td className="flex justify-center">
                             <input                 
