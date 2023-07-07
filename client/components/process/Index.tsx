@@ -60,7 +60,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }, [poa, poaExists])
 
     const loadCategorias = useCallback(async () => {
-        const response = await client.get(`/categoria?poa=${poa?.id}`)
+        const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)   
     }, [client, poa.id])
@@ -104,21 +104,18 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         return data
     }
 
-    async function deletePoa(id?: string) {
-        try {
-            await client.delete(`/poa/single/${id}`)
-                .then(() => {
-                    alertService.success('O POA foi deletada com SUCESSO!!!')
-                    
-                    hideModal()
-                })
-        } catch (error) {
-            console.log(error)
-        }       
-    }
+    async function PlanejarPOA(event: any): Promise<any> {
+        await client.post('/planejo', { poa: poa?.id }).then(({ data }: any) => {
+            const { error, message } = data
 
-    function PlanejarPOA(event: any): void {
-        console.log('Planejar POA')
+            if (!error) {
+                alertService.success(message)
+            } else {
+                alertService.error(message)
+            }
+        }).catch((error: any) => {
+            console.log(error)
+        })
     }
 
     return (

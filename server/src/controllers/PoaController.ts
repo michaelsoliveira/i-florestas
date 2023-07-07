@@ -1,4 +1,3 @@
-// import { User } from "../entities/User"
 import { Request, Response } from "express";
 import poaService from "../services/PoaService";
 
