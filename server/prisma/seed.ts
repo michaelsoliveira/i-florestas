@@ -34,13 +34,13 @@ const observacoes: Prisma.ObservacaoArvoreCreateInput[] = [
 //10;"Não Derrubada"
 
 const situacaoArvores: Prisma.SituacaoArvoreCreateInput[] = [
-  { nome: 'Remanescente Não Substituível' },
-  { nome: 'Selecionada para Corte' },
-  { nome: 'Estoque' },
-  { nome: 'Não Selecionada' },
-  { nome: 'Substituta' },
-  { nome: 'Derrubada' },
-  { nome: 'Não Derrubada' },
+  { id: 1, nome: 'Remanescente Não Substituível' },
+  { id: 2, nome: 'Selecionada para Corte' },
+  { id: 3, nome: 'Estoque' },
+  { id: 4, nome: 'Não Selecionada' },
+  { id: 5, nome: 'Substituta' },
+  { id: 6, nome: 'Derrubada' },
+  { id: 7, nome: 'Não Derrubada' },
 ]
 
 //1;"Qualidade Do Fuste"
@@ -55,16 +55,16 @@ const situacaoArvores: Prisma.SituacaoArvoreCreateInput[] = [
 //11;"Decisão Pessoal"
 
 const motivosPreservacao: Prisma.MotivoPreservacaoCreateInput[] = [
-  { nome: 'Qualidade Do Fuste' },
-  { nome: 'Árvore Abaixo Do Dminc' },
-  { nome: 'Árvore Acima Do Dmaxc' },
-  { nome: 'Categoria Da Espécie' },
-  { nome: 'Observações Na Árvore' },
-  { nome: 'Altura Máxima Da Árvore' },
-  { nome: 'Volume Máximo Da Árvore' },
-  { nome: 'Percentual Mínimo De Indivíduos Por Ut' },
-  { nome: 'Mínimo De Indivíduos A Cada 100 Hectares' },
-  { nome: 'Decisão Pessoal' },
+  { id: 1, nome: 'Qualidade Do Fuste' },
+  { id: 2, nome: 'Árvore Abaixo Do Dminc' },
+  { id: 3, nome: 'Árvore Acima Do Dmaxc' },
+  { id: 4, nome: 'Categoria Da Espécie' },
+  { id: 5, nome: 'Observações Na Árvore' },
+  { id: 6, nome: 'Altura Máxima Da Árvore' },
+  { id: 7, nome: 'Volume Máximo Da Árvore' },
+  { id: 8, nome: 'Percentual Mínimo De Indivíduos Por Ut' },
+  { id: 9, nome: 'Mínimo De Indivíduos A Cada 100 Hectares' },
+  { id: 10, nome: 'Decisão Pessoal' },
 ]
 
 const roles: Prisma.RoleCreateInput[] = [

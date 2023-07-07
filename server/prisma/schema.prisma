@@ -100,14 +100,14 @@ model Telefone {
 }
 
 model SituacaoArvore {
-  id        Int @id @default(autoincrement())
+  id        Int @id
   nome      String?
   arvore    Arvore[]
   @@map("situacao_arvore")
 }
 
 model MotivoPreservacao {
-  id        Int @id @default(autoincrement())
+  id        Int @id
   nome      String?
   arvore    Arvore[]
   @@map("motivo_preservacao")
