@@ -25,6 +25,48 @@ const observacoes: Prisma.ObservacaoArvoreCreateInput[] = [
   }
 ]
 
+//1;"Remanescente Não Substituível"
+//2;"Selecionada para Corte"
+//3;"Estoque"
+//5;"Não Selecionada"
+//7;"Substituta"
+//9;"Derrubada"
+//10;"Não Derrubada"
+
+const situacaoArvores: Prisma.SituacaoArvoreCreateInput[] = [
+  { nome: 'Remanescente Não Substituível' },
+  { nome: 'Selecionada para Corte' },
+  { nome: 'Estoque' },
+  { nome: 'Não Selecionada' },
+  { nome: 'Substituta' },
+  { nome: 'Derrubada' },
+  { nome: 'Não Derrubada' },
+]
+
+//1;"Qualidade Do Fuste"
+//2;"Árvore Abaixo Do Dminc"
+//3;"Árvore Acima Do Dmaxc"
+//4;"Categoria Da Espécie"
+//5;"Observações Na Árvore"
+//7;"Altura Máxima Da Árvore"
+//8;"Volume Máximo Da Árvore"
+//9;"Percentual Mínimo De Indivíduos Por Ut"
+//10;"Mínimo De Indivíduos A Cada 100 Hectares"
+//11;"Decisão Pessoal"
+
+const motivosPreservacao: Prisma.MotivoPreservacaoCreateInput[] = [
+  { nome: 'Qualidade Do Fuste' },
+  { nome: 'Árvore Abaixo Do Dminc' },
+  { nome: 'Árvore Acima Do Dmaxc' },
+  { nome: 'Categoria Da Espécie' },
+  { nome: 'Observações Na Árvore' },
+  { nome: 'Altura Máxima Da Árvore' },
+  { nome: 'Volume Máximo Da Árvore' },
+  { nome: 'Percentual Mínimo De Indivíduos Por Ut' },
+  { nome: 'Mínimo De Indivíduos A Cada 100 Hectares' },
+  { nome: 'Decisão Pessoal' },
+]
+
 const roles: Prisma.RoleCreateInput[] = [
   {
     name: 'Admin',
@@ -477,6 +519,16 @@ async function main() {
       console.log(`Created observacao with id: ${obsModelo.id}`)
     }
 
+    for (const sit of situacaoArvores) {
+      const situacao = await prisma.situacaoArvore.create({
+        data: {
+          ...sit
+        }
+      })
+
+      console.log(`Created situacao_arvore with id: ${situacao.id}`)
+    }
+
     for (const eqModelo of equacoesModelo) {
       const equacaoModelo = await prisma.equacaoModelo.create({
         data: {
@@ -493,6 +545,15 @@ async function main() {
         },
       })
       console.log(`Created user Equação Modelo with id: ${equacaoModelo.id}`)
+    }
+
+    for (const motivo of motivosPreservacao) {
+      const motivoPreservacao = await prisma.motivoPreservacao.create({
+        data: {
+          ...motivo
+        },
+      })
+      console.log(`Created motivo_preservacao with id: ${motivoPreservacao.id}`)
     }
 
     for (const eqVolume of equacoesVolume) {

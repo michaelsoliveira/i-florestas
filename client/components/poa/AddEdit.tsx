@@ -384,15 +384,8 @@ const AddEdit = ({ id }: any) => {
         async function defaultOptions() {
             const response = await client.get(`/poa?orderBy=descricao&order=asc`)
                 const { poas } = response.data
+                setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
                 
-                if (poas.length === 0) {
-                    setSelectedPoa({
-                        value: '',
-                        label: 'Nenhum POA Cadastrada'
-                    })
-                } else {
-                    setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-                }
         }
         loadResponsaveis()
         loadData()

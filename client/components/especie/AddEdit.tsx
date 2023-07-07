@@ -9,6 +9,8 @@ import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
+import { useAppSelector } from 'store/hooks'
+import { RootState } from 'store'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
@@ -19,9 +21,10 @@ const AddEdit = ({ id }: any) => {
     const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
+    const poa = useAppSelector((state: RootState) => state.poa)
 
     const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/categoria/search/q?nome=${inputValue}`)
+        const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome&search=${inputValue}`)
         const json = response.data
         
         callback(json?.map((category: any) => ({
@@ -57,7 +60,7 @@ const AddEdit = ({ id }: any) => {
     useEffect(() => {
         const defaultOptions = async () => {
             if (typeof session !== typeof undefined){
-                const response = await client.get(`categoria`)
+                const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
                 const { categorias } = response.data
 
                 setCategorias(categorias)
@@ -65,7 +68,7 @@ const AddEdit = ({ id }: any) => {
         }
         defaultOptions()    
         
-    }, [session, client])
+    }, [session, client, projeto?.id, poa?.id])
 
     const selectedCategoria = (data: any) => {
         setCategoria(data)

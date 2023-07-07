@@ -100,14 +100,14 @@ model Telefone {
 }
 
 model SituacaoArvore {
-  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        Int @id @default(autoincrement())
   nome      String?
   arvore    Arvore[]
   @@map("situacao_arvore")
 }
 
 model MotivoPreservacao {
-  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        Int @id @default(autoincrement())
   nome      String?
   arvore    Arvore[]
   @@map("motivo_preservacao")
@@ -154,38 +154,41 @@ model Poa {
 }
 
 model Arvore {
-  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at DateTime @default(now()) @db.Timestamp(6)
-  updated_at DateTime @default(now()) @db.Timestamp(6)
-  numero_arvore     Int
-  dap             Decimal?  @db.Decimal(5,2)
-  altura          Decimal?  @db.Decimal(5,2)
-  fuste           Int?
-  area_basal      Float?
-  volume          Decimal?  @db.Decimal(5,2)
-  comentario      String? @db.Text
-  orient_x        String? @db.Char(1)
-  lat_x           Float?
-  long_y          Float?
-  faixa           Int?
-  derrubada       Boolean @default(false)
-  motivo_nao_derrubada      String?    @db.VarChar(120)
-  substituida     Boolean @default(false)
-  secoes          Int?
-  ponto_arvore    Unsupported("geometry")?
-  ponto_gps       Int?
-  lat             Float?
-  lng             Float?
-  id_ut           String?   @db.Uuid
-  ut              Ut? @relation(fields: [id_ut], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_especie           String?   @db.Uuid
-  especie              Especie? @relation(fields: [id_especie], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_situacao           String?  @db.Uuid
+  id                    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at            DateTime @default(now()) @db.Timestamp(6)
+  updated_at            DateTime @default(now()) @db.Timestamp(6)
+  numero_arvore         Int
+  dap                   Decimal?  @db.Decimal(5,2)
+  altura                Decimal?  @db.Decimal(5,2)
+  fuste                 Int?
+  area_basal            Float?
+  volume                Decimal?  @db.Decimal(5,2)
+  comentario            String? @db.Text
+  orient_x              String? @db.Char(1)
+  lat_x                 Float?
+  long_y                Float?
+  faixa                 Int?
+  derrubada             Boolean @default(false)
+  motivo_nao_derrubada  String?    @db.VarChar(120)
+  substituida           Boolean @default(false)
+  secoes                Int?
+  ponto_arvore          Unsupported("geometry")?
+  ponto_gps             Int?
+  lat                   Float?
+  lng                   Float?
+  id_ut                 String?   @db.Uuid
+  ut                    Ut? @relation(fields: [id_ut], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_especie            String?   @db.Uuid
+  especie               Especie? @relation(fields: [id_especie], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_situacao           Int?
   situacao_arvore       SituacaoArvore? @relation(fields: [id_situacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_motivo_preservacao String?   @db.Uuid
+  id_motivo_preservacao Int?
   motivo_preservacao    MotivoPreservacao? @relation(fields: [id_motivo_preservacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_observacao String?  @db.Uuid
-  observacao_arvore    ObservacaoArvore? @relation(fields: [id_observacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_observacao         String? @db.Uuid
+  observacao_arvore     ObservacaoArvore? @relation(fields: [id_observacao], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_substituta         String?  @db.Uuid
+  substituta            Arvore?    @relation("Substitutas", fields: [id_substituta], references: [id])
+  substitutas           Arvore[]    @relation("Substitutas")
   @@map("arvore")
 }
 
