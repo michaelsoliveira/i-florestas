@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Especie } from "@prisma/client";
+import { Prisma, Especie, prisma } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -11,7 +11,7 @@ export interface EspecieType {
 
 class EspecieService {
     async create(dataRequest: any, projetoId?: string): Promise<Especie> {
-        const { nome, nome_cientifico, nome_orgao, id_projeto } = dataRequest
+        const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = dataRequest as any
         const especieExists = await prismaClient.especie.findFirst({ 
             where: { 
                 AND: {
@@ -25,47 +25,32 @@ class EspecieService {
             throw new Error('Já existe uma espécie cadastrada com este nome')
         }
 
-        const preparedData = {
+        const data = {
             nome,
             nome_cientifico,
             nome_orgao,
-            projeto: {
-                connect: {
-                    id: id_projeto ? id_projeto : projetoId
-                }
-            }
         }
 
-        const data = dataRequest?.id_categoria ? {
-            ...preparedData,
-            categoria_especie: {
-                connect: {
-                    id: dataRequest?.id_categoria
-                }
-            }
-        } : preparedData
+        const especie = prismaClient.especie.create({ data }) as any
 
-        const especie = prismaClient.especie.create({ data })
+        await prismaClient.categoriaEspeciePoa.create({
+            data: {
+                id_especie: especie?.id,
+                id_categoria: id_categoria
+            }
+        })
 
         return especie
     }
 
-    async update(id: string, dataRequest: EspecieType): Promise<Especie | null> {
-        const { nome, nome_cientifico, nome_orgao } = dataRequest
-        const preparedData = {
+    async update(id: string, dataRequest: EspecieType): Promise<Especie | undefined> {
+        const { nome, nome_cientifico, nome_orgao, id_categoria, poa } = dataRequest as any
+
+        const data = {
                 nome,
                 nome_cientifico,
                 nome_orgao,
             }
-
-        const data = dataRequest?.id_categoria ? {
-            ...preparedData,
-            categoria_especie: {
-                connect: {
-                    id: dataRequest?.id_categoria
-                }
-            }
-        } : preparedData
 
         await prismaClient.especie.update({
             where: {
@@ -74,7 +59,20 @@ class EspecieService {
             data
         })
 
-        return this.findById(id)
+        await prismaClient.categoriaEspeciePoa.deleteMany({
+            where: {
+                id_especie: id
+            }
+        })
+
+        await prismaClient.categoriaEspeciePoa.create({
+            data: {
+                id_especie: id,
+                id_categoria: id_categoria
+            }
+        })
+
+        return this.findById(id, poa)
     }
 
     async delete(id: string): Promise<void> {
@@ -94,10 +92,11 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const { perPage, page, order, search, orderBy, projetoId } = query
+        const projeto = await getProjeto(userId) as any
+        const { perPage, page, order, search, orderBy, poa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        
+
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
         if (orderByElement.length == 2) {
@@ -109,30 +108,55 @@ class EspecieService {
                 [orderByElement]: order
             }
         }
+        console.log(search)
         const where = search ?
             {
-                AND: [{
-                        nome: { mode: Prisma.QueryMode.insensitive, contains: search }
-                    },
-                    {
-                    projeto: {
-                        id: projetoId
+                AND: {
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                        projeto: {
+                            id: projeto?.id
+                        },
+                        categoria_especie: {
+                            some: {
+                                categoria: {
+                                    poa: {
+                                        id: poa
+                                    }
+                                }
+                            }
+                        }
                     }
-                }]
-            } : {
-                projeto: {
-                    id: projetoId
-                }
+                } : {
+                    AND: 
+                    [
+                        {
+                        projeto: {
+                            id: projeto?.id
+                        },
+                        categoria_especie: {
+                            some: {
+                                categoria: {
+                                    poa: {
+                                        id: poa
+                                    }
+                                }
+                            }
+                        }
+                    }]
             }
 
         const [data, total] = await prismaClient.$transaction([
             prismaClient.especie.findMany({
                 include: {
                     categoria_especie: {
-                        select: {
-                            id: true,
-                            nome: true
-                        }
+                        include: {
+                            categoria: {
+                                select: {
+                                    id: true,
+                                    nome: true
+                                }
+                            }
+                        } 
                     }
                 },
                 where,
@@ -156,20 +180,16 @@ class EspecieService {
         }
     }
 
-    async findById(id: string) : Promise<Especie | null> {
-        const especie = await prismaClient.especie.findUnique({
-            include: {
-                categoria_especie: {
-                    select: {
-                        id: true,
-                        nome: true
-                    }
-                }
-            },
-            where: {
-                id
-            }
-        })
+    async findById(id: string, poaId: string) : Promise<Especie | undefined> {
+        const especie = await prismaClient.$queryRaw<Especie|undefined>`
+            SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
+                FROM especie e
+                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
+            WHERE
+                e.id = ${id}
+                AND ce.id_poa = ${poaId}
+        `
 
         return especie
     }

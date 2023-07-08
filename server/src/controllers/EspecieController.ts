@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import especieService from "../services/EspecieService";
 import { Readable } from 'stream'
 import readline from "readline";
+import { Especie } from '@prisma/client'
 
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -99,10 +100,12 @@ export class EspecieController {
 
     async findOne(request: Request, response: Response) {
         const { id } = request.params
-        try {
-            const especie = await especieService.findById(id)
+        const { poa } = request.query as any
 
-            return response.json(especie)
+        try {
+            const especie = await especieService.findById(id, poa) as any
+
+            return response.json(especie[0])
         } catch(error) {
             return response.json(error.message)
         }

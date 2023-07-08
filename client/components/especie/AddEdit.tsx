@@ -38,11 +38,11 @@ const AddEdit = ({ id }: any) => {
         
             if (!isAddMode && typeof session !== typeof undefined) {
                 
-                const { data: especie } = await client.get(`/especie/${id}`)
+                const { data: especie } = await client.get(`/especie/${id}?poa=${poa?.id}`)
                 
                 setCategoria({
-                    label: especie?.categoria_especie?.nome,
-                    value: especie?.categoria_especie?.id
+                    label: especie?.nome_categoria,
+                    value: especie?.id_categoria
                 })
                 for (const [key, value] of Object.entries(especie)) {
                     setValue(key, value, {
@@ -55,7 +55,7 @@ const AddEdit = ({ id }: any) => {
         
         loadEspecie()
 
-    }, [session, isAddMode, client, id, setValue, setCategoria])
+    }, [session, isAddMode, client, id, setValue, setCategoria, poa?.id])
 
     useEffect(() => {
         const defaultOptions = async () => {
@@ -117,7 +117,7 @@ const AddEdit = ({ id }: any) => {
 
     async function updateEspecie(id: string, data: any) {
         
-        client.put(`/especie/${id}`, data)
+        client.put(`/especie/${id}?poa=${poa?.id}`, data)
             .then((response: any) => {
                 const { error, message } = response.data
                 if (!error) {
