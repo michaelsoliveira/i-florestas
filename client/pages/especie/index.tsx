@@ -36,7 +36,7 @@ const EspecieIndex = () => {
         const { data } = await client.get(url)
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
-
+        console.log(data?.especies)
         setTimeout(() => {
             setLoading(false)
         }, 500)

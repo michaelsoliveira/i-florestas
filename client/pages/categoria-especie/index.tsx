@@ -29,7 +29,7 @@ const CategoriaIndex = () => {
         setLoading(true)
         const currentPagePagination = pagination.name === 'categoria' && pagination.currentPage ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&poa=${poa?.id}&projetoId=${projeto?.id}`)
+        const { data } = await client.get(`/categoria?page=${currentPagePagination}&perPage=${itemsPerPage}&order=asc&orderBy=nome&poa=${poa?.id}&projetoId=${projeto?.id}`)
         setTotalItems(data?.count)
         setCurrentCategorias(data?.categorias)
         setLoading(false)

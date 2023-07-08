@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Poa } from "@prisma/client";
+import { Prisma, Poa, prisma, CategoriaEspecie } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface PoaType {
@@ -78,17 +78,39 @@ class PoaService {
                 }
             }
         })
-        if (data?.categorias) {
-
-        }
+        const naoDefinida = await prismaClient.categoriaEspecie.findFirst({
+            where: {
+                AND: [
+                    { id_projeto: projeto?.id },
+                    { nome: {
+                        mode: Prisma.QueryMode.insensitive,
+                        contains: 'Não definida'
+                    } }
+                ]
+            }
+        })
         //Criterios padrão
         const criterios = await prismaClient.categoriaEspecie.findMany({
             where: {
                 id: {
-                    in: data?.categorias
+                    in: [...data?.categorias, naoDefinida?.id]
                 }
             }
         })
+
+        const especies = await prismaClient.especie.findMany({
+            where: {
+                projeto: {
+                    id: projeto?.id
+                }
+            }
+        })
+
+        //for (const especie of especies) {
+        //    const categorias = await prismaClient.categoriaEspeciePoa.findMany({
+//
+//            })
+//        }
 
         await prismaClient.categoriaEspecie.createMany({
             data: criterios.map((criterio: any) => {
@@ -107,6 +129,43 @@ class PoaService {
                 }
             })
         })
+
+        const newCriterios = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                id_poa: poa?.id
+            }
+        })
+
+        const criteriosIds = newCriterios.map((criterio: any) => { return `'${criterio.id}'` }).join(', ') as any
+        console.log(criteriosIds)
+        const preparedData = especies.map((especie: any) => {
+
+            return {
+                id_especie: especie.id
+            }
+        })
+
+        const categoriaEspeciePoa = await prismaClient.$queryRaw`
+            SELECT e.id, t1.id_categoria from
+                (SELECT c.id as id_categoria, c.nome from categoria_especie c INNER JOIN poa p on p.id = c.id_poa
+                    WHERE c.id = ${poa.id}) as t1
+                INNER JOIN categoria_especie ce on t1.nome = ce.nome INNER JOIN categoria_especie_poa cep
+                ON cep.id_categoria = ce.id INNER JOIN especie e ON e.id = cep.id_especie where ce.id in (${criteriosIds})
+        `
+
+        console.log(categoriaEspeciePoa)
+        //await prismaClient.categoriaEspeciePoa.createMany({
+        //    data: preparedData
+        //})
+
+        //await prismaClient.$queryRawUnsafe(`
+        //        INSERT INTO categoria_especie_poa(id_especie, id_categoria)
+        //        SELECT e.id, t1.id_categoria from
+        //            (SELECT c.id as id_categoria, c.nome from categoria_especie c INNER JOIN poa p on p.id = $1
+        //                WHERE c.id in ($2)) as t1
+        //            INNER JOIN categoria_especie ce on t1.nome = ce.nome INNER JOIN categoria_especie_poa cep
+        //            ON cep.id_categoria = ce.id INNER JOIN especie e ON e.id = cep.id_especie
+        //    `, poa.id, Prisma.join(criteriosIds))
 
         data?.uts && await prismaClient.ut.updateMany({
             where: {
@@ -230,7 +289,8 @@ class PoaService {
         const [poas, total] = await prismaClient.$transaction([
             prismaClient.poa.findMany({
                 include: {
-                    situacao_poa: true
+                    situacao_poa: true,
+                    ut: true
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 10,

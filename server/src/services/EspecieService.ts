@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Especie } from "@prisma/client";
+import { Prisma, Especie, prisma } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -11,7 +11,7 @@ export interface EspecieType {
 
 class EspecieService {
     async create(dataRequest: any, projetoId?: string): Promise<Especie> {
-        const { nome, nome_cientifico, nome_orgao, id_projeto } = dataRequest
+        const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = dataRequest as any
         const especieExists = await prismaClient.especie.findFirst({ 
             where: { 
                 AND: {
@@ -25,53 +25,51 @@ class EspecieService {
             throw new Error('Já existe uma espécie cadastrada com este nome')
         }
 
-        const preparedData = {
+        const data = {
             nome,
             nome_cientifico,
             nome_orgao,
-            projeto: {
-                connect: {
-                    id: id_projeto ? id_projeto : projetoId
-                }
-            }
         }
 
-        const data = dataRequest?.id_categoria ? {
-            ...preparedData,
-            categoria_especie: {
-                connect: {
-                    id: dataRequest?.id_categoria
-                }
-            }
-        } : preparedData
+        const especie = prismaClient.especie.create({ data }) as any
 
-        const especie = prismaClient.especie.create({ data })
+        await prismaClient.categoriaEspeciePoa.create({
+            data: {
+                id_especie: especie?.id,
+                id_categoria: id_categoria
+            }
+        })
 
         return especie
     }
 
     async update(id: string, dataRequest: EspecieType): Promise<Especie | null> {
-        const { nome, nome_cientifico, nome_orgao } = dataRequest
-        const preparedData = {
+        const { nome, nome_cientifico, nome_orgao, id_categoria } = dataRequest as any
+
+        const data = {
                 nome,
                 nome_cientifico,
                 nome_orgao,
             }
-
-        const data = dataRequest?.id_categoria ? {
-            ...preparedData,
-            categoria_especie: {
-                connect: {
-                    id: dataRequest?.id_categoria
-                }
-            }
-        } : preparedData
 
         await prismaClient.especie.update({
             where: {
                 id
             },
             data
+        })
+
+        await prismaClient.categoriaEspeciePoa.deleteMany({
+            where: {
+                id_especie: id
+            }
+        })
+
+        await prismaClient.categoriaEspeciePoa.create({
+            data: {
+                id_especie: id,
+                id_categoria: id_categoria
+            }
         })
 
         return this.findById(id)
@@ -129,10 +127,14 @@ class EspecieService {
             prismaClient.especie.findMany({
                 include: {
                     categoria_especie: {
-                        select: {
-                            id: true,
-                            nome: true
-                        }
+                        include: {
+                            categoria: {
+                                select: {
+                                    id: true,
+                                    nome: true
+                                }
+                            }
+                        } 
                     }
                 },
                 where,
@@ -160,10 +162,14 @@ class EspecieService {
         const especie = await prismaClient.especie.findUnique({
             include: {
                 categoria_especie: {
-                    select: {
-                        id: true,
-                        nome: true
-                    }
+                    include: {
+                        categoria: {
+                            select: {
+                                id: true,
+                                nome: true
+                            }
+                        }
+                    } 
                 }
             },
             where: {

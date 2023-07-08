@@ -39,10 +39,9 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: especie } = await client.get(`/especie/${id}`)
-                
                 setCategoria({
-                    label: especie?.categoria_especie?.nome,
-                    value: especie?.categoria_especie?.id
+                    label: especie?.categoria_especie[0]?.categoria?.nome,
+                    value: especie?.categoria_especie[0]?.categoria?.id
                 })
                 for (const [key, value] of Object.entries(especie)) {
                     setValue(key, value, {

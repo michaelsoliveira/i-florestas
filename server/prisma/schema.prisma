@@ -8,23 +8,23 @@ datasource db {
 }
 
 model CategoriaEspecie {
-  id                String    @id(map: "PK_2b252e9ab67497cb87a50f1e534") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at        DateTime  @default(now()) @db.Timestamp(6)
-  updated_at        DateTime  @default(now()) @db.Timestamp(6)
-  nome              String?   @db.VarChar(50)
-  criterio_fuste    Int?      @db.SmallInt
-  criterio_dminc    Int?      @db.SmallInt
-  criterio_dmaxc    Int?      @db.SmallInt
-  criterio_n_min    Int?      @db.SmallInt
-  criterio_perc_min Int?      @db.SmallInt
-  preservar         Boolean?
-  criterio_altura   Float?
-  criterio_volume   Float?
-  id_projeto        String?   @db.Uuid
-  projeto           Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  id_poa            String?   @db.Uuid
-  poa               Poa?  @relation(fields: [id_poa], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  especie           Especie[]
+  id                        String    @id(map: "PK_2b252e9ab67497cb87a50f1e534") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at                DateTime  @default(now()) @db.Timestamp(6)
+  updated_at                DateTime  @default(now()) @db.Timestamp(6)
+  nome                      String?   @db.VarChar(50)
+  criterio_fuste            Int?      @db.SmallInt
+  criterio_dminc            Int?      @db.SmallInt
+  criterio_dmaxc            Int?      @db.SmallInt
+  criterio_n_min            Int?      @db.SmallInt
+  criterio_perc_min         Int?      @db.SmallInt
+  preservar                 Boolean?
+  criterio_altura           Float?
+  criterio_volume           Float?
+  id_projeto                String?   @db.Uuid
+  projeto                   Projeto?  @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id_poa                    String?   @db.Uuid
+  poa                       Poa?      @relation(fields: [id_poa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  categoria_especie         CategoriaEspeciePoa[]
   @@map("categoria_especie")
 }
 
@@ -232,7 +232,7 @@ model Especie {
   nome_cientifico   String?           @db.VarChar(200)
   id_categoria      String?           @db.Uuid
   id_projeto        String?           @db.Uuid
-  categoria_especie CategoriaEspecie? @relation(fields: [id_categoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_b6c8cdf66e1a2b50baa526c0281")
+  categoria_especie CategoriaEspeciePoa[]
   projeto           Projeto?          @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
   arvore            Arvore[]
   @@map("especie")
@@ -385,6 +385,18 @@ model UserPermission {
   @@index([user_id], map: "IDX_4de7d0b175f702be3be5527002")
   @@index([permission_id], map: "IDX_b09b9a210c60f41ec7b453758e")
   @@map("users_permissions")
+}
+
+model CategoriaEspeciePoa {
+  id_categoria  String     @db.Uuid
+  id_especie    String     @db.Uuid
+  categoria     CategoriaEspecie @relation(fields: [id_categoria], references: [id], onDelete: Cascade)
+  especie       Especie       @relation(fields: [id_especie], references: [id], onDelete: Cascade)
+
+  @@id([id_categoria, id_especie])
+  @@index([id_categoria])
+  @@index([id_especie])
+  @@map("categoria_especie_poa")
 }
 
 model UserRole {

@@ -46,7 +46,11 @@ export class PlanejoService {
                     { 
                         especie: {
                             categoria_especie: {
-                                preservar: true
+                                some: {
+                                    categoria: {
+                                        preservar: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -68,14 +72,15 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, categoria_especie cat, especie e
+                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
             WHERE 
                 u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
-                AND cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 AND cat.preservar = false
                 AND a.dap < cat.criterio_dminc
         `;
@@ -99,7 +104,8 @@ export class PlanejoService {
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
-                AND cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 AND cat.preservar = false
                 AND a.fuste > cat.criterio_fuste; 
         `;
@@ -123,7 +129,8 @@ export class PlanejoService {
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
-                AND cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 AND cat.preservar = false
                 AND a.dap > cat.criterio_dminc
         `;
@@ -147,7 +154,8 @@ export class PlanejoService {
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
-                AND cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 AND cat.preservar = false
                 AND a.altura > cat.criterio_altura
         `;
@@ -171,7 +179,8 @@ export class PlanejoService {
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
-                AND cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 AND cat.preservar = false
                 AND a.volume > cat.criterio_volume
         `;
@@ -218,9 +227,9 @@ export class PlanejoService {
                 and a.id_ut = u.id
                 and e.id = a.id_especie
                 and cat.id_poa = u.id_poa
-                and cat.id = e.id_categoria
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
                 and a.id_situacao = 2
-                and cat.id = e.id_categoria
             group by u.id_upa, a.id_especie, a.id_ut, cat.criterio_perc_min, cat.criterio_n_min, u.id_poa, u.area_util;
         `
 

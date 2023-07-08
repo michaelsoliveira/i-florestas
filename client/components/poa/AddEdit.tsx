@@ -256,12 +256,22 @@ const AddEdit = ({ id }: any) => {
     }
 
     const selectUpa = async (upa: any) => {
+        const poaSelected = poas.find((poa: any) => poa.id === id)
         const upaSelected = upas.find((u: any) => u.id === upa.value)
         setSelectedUpa(upa)
 
-        const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upaSelected.id}`)
+        const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upaSelected.id}`)
         const { uts } = response.data
-        setUts(uts)       
+        const utsUncheked = uts.filter((ut: any) => ut.id_poa === null)
+        const filteredUts = uts.filter((ut: any) => {
+            
+            if (poaSelected.ut?.length > 0) {
+                return poaSelected.ut?.map((u: any) => u.id).includes(ut.id)
+            }
+            
+        })
+        
+        setUts([...filteredUts, ...utsUncheked])      
     }
 
     function getUmfsDefaultOptions() {
