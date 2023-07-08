@@ -25,24 +25,25 @@ const EspecieIndex = () => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const { projeto } = useContext(ProjetoContext)
+    const poa = useAppSelector((state: RootState) => state.poa)
     
     const loadEspecies = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}&projetoId=${projeto?.id}`
+        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}&poa=${poa?.id}&projetoId=${projeto?.id}`
         setCurrentPage(currentPagePagination)
 
         const { data } = await client.get(url)
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
-        console.log(data?.especies)
+        
         setTimeout(() => {
             setLoading(false)
         }, 500)
         //setLoading(false)
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, projeto?.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, poa?.id, projeto?.id])
 
     useEffect(() => {  
         
@@ -64,7 +65,7 @@ const EspecieIndex = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/especie?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&projetoId=${projeto?.id}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/especie?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&poa=${poa?.id}&projetoId=${projeto?.id}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -73,7 +74,7 @@ const EspecieIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/especie?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&projetoId=${projeto?.id}`)
+            var { data } = await client.get(`/especie?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&poa=${poa?.id}&projetoId=${projeto?.id}`)
             paginatedData = {
                 name,
                 ...paginatedData,

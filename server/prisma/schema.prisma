@@ -230,7 +230,6 @@ model Especie {
   nome              String?           @db.VarChar(100)
   nome_orgao        String?           @db.VarChar(100)
   nome_cientifico   String?           @db.VarChar(200)
-  id_categoria      String?           @db.Uuid
   id_projeto        String?           @db.Uuid
   categoria_especie CategoriaEspeciePoa[]
   projeto           Projeto?          @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)

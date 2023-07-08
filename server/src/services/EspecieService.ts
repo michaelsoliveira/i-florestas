@@ -43,8 +43,8 @@ class EspecieService {
         return especie
     }
 
-    async update(id: string, dataRequest: EspecieType): Promise<Especie | null> {
-        const { nome, nome_cientifico, nome_orgao, id_categoria } = dataRequest as any
+    async update(id: string, dataRequest: EspecieType): Promise<Especie | undefined> {
+        const { nome, nome_cientifico, nome_orgao, id_categoria, poa } = dataRequest as any
 
         const data = {
                 nome,
@@ -72,7 +72,7 @@ class EspecieService {
             }
         })
 
-        return this.findById(id)
+        return this.findById(id, poa)
     }
 
     async delete(id: string): Promise<void> {
@@ -92,10 +92,11 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const { perPage, page, order, search, orderBy, projetoId } = query
+        const projeto = await getProjeto(userId) as any
+        const { perPage, page, order, search, orderBy, poa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        
+
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
         if (orderByElement.length == 2) {
@@ -107,20 +108,41 @@ class EspecieService {
                 [orderByElement]: order
             }
         }
+        console.log(search)
         const where = search ?
             {
-                AND: [{
-                        nome: { mode: Prisma.QueryMode.insensitive, contains: search }
-                    },
-                    {
-                    projeto: {
-                        id: projetoId
+                AND: {
+                        nome: { mode: Prisma.QueryMode.insensitive, contains: search },
+                        projeto: {
+                            id: projeto?.id
+                        },
+                        categoria_especie: {
+                            some: {
+                                categoria: {
+                                    poa: {
+                                        id: poa
+                                    }
+                                }
+                            }
+                        }
                     }
-                }]
-            } : {
-                projeto: {
-                    id: projetoId
-                }
+                } : {
+                    AND: 
+                    [
+                        {
+                        projeto: {
+                            id: projeto?.id
+                        },
+                        categoria_especie: {
+                            some: {
+                                categoria: {
+                                    poa: {
+                                        id: poa
+                                    }
+                                }
+                            }
+                        }
+                    }]
             }
 
         const [data, total] = await prismaClient.$transaction([
@@ -158,24 +180,16 @@ class EspecieService {
         }
     }
 
-    async findById(id: string) : Promise<Especie | null> {
-        const especie = await prismaClient.especie.findUnique({
-            include: {
-                categoria_especie: {
-                    include: {
-                        categoria: {
-                            select: {
-                                id: true,
-                                nome: true
-                            }
-                        }
-                    } 
-                }
-            },
-            where: {
-                id
-            }
-        })
+    async findById(id: string, poaId: string) : Promise<Especie | undefined> {
+        const especie = await prismaClient.$queryRaw<Especie|undefined>`
+            SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
+                FROM especie e
+                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
+            WHERE
+                e.id = ${id}
+                AND ce.id_poa = ${poaId}
+        `
 
         return especie
     }

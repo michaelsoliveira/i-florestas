@@ -97,7 +97,7 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, categoria_especie cat, especie e
+                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
             WHERE 
                 u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -122,7 +122,7 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, categoria_especie cat, especie e
+                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
             WHERE 
                 u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -147,7 +147,7 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, categoria_especie cat, especie e
+                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
             WHERE 
                 u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -172,7 +172,7 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, categoria_especie cat, especie e
+                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
             WHERE 
                 u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -220,7 +220,7 @@ export class PlanejoService {
                 percente(count(a.id_especie), cat.criterio_perc_min) as percentual, 
                 percente(u.area_util, cat.criterio_n_min) as n_minimo
             from 
-                arvore a, especie e, ut u, categoria_especie cat
+                arvore a, especie e, ut u, categoria_especie cat, categoria_especie_poa cep
             where 
                 u.id = ${this.ut}
                 and u.id_poa = ${this.poa}

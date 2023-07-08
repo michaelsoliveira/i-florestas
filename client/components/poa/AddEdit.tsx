@@ -555,14 +555,7 @@ const AddEdit = ({ id }: any) => {
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
-                                    <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
-                                        <span
-                                            id='btn-resp'
-                                            onClick={addResponsavel}
-                                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5"
-                                        >
-                                            Adicionar
-                                        </span>
+                                    <div className='flex flex-col md:flex-row space-x-2 items-center w-full justify-around'>
                                         <div className="flex flex-row items-center">
                                         
                                             <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
@@ -588,12 +581,19 @@ const AddEdit = ({ id }: any) => {
                                             />
                                             </div>
                                         </div>
+                                        <span
+                                            id='btn-resp'
+                                            onClick={addResponsavel}
+                                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5"
+                                        >
+                                            Novo Responsável
+                                        </span>
                                     </div>
                                     </div>
                                 </div>
                                 {isAddMode && (
                                     <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
-                                        <div className='border border-gray-200 rounded-lg p-4 w-full'>
+                                        <div className='grid border border-gray-200 rounded-lg p-4 w-full justify-around'>
                                             <div className="flex items-center">
                                                 <input
                                                 id="import-criterios"
