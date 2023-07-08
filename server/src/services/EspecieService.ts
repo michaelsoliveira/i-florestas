@@ -29,17 +29,19 @@ class EspecieService {
             nome,
             nome_cientifico,
             nome_orgao,
+            id_projeto
         }
 
-        const especie = prismaClient.especie.create({ data }) as any
+        const especie = await prismaClient.especie.create({ data }) as any
 
-        await prismaClient.categoriaEspeciePoa.create({
+        const catEspeciePoa = await prismaClient.categoriaEspeciePoa.create({
             data: {
                 id_especie: especie?.id,
                 id_categoria: id_categoria
             }
         })
 
+        console.log(catEspeciePoa)
         return especie
     }
 
@@ -108,7 +110,7 @@ class EspecieService {
                 [orderByElement]: order
             }
         }
-        console.log(search)
+
         const where = search ?
             {
                 AND: {
