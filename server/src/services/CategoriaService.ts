@@ -215,7 +215,13 @@ class CategoriaService {
                             id: projeto?.id
                         }
                     }
-                ]
+                ],
+                NOT: {
+                    nome: {
+                        contains: 'Não definida',
+                        mode: Prisma.QueryMode.insensitive
+                    }
+                }
             }
         })
 

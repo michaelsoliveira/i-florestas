@@ -47,7 +47,6 @@ const PoaIndex = () => {
             name,
             currentPage,
             perPage,
-            totalPages,
             orderBy,
             order,
             umf,
@@ -83,17 +82,6 @@ const PoaIndex = () => {
         setOrder(order)
         setTotalItems(data?.count)
         setCurrentPoas(data?.poas)
-        setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
-    }
-
-    const changeItemsPerPage = (value: number) => {
-        onPageChanged({
-            name: router.pathname,
-            currentPage: 1,
-            perPage: value,
-            orderBy,
-            order
-        })
     }
 
     return (
@@ -101,10 +89,9 @@ const PoaIndex = () => {
         <Index
             currentPoas={currentPoas}
             loading={loading}
-            loadPoas={loadPoas}
             onPageChanged={onPageChanged}
-            changeItemsPerPage={changeItemsPerPage}
-            />
+            loadPoas={loadPoas}
+        />
     </div>
     )
 }
