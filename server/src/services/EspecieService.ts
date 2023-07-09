@@ -41,7 +41,6 @@ class EspecieService {
             }
         })
 
-        console.log(catEspeciePoa)
         return especie
     }
 
@@ -51,7 +50,7 @@ class EspecieService {
         const data = {
                 nome,
                 nome_cientifico,
-                nome_orgao,
+                nome_orgao
             }
 
         await prismaClient.especie.update({
@@ -63,7 +62,16 @@ class EspecieService {
 
         await prismaClient.categoriaEspeciePoa.deleteMany({
             where: {
-                id_especie: id
+                AND: [
+                    { id_especie: id },
+                    { 
+                        categoria: {
+                            poa: {
+                                id: poa
+                            }
+                        }
+                     }
+                ]
             }
         })
 

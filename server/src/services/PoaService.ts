@@ -98,20 +98,6 @@ class PoaService {
             }
         })
 
-        const especies = await prismaClient.especie.findMany({
-            where: {
-                projeto: {
-                    id: projeto?.id
-                }
-            }
-        })
-
-        //for (const especie of especies) {
-        //    const categorias = await prismaClient.categoriaEspeciePoa.findMany({
-//
-//            })
-//        }
-
         await prismaClient.categoriaEspecie.createMany({
             data: criterios.map((criterio: any) => {
                 return {
@@ -130,14 +116,6 @@ class PoaService {
             })
         })
 
-        const newCriterios = await prismaClient.categoriaEspecie.findMany({
-            where: {
-                id_poa: poa?.id
-            }
-        })
-
-        const criteriosIds = newCriterios.map((criterio: any) => criterio.id) as any
-
         const categoriaEspeciePoa = await prismaClient.$queryRaw`
             SELECT DISTINCT t1.id_categoria, e.id as id_especie from
                 (SELECT c.id as id_categoria, c.nome from categoria_especie c INNER JOIN poa p on p.id = c.id_poa
@@ -147,19 +125,9 @@ class PoaService {
                 INNER JOIN especie e on e.id = cep.id_especie
         ` as any
 
-        console.log(categoriaEspeciePoa)
         await prismaClient.categoriaEspeciePoa.createMany({
             data: categoriaEspeciePoa
         })
-
-        //await prismaClient.$queryRawUnsafe(`
-        //        INSERT INTO categoria_especie_poa(id_especie, id_categoria)
-        //        SELECT e.id, t1.id_categoria from
-        //            (SELECT c.id as id_categoria, c.nome from categoria_especie c INNER JOIN poa p on p.id = $1
-        //                WHERE c.id in ($2)) as t1
-        //            INNER JOIN categoria_especie ce on t1.nome = ce.nome INNER JOIN categoria_especie_poa cep
-        //            ON cep.id_categoria = ce.id INNER JOIN especie e ON e.id = cep.id_especie
-        //    `, poa.id, Prisma.join(criteriosIds))
 
         data?.uts && await prismaClient.ut.updateMany({
             where: {

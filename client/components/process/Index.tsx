@@ -14,25 +14,15 @@ import { styles } from "../Utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 
-const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading }: any) => {
+const Index = ({ currentPoas, loading }: any) => {
     
-    const [filteredPoas, setFilteredPoas] = useState<any[]>(currentPoas)
     const { client } = useContext(AuthContext)
-    const [checkedPoas, setCheckedPoas] = useState<any>([])
-    const [sorted, setSorted] = useState(false)
     const [poas, setPoas] = useState<any>()
     const [categorias, setCategorias] = useState<any>()
     const poa = useAppSelector((state: RootState) => state.poa)
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
-
-    const { showModal, hideModal, store } = useModalContext()
-    const { visible } = store
-
-    const poaById = (id?: string) => {
-        return currentPoas.find((poa: any) => poa.id === id)
-    }
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -63,7 +53,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)   
-    }, [client, poa.id])
+    }, [client, poa?.id])
 
     useEffect(() => {
         async function defaultOptions() {
@@ -76,9 +66,8 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
         loadPoa()
         loadCategorias()
         defaultOptions()
-        setFilteredPoas(currentPoas)
 
-    }, [currentPoas, currentPage, client, poa, loadCategorias, loadPoa, projeto?.id])
+    }, [currentPoas, client, loadCategorias, loadPoa])
 
     const selectPoa = async (poa: any) => {
         dispatch(setPoa({
@@ -148,6 +137,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                         <div className="overflow-x-auto border border-gray-300 rounded-md">
                             <CriterioPoa 
                                 categorias={categorias} 
+                                loadCategorias={loadCategorias}
                             />
                         </div>
                     )}

@@ -11,7 +11,7 @@ import { ProjetoContext } from "contexts/ProjetoContext";
 import { FormInput } from "../FormInput";
 import { useModalContext } from 'contexts/ModalContext'
 
-const Elaboracao =  forwardRef<any, any>(
+const Responsavel =  forwardRef<any, any>(
     function AddEdit(
       { responseData }, 
       ref
@@ -134,4 +134,4 @@ const Elaboracao =  forwardRef<any, any>(
     )
 })
 
-export default Elaboracao
+export default Responsavel
