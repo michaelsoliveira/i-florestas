@@ -83,7 +83,7 @@ const AddEdit = ({ id }: any) => {
         dispatch(setPoa({
             id: poa.value,
             descricao: poa.label,
-            data_ultimo_plan: new Date(0),
+            data_ultimo_plan: new Date('00-00-0000'),
             pmfs: ''
         }))
         setSelectedPoa(poa)
@@ -457,7 +457,7 @@ const AddEdit = ({ id }: any) => {
                     dispatch(setPoa({
                         id: poa.id,
                         descricao: poa.descricao,
-                        data_ultimo_plan: poa.data_ultimo_plan,
+                        data_ultimo_plan:poa.data_ultimo_plan,
                         pmfs: poa.pmfs
                     }))
                     alertService.success(message);

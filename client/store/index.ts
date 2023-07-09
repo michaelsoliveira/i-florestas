@@ -1,4 +1,4 @@
-import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { Action, configureStore, getDefaultMiddleware, ThunkAction } from "@reduxjs/toolkit";
 import projetoReducer from './projetoSlice'
 import userReducer from './userSlice'
 import messageReducer from './messageSlice'
@@ -10,6 +10,9 @@ import poaReducer from './poaSlice'
 import { loadState } from "./browser-storage";
 
 export const store = configureStore({
+    middleware: getDefaultMiddleware({
+        serializableCheck: false
+    }),
     devTools: true,
     reducer: {
         projeto: projetoReducer,

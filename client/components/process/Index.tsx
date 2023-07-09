@@ -73,7 +73,7 @@ const Index = ({ currentPoas, loading }: any) => {
         dispatch(setPoa({
             id: poa.value,
             descricao: poa.label,
-            data_ultimo_plan: new Date(0),
+            data_ultimo_plan: new Date(),
             pmfs: ''
         }))
         setSelectedPoa(poa)
