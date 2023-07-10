@@ -96,7 +96,7 @@ const Index = ({ currentPoas, loading }: any) => {
     async function PlanejarPOA(event: any): Promise<any> {
         await client.post('/planejo', { poa: poa?.id }).then(({ data }: any) => {
             const { error, message } = data
-            console.log(error)
+            
             if (!error) {
                 alertService.success(message)
             } else {
