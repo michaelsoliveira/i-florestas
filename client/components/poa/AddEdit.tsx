@@ -86,7 +86,7 @@ const AddEdit = ({ id }: any) => {
             pmfs: ''
         }))
         setSelectedPoa(poa)
-        const response = await client.get(`/categoria?poa=${poa.value}&order=asc&orderBy=nome`)
+        const response = await client.get(`/categoria?poa=${poa.value}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)
     }
@@ -197,7 +197,7 @@ const AddEdit = ({ id }: any) => {
     }, [client, session, isAddMode, id, setCheckedUts, upa.id, setValue])
 
     const loadCategorias = useCallback(async () => {
-        const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
+        const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)   
     }, [client, poa.id])
