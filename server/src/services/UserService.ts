@@ -8,6 +8,7 @@ export interface UserRequest {
     password: string
 }
 import { google } from 'googleapis'
+import { handleCreateDefault } from "./DefaultData"
 
 const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
@@ -74,7 +75,9 @@ class UserService {
                         }
                     }
                 }
-            })            
+            })       
+            
+            await handleCreateDefault(projeto)
 
             return user
         }

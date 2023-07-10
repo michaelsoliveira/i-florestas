@@ -50,10 +50,10 @@ const Index = ({ currentPoas, loading }: any) => {
     }, [poa, poaExists])
 
     const loadCategorias = useCallback(async () => {
-        const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
+        const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)   
-    }, [client, poa?.id])
+    }, [client, poa?.id, projeto?.id])
 
     useEffect(() => {
         async function defaultOptions() {
