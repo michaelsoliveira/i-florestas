@@ -137,12 +137,10 @@ class CategoriaService {
             {
                 AND: [
                         {
-                        nome: { mode: Prisma.QueryMode.insensitive, contains: search }
+                            nome: { mode: Prisma.QueryMode.insensitive, contains: search }
                         },
                         {
-                            projeto: {
-                                id: projetoId ? projetoId : projeto?.id
-                            }
+                            id_projeto: projetoId ? projetoId : projeto?.id
                         },
                         {
                             id_poa:  poa ? poa : user?.id_poa_ativo
@@ -154,9 +152,7 @@ class CategoriaService {
                         id_poa:  poa ? poa : user?.id_poa_ativo
                     },
                     {
-                        projeto: {
-                            id: projetoId ? projetoId : projeto?.id
-                        }
+                        id_projeto: projetoId ? projetoId : projeto?.id
                     }
                 ]
                 

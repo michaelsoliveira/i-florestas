@@ -217,7 +217,9 @@ class EspecieService {
                 INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
             WHERE
                 e.id = ${id}
-                AND ce.id_poa = ${poaId}
+                ${
+                    poaId ? Prisma.sql`AND ce.id_poa = ${poaId}` : Prisma.sql`AND ce.id_poa ISNULL`
+                }
         `
 
         return especie

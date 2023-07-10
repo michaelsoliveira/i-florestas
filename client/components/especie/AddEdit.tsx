@@ -39,7 +39,7 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: especie } = await client.get(`/especie/${id}?poa=${poa?.id}`)
-                
+                console.log(especie)
                 setCategoria({
                     label: especie?.nome_categoria,
                     value: especie?.id_categoria
