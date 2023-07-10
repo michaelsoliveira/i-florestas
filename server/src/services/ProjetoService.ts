@@ -236,6 +236,58 @@ class ProjetoService {
             })
         }
 
+        const equacoesModelo: Prisma.EquacaoModeloCreateInput[] = [
+            {
+              nome: 'Schumacher - Hall',
+              expressao: 'EXP(a + b * LN(DAP) + c * LN(ALTURA))'
+            },
+            {
+              nome: 'Spurr',
+              expressao: 'EXP(a + b * LN(DAP ^ 2 * ALTURA))'
+            },
+            {
+              nome: 'Husch (1963)',
+              expressao: 'EXP(a + b * LN(DAP))'
+            },
+            {
+              nome: 'Fator de forma',
+              expressao: 'a * (3.141592 * (DAP ^ 2) / 40000 ) * ALTURA'
+            },
+          ]
+          
+          const equacoesVolume: Prisma.EquacaoVolumeCreateInput[] = [
+            {
+              nome: 'Fator de forma',
+              expressao: '0.7 * (3.141592 * (DAP ^ 2) / 40000 ) * ALTURA',
+            },
+            {
+              nome: 'Equação de Volume Flona Tapajós',
+              expressao: 'EXP(-8.86102 + 1.93181 * LN(DAP) + 0.78683 * LN(ALTURA))'
+            },
+          ]
+
+          for (const eqModelo of equacoesModelo) {
+            await prismaClient.equacaoModelo.create({
+              data: {
+                ...eqModelo
+              },
+            })
+          }
+
+          for (const eqVolume of equacoesVolume) {
+            await prismaClient.equacaoVolume.create({
+              data: {
+                ...eqVolume,
+                projeto: {
+                  connect: {
+                    id: projeto?.id
+                  }
+                }
+              },
+              
+            })
+          }
+
         return projeto
     }
 
