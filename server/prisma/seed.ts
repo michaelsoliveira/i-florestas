@@ -454,7 +454,7 @@ async function main() {
             username: 'michaelsoliveira',
             email: 'michaelsoliveira@gmail.com',
             password: await bcrypt.hash('Fms237691', 10),
-            id_projeto_active: projeto?.id,
+            id_projeto_ativo: projeto?.id,
             users_roles: {
               create: [
                   {

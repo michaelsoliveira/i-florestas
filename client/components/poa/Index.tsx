@@ -243,95 +243,95 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="w-1/12">
-                                <div className="flex justify-center">
-                                <input  
-                                    checked={checkedPoas?.length === currentPoas?.length}
-                                    onChange={handleSelectAllPoas}                
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                />
-                                </div>
-                            </th>
-                            <th
-                                className="w-4/12"
-                                onClick={() => sortPoas()}
-                            >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Descricao
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>        
-                            </th>
-                            <th
-                                className="w-[5rem]"
-                                scope="col"
-                            >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Situação
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>
-                            </th>   
-                            <th
-                                scope="col"
-                                className="w-[5rem]"
-                            >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
-                                    Data Último Planejamento
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>
-                            </th>  
-                            <th scope="col" className="w-1/12 px-6 py-3">
-                                <span className="sr-only">Edit</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredPoas?.map((poa: any) => (
-                        <tr key={poa.id}>
-                            <td className="flex justify-center">
-                                <input                 
-                                    value={poa?.id}
-                                    checked={checkedPoas.includes(poa?.id)}
-                                    onChange={handleSelectPoa}
-                                    id="poaId"
-                                    type="checkbox"
-                                    className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                                />    
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{poa?.descricao}</div>
-                                </div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="flex flex-col items-starter">
-                                    <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa?.nome}</div>
-                                </div>
-                            </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{poa?.data_ultimo_plan?.toString()}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                                <Link href={`/poa/update/${poa.id}`}>
-                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                                </Link>
-                                <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
-                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
-                                </Link>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="w-1/12">
+                                    <div className="flex justify-center">
+                                    <input  
+                                        checked={checkedPoas?.length === currentPoas?.length}
+                                        onChange={handleSelectAllPoas}                
+                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                                    />
+                                    </div>
+                                </th>
+                                <th
+                                    className="w-4/12"
+                                    onClick={() => sortPoas()}
+                                >
+                                    <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        Descricao
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>        
+                                </th>
+                                <th
+                                    className="w-[5rem]"
+                                    scope="col"
+                                >
+                                    <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        Situação
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>
+                                </th>   
+                                <th
+                                    scope="col"
+                                    className="w-[5rem]"
+                                >
+                                    <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                        Data Último Planejamento
+                                        {sorted
+                                            ? (<ChevronUpIcon className="w-5 h-5" />)
+                                            : (<ChevronDownIcon className="w-5 h-5" />)
+                                        }
+                                    </div>
+                                </th>  
+                                <th scope="col" className="w-1/12 px-6 py-3">
+                                    <span className="sr-only">Edit</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredPoas?.map((poa: any) => (
+                            <tr key={poa.id}>
+                                <td className="flex justify-center">
+                                    <input                 
+                                        value={poa?.id}
+                                        checked={checkedPoas.includes(poa?.id)}
+                                        onChange={handleSelectPoa}
+                                        id="poaId"
+                                        type="checkbox"
+                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+                                    />    
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="flex flex-col items-starter">
+                                        <div className="text-sm font-medium text-gray-900">{poa?.descricao}</div>
+                                    </div>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="flex flex-col items-starter">
+                                        <div className="text-sm font-medium text-gray-900">{poa?.situacao_poa?.nome}</div>
+                                    </div>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <div className="text-sm text-gray-900">{poa?.data_ultimo_plan ? new Date(poa?.data_ultimo_plan?.toString()).toLocaleDateString('pt-BR') : ''}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                    <Link href={`/poa/update/${poa.id}`}>
+                                        <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                    </Link>
+                                    <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
+                                        <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
+                                    </Link>
+                                </td>
+                            </tr>
+                            ))}
+                        </tbody>
                     </table>
                 </div>
             </div>

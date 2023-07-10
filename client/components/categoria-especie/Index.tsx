@@ -72,7 +72,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
         dispatch(setPoa({
             id: poa.value,
             descricao: poa.label,
-            data_ultimo_plan: new Date(0),
+            data_ultimo_plan: new Date('2000-01-01'),
             pmfs: ''
         }))
         setSelectedPoa(poa)
@@ -96,7 +96,6 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     }
 
     const { hideModal, showModal, store } = useModalContext()
-    const { visible } = store
 
     const categoriaById = useCallback((id?: string) => {
         return currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)

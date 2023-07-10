@@ -1,7 +1,5 @@
 import { createContext, ReactNode } from "react";
-import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import useClient from "../services/client";
-import { Axios } from "axios";
 
 type AuthContextType = {
     client: any

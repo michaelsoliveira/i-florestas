@@ -44,7 +44,6 @@ const AddEdit = ({ id }: any) => {
     const [categorias, setCategorias] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
-    const ut = useAppSelector((state: RootState) => state.ut)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [checkedUts, setCheckedUts] = useState<any>([])
@@ -83,7 +82,7 @@ const AddEdit = ({ id }: any) => {
         dispatch(setPoa({
             id: poa.value,
             descricao: poa.label,
-            data_ultimo_plan: new Date(0),
+            data_ultimo_plan: new Date('00-00-0000'),
             pmfs: ''
         }))
         setSelectedPoa(poa)
@@ -457,7 +456,7 @@ const AddEdit = ({ id }: any) => {
                     dispatch(setPoa({
                         id: poa.id,
                         descricao: poa.descricao,
-                        data_ultimo_plan: poa.data_ultimo_plan,
+                        data_ultimo_plan:poa.data_ultimo_plan,
                         pmfs: poa.pmfs
                     }))
                     alertService.success(message);

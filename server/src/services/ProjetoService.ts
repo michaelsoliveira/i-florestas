@@ -21,7 +21,7 @@ export const getProjeto = async (userId?: string) => {
     
     return await prismaClient.projeto.findFirst({
         where: {
-            id: user?.id_projeto_active    
+            id: user?.id_projeto_ativo    
         }
     })
 }
@@ -73,7 +73,7 @@ class ProjetoService {
         if (data?.active) {
             await prismaClient.user.update({
                 data: {
-                    id_projeto_active: projeto?.id
+                    id_projeto_ativo: projeto?.id
                 },
                 where: {
                     id: userId
@@ -253,7 +253,7 @@ class ProjetoService {
         if (data?.active) {
             await prismaClient.user.update({
                 data: {
-                    id_projeto_active: id
+                    id_projeto_ativo: id
                 },
                 where: {
                     id: userId
@@ -270,7 +270,7 @@ class ProjetoService {
                 projeto: true
             },
             data: {
-                id_projeto_active: projetoId
+                id_projeto_ativo: projetoId
             },
             where: {
                 id: userId
@@ -523,7 +523,7 @@ class ProjetoService {
 
         const projetoAtivo = await prismaClient.projeto.findUnique({
             where: {
-                id: user?.id_projeto_active
+                id: user?.id_projeto_ativo
             }
         })
 

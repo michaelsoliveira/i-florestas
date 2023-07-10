@@ -1,16 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
+// Action types
+interface SetDateAction {
+  type: 'SET_POA';
+  payload: Date;
+}
+
 const initialState = {
     id: '',
     descricao: '',
-    data_ultimo_plan: new Date(0),
+    data_ultimo_plan: null,
     pmfs: ''
 };
 
-export type PoaType = {
+export interface PoaType {
     id: string;
     descricao: string;
-    data_ultimo_plan: Date;
+    data_ultimo_plan: Date | null;
     pmfs: '';
 }
 
@@ -19,7 +26,7 @@ const poaSlice = createSlice({
   initialState,
   reducers: {
       setPoa: (state, action: PayloadAction<PoaType>) => {
-        const { id, descricao, data_ultimo_plan, pmfs } = action.payload
+        const { id, descricao, data_ultimo_plan, pmfs }: any = action.payload
         state.id = id;  
         state.descricao = descricao;
         state.data_ultimo_plan = data_ultimo_plan;

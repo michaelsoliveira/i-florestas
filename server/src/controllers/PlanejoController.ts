@@ -41,6 +41,7 @@ export class PlanejoController {
                     id: poa
                 },
                 data: {
+                    data_ultimo_plan: new Date(),
                     situacao_poa: {
                         connect: {
                             id: situacaoPoa?.id

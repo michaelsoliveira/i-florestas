@@ -60,7 +60,7 @@ class UserService {
             image: data?.image,
             provider: data?.provider ? data?.provider : 'local',
             id_provider: data?.id_provider ? data?.id_provider : '',
-            id_projeto_active: projeto?.id
+            id_projeto_ativo: projeto?.id
         }
 
         if (!data?.id_projeto) {
@@ -222,7 +222,7 @@ class UserService {
                 users: true
             },
             where: {
-                id: user?.id_projeto_active
+                id: user?.id_projeto_ativo
             }
         }) as any
  
@@ -233,6 +233,21 @@ class UserService {
         const users = await prismaClient.user.findMany()
 
         return users
+    }
+
+    async findById(id: string): Promise<any> {
+        const user = await prismaClient.user.findUnique({ 
+            include: {
+                users_roles: {
+                    include: {
+                        roles: true
+                    }
+                }
+            },
+            where: {
+                id
+            }
+         })
     }
 
     async findOne(id: string, projetoId?: string | undefined): Promise<any> {
