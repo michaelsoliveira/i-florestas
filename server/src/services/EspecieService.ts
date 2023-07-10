@@ -55,7 +55,7 @@ class EspecieService {
         }
 
         const especie = await prismaClient.especie.create({ data }) as any
-
+        
         await prismaClient.categoriaEspeciePoa.create({
             data: {
                 id_especie: especie?.id,
@@ -152,9 +152,7 @@ class EspecieService {
                         categoria_especie: {
                             some: {
                                 categoria: {
-                                    poa: {
-                                        id: poa
-                                    }
+                                    id_poa: poa ? poa : null
                                 }
                             }
                         }
@@ -169,9 +167,7 @@ class EspecieService {
                         categoria_especie: {
                             some: {
                                 categoria: {
-                                    poa: {
-                                        id: poa
-                                    }
+                                    id_poa: poa ? poa : null
                                 }
                             }
                         }
@@ -201,7 +197,7 @@ class EspecieService {
             }),
             prismaClient.especie.count({where})
         ])
-                        
+                
         return {
             orderBy,
             order,
