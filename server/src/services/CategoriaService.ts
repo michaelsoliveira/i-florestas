@@ -113,10 +113,15 @@ class CategoriaService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
+        const projeto: any = getProjeto(userId)
         const { perPage, page, search, orderBy, order, poa, projetoId } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
         if (orderByElement.length == 2) {
@@ -136,21 +141,21 @@ class CategoriaService {
                         },
                         {
                             projeto: {
-                                id: projetoId
+                                id: projetoId ? projetoId : projeto?.id
                             }
                         },
                         {
-                            id_poa:  poa ? poa : null
+                            id_poa:  poa ? poa : user?.id_poa_ativo
                         }
                     ]
             } : {
                 AND: [
                     {
-                        id_poa:  poa ? poa : null
+                        id_poa:  poa ? poa : user?.id_poa_ativo
                     },
                     {
                         projeto: {
-                            id: projetoId
+                            id: projetoId ? projetoId : projeto?.id
                         }
                     }
                 ]
@@ -229,7 +234,7 @@ class CategoriaService {
     }
 
     async findById(id: string) : Promise<any> {
-        const categoria = await prismaClient.categoriaEspecie.findUnique({ where: { id } })
+        const categoria = await prismaClient.categoriaEspecie.findFirst({ where: { id } })
 
         return categoria
     }

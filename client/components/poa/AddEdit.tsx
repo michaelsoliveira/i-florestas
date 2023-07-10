@@ -44,7 +44,6 @@ const AddEdit = ({ id }: any) => {
     const [categorias, setCategorias] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
-    const ut = useAppSelector((state: RootState) => state.ut)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [checkedUts, setCheckedUts] = useState<any>([])

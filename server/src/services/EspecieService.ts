@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Especie, prisma } from "@prisma/client";
+import { Prisma, Especie, prisma, Poa, User } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -10,37 +10,60 @@ export interface EspecieType {
 }
 
 class EspecieService {
-    async create(dataRequest: any, projetoId?: string): Promise<Especie> {
-        const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = dataRequest as any
+    async create({ data: requestData, userId }: any, projetoId?: string): Promise<Especie> {
+        const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = requestData
         const especieExists = await prismaClient.especie.findFirst({ 
             where: { 
                 AND: {
-                    nome: dataRequest.nome,
-                    id_projeto: id_projeto ? id_projeto : projetoId
+                    nome: requestData.nome,
+                    id_projeto: projetoId ? projetoId : id_projeto
                 }
             } 
         })
+
+        const user: User = await prismaClient.user.findFirst({
+            where: {
+                id: userId
+            }
+        }) as User
         
         if (especieExists) {
             throw new Error('Já existe uma espécie cadastrada com este nome')
+        }
+
+        const categoriaNaoDefinida = await prismaClient.categoriaEspecie.findFirst({
+            where: {
+                AND: {
+                    id_poa: user?.id_poa_ativo,
+                    nome: {
+                        mode: Prisma.QueryMode.insensitive,
+                        contains: 'Não definida'
+                    }
+                }
+            }
+        })
+
+        if (!categoriaNaoDefinida) {
+            throw new Error('Não foi possível localizar uma categoria padrão \n necessário para importação da Lista de Espécies')
         }
 
         const data = {
             nome,
             nome_cientifico,
             nome_orgao,
-            id_projeto
+            id_projeto: projetoId ? projetoId : id_projeto
         }
 
         const especie = await prismaClient.especie.create({ data }) as any
 
-        const catEspeciePoa = await prismaClient.categoriaEspeciePoa.create({
+        await prismaClient.categoriaEspeciePoa.create({
             data: {
                 id_especie: especie?.id,
-                id_categoria: id_categoria
+                id_categoria: id_categoria ? id_categoria : categoriaNaoDefinida?.id
             }
         })
-
+        
+        
         return especie
     }
 

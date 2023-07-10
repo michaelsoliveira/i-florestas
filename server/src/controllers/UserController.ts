@@ -220,6 +220,11 @@ export class UserController {
         }
     }
 
+    async findById(request: Request, response: Response) {
+        const { userId } = request.query
+        
+    }
+
     async findOne(request: Request, response: Response) {
         const { userId, projetoId } = request.params
         try {

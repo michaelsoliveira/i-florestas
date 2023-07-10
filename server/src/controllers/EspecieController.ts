@@ -8,7 +8,7 @@ import { Especie } from '@prisma/client'
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const especie = await especieService.create(request.body)
+            const especie = await especieService.create({ data: request.body, userId: request.user?.id })
             return response.json({
                 error: false,
                 especie,
@@ -114,7 +114,7 @@ export class EspecieController {
     async importEspecie(request: Request, response: Response) {
         const especies: any[] = []
         const { projetoId } = request.query as any
-        console.log(projetoId)
+
         try {
             if (request?.file === undefined) {
                 return response.status(400).send("Please upload a CSV file!");
@@ -139,7 +139,7 @@ export class EspecieController {
             }
 
             for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) await especieService.create(especie, projetoId)
+                if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)
             }
 
             return response.json({

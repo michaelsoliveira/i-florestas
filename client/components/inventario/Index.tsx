@@ -15,7 +15,7 @@ import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
 import { Button } from "../Utils/Button"
-import SelectableRow from "../Utils/SelectableRow"
+import SelectableRow from "../Utils/SelectableRowList"
 
 const styles = {
     csvReader: {
@@ -39,10 +39,8 @@ const Index = () => {
     const [upas, setUpas] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
-    const ut = useAppSelector((state: RootState) => state.ut)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
-    const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
@@ -264,10 +262,7 @@ const Index = () => {
 
     return (
         <div>
-            
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <div></div>
-
                     <CSVReader 
                         config={
                             {
