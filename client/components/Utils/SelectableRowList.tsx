@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 
 const SelectableRowList = ({ data }: any) => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
-  const [checkedAll, setCheckedAll] = useState<any>([])
 
   const handleRowClick = (rowId: any) => {
     if (selectedRows.includes(rowId)) {
@@ -23,7 +22,7 @@ const SelectableRowList = ({ data }: any) => {
 
   return (
     <div className='w-full'>
-      <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem] text-xs">
+      <div className="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem] text-sm">
         <input
           className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
           checked={selectedRows?.length === data?.length}
@@ -34,7 +33,7 @@ const SelectableRowList = ({ data }: any) => {
         </label>
       </div>
         
-      <ul className="w-48 text-xs text-gray-900 bg-white border border-gray-200 rounded-lg">
+      <ul className="w-64 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg h-[25rem] overflow-y-auto">
       {data.map((row: any, idx: number) => (
         <li 
             key={row.id}

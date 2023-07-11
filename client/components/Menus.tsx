@@ -50,6 +50,12 @@ export const resources = [
         description: 'Critérios de seleção',
         href: '/categoria-especie',
         icon: TemplateIcon,
+    },
+    {
+        name: 'Grupo Categoria de Espécies',
+        description: 'Relaciona Categoria -> Espécie',
+        href: '/categoria-especie/grupo',
+        icon: CogIcon,
     }
 
 ]

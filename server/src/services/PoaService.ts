@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Poa, prisma, CategoriaEspecie } from "@prisma/client";
+import { Prisma, Poa, prisma, CategoriaEspecie, User } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface PoaType {
@@ -78,6 +78,16 @@ class PoaService {
                 }
             }
         })
+
+        await prismaClient.user.update({
+            where: { 
+                id: userId
+            },
+            data: {
+                id_poa_ativo: poa?.id
+            }
+        })
+
         const naoDefinida = await prismaClient.categoriaEspecie.findFirst({
             where: {
                 AND: [
@@ -282,6 +292,22 @@ class PoaService {
         
     }
 
+    async changeActive(poaAtivo: string, userId: string): Promise<Poa | null> {
+        const user = await prismaClient.user.update({
+            include: {
+                poa_ativo: true
+            },
+            data: {
+                id_poa_ativo: poaAtivo ? poaAtivo : null
+            },
+            where: {
+                id: userId
+            }
+        })
+
+        return user.poa_ativo
+    }
+
     async search(userId: string, q: any) : Promise<Poa[]> {
         const projeto = await getProjeto(userId)
         const upas = await prismaClient.poa.findMany({
@@ -336,6 +362,17 @@ class PoaService {
         })
 
         return poa
+    }
+
+    async getActive(id: string): Promise<any> {
+        const user: any = await prismaClient.user.findUnique({
+            include: {
+                poa_ativo: true
+            },
+            where: { id }
+        })
+
+        return user?.poa_ativo
     }
 }
 

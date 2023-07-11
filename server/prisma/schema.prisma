@@ -371,9 +371,9 @@ model User {
   users_roles       UserRole[]
   poa               Poa[]
   id_projeto_ativo  String          @db.Uuid
-  projeto           Projeto         @relation(fields: [id_projeto_ativo], references: [id], onDelete: Cascade)
+  projeto           Projeto         @relation(fields: [id_projeto_ativo], references: [id], onDelete: NoAction)
   id_poa_ativo      String?          @db.Uuid
-  poa_ativo         Poa?             @relation("poa_ativo", fields: [id_poa_ativo], references: [id], onDelete: Cascade)
+  poa_ativo         Poa?             @relation("poa_ativo", fields: [id_poa_ativo], references: [id], onDelete: NoAction)
   @@map("users")
 }
 

@@ -105,6 +105,22 @@ export class CategoriaEspecieController {
         }
     }
 
+    async getCategoriaGrupo(request: Request, response: Response) {
+        try {
+            const categorias = await categoriaService.categoriaGrupo(request.user?.id)
+
+            return response.json({
+                error: false,
+                categorias
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
+
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         try {

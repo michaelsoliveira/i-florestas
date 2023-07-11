@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import poaService from "../services/PoaService";
+import UserService from "src/services/UserService";
 
 export class PoaController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -62,11 +63,37 @@ export class PoaController {
         }
     }
 
-    async getRespTecElab(request: Request, response: Response) {
+    async getActive(request: Request, response: Response) {
         try {
+            const poa = await poaService.getActive(request.user?.id)
 
-        } catch(e) {
+            return response.json({
+                error: false,
+                poa
+            })
+        } catch (error: any) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
 
+    async changeActive(request: Request, response: Response) : Promise<Response> {
+        const { poaId }: any = request.body
+        try {
+            const poa = await poaService.changeActive(poaId, request.user?.id)
+            return response.json({
+                error: false,
+                poa,
+                message: 'Poa ativo definido com sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                poa: null,
+                message: error.message
+            })
         }
     }
 

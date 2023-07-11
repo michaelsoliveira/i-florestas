@@ -180,31 +180,30 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-col lg:flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
-                <div className="flex flex-row">
-       
-                    <a
-                        onClick={openFile}
-                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
-                    >
-                        <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-                        </svg>
-                        <span className="ml-2">{uploading ? "Importando..." : "Importar"}</span>
-                    </a>
-                    <input
-                        disabled={uploading} 
-                        onChange={handleImportEspecies}
-                        ref={fileRef}
-                        type="file"
-                        className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
-                        name="fileRef"
-                    />
-            
-                </div>
-                <div>
+                <div className="flex flex-row justify-center items-center">
+                    <div>
+                        <a
+                            onClick={openFile}
+                            className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
+                        >
+                            <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            </svg>
+                            <span className="ml-2">{uploading ? "Importando..." : "Importar"}</span>
+                        </a>
+                        <input
+                            disabled={uploading} 
+                            onChange={handleImportEspecies}
+                            ref={fileRef}
+                            type="file"
+                            className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
+                            name="fileRef"
+                        />
+                    </div>
+                    <div>
                     <a
                         onClick={handleImportTemplate}
                         className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
@@ -216,12 +215,17 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     <span className="ml-2">Modelo</span>
                     </a>
                 </div>
-                <Link
-                    href='/especie/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Adicionar
-                </Link>
+                <div>
+                    <Link
+                        href='/especie/add'
+                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        Adicionar
+                    </Link>
+                </div>
+                </div>
+                
+                
             </div>
                 <div className="flex flex-col p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
