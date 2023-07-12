@@ -116,6 +116,22 @@ export class EspecieController {
         }
     }
 
+    async setCategoriaEspecies(request: Request, response: Response) {
+        try {
+            const data = await especieService.setCategoriaEspecies(request.body)
+
+            return response.json({
+                error: false,
+                data
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
+
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         const { poa } = request.query as any

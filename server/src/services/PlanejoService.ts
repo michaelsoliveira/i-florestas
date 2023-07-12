@@ -132,7 +132,7 @@ export class PlanejoService {
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
                 AND cat.preservar = false
-                AND a.dap > cat.criterio_dminc
+                AND a.dap > cat.criterio_dmaxc
         `;
           
         return updateArvores; 

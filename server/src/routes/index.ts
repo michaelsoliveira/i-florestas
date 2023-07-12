@@ -182,6 +182,7 @@ routes.get('/sys-ref/search/q', Authentication(), new SysRefController().search)
 const multerConfig = multer()
 //Especie
 routes.post('/especie', Authentication(), new EspecieController().store)
+routes.post('/especie/categorias', Authentication(), new EspecieController().setCategoriaEspecies)
 routes.get('/especie/find-by-categoria', Authentication(), new EspecieController().findByCategoria)
 routes.get('/especie', Authentication(), new EspecieController().findAll)
 routes.get('/especie/:id', Authentication(), new EspecieController().findOne)

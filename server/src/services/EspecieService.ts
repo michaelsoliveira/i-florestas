@@ -210,7 +210,6 @@ class EspecieService {
     }
 
     async findByCategoria(id: string) : Promise<any> {
-        console.log(id)
         const especies = await prismaClient.$queryRaw<Especie|undefined>`
             SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
                 FROM especie e
@@ -222,6 +221,27 @@ class EspecieService {
         `
 
         return especies
+    }
+
+    async setCategoriaEspecies(data: any) {
+
+        const result = await prismaClient.categoriaEspeciePoa.updateMany({
+            where: {
+                AND: {
+                    id_especie: {
+                        in: data?.especies                       
+                    },
+                    id_categoria: data?.oldCategory
+                }
+            },
+            data: {
+                id_categoria: data?.newCategory                
+            }
+        })
+
+        console.log(result)
+
+        return result
     }
 
     async findById(id: string, poaId: string) : Promise<Especie | undefined> {
