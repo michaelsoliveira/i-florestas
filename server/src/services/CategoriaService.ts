@@ -113,15 +113,12 @@ class CategoriaService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
-        const projeto: any = getProjeto(userId)
+        const projeto: any = await getProjeto(userId)
+        
         const { perPage, page, search, orderBy, order, poa, projetoId } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
-        const user = await prismaClient.user.findUnique({
-            where: {
-                id: userId
-            }
-        })
+        
         const orderByElement = orderBy ? orderBy.split('.') : {}
         
         if (orderByElement.length == 2) {
@@ -143,20 +140,20 @@ class CategoriaService {
                             id_projeto: projetoId ? projetoId : projeto?.id
                         },
                         {
-                            id_poa:  poa ? poa : user?.id_poa_ativo
+                            id_poa: poa ? poa : null
                         }
                     ]
             } : {
                 AND: [
                     {
-                        id_poa:  poa ? poa : user?.id_poa_ativo
+                        id_poa:  poa ? poa : null
                     },
                     {
                         id_projeto: projetoId ? projetoId : projeto?.id
                     }
                 ]
-                
             }
+
         const [data, total] = await prismaClient.$transaction([
             prismaClient.categoriaEspecie.findMany({
                 where,
@@ -185,7 +182,7 @@ class CategoriaService {
     }
 
     async search(q: any, userId?: string) {
-        const projeto = getProjeto(userId) as any
+        const projeto = await getProjeto(userId) as any
         const data = await prismaClient.categoriaEspecie.findMany({
             where: {
                 AND: [
@@ -203,8 +200,28 @@ class CategoriaService {
         return data
     }
 
+    async categoriaGrupo(userId: string) {
+        const user = await prismaClient.user.findUnique({
+            where: { id: userId }
+        })
+        const categorias = await prismaClient.categoriaEspecie.findMany({
+            where: {
+                AND: [
+                    { id_projeto: user?.id_projeto_ativo },
+                    { id_poa: user?.id_poa_ativo ? user.id_poa_ativo : null }
+                ]
+            },
+            orderBy: {
+                nome: "asc"
+            },
+
+        })
+
+        return categorias
+    }
+
     async getByPoa(poaId: string, userId: string) : Promise<CategoriaEspecie[]> {
-        const projeto = getProjeto(userId) as any
+        const projeto = await getProjeto(userId) as any
         const categorias = await prismaClient.categoriaEspecie.findMany({
             where: {
                 AND: [

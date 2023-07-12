@@ -10,8 +10,8 @@ const Pagelogin = ({ csrfToken }: any) => {
   const router = useRouter()
   
   return (
-    <div className="min-h-full flex items-center justify-center mt-28 mb-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md flex flex-col justify-center items-center w-full space-y-4 px-8 py-4 border rounded-md shadow-2xl">
+    <div className="min-h-full flex items-center justify-center mt-28 mb-16 px-4">
+      <div className="max-w-md flex flex-col justify-center items-center w-full space-y-4 py-4 border rounded-md shadow-2xl">
         <div className='absolute -top-20 lg:top-24'>
         <div className='bg-gray-50 border border-green-700 rounded-full shadow-lg w-36 h-36'>
         <div className='relative h-full flex flex-col items-center justify-center'>
@@ -20,7 +20,7 @@ const Pagelogin = ({ csrfToken }: any) => {
           </div>
         </div>
         </div>
-        <div className="pt-10">
+        <div className="w-5/6 pt-10">
           <Login csrfToken={csrfToken} />
         </div>
         

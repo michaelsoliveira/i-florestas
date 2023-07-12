@@ -58,7 +58,6 @@ export class ProjetoController {
                 message: error.message
             })
         }
-        
     }
 
     async getDefaultData(request: Request, response: Response) : Promise<Response> {

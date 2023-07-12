@@ -12,8 +12,10 @@ import classNames from 'classnames'
 import { ProjetoContext } from 'contexts/ProjetoContext'
 import { AuthContext } from 'contexts/AuthContext'
 import { useModalContext } from 'contexts/ModalContext'
-import { ChangeActive } from './projeto/ChangeActive'
+import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
+import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
 import { styles } from './Utils/styles'
+import { UserIcon } from '@heroicons/react/outline'
 
 type SubMenuType = {
         name?: string,
@@ -35,7 +37,8 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     
     const { showModal, hideModal } = useModalContext()
-    const formRef = createRef<any>()
+    const formRefProjeto = createRef<any>()
+    const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const [ menuOpened, setMenuOpened ] = useState(false)
 
@@ -52,12 +55,21 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const [sticky, setSticky] = useState(false)
 
     const changeProjetoAtivo = async () => {
-        formRef.current.handleSubmit()
+        formRefProjeto.current.handleSubmit()
+    }
+
+    const changePoaAtivo = async () => {
+        formRefPoa.current.handleSubmit()
     }
 
     const changeProjetoModal = () => {
         showModal({ title: 'Alterar Projeto Ativo', onConfirm: changeProjetoAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Projeto', 
-        content: <ChangeActive ref={formRef} /> })
+        content: <ChangeActiveProjeto ref={formRefProjeto} /> })
+    }
+
+    const changePoaModal = () => {
+        showModal({ title: 'Alterar Poa Ativo', onConfirm: changePoaAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Poa', 
+        content: <ChangeActivePoa ref={formRefPoa} /> })
     }
 
     const handleScroll = () => {
@@ -358,21 +370,16 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
         </div>
             {session && (<div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
-                    <button
-                        type="button"
-                        className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
-                        onClick={changeProjetoModal}
-                    >
-                        <span className="sr-only">View notifications</span>
-                        <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
-                    </button>
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
                     <div>
-                        <Menu.Button className="max-w-xs bg-gray-700 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
-                            <span className="sr-only">Open user menu</span>
-                            <img className="h-8 w-10 rounded-full" src={ session && session.user?.image !== null ? session.user?.image || 'https://img.icons8.com/office/80/000000/administrator-male--v1.png' : '' } alt="" />
+                        <Menu.Button className="rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
+                            <div
+                                className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                            >
+                                <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
+                            </div>
                         </Menu.Button>
                     </div>
                     <Transition
@@ -384,7 +391,57 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <Menu.Items className="origin-top-right absolute z-20 right-0 mt-2 w-48 shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Menu.Items className="origin-top-right absolute z-20 right-0 mt-2 w-48 shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-md">
+                        {["Mudar Projeto Ativo", "Mudar Poa Ativo"].map((item: any, key: any) => (
+                            <Menu.Item key={key}>
+                            {({ active }) => (
+                                <Disclosure.Button
+                                    as='a'
+                                    href='#'
+                                    className={classNames(
+                                        active ? 'bg-gray-100' : '',
+                                        'block px-4 py-2 text-sm text-gray-700'
+                                    )}
+                                        onClick={() => { key === 0 ? changeProjetoModal() : changePoaModal() }}
+                                        aria-hidden="true"
+                                >
+                                    {item}
+                                </Disclosure.Button>
+                            )}
+                            </Menu.Item>
+                        ))}
+                        </Menu.Items>
+                        
+                    </Transition>
+                    </Menu>
+
+                    {/* Profile dropdown */}
+                    <Menu as="div" className="ml-3 relative">
+                    <div>
+                        <Menu.Button className="rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
+                            <span className="sr-only">Open user menu</span>
+                            { (session.user?.image) 
+                                ? (
+                                    <img className="h-8 w-10 rounded-full" src={session.user?.image} alt="" />
+                                )
+                                : (
+                                    <div className='ml-auto bg-gray-300 flex-shrink-0 p-1 rounded-full'>
+                                        <UserIcon className="block h-6 w-6 text-black" aria-hidden="true" />
+                                    </div>
+                                )
+                            }
+                        </Menu.Button>
+                    </div>
+                    <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                    >
+                        <Menu.Items className="origin-top-right absolute z-20 right-0 mt-2 w-48 shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-md">
                         {userNavigation.map((item: any, key: any) => (
                             <Menu.Item key={key}>
                             {({ active }) => (
@@ -580,15 +637,17 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             ))}
                         
             </div>
-            {session ? (
+            {
+            //Mobile
+            session ? (
                 <div className="pt-4 pb-3 border-t border-gray-700">
                     <div className="flex items-center px-5">
                         <div className="flex-shrink-0">
                             {session && session.user?.image ? (
                                 <img className="h-10 w-10 rounded-full" src={session.user?.image} alt="" />
                             ) : (
-                                <div>
-                                    ImG
+                                <div className='ml-auto bg-gray-300 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'>
+                                    <UserIcon className="block h-6 w-6 text-black" aria-hidden="true" />
                                 </div>
                             )}
                             

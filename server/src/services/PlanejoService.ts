@@ -63,24 +63,43 @@ export class PlanejoService {
         })
     }
 
-    async criterioDMin(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioEspecieNDef() {
+        const updateArvores = await prismaClient.arvore.updateMany({
+            where: {
+                id_especie: null,
+                id_ut: this.ut,
+                ut: {
+                    id_poa: this.poa
+                },
+                id_situacao: 2
+            },
+            data: {
+                id_situacao: 8
+            }
+        })
 
+        return updateArvores
+    }
+
+    async criterioDMin(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {       
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
                 arvore as a
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM 
-                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
-            WHERE 
-                u.id = ${this.ut}
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
+            WHERE
+                u.id = a.id_ut 
+                AND us.id = ${userId}
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
-                AND u.id = a.id_ut
-                AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
+                AND p.id = cat.id_poa
+                AND us.id_poa_ativo = p.id
+                AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.dap < cat.criterio_dminc
         `;
@@ -88,7 +107,7 @@ export class PlanejoService {
         return updateArvores; 
     }
 
-    async criterioFuste(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioFuste(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {
 
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
@@ -96,16 +115,18 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM 
-                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE 
-                u.id = ${this.ut}
+                u.id = a.id_ut
+                AND us.id = ${userId}
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
-                AND u.id = a.id_ut
-                AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
+                AND p.id = cat.id_poa
+                AND us.id_poa_ativo = p.id
+                AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.fuste > cat.criterio_fuste; 
         `;
@@ -113,7 +134,7 @@ export class PlanejoService {
         return updateArvores; 
     }
 
-    async criterioDMax(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioDMax(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {
 
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
@@ -121,24 +142,26 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM 
-                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
-            WHERE 
-                u.id = ${this.ut}
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
+            WHERE
+                u.id = a.id_ut 
+                AND us.id = ${userId}
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
-                AND u.id = a.id_ut
-                AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
+                AND p.id = cat.id_poa
+                AND us.id_poa_ativo = p.id
+                AND a.id_situacao = 2
                 AND cat.preservar = false
-                AND a.dap > cat.criterio_dminc
+                AND a.dap > cat.criterio_dmaxc
         `;
           
         return updateArvores; 
     }
 
-    async criterioAltura(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioAltura(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {
 
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
@@ -146,16 +169,18 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM 
-                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE 
-                u.id = ${this.ut}
+                u.id = a.id_ut
+                AND us.id = ${userId}
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
-                AND u.id = a.id_ut
-                AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
+                AND p.id = cat.id_poa
+                AND us.id_poa_ativo = p.id
+                AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.altura > cat.criterio_altura
         `;
@@ -163,7 +188,7 @@ export class PlanejoService {
         return updateArvores; 
     }
 
-    async criterioVolume(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioVolume(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {
 
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
@@ -171,16 +196,18 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM 
-                ut u, categoria_especie cat, especie e, categoria_especie_poa cep
-            WHERE 
-                u.id = ${this.ut}
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
+            WHERE
+                u.id = a.id_ut
+                AND us.id = ${userId} 
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
-                AND u.id = a.id_ut
-                AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
+                AND p.id = cat.id_poa
+                AND us.id_poa_ativo = p.id
+                AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.volume > cat.criterio_volume
         `;
@@ -188,7 +215,7 @@ export class PlanejoService {
         return updateArvores; 
     }
 
-    async criterioObs(situacaoId: number, motivoPreservacaoId: number) : Promise<any> {
+    async criterioObs(situacaoId: number, motivoPreservacaoId: number, userId: string) : Promise<any> {
 
         const updateArvores = await prismaClient.$queryRaw`
             UPDATE 
@@ -197,10 +224,12 @@ export class PlanejoService {
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM 
-                ut u, observacao_arvore obs, especie e 
+                ut u, observacao_arvore obs, especie e, poa p, users us 
             WHERE 
-                u.id = ${this.ut}
+                us.id = ${userId}
+                AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
+                AND p.id = us.id_poa_ativo
                 AND u.id = a.id_ut
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
@@ -211,26 +240,27 @@ export class PlanejoService {
         return updateArvores; 
     }
 
-    async percentualUmf() : Promise<any> {
+    async percentualUmf(userId: string) : Promise<any> {
         const percenteMin = await prismaClient.$queryRaw<any>`
-            select 
+            SELECT 
                 a.id_ut, u.id_poa, 
                 a.id_especie, 
                 count(a.id_especie) as tot_explorar, 
                 percente(count(a.id_especie), cat.criterio_perc_min) as percentual, 
                 percente(u.area_util, cat.criterio_n_min) as n_minimo
-            from 
-                arvore a, especie e, ut u, categoria_especie cat, categoria_especie_poa cep
-            where 
-                u.id = ${this.ut}
-                and u.id_poa = ${this.poa}
-                and a.id_ut = u.id
-                and e.id = a.id_especie
-                and cat.id_poa = u.id_poa
-                AND cep.id_especie = e.id
-                AND cat.id = cep.id_categoria
-                and a.id_situacao = 2
-            group by u.id_upa, a.id_especie, a.id_ut, cat.criterio_perc_min, cat.criterio_n_min, u.id_poa, u.area_util;
+            FROM arvore a
+                INNER JOIN especie e ON e.id = a.id_especie
+                INNER JOIN ut u ON u.id = a.id_ut
+                INNER JOIN categoria_especie_poa cep ON cep.id_especie = e.id
+                INNER JOIN categoria_especie cat ON cat.id = cep.id_categoria
+                INNER JOIN poa p ON p.id = cat.id_poa
+                INNER JOIN users us ON us.id_poa_ativo = p.id
+            WHERE
+                us.id = ${userId}  
+                AND u.id = ${this.ut}
+                AND u.id_poa = ${this.poa}
+                AND a.id_situacao = 2
+            GROUP BY u.id_upa, a.id_especie, a.id_ut, cat.criterio_perc_min, cat.criterio_n_min, u.id_poa, u.area_util;
         `
 
         for (const percente of percenteMin) {
@@ -240,12 +270,14 @@ export class PlanejoService {
                         select 
                             a.id as id_arvore
                         from 
-                            arvore a, ut u
+                            arvore a, ut u, poa p, users us
                         where a.id_ut = u.id
-                            and   u.id = ${percente.id_ut}
-                            and   u.id_poa = ${percente.id_poa}
-                            and   a.id_especie = ${percente.id_especie}
-                            and   a.id_situacao = 2
+                            and p.id = u.id_poa
+                            and us.id_poa_ativo = p.id
+                            and u.id = ${percente.id_ut}
+                            and u.id_poa = ${percente.id_poa}
+                            and a.id_especie = ${percente.id_especie}
+                            and a.id_situacao = 2
                             order by a.volume asc, a.dap asc, a.altura asc
                             limit ${percente.n_minimo}
                     `
@@ -269,8 +301,10 @@ export class PlanejoService {
                         select 
                             a.id as id_arvore
                         from 
-                            arvore a, ut u
+                            arvore a, ut u, poa p, users us
                         where a.id_ut = u.id
+                            and p.id = u.id_poa
+                            and us.id_poa_ativo = p.id
                             and   u.id = ${percente.id_ut}
                             and   u.id_poa = ${percente.id_poa}
                             and   a.id_especie = ${percente.id_especie}

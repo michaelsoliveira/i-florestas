@@ -98,6 +98,40 @@ export class EspecieController {
         }
     }
 
+    async findByCategoria(request: Request, response: Response) {
+        const { categoriaId }: any = request.query
+
+        try {
+            const especies = await especieService.findByCategoria(categoriaId)
+
+            return response.json({
+                error: false,
+                especies
+            })
+        } catch(error) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
+
+    async setCategoriaEspecies(request: Request, response: Response) {
+        try {
+            const data = await especieService.setCategoriaEspecies(request.body)
+
+            return response.json({
+                error: false,
+                data
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
+
     async findOne(request: Request, response: Response) {
         const { id } = request.params
         const { poa } = request.query as any

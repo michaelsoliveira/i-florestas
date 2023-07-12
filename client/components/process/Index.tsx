@@ -1,7 +1,4 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../Link"
-import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { OptionType, Select } from '../Select'
@@ -9,8 +6,7 @@ import { setPoa } from "../../store/poaSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 
-import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../Utils/styles"
+import { LoadingContext } from "contexts/LoadingContext"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 
@@ -23,6 +19,7 @@ const Index = ({ currentPoas, loading }: any) => {
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
+    const { setLoading } = useContext(LoadingContext)
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -94,6 +91,7 @@ const Index = ({ currentPoas, loading }: any) => {
     }
 
     async function PlanejarPOA(event: any): Promise<any> {
+        setLoading(true)
         await client.post('/planejo', { poa: poa?.id }).then(({ data }: any) => {
             const { error, message } = data
             
@@ -103,7 +101,10 @@ const Index = ({ currentPoas, loading }: any) => {
                 alertService.error(message)
             }
         }).catch((error: any) => {
+            setLoading(false)
             console.log(error)
+        }).finally(() => {
+            setLoading(false)
         })
     }
 

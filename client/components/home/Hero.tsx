@@ -6,7 +6,7 @@ const Hero = ({ session }: any) => {
 
     const showLogin = () => {
         showModal({
-            type: 'submit', hookForm: 'hook-form', options: false, className: 'px-8', content: <div className="px-4"><Tabs /></div>
+            type: 'submit', hookForm: 'hook-form', options: false, content: <Tabs />
         })
     }
 

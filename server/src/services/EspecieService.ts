@@ -209,6 +209,41 @@ class EspecieService {
         }
     }
 
+    async findByCategoria(id: string) : Promise<any> {
+        const especies = await prismaClient.$queryRaw<Especie|undefined>`
+            SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
+                FROM especie e
+                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
+            WHERE
+                ce.id = ${id}
+            ORDER BY e.nome
+        `
+
+        return especies
+    }
+
+    async setCategoriaEspecies(data: any) {
+
+        const result = await prismaClient.categoriaEspeciePoa.updateMany({
+            where: {
+                AND: {
+                    id_especie: {
+                        in: data?.especies                       
+                    },
+                    id_categoria: data?.oldCategory
+                }
+            },
+            data: {
+                id_categoria: data?.newCategory                
+            }
+        })
+
+        console.log(result)
+
+        return result
+    }
+
     async findById(id: string, poaId: string) : Promise<Especie | undefined> {
         const especie = await prismaClient.$queryRaw<Especie|undefined>`
             SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
