@@ -18,13 +18,14 @@ export class PlanejoController {
             
                 await planejoService.explorar()
                 await planejoService.preservar()
-                await planejoService.criterioDMin(3, 2)
-                await planejoService.criterioDMax(1, 3)
-                await planejoService.criterioFuste(1, 1)
-                await planejoService.criterioObs(1, 5)
-                await planejoService.criterioAltura(1, 6)
-                await planejoService.criterioVolume(1, 7)
-                await planejoService.percentualUmf()
+                await planejoService.criterioEspecieNDef()
+                await planejoService.criterioDMin(3, 2, request.user?.id)
+                await planejoService.criterioDMax(1, 3, request.user?.id)
+                await planejoService.criterioFuste(1, 1, request.user?.id)
+                await planejoService.criterioObs(1, 5, request.user?.id)
+                await planejoService.criterioAltura(1, 6, request.user?.id)
+                await planejoService.criterioVolume(1, 7, request.user?.id)
+                await planejoService.percentualUmf(request.user?.id)
                 
             }
 

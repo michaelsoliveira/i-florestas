@@ -102,9 +102,19 @@ class ArvoreService {
                     }
                 }
             }
+
+            const dataObs = data?.id_observacao ? 
+            { 
+                ...preparedData, 
+                observacao_arvore: {
+                    connect: {
+                        id: data?.id_observacao
+                    }
+                } 
+            } : preparedData
     
             const arvore = await prismaClient.arvore.create({
-                data: preparedData
+                data: dataObs
             })
     
             return arvore
@@ -263,11 +273,21 @@ class ArvoreService {
             }
         }
 
+        const dataObs = data?.id_observacao ? 
+            { 
+                ...preparedData, 
+                observacao_arvore: {
+                    connect: {
+                        id: data?.id_observacao
+                    }
+                } 
+            } : preparedData
+
         const arvore = await prismaClient.arvore.update({
             where: {
                 id
             },
-            data: preparedData
+            data: dataObs
         })
 
         return arvore

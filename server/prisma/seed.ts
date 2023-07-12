@@ -41,6 +41,7 @@ const situacaoArvores: Prisma.SituacaoArvoreCreateInput[] = [
   { id: 5, nome: 'Substituta' },
   { id: 6, nome: 'Derrubada' },
   { id: 7, nome: 'Não Derrubada' },
+  { id: 8, nome: 'Espécie Não Definida' },
 ]
 
 //1;"Qualidade Do Fuste"
