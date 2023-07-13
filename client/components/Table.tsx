@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { DetailedHTMLProps, InputHTMLAttributes, useMemo, useState } from 'react'
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
 import { Button, PageButton } from './Utils/Button'
@@ -6,12 +6,36 @@ import classNames from './Utils/classNames'
 import { SortIcon, SortUpIcon, SortDownIcon } from './Utils/Icons'
 import Image from 'next/image'
 
+export type InputSize = 'small' | 'medium' | 'large';
+
+const sizeMap: { [key in InputSize]: string } = {
+  small: 'p-2 text-sm',
+  medium: 'p-3 text-base',
+  large: 'p-4 text-base',
+};
+
+export type InputType = 'text' | 'email' | 'password' | 'number' | 'radio' | 'checkbox';
+
+export type InputProps = {
+  preGlobalFilteredRows: any;
+  globalFilter: any;
+  setGlobalFilter: any;
+  type?: InputType;
+  inputSize?: any;
+  size?: InputSize;
+} & Omit<
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+  'size'
+>;
+
 // Define a default UI for filtering
 function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
-}: any) {
+  size = 'small',
+  inputSize
+}: InputProps) {
   const count = preGlobalFilteredRows.length
   const [value, setValue] = useState(globalFilter)
   const onChange = useAsyncDebounce((value: any) => {
@@ -20,17 +44,21 @@ function GlobalFilter({
 
   return (
     <label className="flex gap-x-2 items-baseline px-2">
-      <span className="text-gray-700">Pesquisar: </span>
-      <input
-        type="text"
-        className="rounded-md px-2 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
-        value={value || ""}
-        onChange={e => {
-          setValue(e.target.value);
-          onChange(e.target.value);
-        }}
-        placeholder={`${count} registros...`}
-      />
+      <span className="text-gray-800">Pesquisar: </span>
+        <div className={inputSize}>
+          <input
+            type="text"
+            className={classNames("relative inline-flex w-full rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30 p-[.3rem]",
+            sizeMap[size]
+            )}
+            value={value || ""}
+            onChange={e => {
+              setValue(e.target.value);
+              onChange(e.target.value);
+            }}
+            placeholder={`${count} registros...`}
+          />
+        </div>
     </label>
   )
 }
@@ -107,7 +135,7 @@ export function AvatarCell({ value, column, row }: any) {
   )
 }
 
-function Table({ columns, data }: any) {
+function Table({ columns, data, size, inputSize }: any) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -150,6 +178,8 @@ function Table({ columns, data }: any) {
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
           setGlobalFilter={setGlobalFilter}
+          size={size}
+          inputSize={inputSize}
         />
         {headerGroups.map((headerGroup: any) =>
           headerGroup.headers.map((column: any) =>

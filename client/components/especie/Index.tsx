@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
+import { CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Loading } from "../Loading"
 import { Input } from "../atoms/input"
@@ -7,10 +7,13 @@ import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { EspecieType } from "types/IEspecieType"
 import { useModalContext } from "contexts/ModalContext"
-import Modal from "../Modal"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 import { ProjetoContext } from "contexts/ProjetoContext"
+import { useCSVReader } from 'react-papaparse'
+import { Button } from "../Utils/Button"
+import ImportModal from "./ImportModal"
+import { styles as stylesButton } from '../Utils/styles'
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
@@ -26,11 +29,40 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
     const { projeto } = useContext(ProjetoContext)
+    const { CSVReader } = useCSVReader()
+    const [encoding, setEncoding] = useState('iso-8859-1')
+    const submitImport = useRef(null) as any
+
+
+    const styles = {
+        csvReader: {
+          display: 'flex',
+          flexDirection: 'row',
+          marginBottom: 10,
+        } as CSSProperties,
+        progressBarBackgroundColor: {
+          backgroundColor: 'green',
+        } as CSSProperties,
+    };
 
     const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
     const especieById = useCallback((id?: string) => {
         return currentEspecies.find((especie: EspecieType) => especie.id === id)
     }, [currentEspecies])
+
+    const callBackImport = async () => {
+        submitImport.current.click()
+    }
+
+    const importModal = () => {
+        showModal({
+            title: 'Importar Espécies',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: stylesButton.greenButton, confirmBtn: 'Importar Espécies', 
+            onConfirm: callBackImport,
+            content: <div><ImportModal ref={submitImport} /></div>
+        })
+    }
 
     const deleteEspecie = useCallback(async (id?: string) => {
         try {
@@ -85,7 +117,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         CsvDataService.exportToCsv('template_especie', data)
     }
 
-    const handleImportEspecies = async (e: any) => {
+    const handleImportEspecies1 = async (e: any) => {
         try {
             window.removeEventListener('focus', handleFocusBack)
             if (e.target?.value.length) {
@@ -185,36 +217,24 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                 <div className="flex flex-row justify-center items-center">
                     <div>
                         <a
-                            onClick={openFile}
+                            onClick={handleImportTemplate}
                             className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
                         >
-                            <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                             </svg>
-                            <span className="ml-2">{uploading ? "Importando..." : "Importar"}</span>
-                        </a>
-                        <input
-                            disabled={uploading} 
-                            onChange={handleImportEspecies}
-                            ref={fileRef}
-                            type="file"
-                            className="cursor-pointer absolute block opacity-0 pin-r pin-t"  
-                            name="fileRef"
-                        />
-                    </div>
-                    <div>
-                    <a
-                        onClick={handleImportTemplate}
-                        className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
 
-                    <span className="ml-2">Modelo</span>
-                    </a>
-                </div>
+                        <span className="ml-2">Modelo</span>
+                        </a>
+                    </div>
+                    <div className="px-4">
+                        <a
+                            onClick={importModal}
+                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                        >
+                            Importar
+                        </a>
+                    </div>
                 <div>
                     <Link
                         href='/especie/add'
@@ -387,6 +407,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     </table>
                 </div>
             </div>
+            
         </div>
             
     </div>

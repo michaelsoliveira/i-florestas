@@ -115,16 +115,18 @@ const EspecieIndex = () => {
                 onPageChanged={onPageChanged}
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
-                />
-            <Pagination
-                perPage={itemsPerPage}
-                totalItems={totalItems}
-                orderBy={orderBy}
-                order={order}
-                currentPage={currentPage}
-                onPageChanged={onPageChanged}    
-                pageNeighbours={3}
             />
+            { currentEspecies && (
+                <Pagination
+                    perPage={itemsPerPage}
+                    totalItems={totalItems}
+                    orderBy={orderBy}
+                    order={order}
+                    currentPage={currentPage}
+                    onPageChanged={onPageChanged}    
+                    pageNeighbours={3}
+                />
+            ) }
     </div>
     )
 }

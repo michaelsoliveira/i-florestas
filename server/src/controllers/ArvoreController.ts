@@ -124,11 +124,11 @@ export class ArvoreController {
                 id: upaId
             }
         })
-        //console.log(columns, upa)
+
         const rows = columns.map((row: any) => {
             return row.accessor
         })
-        console.log(rows)
+
         try {
 
             if (rows.includes('faixa') && upa?.tipo === 0) {

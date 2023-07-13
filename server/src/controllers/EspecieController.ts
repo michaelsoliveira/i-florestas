@@ -146,10 +146,10 @@ export class EspecieController {
     }
 
     async importEspecie(request: Request, response: Response) {
-        const especies: any[] = []
         const { projetoId } = request.query as any
 
         try {
+            /*
             if (request?.file === undefined) {
                 return response.status(400).send("Please upload a CSV file!");
             }
@@ -171,6 +171,20 @@ export class EspecieController {
                     nome_cientifico: especieLineSplit[2]
                 })
             }
+
+            for await (let especie of especies) {
+                if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)
+            }
+            */
+           const { data } = request.body
+
+            const especies = data.map((especie: any) => {
+                return {
+                    nome: especie.nome_vulgar_1,
+                    nome_orgao: especie.nome_vulgar_2,
+                    nome_cientifico: especie['nome_científico'] ? especie['nome_científico'] : especie.nome_cientifico
+                }
+            })
 
             for await (let especie of especies) {
                 if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)

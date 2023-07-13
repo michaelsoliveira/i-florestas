@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Especie, prisma, Poa, User } from "@prisma/client";
+import { Prisma, Especie, User } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -238,8 +238,6 @@ class EspecieService {
                 id_categoria: data?.newCategory                
             }
         })
-
-        console.log(result)
 
         return result
     }
