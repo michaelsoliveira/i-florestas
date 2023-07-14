@@ -25,6 +25,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
     const [rowData, setRowData] = useState([])
     const [uploading, setUploading] = useState<boolean>(false)
     const columns = useMemo(() => columnData, [columnData])
+    const [duplicates, setDuplicates] = useState([])
     
     const data = useMemo(() => rowData, [rowData])
 
@@ -43,31 +44,38 @@ const ImportModal = forwardRef<any, ImportModalType>(
         try {
             setLoading(true)
             await client.post(`/especie/import?projetoId=${projeto?.id}`, {
-                columns: columnData,
-                data: rowData
+                columns: columns,
+                data: data
             })
             .then((result: any) => {
                 const { data } = result
+                
                 setLoading(false)
                 if (!data.error) {
                     alertService.success(data?.message)
                     hideModal()
                 } else {
+                    if (data?.errorType && data?.errorType === 'duplicates') {
+                        setDuplicates(data?.duplicates)
+                    }
                     alertService.warn(data?.message)
                 }
+            }).catch((error: any) => {
+                console.log('Esse error: ', error.message)
             })
-        } catch(e) {
-
+        } catch(e: any) {
+            alertService.error(e.message)
         }
     }
 
     const onUploadAccepted = async (result: any) => {
         const columns = result.data[0].map((col: any, index: any) => {
-            const accessor = col.split(" ").join("_").toLowerCase()
-                return {
-                    Header: col,
-                    accessor
-                }
+            const accessor = col.normalize("NFD").replace(/[^0-9a-zA-Z\s]/g, "").split(" ").join("_").toLowerCase()
+
+            return {
+                Header: col,
+                accessor
+            }
         })
 
         const rows = result.data.slice(1).map((row: any) => {
@@ -79,11 +87,12 @@ const ImportModal = forwardRef<any, ImportModalType>(
         
         setColumnData(columns)
         setRowData(rows)
+
     }
 
     return (
         <div>
-            <div className="flex flex-col lg:flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-col lg:flex-row items-center justify-center px-4 py-2 bg-gray-100">
                 <div className="flex flex-row justify-center items-center">
                     <CSVReader 
                         config={
@@ -100,7 +109,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
                         getRemoveFileProps,
                     }: any) => (
                         <>
-                        <div className="lg:grid lg:grid-cols-4">
+                        <div className="flex flex-col lg:flex-row items-center justify-center">
                             <div className="px-2 w-36">
                                 <select
                                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
@@ -116,7 +125,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                     ))}
                                 </select>
                             </div>
-                            <div className="">
+                            <div className="flex items-center justify-center mt-2 lg:mt-0">
                                 <a 
                                     {...getRootProps()} 
                                     className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold px-4 inline-flex align-middle hover:cursor-pointer"
@@ -128,15 +137,22 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                     <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
                                 </a>
                                 </div>
-                                <div className="lg:grid lg:grid-cols-2 lg:gap-2">
+                                <div className="flex flex-row items-center justify-center px-2 space-x-2">
                                    
                                     { acceptedFile && (
                                         <>
-                                            <div className="inline-block align-baseline">{acceptedFile.name}</div>
+                                            <span>{acceptedFile.name}</span>
                                             <Button {...getRemoveFileProps()}
                                                 className="text-red-700 hover:cursor-pointer justify-center w-24"
                                             >
-                                                Remove
+                                                <span 
+                                                    onClick={() => {  
+                                                        setColumnData([])
+                                                        setRowData([]) 
+                                                    }}
+                                                >
+                                                    Remove
+                                                </span>
                                             </Button>
                                     </>
                                     )}
@@ -149,20 +165,20 @@ const ImportModal = forwardRef<any, ImportModalType>(
                         </>
                     )}
                 </CSVReader>  
-                    <div className="hidden px-4">
-                        <span
-                            ref={ref}
-                            onClick={handleImportEspecies}
-                        >
-                            Importar
-                        </span>
-                    </div>
                 </div>
                 
             </div>
             <div className="mt-6">
                     <Table columns={columns} data={data} />
-                </div>
+            </div>
+            <span
+                className="hidden"
+                ref={ref}
+                onClick={handleImportEspecies}
+            >
+                Importar
+            </span>
+           
         </div>
     )
 })

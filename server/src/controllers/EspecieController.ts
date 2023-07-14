@@ -9,13 +9,13 @@ export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
             const especie = await especieService.create({ data: request.body, userId: request.user?.id })
-            return response.json({
-                error: false,
-                especie,
-                message: `Espécie ${especie.nome} cadastrada com SUCESSO!!!`
-            })
 
-        } catch (error) {
+            return response.json({
+                error:true,
+                especie: especie,
+                message: `Espécie ${especie?.nome} cadastrado com sucesso!`
+            })
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -176,18 +176,26 @@ export class EspecieController {
                 if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)
             }
             */
-           const { data } = request.body
+            const { data } = request.body
 
             const especies = data.map((especie: any) => {
                 return {
-                    nome: especie.nome_vulgar_1,
-                    nome_orgao: especie.nome_vulgar_2,
-                    nome_cientifico: especie['nome_científico'] ? especie['nome_científico'] : especie.nome_cientifico
+                    nome: especie?.nome_vulgar_1 ? especie?.nome_vulgar_1 : especie?.nome,
+                    nome_orgao: especie?.nome_vulgar_2 ? especie?.nome_vulgar_2 : especie?.orgao,
+                    nome_cientifico: especie.nome_cientifico
                 }
             })
 
-            for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)
+            const importData = await especieService.importEspecies(especies, request.user?.id)
+
+            if (importData?.error && importData?.type === 'duplicates') {
+                return response.json({
+                    error: true,
+                    duplicates: importData?.duplicates,
+                    errorType: importData?.type,
+                    especies: null,
+                    message: 'Existem espécies duplicadas na planilha'
+                }) 
             }
 
             return response.json({
@@ -197,7 +205,11 @@ export class EspecieController {
             })
             
         } catch (error) {
-            return response.json(error.message)
+
+            return response.json({
+                error: true,
+                message: error.message
+            })
         }
     }
 }

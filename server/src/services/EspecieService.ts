@@ -10,6 +10,7 @@ export interface EspecieType {
 }
 
 class EspecieService {
+
     async create({ data: requestData, userId }: any, projetoId?: string): Promise<Especie> {
         const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = requestData
         const especieExists = await prismaClient.especie.findFirst({ 
@@ -28,7 +29,7 @@ class EspecieService {
         }) as User
         
         if (especieExists) {
-            throw new Error('Já existe uma espécie cadastrada com este nome')
+            throw new Error(`Já existe uma espécie cadastrada com o nome ${especieExists?.nome} neste projeto`)
         }
 
         const categoriaNaoDefinida = await prismaClient.categoriaEspecie.findFirst({
@@ -49,8 +50,8 @@ class EspecieService {
 
         const data = {
             nome,
-            nome_cientifico,
             nome_orgao,
+            nome_cientifico,
             id_projeto: projetoId ? projetoId : id_projeto
         }
 
@@ -65,6 +66,38 @@ class EspecieService {
         
         
         return especie
+    }
+
+    async importEspecies(data: any, userId: any) {
+        console.log(userId)
+        const projeto = await getProjeto(userId)
+        const especies = await prismaClient.especie.findMany({
+            where: {
+                id_projeto: projeto?.id
+            }
+        }) 
+
+        const nomes = especies.map((especie: any) => especie.nome)
+        const duplicates = data.map((d: any) => d.nome).filter((d: any) => nomes.includes(d))
+
+        if (duplicates) {
+            return {
+                error: true,
+                type: 'duplicates',
+                duplicates
+            }
+        } else {
+            for await (let especie of especies) {
+                if (especies.indexOf(especie) > 0) 
+                {
+                    await this.create({ data: especie, userId: userId }, projeto?.id)   
+                }
+            }
+            return {
+                error: false,
+                message: 'Importação Realizada com Sucesso!'
+            }
+        }
     }
 
     async update(id: string, dataRequest: EspecieType): Promise<Especie | undefined> {
