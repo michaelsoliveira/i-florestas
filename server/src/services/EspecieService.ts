@@ -32,10 +32,22 @@ class EspecieService {
             throw new Error(`Já existe uma espécie cadastrada com o nome ${especieExists?.nome} neste projeto`)
         }
 
-        const categoriaNaoDefinida = await prismaClient.categoriaEspecie.findFirst({
+        const categoriaNaoDefinida = user?.id_poa_ativo ? await prismaClient.categoriaEspecie.findFirst({
             where: {
                 AND: {
                     id_poa: user?.id_poa_ativo,
+                    id_projeto: user?.id_projeto_ativo,
+                    nome: {
+                        mode: Prisma.QueryMode.insensitive,
+                        contains: 'Não definida'
+                    }
+                }
+            }
+        }) : await prismaClient.categoriaEspecie.findFirst({
+            where: {
+                AND: {
+                    id_projeto: user?.id_projeto_ativo,
+                    id_poa: null,
                     nome: {
                         mode: Prisma.QueryMode.insensitive,
                         contains: 'Não definida'
@@ -69,33 +81,77 @@ class EspecieService {
     }
 
     async importEspecies(data: any, userId: any) {
-        console.log(userId)
-        const projeto = await getProjeto(userId)
-        const especies = await prismaClient.especie.findMany({
-            where: {
-                id_projeto: projeto?.id
-            }
-        }) 
-
-        const nomes = especies.map((especie: any) => especie.nome)
-        const duplicates = data.map((d: any) => d.nome).filter((d: any) => nomes.includes(d))
-
-        if (duplicates) {
-            return {
-                error: true,
-                type: 'duplicates',
-                duplicates
-            }
-        } else {
-            for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) 
-                {
-                    await this.create({ data: especie, userId: userId }, projeto?.id)   
+        try {
+            const user = await prismaClient.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
+            const categoriaNaoDefinida: any = user?.id_poa_ativo ? await prismaClient.categoriaEspecie.findFirst({
+                where: {
+                    AND: {
+                        id_poa: user?.id_poa_ativo,
+                        id_projeto: user?.id_projeto_ativo,
+                        nome: {
+                            mode: Prisma.QueryMode.insensitive,
+                            contains: 'Não definida'
+                        }
+                    }
+                }
+            }) : await prismaClient.categoriaEspecie.findFirst({
+                where: {
+                    AND: {
+                        id_projeto: user?.id_projeto_ativo,
+                        id_poa: null,
+                        nome: {
+                            mode: Prisma.QueryMode.insensitive,
+                            contains: 'Não definida'
+                        }
+                    }
+                }
+            })
+    
+            const especies = await prismaClient.especie.findMany({
+                where: {
+                    id_projeto: user?.id_projeto_ativo
+                }
+            }) 
+    
+            const nomes = especies.map((especie: any) => especie.nome)
+            const duplicates = data.map((d: any) => d.nome).filter((d: any) => nomes.includes(d))
+            
+            if (duplicates.length > 0) {
+                return {
+                    error: true,
+                    type: 'duplicates',
+                    duplicates
+                }
+            } else {
+                for (const especie of data) {
+                    await prismaClient.especie.create({
+                        data: {
+                            nome: especie?.nome,
+                            nome_orgao: especie?.nome_orgao,
+                            nome_cientifico: especie?.nome_cientifico,
+                            id_projeto: user?.id_projeto_ativo,
+                            categoria_especie: {
+                                create: {
+                                    id_categoria: categoriaNaoDefinida?.id
+                                }
+                            }
+                        }
+                    })
+                }
+                return {
+                    error: false,
+                    message: 'Importação Realizada com Sucesso!'
                 }
             }
+        } catch(error: any) {
+            console.log(error.message)
             return {
-                error: false,
-                message: 'Importação Realizada com Sucesso!'
+                error: true,
+                message: error.message
             }
         }
     }

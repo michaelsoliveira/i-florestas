@@ -9,11 +9,11 @@ import { Button } from "../Utils/Button"
 import Table from "../Table"
 
 type ImportModalType = {
-    callback?: any;
+    loadEspecies?: any;
 }
 
 const ImportModal = forwardRef<any, ImportModalType>(
-    function ChangeActive({ callback }, ref) {
+    function ChangeActive({ loadEspecies }, ref) {
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
@@ -53,6 +53,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
                 setLoading(false)
                 if (!data.error) {
                     alertService.success(data?.message)
+                    loadEspecies()
                     hideModal()
                 } else {
                     if (data?.errorType && data?.errorType === 'duplicates') {

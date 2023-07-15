@@ -392,8 +392,8 @@ model UserPermission {
 model CategoriaEspeciePoa {
   id_categoria  String     @db.Uuid
   id_especie    String     @db.Uuid
-  categoria     CategoriaEspecie @relation(fields: [id_categoria], references: [id], onDelete: Cascade)
-  especie       Especie       @relation(fields: [id_especie], references: [id], onDelete: Cascade)
+  categoria     CategoriaEspecie @relation(fields: [id_categoria], references: [id], onDelete: NoAction)
+  especie       Especie       @relation(fields: [id_especie], references: [id], onDelete: NoAction)
 
   @@id([id_categoria, id_especie])
   @@index([id_categoria])

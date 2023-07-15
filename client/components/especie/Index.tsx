@@ -60,7 +60,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: stylesButton.greenButton, confirmBtn: 'Importar Espécies', 
             onConfirm: callBackImport,
-            content: <div><ImportModal ref={submitImport} /></div>
+            content: <div><ImportModal loadEspecies={loadEspecies} ref={submitImport} /></div>
         })
     }
 
@@ -117,45 +117,9 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         CsvDataService.exportToCsv('template_especie', data)
     }
 
-    const handleImportEspecies1 = async (e: any) => {
-        try {
-            window.removeEventListener('focus', handleFocusBack)
-            if (e.target?.value.length) {
-                const formData = new FormData()
-                formData.append('file', e.target?.files[0])
-                setLoading(true)
-                await client.post(`/especie/import?projetoId=${projeto?.id}`, formData)
-                    .then((response: any) => {
-                        console.log(response)
-                        const { error, message } = response.data
-                        
-                        if (!error) {
-                            alertService.success(message) 
-                            loadEspecies()
-                            setLoading(false)
-                        } else {
-                            setLoading(false)
-                            console.log(message)
-                        }
-                    }).catch((error: any) => {
-                        console.log(error.message)
-                        setLoading(false)
-                    })
-            }
-        } catch(e) {
-            setLoading(false)
-        }
-    }
-
     const handleFocusBack = () => {
         setUploading(false)
         window.removeEventListener('focus', handleFocusBack)
-    }
-
-    const openFile = () => {
-        fileRef.current?.click()
-        setUploading(true)
-        window.addEventListener('focus', handleFocusBack)
     }
 
     const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
