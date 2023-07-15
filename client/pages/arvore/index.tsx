@@ -21,6 +21,7 @@ const ArvoreIndex = () => {
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const ut = useAppSelector((state: RootState) => state.ut)
+    const poa = useAppSelector((state: RootState) => state.poa)
     const dispatch = useAppDispatch()
     const router = useRouter()
     
@@ -36,18 +37,13 @@ const ArvoreIndex = () => {
         setTotalItems(data?.count)
         setCurrentArvores(data?.arvores)
 
-        setTimeout(() => {
-            setLoading(false)
-        }, 500)
-        //setLoading(false)
+        setLoading(false)
         
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, ut?.id])
 
     useEffect(() => {  
-        
         loadArvores(itemsPerPage)
-
-    }, [loadArvores, itemsPerPage])
+    }, [loadArvores, itemsPerPage, poa])
 
     const onPageChanged = async (paginatedData: any) => {
         
