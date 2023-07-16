@@ -256,7 +256,6 @@ export class PlanejoService {
                 INNER JOIN categoria_especie cat ON cat.id = cep.id_categoria
                 INNER JOIN poa p ON p.id = cat.id_poa
                 INNER JOIN users us ON us.id_poa_ativo = p.id
-                INNER JOIN projeto pr on pr.id = us.id_projeto_ativo
             WHERE
                 us.id = ${userId}  
                 AND u.id = ${this.ut}
@@ -272,13 +271,10 @@ export class PlanejoService {
                         select 
                             a.id as id_arvore
                         from 
-                            arvore a, ut u, poa p, users us, projeto pr
-                        where 
-                            us.id = ${userId}
-                            and u.id = a.id_ut
+                            arvore a, ut u, poa p, users us
+                        where a.id_ut = u.id
                             and p.id = u.id_poa
                             and us.id_poa_ativo = p.id
-                            and pr.id = us.id_projeto_ativo
                             and u.id = ${percente.id_ut}
                             and u.id_poa = ${percente.id_poa}
                             and a.id_especie = ${percente.id_especie}
@@ -306,10 +302,8 @@ export class PlanejoService {
                         select 
                             a.id as id_arvore
                         from 
-                            arvore a, ut u, poa p, users us, projeto pr
-                        where 
-                            us.id = ${userId}
-                            and u.id = a.id_ut
+                            arvore a, ut u, poa p, users us
+                        where a.id_ut = u.id
                             and p.id = u.id_poa
                             and us.id_poa_ativo = p.id
                             and   u.id = ${percente.id_ut}

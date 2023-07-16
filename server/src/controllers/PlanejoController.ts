@@ -29,8 +29,7 @@ export class PlanejoController {
                 await planejoService.criterioObs(1, 5, user?.id)
                 await planejoService.criterioAltura(1, 6, user?.id)
                 await planejoService.criterioVolume(1, 7, user?.id)
-                await planejoService.percentualUmf(user?.id)
-                
+                //await planejoService.percentualUmf(user?.id)
             }
 
             const situacaoPoa = await prismaClient.situacaoPoa.findFirst({
