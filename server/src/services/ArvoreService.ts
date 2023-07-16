@@ -1,6 +1,7 @@
 import { prismaClient } from "../database/prismaClient";
 import { Arvore } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
+import { getPoa } from "./PoaService";
 
 const math = require('mathjs')
 
@@ -293,20 +294,6 @@ class ArvoreService {
         return arvore
     }
 
-    async linkarGPS(data: any) {
-        const preparedData = Promise.all([
-            data.map((row: any) => {
-                
-            })
-        ])
-        // const result = await prismaClient.arvore.update({
-        //     data: {
-
-        //     }
-        // })
-    }
-
-
     async delete(id: string): Promise<void> {
         await prismaClient.arvore.delete({
             where: { id }
@@ -318,6 +305,7 @@ class ArvoreService {
 
     async getAll(userId: string, query?: any, utId?: string): Promise<any> {
         const projeto = await getProjeto(userId)
+        const poa = await getPoa(userId)
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -333,15 +321,50 @@ class ArvoreService {
                 [orderByElement]: order
             }
         }
-
         const where = search ?
             {
-                AND: [
-                    {numero_arvore: parseInt(search)},
-                    {ut: { id: utId }}
-                ]
+                AND: 
+                    { numero_arvore: parseInt(search) },
+                    ut: { 
+                        AND: {
+                            id: utId,
+                            id_poa: poa ? poa?.id : null
+                        }
+                     },
+                    especie: {
+                        AND: {
+                            id_projeto: projeto ? projeto?.id : null,
+                            categoria_especie: {
+                                some: {
+                                    categoria: {
+                                        id_poa: poa ? poa?.id : null
+                                    }
+                                }
+                            }
+                        }
+                    }
             } : {
-                ut: { id: utId }
+                AND: 
+                    {
+                        ut: { 
+                            AND: {
+                                id: utId,
+                                id_poa: poa ? poa?.id : null
+                            }
+                         },
+                        especie: {
+                            AND: {
+                                id_projeto: projeto ? projeto?.id : null,
+                                categoria_especie: {
+                                    some: {
+                                        categoria: {
+                                            id_poa: poa ? poa?.id : null
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
             }
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({

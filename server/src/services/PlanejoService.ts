@@ -243,7 +243,8 @@ export class PlanejoService {
     async percentualUmf(userId: string) : Promise<any> {
         const percenteMin = await prismaClient.$queryRaw<any>`
             SELECT 
-                a.id_ut, u.id_poa, 
+                a.id_ut, 
+                u.id_poa, 
                 a.id_especie, 
                 count(a.id_especie) as tot_explorar, 
                 percente(count(a.id_especie), cat.criterio_perc_min) as percentual, 

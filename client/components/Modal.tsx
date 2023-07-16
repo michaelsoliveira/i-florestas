@@ -61,6 +61,7 @@ export default function Modal(props: ModaType) {
 
 
     const cancelButtonRef = useRef(null)
+    const submitButtonRef = useRef(null)
 
   return (
     <Transition.Root show={visible || false} as={Fragment}>
@@ -139,6 +140,7 @@ export default function Modal(props: ModaType) {
                               styleButton)}
                         onClick={onConfirm}
                         form={hookForm ? hookForm : ''}
+                        ref={submitButtonRef}
                       >
                         {confirmBtn}
                       </button>

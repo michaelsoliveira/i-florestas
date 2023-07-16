@@ -13,7 +13,21 @@ export interface PoaType {
     categorias: any;
 }
 
+export const getPoa = async (userId?: string) => {
+    const user: any = await prismaClient.user.findUnique({
+        include: {
+            poa_ativo: true
+        },
+        where: {
+            id: userId
+        }
+    })
+    
+    return user?.poa_ativo
+}
+
 class PoaService {
+
     async create(data: PoaType, userId: string): Promise<Poa> {
 
         const user = await prismaClient.user.findUnique({

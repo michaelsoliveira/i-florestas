@@ -9,6 +9,7 @@ import { RootState } from "../../store"
 import { LoadingContext } from "contexts/LoadingContext"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
+import classNames from "classnames"
 
 const Index = ({ currentPoas, loading }: any) => {
     
@@ -142,17 +143,19 @@ const Index = ({ currentPoas, loading }: any) => {
                             />
                         </div>
                     )}
-
                     <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
                             <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
-                                <div
+                                <button
+                                    disabled={!poa?.id}
                                     id='btn-resp'
                                     onClick={PlanejarPOA}
-                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/6 lg:w-1/6"
+                                    className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-2/6 lg:w-1/6",
+                                        !poa?.id && ("hover:cursor-not-allowed opacity-50")
+                                    )}
                                 >
                                     Planejar POA
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>

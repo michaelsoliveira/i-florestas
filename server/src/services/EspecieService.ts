@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Especie, prisma, Poa, User } from "@prisma/client";
+import { Prisma, Especie, User } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface EspecieType {
@@ -10,6 +10,7 @@ export interface EspecieType {
 }
 
 class EspecieService {
+
     async create({ data: requestData, userId }: any, projetoId?: string): Promise<Especie> {
         const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = requestData
         const especieExists = await prismaClient.especie.findFirst({ 
@@ -28,13 +29,25 @@ class EspecieService {
         }) as User
         
         if (especieExists) {
-            throw new Error('Já existe uma espécie cadastrada com este nome')
+            throw new Error(`Já existe uma espécie cadastrada com o nome ${especieExists?.nome} neste projeto`)
         }
 
-        const categoriaNaoDefinida = await prismaClient.categoriaEspecie.findFirst({
+        const categoriaNaoDefinida = user?.id_poa_ativo ? await prismaClient.categoriaEspecie.findFirst({
             where: {
                 AND: {
                     id_poa: user?.id_poa_ativo,
+                    id_projeto: user?.id_projeto_ativo,
+                    nome: {
+                        mode: Prisma.QueryMode.insensitive,
+                        contains: 'Não definida'
+                    }
+                }
+            }
+        }) : await prismaClient.categoriaEspecie.findFirst({
+            where: {
+                AND: {
+                    id_projeto: user?.id_projeto_ativo,
+                    id_poa: null,
                     nome: {
                         mode: Prisma.QueryMode.insensitive,
                         contains: 'Não definida'
@@ -49,8 +62,8 @@ class EspecieService {
 
         const data = {
             nome,
-            nome_cientifico,
             nome_orgao,
+            nome_cientifico,
             id_projeto: projetoId ? projetoId : id_projeto
         }
 
@@ -65,6 +78,82 @@ class EspecieService {
         
         
         return especie
+    }
+
+    async importEspecies(data: any, userId: any) {
+        try {
+            const user = await prismaClient.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
+            const categoriaNaoDefinida: any = user?.id_poa_ativo ? await prismaClient.categoriaEspecie.findFirst({
+                where: {
+                    AND: {
+                        id_poa: user?.id_poa_ativo,
+                        id_projeto: user?.id_projeto_ativo,
+                        nome: {
+                            mode: Prisma.QueryMode.insensitive,
+                            contains: 'Não definida'
+                        }
+                    }
+                }
+            }) : await prismaClient.categoriaEspecie.findFirst({
+                where: {
+                    AND: {
+                        id_projeto: user?.id_projeto_ativo,
+                        id_poa: null,
+                        nome: {
+                            mode: Prisma.QueryMode.insensitive,
+                            contains: 'Não definida'
+                        }
+                    }
+                }
+            })
+    
+            const especies = await prismaClient.especie.findMany({
+                where: {
+                    id_projeto: user?.id_projeto_ativo
+                }
+            }) 
+    
+            const nomes = especies.map((especie: any) => especie.nome)
+            const duplicates = data.map((d: any) => d.nome).filter((d: any) => nomes.includes(d))
+            
+            if (duplicates.length > 0) {
+                return {
+                    error: true,
+                    type: 'duplicates',
+                    duplicates
+                }
+            } else {
+                for (const especie of data) {
+                    await prismaClient.especie.create({
+                        data: {
+                            nome: especie?.nome,
+                            nome_orgao: especie?.nome_orgao,
+                            nome_cientifico: especie?.nome_cientifico,
+                            id_projeto: user?.id_projeto_ativo,
+                            categoria_especie: {
+                                create: {
+                                    id_categoria: categoriaNaoDefinida?.id
+                                }
+                            }
+                        }
+                    })
+                }
+                return {
+                    error: false,
+                    message: 'Importação Realizada com Sucesso!'
+                }
+            }
+        } catch(error: any) {
+            console.log(error.message)
+            return {
+                error: true,
+                message: error.message
+            }
+        }
     }
 
     async update(id: string, dataRequest: EspecieType): Promise<Especie | undefined> {
@@ -238,8 +327,6 @@ class EspecieService {
                 id_categoria: data?.newCategory                
             }
         })
-
-        console.log(result)
 
         return result
     }

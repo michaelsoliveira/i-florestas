@@ -142,6 +142,8 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
 
     useEffect(() => {
         let isLoaded = false
+
+        console.log(router.pathname)
         if (!isLoaded)
             loadNavigation()
 
@@ -650,20 +652,53 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     <UserIcon className="block h-6 w-6 text-black" aria-hidden="true" />
                                 </div>
                             )}
-                            
                         </div>
-                    <div className="ml-3">
-                        <div className="text-base font-medium leading-none text-gray-600">{session && session.user?.name}</div>
-                        <div className="text-sm font-medium leading-none text-gray-400">{session && session.user?.email}</div>
+                        <div className="ml-3">
+                            <div className="text-base font-medium leading-none text-gray-700">{session && session.user?.name}</div>
+                            <div className="text-sm font-medium leading-none text-gray-600">{session && session.user?.email}</div>
+                        </div>
+                    <Menu as="div" className="ml-3 relative flex items-center justify-end  w-full">
+                    <div>
+                        <Menu.Button className="rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
+                            <div
+                                className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                            >
+                                <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
+                            </div>
+                        </Menu.Button>
                     </div>
-                    <button
-                    type="button"
-                    className="ml-auto bg-gray-300 flex-shrink-0 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                    onClick={changeProjetoModal}
+                    <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
                     >
-                        <span className="sr-only">View notifications</span>
-                        <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
-                    </button>
+                        <Menu.Items className="origin-top-right absolute z-20 right-0 mt-2 w-48 shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none rounded-md">
+                        {["Mudar Projeto Ativo", "Mudar Poa Ativo"].map((item: any, key: any) => (
+                            <Menu.Item key={key}>
+                            {({ active }) => (
+                                <Menu.Button
+                                    as='a'
+                                    href='#'
+                                    className={classNames(
+                                        active ? 'bg-gray-100' : '',
+                                        'block px-4 py-2 text-sm text-gray-700'
+                                    )}
+                                        onClick={() => { key === 0 ? changeProjetoModal() : changePoaModal() }}
+                                        aria-hidden="true"
+                                >
+                                    {item}
+                                </Menu.Button>
+                            )}
+                            </Menu.Item>
+                        ))}
+                        </Menu.Items>
+                        
+                    </Transition>
+                    </Menu>
                 </div>
                 <div className="mt-3 px-2 space-y-1" aria-hidden="true">
                     {userNavigation.map((item: any, key: any) => (
