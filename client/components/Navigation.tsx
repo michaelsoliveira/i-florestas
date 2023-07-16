@@ -142,8 +142,6 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
 
     useEffect(() => {
         let isLoaded = false
-
-        console.log(router.pathname)
         if (!isLoaded)
             loadNavigation()
 

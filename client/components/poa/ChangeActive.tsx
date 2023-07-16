@@ -72,7 +72,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 }
                 
             }
-        }, [session, client])
+        }, [session, client, dispath])
 
         useEffect(() => {
             let isLoaded = false
