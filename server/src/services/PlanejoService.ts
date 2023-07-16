@@ -88,10 +88,11 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
             WHERE
-                u.id = a.id_ut 
-                AND us.id = ${userId}
+                us.id = ${userId}
+                AND pr.id = us.id_projeto_ativo
+                AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
                 AND e.id = a.id_especie
