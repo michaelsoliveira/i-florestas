@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState, CSSProperties, useMemo } from "react"
-import { Link } from "../Link"
 import { AuthContext } from "../../contexts/AuthContext"
 import { useModalContext } from "contexts/ModalContext"
 import { LoadingContext } from "contexts/LoadingContext"
@@ -11,11 +10,9 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 import { setUmf } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import alertService from '../../services/alert'
-import CsvImport from "../Utils/CsvImport"
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
 import { Button } from "../Utils/Button"
-import SelectableRow from "../Utils/SelectableRowList"
 
 const styles = {
     csvReader: {
@@ -340,12 +337,16 @@ const Index = () => {
                     <span className="ml-2">Modelo</span>
                     </a>
                 </div>
-                <a
-                    onClick={handleImportInventario}
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Importar
-                </a>
+                {
+                    (data.length > 0) && (
+                        <a
+                            onClick={handleImportInventario}
+                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                        >
+                            Importar
+                        </a>
+                    )
+                }
             </div>
                 <div className="flex flex-col p-6">
                     <div className="pb-2">
