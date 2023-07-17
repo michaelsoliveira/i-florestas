@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { PlanejoService } from "../services/PlanejoService";
 import { prismaClient } from "../database/prismaClient";
-import { User } from "@prisma/client";
+import poaService from "../services/PoaService";
 
 export class PlanejoController {
     async execute(request : Request, response: Response) : Promise<Response> {
@@ -66,5 +66,16 @@ export class PlanejoController {
                 message: error.message
             })
         }
+    }
+
+    async utsByPoa(request: Request, response: Response) {
+        const uts = await poaService.utsByPoa(request.user?.id)
+
+        console.log(uts)
+
+        return response.json({
+            error: false,
+            uts
+        })
     }
 }

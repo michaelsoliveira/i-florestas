@@ -79,12 +79,6 @@ const AddEdit = ({ id }: any) => {
     }, [poa, poaExists])
 
     const selectPoa = async (poa: any) => {
-        dispatch(setPoa({
-            id: poa.value,
-            descricao: poa.label,
-            data_ultimo_plan: new Date('00-00-0000'),
-            pmfs: ''
-        }))
         setSelectedPoa(poa)
         const response = await client.get(`/categoria?poa=${poa.value}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
@@ -630,7 +624,7 @@ const AddEdit = ({ id }: any) => {
                                                 <>
                                                     <CriterioPoa 
                                                         checkedCategorias={checkedCategorias} 
-                                                        categorias={categorias} 
+                                                        categorias={categorias.filter((categoria: any) => categoria.nome !== 'Não definida')} 
                                                         handleSelectAllCategorias={handleSelectAllCategorias} 
                                                         handleSelectCategoria={handleSelectCategoria} 
                                                     />

@@ -127,6 +127,7 @@ routes.delete('/poa/multiples', Authentication(), new PoaController().deletePoas
 
 //Planejamento do POA
 routes.post('/planejo', Authentication(), new PlanejoController().execute)
+routes.get('/planejo/uts/', Authentication(), new PlanejoController().utsByPoa)
 
 //Ut
 routes.post('/ut/', Authentication(), new UtController().store)
