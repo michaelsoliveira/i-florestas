@@ -1,5 +1,6 @@
 import { prismaClient } from "../database/prismaClient";
 import { CategoriaEspecie } from '@prisma/client'
+import { getPoa } from "./PoaService";
 
 export class PlanejoService {
     poa: string;
@@ -88,10 +89,9 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
                 us.id = ${userId}
-                AND pr.id = us.id_projeto_ativo
                 AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -116,10 +116,9 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
+                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
                 us.id = ${userId}
-                AND pr.id = us.id_projeto_ativo
                 AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -144,10 +143,9 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
+                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
                 us.id = ${userId}
-                AND pr.id = us.id_projeto_ativo
                 AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -172,10 +170,9 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
                 us.id = ${userId}
-                AND pr.id = us.id_projeto_ativo
                 AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -200,10 +197,9 @@ export class PlanejoService {
             SET 
                 id_situacao = ${situacaoId},
                 id_motivo_preservacao = ${motivoPreservacaoId}
-                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us, projeto pr
+                FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
                 us.id = ${userId}
-                AND pr.id = us.id_projeto_ativo
                 AND u.id = a.id_ut
                 AND u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
@@ -261,7 +257,6 @@ export class PlanejoService {
                 INNER JOIN categoria_especie cat ON cat.id = cep.id_categoria
                 INNER JOIN poa p ON p.id = cat.id_poa
                 INNER JOIN users us ON us.id_poa_ativo = p.id
-                INNER JOIN projeto pr ON pr.id = us.id_projeto_ativo
             WHERE
                 us.id = ${userId}  
                 AND u.id = ${this.ut}

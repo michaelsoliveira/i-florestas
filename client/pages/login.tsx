@@ -12,7 +12,7 @@ const Pagelogin = ({ csrfToken }: any) => {
   return (
     <div className="min-h-full flex items-center justify-center mt-28 mb-16 px-4">
       <div className="max-w-md flex flex-col justify-center items-center w-full space-y-4 py-4 border rounded-md shadow-2xl">
-        <div className='absolute -top-20 lg:top-24'>
+        <div className='absolute top-10'>
         <div className='bg-gray-50 border border-green-700 rounded-full shadow-lg w-36 h-36'>
         <div className='relative h-full flex flex-col items-center justify-center'>
           <Logo width='w-16' height='h-16' />
