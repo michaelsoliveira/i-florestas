@@ -396,9 +396,9 @@ class PoaService {
             SELECT
                 upa.ano,
                 u.numero_ut,
-                COALESCE(SUM(a.volume),0) as volume_total,
-                round(t1.volume_explorar, 3) as volume_explorar,
-	            round(CAST((t1.volume_explorar/u.area_util) AS decimal),3) as volume_area_util
+                COALESCE(round(SUM(a.volume),0), 4) as volume_total,
+                round(t1.volume_explorar, 4) as volume_explorar,
+	            round(CAST((t1.volume_explorar/u.area_util) AS decimal),4) as volume_area_util
             FROM ut u, upa, arvore a, poa p, 
                 (SELECT u.id, COALESCE(SUM(a.volume),0) as volume_explorar
                     FROM ut u
@@ -415,6 +415,7 @@ class PoaService {
                 GROUP BY p.id, u.id, u.area_util
                 ) AS t2
             WHERE p.id = ${poa?.id}
+                AND a.id_ut = u.id
                 AND t1.id = u.id
                 AND t2.id = u.id
             GROUP BY p.id, u.id, upa.ano, t1.volume_explorar, t2.volume_area_util
