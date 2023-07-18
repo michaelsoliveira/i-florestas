@@ -13,7 +13,7 @@ type Props = {
     children: ReactNode
 }
 
-const StepContext = createContext({} as StepContextType)
+const StepContext = createContext({ step: 1 } as StepContextType)
 
 const StepProvider = ({ children }: Props) => {
   const [step, setStep] = useState(1);

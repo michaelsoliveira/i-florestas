@@ -7,6 +7,7 @@ import { useCSVReader } from "react-papaparse"
 import alertService from '../../services/alert'
 import { Button } from "../Utils/Button"
 import Table from "../Table"
+import { StepContext } from "contexts/StepContext"
 
 type ImportModalType = {
     loadEspecies?: any;
@@ -21,12 +22,14 @@ const ImportModal = forwardRef<any, ImportModalType>(
     const { projeto } = useContext(ProjetoContext)
     const { CSVReader } = useCSVReader()
     const [encoding, setEncoding] = useState('iso-8859-1')
+    
+    const [uploading, setUploading] = useState<boolean>(false)
+    const [duplicates, setDuplicates] = useState([])
+    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
-    const [uploading, setUploading] = useState<boolean>(false)
     const columns = useMemo(() => columnData, [columnData])
-    const [duplicates, setDuplicates] = useState([])
-    
     const data = useMemo(() => rowData, [rowData])
 
     const styles = {
@@ -67,6 +70,115 @@ const ImportModal = forwardRef<any, ImportModalType>(
         } catch(e: any) {
             alertService.error(e.message)
         }
+    }
+
+    const Step1 = ({ columns, dataImported }: any) => {
+        const { data, updateData, nextStep } = useContext(StepContext);
+      
+        const handleChange = (e: any) => {
+          const { name, value } = e.target;
+          updateData({ [name]: value });
+        };
+      
+        return (
+            <div>
+                <ul
+                    data-te-stepper-init
+                    className="relative m-0 flex list-none justify-between overflow-hidden p-0 transition-[height] duration-200 ease-in-out"
+                >
+                    <li
+                        data-te-stepper-step-ref
+                        data-te-stepper-step-active
+                        className="w-[4.5rem] flex-auto">
+                        <div
+                        data-te-stepper-head-ref
+                        className="flex cursor-pointer items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-px after:w-full after:flex-1 after:bg-[#e0e0e0] after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
+                        <span
+                            data-te-stepper-head-icon-ref
+                            className="my-6 mr-2 flex h-[1.938rem] w-[1.938rem] items-center justify-center rounded-full bg-[#ebedef] text-sm font-medium text-[#40464f]">
+                            { step }
+                        </span>
+                        </div>
+                        <div
+                        data-te-stepper-content-ref
+                        className="absolute w-full p-4 transition-all duration-500 ease-in-out">
+                            <div className="mt-6">
+                                <Table columns={columns} data={dataImported} />
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        );
+      };
+      
+      const Step2 = () => {
+        const { data, updateData, nextStep, prevStep } = useContext(
+          StepContext
+        );
+      
+        const handleChange = (e: any) => {
+          const { name, value } = e.target;
+          updateData({ [name]: value });
+        };
+      
+        return (
+          <div>
+            <h2>Step 2: Inconscistencias</h2>
+            <label>Nome:</label>
+            <input
+              type="text"
+              name="nome"
+              value={data.nome}
+              onChange={handleChange}
+            />
+            <br />
+            <button onClick={prevStep}>Anterior</button>
+            <button onClick={nextStep}>Próximo</button>
+          </div>
+        );
+      };
+      
+      const Step3 = () => {
+        const { data, prevStep, resetData } = useContext(StepContext);
+      
+        const handleSubmit = (e: any) => {
+          e.preventDefault();
+          // Perform form submission logic here
+          console.log(data);
+          // Reset form data and step
+          resetData();
+        };
+      
+        return (
+          <div>
+            <h2>Step 3: Confirmation</h2>
+            <p>Name: {data.nome}</p>
+            <p>Email: {data.nome_orgao}</p>
+            <p>Address: {data.nome_vulgar}</p>
+            <button onClick={prevStep}>Anterior</button>
+            <button onClick={handleSubmit}>Enviar</button>
+          </div>
+        );
+      };
+
+    const Stepper = (columns: any, data: any) => {
+        const { step } = useContext(StepContext);
+        const renderStep = () => {
+            switch (step) {
+              case 1:
+                return <Step1 columns={columns} dataImported={data} />;
+              case 2:
+                return <Step2 />;
+              case 3:
+                return <Step3 />;
+              default:
+                return null;
+            }
+          };
+        
+          return <div>{renderStep()}</div>;
     }
 
     const onUploadAccepted = async (result: any) => {
@@ -169,8 +281,8 @@ const ImportModal = forwardRef<any, ImportModalType>(
                 </div>
                 
             </div>
-            <div className="mt-6">
-                    <Table columns={columns} data={data} />
+            <div>
+                {Stepper(columns, data)}
             </div>
             <span
                 className="hidden"
