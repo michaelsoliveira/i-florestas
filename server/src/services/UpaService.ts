@@ -123,8 +123,6 @@ class UpaService {
         UPDATE arvore SET volume = ${eqVolume.expressao} 
         WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
 
-        console.log(sqlEqVolume)
-
         await prismaClient.$queryRaw(Prisma.raw(sqlABasal))
         await prismaClient.$queryRaw(Prisma.raw(sqlEqVolume))
 
