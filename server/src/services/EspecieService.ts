@@ -156,6 +156,52 @@ class EspecieService {
         }
     }
 
+    async getErrors(data: any, userId: any) {
+        try {
+            
+            const user = await prismaClient.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
+    
+            const especies = await prismaClient.especie.findMany({
+                where: {
+                    id_projeto: user?.id_projeto_ativo
+                }
+            }) 
+    
+            const nomes = especies.map((especie: any) => especie.nome)
+            const nomesNaoDefinidos = data.filter((especie: any) => especie.nome === '')
+            const duplicates = data.map((d: any, idx: number) => { 
+                const { nome, nome_orgao, nome_cientifico } = d
+                return {  linha: idx, nome, nome_orgao, nome_cientifico } }).filter((d: any) => nomes.includes(d.nome)).map((duplicado: any) => {
+                
+                return {
+                    linha: duplicado?.linha + 1,
+                    nome: duplicado?.nome,
+                    nome_orgao: duplicado?.nome_orgao,
+                    nome_cientifico: duplicado?.nome_cientifico
+                }
+                
+            })
+            
+            return {
+                error: true,
+                type: 'duplicates',
+                duplicates,
+                nomes_vazios: nomesNaoDefinidos
+            }
+             
+        } catch(error: any) {
+            console.log(error.message)
+            return {
+                error: true,
+                message: error.message
+            }
+        }
+    }
+
     async update(id: string, dataRequest: EspecieType): Promise<Especie | undefined> {
         const { nome, nome_cientifico, nome_orgao, id_categoria, poa } = dataRequest as any
 

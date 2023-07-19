@@ -145,37 +145,31 @@ export class EspecieController {
         }
     }
 
-    async importEspecie(request: Request, response: Response) {
-        const { projetoId } = request.query as any
-
+    async getErrors(request: Request, response: Response) {
         try {
-            /*
-            if (request?.file === undefined) {
-                return response.status(400).send("Please upload a CSV file!");
-            }
+            const { data } = request.body
 
-            const readableFile = new Readable().setEncoding('utf8')
-            readableFile.push(request.file?.buffer)
-            readableFile.push(null)
-
-            const especiesLine = readline.createInterface({
-                input: readableFile
+            const especies = data.map((especie: any) => {
+                return {
+                    nome: especie?.nome_vulgar_1 ? especie?.nome_vulgar_1 : especie?.nome,
+                    nome_orgao: especie?.nome_vulgar_2 ? especie?.nome_vulgar_2 : especie?.orgao,
+                    nome_cientifico: especie.nome_cientifico
+                }
             })
 
-            for await (const line of especiesLine) {
-                const especieLineSplit = line.split(";")
-                
-                especies.push({
-                    nome: especieLineSplit[0],
-                    nome_orgao: especieLineSplit[1],
-                    nome_cientifico: especieLineSplit[2]
-                })
-            }
+            const errors = await especieService.getErrors(especies, request.user?.id)
 
-            for await (let especie of especies) {
-                if (especies.indexOf(especie) > 0) await especieService.create({ data: especie, userId: request.user?.id }, projetoId)
-            }
-            */
+            return response.json({
+                error: true,
+                errors
+            })
+        } catch(error) {
+            return response.json(error.message)
+        }
+    }
+
+    async importEspecie(request: Request, response: Response) {
+        try {
             const { data } = request.body
 
             const especies = data.map((especie: any) => {
