@@ -5,6 +5,7 @@ type StepContextType = {
     data: any;
     nextStep: () => void;
     prevStep: () => void;
+    setStep: (step: number) => void;
     updateData: (data: any) => void;
     resetData: () => void;
 }
@@ -45,7 +46,8 @@ const StepProvider = ({ children }: Props) => {
     nextStep,
     prevStep,
     updateData,
-    resetData
+    resetData,
+    setStep
   };
 
   return (

@@ -1,23 +1,28 @@
 import classNames from "classnames"
+import { useModalContext } from "contexts/ModalContext"
 import { StepContext } from "contexts/StepContext"
 import { useContext } from "react"
 
-const StepperControl = ({ steps }: any) => {
+const StepperControl = ({ steps, handleClick }: any) => {
     const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    const { hideModal, store } = useModalContext()
+    const { visible } = store
     return (
-        <div className="container flex justify-around mt-4 mb-8">
+        <div className="container flex justify-between mt-4">
             <button
-                onClick={() => prevStep()}
-                className={classNames("text-slate-400 uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
-                    step === 1 ? "opacity-50 cursor-not-allowed" : "")}
+                onClick={() => handleClick()}
+                className={classNames("bg-white text-slate-400 uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
+                    !visible && step === 1 ? "opacity-50 cursor-not-allowed" : "")}
             >
-                Voltar
+                { visible && step === 1 ? "Fechar" : "Voltar"}
             </button>
             <button
-                onClick={() => nextStep()}
-                className={classNames("text-slate-400 uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out")}
+                onClick={() => handleClick('next')}
+                className={classNames(
+                    "bg-green-700 text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
+                    )}
             >
-                { step === steps.length - 1 ? "Finalizar" : "Prosseguir" }
+                { step === steps.length? "Finalizar Importação" : "Prosseguir" }
             </button>
         </div>
     )

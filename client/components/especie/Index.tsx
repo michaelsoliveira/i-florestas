@@ -56,7 +56,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     }, [currentEspecies])
 
     const callBackImport = async () => {
-        submitImport.current.click()
+        submitImport.current.click()        
     }
 
     const importModal = () => {
@@ -64,8 +64,8 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
             title: 'Importar Espécies',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: stylesButton.greenButton, confirmBtn: (step === steps.length) ? "Finalizar" : "Prosseguir" , 
-            onConfirm: nextStep,
-            content: <div><ImportModal loadEspecies={loadEspecies} ref={submitImport} steps={steps} /></div>
+            options: false,
+            content: <div><ImportModal loadEspecies={loadEspecies} ref={submitImport} steps={steps} callback={callBackImport}/></div>
         })
     }
 

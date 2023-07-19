@@ -2,7 +2,7 @@ import { AuthContext } from "contexts/AuthContext"
 import { LoadingContext } from "contexts/LoadingContext"
 import { useModalContext } from "contexts/ModalContext"
 import { ProjetoContext } from "contexts/ProjetoContext"
-import { CSSProperties, forwardRef, useContext, useMemo, useState } from "react"
+import { CSSProperties, forwardRef, useContext, useEffect, useMemo, useState } from "react"
 import { useCSVReader } from "react-papaparse"
 import alertService from '../../services/alert'
 import { Button } from "../Utils/Button"
@@ -17,10 +17,11 @@ import StepperControl from "../StepperControl"
 type ImportModalType = {
     loadEspecies?: any;
     steps: any;
+    callback: any;
 }
 
 const ImportModal = forwardRef<any, ImportModalType>(
-    function ChangeActive({ loadEspecies, steps }, ref) {
+    function ChangeActive({ loadEspecies, steps, callback }, ref) {
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
@@ -31,7 +32,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
     
     const [uploading, setUploading] = useState<boolean>(false)
     const [duplicates, setDuplicates] = useState([])
-    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
     
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
@@ -49,6 +50,36 @@ const ImportModal = forwardRef<any, ImportModalType>(
         } as CSSProperties,
     };
 
+    useEffect(() => {
+        setStep(1)
+    }, [])
+
+    const isErrors = () => {
+        return duplicates.length > 0
+    }
+    
+    const handleClick = (direction?: string) => {
+        let newStep = step
+
+        step === 1 && data.length === 0 && alertService.warn('É necessário selecionar um arquivo para importação')
+
+        if (step === steps.length && isErrors() && direction === 'next') {
+            return alertService.warn('Verifique as Incosistências para realizar a importação')
+        }
+    
+        if (data.length > 0 && step < steps.length) {
+            direction === 'next' ? newStep++ : newStep--
+        }
+
+        
+
+        if (step === steps.length && !isErrors() && direction === 'next') handleImportEspecies()
+
+        step === 0 && visible && hideModal()
+
+        step > 0 && step <= steps.length && setStep(newStep)
+    }
+
     const handleImportEspecies = async () => {
         try {
             setLoading(true)
@@ -58,7 +89,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
             })
             .then((result: any) => {
                 const { data } = result
-                
                 setLoading(false)
                 if (!data.error) {
                     alertService.success(data?.message)
@@ -77,73 +107,21 @@ const ImportModal = forwardRef<any, ImportModalType>(
             alertService.error(e.message)
         }
     }
-      
-      const Step2 = () => {
-        const { data, updateData, nextStep, prevStep } = useContext(
-          StepContext
-        );
-      
-        const handleChange = (e: any) => {
-          const { name, value } = e.target;
-          updateData({ [name]: value });
-        };
-      
-        return (
-          <div>
-            <h2>Step 2: Inconscistencias</h2>
-            <label>Nome:</label>
-            <input
-              type="text"
-              name="nome"
-              value={data.nome}
-              onChange={handleChange}
-            />
-            <br />
-            <button onClick={prevStep}>Anterior</button>
-            <button onClick={nextStep}>Próximo</button>
-          </div>
-        );
-      };
-      
-      const Step3 = () => {
-        const { data, prevStep, resetData } = useContext(StepContext);
-      
-        const handleSubmit = (e: any) => {
-          e.preventDefault();
-          // Perform form submission logic here
-          console.log(data);
-          // Reset form data and step
-          resetData();
-        };
-      
-        return (
-          <div>
-            <h2>Step 3: Confirmation</h2>
-            <p>Name: {data.nome}</p>
-            <p>Email: {data.nome_orgao}</p>
-            <p>Address: {data.nome_vulgar}</p>
-            <button onClick={prevStep}>Anterior</button>
-            <button onClick={handleSubmit}>Enviar</button>
-          </div>
-        );
-      };
 
     const displayStep = () => {
-        const { step } = useContext(StepContext);
         const renderStep = () => {
             switch (step) {
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <Errors />;
+                return <Errors dataErrors={{columns, data: duplicates}} />;
               case 3:
                 return <Finalizar />;
-              default:
-                return null;
+              default: <>Teste</>
             }
-          };
+        }
         
-          return renderStep()
+        return renderStep()
     }
 
     const onUploadAccepted = async (result: any) => {
@@ -165,7 +143,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
         
         setColumnData(columns)
         setRowData(rows)
-
     }
 
     return (
@@ -249,11 +226,12 @@ const ImportModal = forwardRef<any, ImportModalType>(
             <div>
                 <Stepper
                     steps= { steps }
+                    currentStep={step}
                 />
                 <div>
                     {displayStep()}
                 </div>
-                <StepperControl steps={steps} />
+                <StepperControl steps={steps} handleClick={handleClick}/>
             </div>
             <span
                 className="hidden"

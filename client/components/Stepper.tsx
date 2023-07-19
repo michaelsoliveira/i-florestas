@@ -1,6 +1,6 @@
 import { StepContext } from 'contexts/StepContext';
 import React, { useState, useEffect, useRef, useContext } from 'react'
-const Stepper = ({ steps, currentStepNumber }: any) => {
+const Stepper = ({ steps, currentStep }: any) => {
     const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
 	const [stepperSteps, setStep] = useState<any>([]);
 	const stepsStateRef = useRef();
@@ -14,13 +14,13 @@ const Stepper = ({ steps, currentStepNumber }: any) => {
 			return stepObj;
 		});
 		stepsStateRef.current = stepsState;
-		const currentSteps = updateStep(currentStepNumber - 1, stepsState)
+		const currentSteps = updateStep(currentStep - 1, stepsState)
 		setStep(currentSteps)
 	}, []);
 	useEffect(() => {
-		const currentSteps = updateStep(currentStepNumber - 1, stepsStateRef.current)
+		const currentSteps = updateStep(currentStep - 1, stepsStateRef.current)
 		setStep(currentSteps)
-	}, [currentStepNumber]);
+	}, [currentStep]);
 	function updateStep(stepNumber: number, steps: any) {
 		const newSteps = [...steps];
 		let stepCounter = 0;
@@ -63,7 +63,7 @@ const Stepper = ({ steps, currentStepNumber }: any) => {
 			<div key={index}
 				className={index !== stepperSteps.length - 1 ? "w-full flex items-center" : "flex items-center"} >
 				<div className="relative flex flex-col items-center text-teal-600">
-					<div className={`rounded-full transition duration-500 ease-in-out border-2 border-gray-300 h-12 w-12 flex items-center justify-center py-3  ${step.selected ? "bg-red-600 text-white font-bold" : ""}`}>
+					<div className={`rounded-full transition duration-500 ease-in-out border-2 border-gray-300 h-12 w-12 flex items-center justify-center py-3  ${step.selected ? "bg-green-600 text-white font-bold" : ""}`}>
 						{step.completed ? <span className="text-white font-bold text-xl">✓</span> : index + 1}
 					</div>
 					<div className={`absolute top-0  text-center mt-16 w-32 text-xs font-medium uppercase ${step.highlighted ? "text-gray-900" : "text-gray-400"}`}> {step.description}	</div>
