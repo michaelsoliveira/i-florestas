@@ -14,6 +14,7 @@ import { useCSVReader } from 'react-papaparse'
 import { Button } from "../Utils/Button"
 import ImportModal from "./ImportModal"
 import { styles as stylesButton } from '../Utils/styles'
+import { StepContext } from "contexts/StepContext"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
@@ -29,9 +30,13 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
     const { projeto } = useContext(ProjetoContext)
-    const { CSVReader } = useCSVReader()
-    const [encoding, setEncoding] = useState('iso-8859-1')
     const submitImport = useRef(null) as any
+    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    const steps = [
+        "Selecionar Arquivo",
+        "Verificar Erros",
+        "Finalizar"
+    ]
 
 
     const styles = {
@@ -58,9 +63,9 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         showModal({
             title: 'Importar Espécies',
             size: 'max-w-4xl',
-            type: 'submit', hookForm: 'hook-form', styleButton: stylesButton.greenButton, confirmBtn: 'Importar Espécies', 
-            onConfirm: callBackImport,
-            content: <div><ImportModal loadEspecies={loadEspecies} ref={submitImport} /></div>
+            type: 'submit', hookForm: 'hook-form', styleButton: stylesButton.greenButton, confirmBtn: (step === steps.length) ? "Finalizar" : "Prosseguir" , 
+            onConfirm: nextStep,
+            content: <div><ImportModal loadEspecies={loadEspecies} ref={submitImport} steps={steps} /></div>
         })
     }
 

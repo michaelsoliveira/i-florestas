@@ -8,13 +8,19 @@ import alertService from '../../services/alert'
 import { Button } from "../Utils/Button"
 import Table from "../Table"
 import { StepContext } from "contexts/StepContext"
+import SelectFileStep from "./steps/SelectFileStep"
+import Errors from "./steps/Errors"
+import Finalizar from "./steps/Finalizar"
+import Stepper from "../Stepper"
+import StepperControl from "../StepperControl"
 
 type ImportModalType = {
     loadEspecies?: any;
+    steps: any;
 }
 
 const ImportModal = forwardRef<any, ImportModalType>(
-    function ChangeActive({ loadEspecies }, ref) {
+    function ChangeActive({ loadEspecies, steps }, ref) {
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
@@ -71,47 +77,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
             alertService.error(e.message)
         }
     }
-
-    const Step1 = ({ columns, dataImported }: any) => {
-        const { data, updateData, nextStep } = useContext(StepContext);
-      
-        const handleChange = (e: any) => {
-          const { name, value } = e.target;
-          updateData({ [name]: value });
-        };
-      
-        return (
-            <div>
-                <ul
-                    data-te-stepper-init
-                    className="relative m-0 flex list-none justify-between overflow-hidden p-0 transition-[height] duration-200 ease-in-out"
-                >
-                    <li
-                        data-te-stepper-step-ref
-                        data-te-stepper-step-active
-                        className="w-[4.5rem] flex-auto">
-                        <div
-                        data-te-stepper-head-ref
-                        className="flex cursor-pointer items-center pl-2 leading-[1.3rem] no-underline after:ml-2 after:h-px after:w-full after:flex-1 after:bg-[#e0e0e0] after:content-[''] hover:bg-[#f9f9f9] focus:outline-none dark:after:bg-neutral-600 dark:hover:bg-[#3b3b3b]">
-                        <span
-                            data-te-stepper-head-icon-ref
-                            className="my-6 mr-2 flex h-[1.938rem] w-[1.938rem] items-center justify-center rounded-full bg-[#ebedef] text-sm font-medium text-[#40464f]">
-                            { step }
-                        </span>
-                        </div>
-                        <div
-                        data-te-stepper-content-ref
-                        className="absolute w-full p-4 transition-all duration-500 ease-in-out">
-                            <div className="mt-6">
-                                <Table columns={columns} data={dataImported} />
-                            </div>
-                        </div>
-                    </li>
-
-                </ul>
-            </div>
-        );
-      };
       
       const Step2 = () => {
         const { data, updateData, nextStep, prevStep } = useContext(
@@ -163,22 +128,22 @@ const ImportModal = forwardRef<any, ImportModalType>(
         );
       };
 
-    const Stepper = (columns: any, data: any) => {
+    const displayStep = () => {
         const { step } = useContext(StepContext);
         const renderStep = () => {
             switch (step) {
               case 1:
-                return <Step1 columns={columns} dataImported={data} />;
+                return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <Step2 />;
+                return <Errors />;
               case 3:
-                return <Step3 />;
+                return <Finalizar />;
               default:
                 return null;
             }
           };
         
-          return <div>{renderStep()}</div>;
+          return renderStep()
     }
 
     const onUploadAccepted = async (result: any) => {
@@ -282,7 +247,13 @@ const ImportModal = forwardRef<any, ImportModalType>(
                 
             </div>
             <div>
-                {Stepper(columns, data)}
+                <Stepper
+                    steps= { steps }
+                />
+                <div>
+                    {displayStep()}
+                </div>
+                <StepperControl steps={steps} />
             </div>
             <span
                 className="hidden"
