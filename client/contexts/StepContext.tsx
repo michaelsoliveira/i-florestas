@@ -5,6 +5,7 @@ type StepContextType = {
     data: any;
     nextStep: () => void;
     prevStep: () => void;
+    setStep: (step: number) => void;
     updateData: (data: any) => void;
     resetData: () => void;
 }
@@ -13,7 +14,7 @@ type Props = {
     children: ReactNode
 }
 
-const StepContext = createContext({} as StepContextType)
+const StepContext = createContext({ step: 1 } as StepContextType)
 
 const StepProvider = ({ children }: Props) => {
   const [step, setStep] = useState(1);
@@ -45,7 +46,8 @@ const StepProvider = ({ children }: Props) => {
     nextStep,
     prevStep,
     updateData,
-    resetData
+    resetData,
+    setStep
   };
 
   return (

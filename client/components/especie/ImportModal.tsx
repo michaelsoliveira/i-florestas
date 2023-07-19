@@ -2,18 +2,26 @@ import { AuthContext } from "contexts/AuthContext"
 import { LoadingContext } from "contexts/LoadingContext"
 import { useModalContext } from "contexts/ModalContext"
 import { ProjetoContext } from "contexts/ProjetoContext"
-import { CSSProperties, forwardRef, useContext, useMemo, useState } from "react"
+import { CSSProperties, forwardRef, useContext, useEffect, useMemo, useState } from "react"
 import { useCSVReader } from "react-papaparse"
 import alertService from '../../services/alert'
 import { Button } from "../Utils/Button"
 import Table from "../Table"
+import { StepContext } from "contexts/StepContext"
+import SelectFileStep from "./steps/SelectFileStep"
+import Errors from "./steps/Errors"
+import Finalizar from "./steps/Finalizar"
+import Stepper from "../Stepper"
+import StepperControl from "../StepperControl"
 
 type ImportModalType = {
     loadEspecies?: any;
+    steps: any;
+    callback: any;
 }
 
 const ImportModal = forwardRef<any, ImportModalType>(
-    function ChangeActive({ loadEspecies }, ref) {
+    function ChangeActive({ loadEspecies, steps, callback }, ref) {
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store
@@ -21,12 +29,14 @@ const ImportModal = forwardRef<any, ImportModalType>(
     const { projeto } = useContext(ProjetoContext)
     const { CSVReader } = useCSVReader()
     const [encoding, setEncoding] = useState('iso-8859-1')
+    
+    const [uploading, setUploading] = useState<boolean>(false)
+    const [duplicates, setDuplicates] = useState([])
+    const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
+    
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
-    const [uploading, setUploading] = useState<boolean>(false)
     const columns = useMemo(() => columnData, [columnData])
-    const [duplicates, setDuplicates] = useState([])
-    
     const data = useMemo(() => rowData, [rowData])
 
     const styles = {
@@ -40,6 +50,36 @@ const ImportModal = forwardRef<any, ImportModalType>(
         } as CSSProperties,
     };
 
+    useEffect(() => {
+        setStep(1)
+    }, [])
+
+    const isErrors = () => {
+        return duplicates.length > 0
+    }
+    
+    const handleClick = (direction?: string) => {
+        let newStep = step
+
+        step === 1 && data.length === 0 && alertService.warn('É necessário selecionar um arquivo para importação')
+
+        if (step === steps.length && isErrors() && direction === 'next') {
+            return alertService.warn('Verifique as Incosistências para realizar a importação')
+        }
+    
+        if (data.length > 0 && step < steps.length) {
+            direction === 'next' ? newStep++ : newStep--
+        }
+
+        
+
+        if (step === steps.length && !isErrors() && direction === 'next') handleImportEspecies()
+
+        step === 0 && visible && hideModal()
+
+        step > 0 && step <= steps.length && setStep(newStep)
+    }
+
     const handleImportEspecies = async () => {
         try {
             setLoading(true)
@@ -49,7 +89,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
             })
             .then((result: any) => {
                 const { data } = result
-                
                 setLoading(false)
                 if (!data.error) {
                     alertService.success(data?.message)
@@ -67,6 +106,22 @@ const ImportModal = forwardRef<any, ImportModalType>(
         } catch(e: any) {
             alertService.error(e.message)
         }
+    }
+
+    const displayStep = () => {
+        const renderStep = () => {
+            switch (step) {
+              case 1:
+                return <SelectFileStep columns={columns} data={data} />;
+              case 2:
+                return <Errors dataErrors={{columns, data: duplicates}} />;
+              case 3:
+                return <Finalizar />;
+              default: <>Teste</>
+            }
+        }
+        
+        return renderStep()
     }
 
     const onUploadAccepted = async (result: any) => {
@@ -88,7 +143,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
         
         setColumnData(columns)
         setRowData(rows)
-
     }
 
     return (
@@ -169,8 +223,15 @@ const ImportModal = forwardRef<any, ImportModalType>(
                 </div>
                 
             </div>
-            <div className="mt-6">
-                    <Table columns={columns} data={data} />
+            <div>
+                <Stepper
+                    steps= { steps }
+                    currentStep={step}
+                />
+                <div>
+                    {displayStep()}
+                </div>
+                <StepperControl steps={steps} handleClick={handleClick}/>
             </div>
             <span
                 className="hidden"

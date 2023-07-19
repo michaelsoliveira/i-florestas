@@ -259,70 +259,75 @@ function Table({ columns, data, size, inputSize }: any) {
           </div>
         </div>
       </div>
-      {/* Pagination */}
-      <div className="py-3 flex items-center justify-between">
-        <div className="flex-1 flex justify-between sm:hidden">
-          <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Anterior</Button>
-          <Button onClick={() => nextPage()} disabled={!canNextPage}>Próximo</Button>
-        </div>
-        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-          <div className="flex gap-x-2 items-baseline">
-            <span className="text-sm text-gray-700">
-              Página <span className="font-medium">{state.pageIndex + 1}</span> de <span className="font-medium">{pageOptions.length}</span>
-            </span>
-            <div className='inline-flex items-baseline text-sm'>
-              <span className='w-36 font-medium'>por Página</span>
-              <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
-                value={state.pageSize}
-                onChange={e => {
-                  setPageSize(Number(e.target.value))
-                }}
-              >
-                {[5, 10, 20].map(pageSize => (
-                  <option key={pageSize} value={pageSize}>
-                    {pageSize}
-                  </option>
-                ))}
-              </select>
+      {
+        /* Pagination */
+        (data?.length > 0) && (
+          <div className="py-3 flex items-center justify-between">
+            <div className="flex-1 flex justify-between sm:hidden">
+              <Button onClick={() => previousPage()} disabled={!canPreviousPage}>Anterior</Button>
+              <Button onClick={() => nextPage()} disabled={!canNextPage}>Próximo</Button>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div className="flex gap-x-2 items-baseline">
+                <span className="text-sm text-gray-700">
+                  Página <span className="font-medium">{state.pageIndex + 1}</span> de <span className="font-medium">{pageOptions.length}</span>
+                </span>
+                <div className='inline-flex items-baseline text-sm'>
+                  <span className='w-36 font-medium'>por Página</span>
+                  <select
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
+                    value={state.pageSize}
+                    onChange={e => {
+                      setPageSize(Number(e.target.value))
+                    }}
+                  >
+                    {[5, 10, 20].map(pageSize => (
+                      <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <PageButton
+                    className="rounded-l-md"
+                    onClick={() => gotoPage(0)}
+                    disabled={!canPreviousPage}
+                  >
+                    <span className="sr-only">Primeiro</span>
+                    <ChevronDoubleLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </PageButton>
+                  <PageButton
+                    onClick={() => previousPage()}
+                    disabled={!canPreviousPage}
+                  >
+                    <span className="sr-only">Anterior</span>
+                    <ChevronLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </PageButton>
+                  <PageButton
+                    onClick={() => nextPage()}
+                    disabled={!canNextPage
+                    }>
+                    <span className="sr-only">Próximo</span>
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </PageButton>
+                  <PageButton
+                    className="rounded-r-md"
+                    onClick={() => gotoPage(pageCount - 1)}
+                    disabled={!canNextPage}
+                  >
+                    <span className="sr-only">Último</span>
+                    <ChevronDoubleRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  </PageButton>
+                </nav>
+              </div>
             </div>
           </div>
-          <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-              <PageButton
-                className="rounded-l-md"
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                <span className="sr-only">Primeiro</span>
-                <ChevronDoubleLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </PageButton>
-              <PageButton
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                <span className="sr-only">Anterior</span>
-                <ChevronLeftIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </PageButton>
-              <PageButton
-                onClick={() => nextPage()}
-                disabled={!canNextPage
-                }>
-                <span className="sr-only">Próximo</span>
-                <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </PageButton>
-              <PageButton
-                className="rounded-r-md"
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-              >
-                <span className="sr-only">Último</span>
-                <ChevronDoubleRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
-              </PageButton>
-            </nav>
-          </div>
-        </div>
-      </div>
+        )
+      }
+      
     </>
   )
 }

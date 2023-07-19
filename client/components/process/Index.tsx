@@ -10,8 +10,9 @@ import { LoadingContext } from "contexts/LoadingContext"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 import classNames from "classnames"
+import { PencilAltIcon } from "@heroicons/react/solid"
 
-const Index = ({ currentPoas, loading }: any) => {
+const Index = () => {
     
     const { client } = useContext(AuthContext)
     const [poas, setPoas] = useState<any>()
@@ -20,7 +21,8 @@ const Index = ({ currentPoas, loading }: any) => {
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
-    const { setLoading } = useContext(LoadingContext)
+    const { setLoading, loading } = useContext(LoadingContext)
+    const [uts, setUts] = useState<any[]>([])
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -31,6 +33,12 @@ const Index = ({ currentPoas, loading }: any) => {
             label: poa.nome
         })))
     }
+
+    const loadUts = useCallback(async () => {
+        const { data } = await client.get('/planejo/uts')
+        setUts(data?.uts)
+        console.log(data?.uts)
+    }, [])
 
     const poaExists = poas?.length
 
@@ -62,10 +70,11 @@ const Index = ({ currentPoas, loading }: any) => {
         }
 
         loadPoa()
+        loadUts()
         loadCategorias()
         defaultOptions()
 
-    }, [currentPoas, client, loadCategorias, loadPoa])
+    }, [loadCategorias, loadPoa])
 
     const selectPoa = async (poa: any) => {
         dispatch(setPoa({
@@ -110,7 +119,7 @@ const Index = ({ currentPoas, loading }: any) => {
     }
 
     return (
-        <div>
+        <>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Processamento do POA</h1>
             </div>
@@ -145,23 +154,110 @@ const Index = ({ currentPoas, loading }: any) => {
                     )}
                     <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
-                            <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
-                                <button
-                                    disabled={!poa?.id}
-                                    id='btn-resp'
-                                    onClick={PlanejarPOA}
-                                    className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-2/6 lg:w-1/6",
-                                        !poa?.id && ("hover:cursor-not-allowed opacity-50")
-                                    )}
-                                >
-                                    Planejar POA
-                                </button>
-                            </div>
+                        <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
+                            <button
+                                disabled={!poa?.id}
+                                id='btn-resp'
+                                onClick={PlanejarPOA}
+                                className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-2/6 lg:w-1/6",
+                                    !poa?.id && ("hover:cursor-not-allowed opacity-50")
+                                )}
+                            >
+                                Planejar POA
+                            </button>
                         </div>
                     </div>
+                    <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
+                        <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Definir ajustes</span>
+                        <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
+                        <table className="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                            <thead className="bg-gray-50 w-full">
+                                <tr>
+                                    <th 
+                                    scope="col"
+                                    className="w-4"></th>
+                                    <th
+                                        scope="col"
+                                        className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500"
+                                    >
+                                        <div className="flex flex-row w-full justify-between">
+                                            UPA
+                                        </div>                 
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500"
+                                    >
+                                        <div className="flex flex-row w-full justify-between">
+                                            UT
+                                        </div>   
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-3 py-3 text-left text-xs font-medium text-gray-500"
+                                    >
+                                        <div className="flex flex-row w-full justify-between">
+                                            Volume Total
+                                        </div>   
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-3 py-3 text-left text-xs font-medium text-gray-500"
+                                    >
+                                        <div className="flex flex-row w-full justify-between">
+                                            Volume Explorar
+                                        </div>   
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-3 py-3 text-left text-xs font-medium text-gray-500"
+                                    >
+                                        <div className="flex flex-row w-full justify-between">Volume Explorar/Area Util</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {uts?.map((ut: any) => (
+                                    <tr key={ut.numero_ut}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                        <button>
+                                            <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                        </button>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                        
+                                            
+                                            <div className="text-sm font-medium text-gray-900">{ut?.ano}</div>
+                                    
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{ut?.numero_ut}</div>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <span className="text-sm font-medium text-gray-900">
+                                            <div className="text-sm text-gray-500">{ut?.volume_total}</div>
+                                        </span>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                            <span className="text-sm font-medium text-gray-900">
+                                                <div className="text-sm text-gray-500">{ut?.volume_explorar}</div>
+                                            </span>
+                                        </td>
+                                        <td className="px-3 py-2 whitespace-nowrap">
+                                            <span className="text-sm font-medium text-gray-900">
+                                                <div className="text-sm text-gray-500">{ut?.volume_area_util}</div>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             )}
                 
-        </div>
+        </>
     )
 }
 
