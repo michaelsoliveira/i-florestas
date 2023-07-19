@@ -11,6 +11,8 @@ export interface UpaType {
     spatial_ref_sys: number;
 }
 
+const math = require('mathjs')
+
 class UpaService {
     async create(data: UpaType, userId: string): Promise<Upa> {
 
@@ -65,7 +67,7 @@ class UpaService {
     }
 
     async update(id: string, data: UpaType): Promise<Upa> {
-        await prismaClient.upa.update({
+        const upa = await prismaClient.upa.update({
             where: {
                 id
             },
@@ -91,6 +93,40 @@ class UpaService {
                     
             }
         })
+
+        const uts: any = await prismaClient.ut.findMany({
+            where: {
+                id_upa: id
+            }
+        })
+
+        const utsId: any = uts.map((ut: any) => ut.id)
+
+        console.log(uts, utsId)
+
+        const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
+            where: {
+                upa: {
+                    some: {
+                        id
+                    }
+                }
+            }
+        })
+
+        const areaBasal = `PI() * (DAP ^ 2) / 40000`
+
+        const sqlABasal = `UPDATE arvore SET area_basal = ${areaBasal}
+        WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
+
+        const sqlEqVolume = `
+        UPDATE arvore SET volume = ${eqVolume.expressao} 
+        WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
+
+        console.log(sqlEqVolume)
+
+        await prismaClient.$queryRaw(Prisma.raw(sqlABasal))
+        await prismaClient.$queryRaw(Prisma.raw(sqlEqVolume))
 
         return this.findById(id)
     }
