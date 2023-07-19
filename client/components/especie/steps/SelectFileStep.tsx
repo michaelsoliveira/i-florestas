@@ -1,23 +1,14 @@
 import Table from "@/components/Table";
-import { StepContext } from "contexts/StepContext";
-import { useContext } from "react";
 
 const SelectFileStep = ({columns, data}: any) => {
-    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
-      
-    const handleChange = (e: any) => {
-      const { name, value } = e.target;
-      updateData({ [name]: value });
-    };
-  
+
     return (
-     
-    
-        <div className="mt-6">
+        <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-10">
+            <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Planilha</span>
+          <div className="mt-6">
             <Table columns={columns} data={data} />
+          </div>
         </div>
-  
-  
     );
   };
 

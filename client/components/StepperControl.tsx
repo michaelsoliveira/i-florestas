@@ -4,7 +4,7 @@ import { StepContext } from "contexts/StepContext"
 import { useContext } from "react"
 
 const StepperControl = ({ steps, handleClick }: any) => {
-    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    const { step, nextStep, prevStep, data: dataStep, updateData, setStep } = useContext(StepContext)
     const { hideModal, store } = useModalContext()
     const { visible } = store
     return (

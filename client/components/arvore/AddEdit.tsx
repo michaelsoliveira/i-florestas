@@ -56,7 +56,7 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: arvore } = await client.get(`/arvore/${id}`)
-                console.log(arvore)
+
                 if(arvore?.observacao_arvore) {
                     setObservances({
                         label: arvore?.observacao_arvore?.nome,
@@ -147,7 +147,7 @@ const AddEdit = ({ id }: any) => {
         client.post(`/arvore`, {upa: upa?.id, ut: ut?.id, ...data})
             .then((response: any) => {
                 const { error, arvore, message } = response.data
-                console.log(arvore)
+
                 if (!error) {
                     alertService.success(message);
                     router.push('/arvore')

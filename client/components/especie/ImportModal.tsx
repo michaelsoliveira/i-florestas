@@ -52,38 +52,95 @@ const ImportModal = forwardRef<any, ImportModalType>(
 
     useEffect(() => {
         setStep(1)
-    }, [])
+    }, [setStep])
 
     const isErrors = () => {
         return duplicates.length > 0
     }
-    
-    const handleClick = (direction?: string) => {
-        let newStep = step
 
-        step === 1 && data.length === 0 && alertService.warn('É necessário selecionar um arquivo para importação')
+    const getErrors = async () => {
+        try {
 
-        if (step === steps.length && isErrors() && direction === 'next') {
-            return alertService.warn('Verifique as Incosistências para realizar a importação')
+            await client.post(`/especie/import/get-errors`, {
+                columns: columns,
+                data: data
+            })
+            .then((result: any) => {
+                const { data } = result
+                const { errors: { duplicates, nomes_vazios } } = data
+                updateData({
+                    errors: {
+                        duplicates: {
+                            columns: [
+                                {
+                                    "Header": 'Linha',
+                                    "accessor": 'linha'
+                                },
+                                {
+                                    "Header": 'Nome',
+                                    "accessor": 'nome'
+                                },
+                                {
+                                    "Header": 'Nome Orgão',
+                                    "accessor": 'nome_orgao'
+                                },
+                                {
+                                    "Header": 'Nome Científico',
+                                    "accessor": 'nome_cientifico'
+                                }
+                            ],
+                            data: duplicates
+                        }
+                    }
+                })
+
+            }).catch((error: any) => {
+                console.log('Esse error: ', error.message)
+            })
+        } catch(e: any) {
+            alertService.error(e.message)
         }
+    }
     
-        if (data.length > 0 && step < steps.length) {
-            direction === 'next' ? newStep++ : newStep--
-        }
+    const handleClick = async (direction?: string) => {
+        try {
+            let newStep = step
+            
+            if (step === 1 && data.length === 0 && direction === 'next') {
+                return alertService.warn('É necessário selecionar um arquivo para importação')
+            }
 
+            if (step === 1 && data.length > 0 && direction === 'next') {
+                await getErrors()
+            }
+
+            if (step === steps.length && isErrors() && direction === 'next') {
+                return alertService.warn('Verifique as Incosistências para realizar a importação')
+            }
         
+            if (data.length > 0 && step < steps.length) {
+                direction === 'next' ? newStep++ : newStep--
+            } else {
+                newStep--
+            }
 
-        if (step === steps.length && !isErrors() && direction === 'next') handleImportEspecies()
+            if (step === steps.length && !isErrors() && direction === 'next') {
+                await handleImportEspecies()
+            }
 
-        step === 0 && visible && hideModal()
+            step === 1 && visible && !direction && hideModal()
 
-        step > 0 && step <= steps.length && setStep(newStep)
+            step > 0 && step <= steps.length && setStep(newStep)
+        } catch (e: any) {
+
+        }
+        
     }
 
     const handleImportEspecies = async () => {
         try {
             setLoading(true)
-            await client.post(`/especie/import?projetoId=${projeto?.id}`, {
+            await client.post(`/especie/import`, {
                 columns: columns,
                 data: data
             })
@@ -97,8 +154,8 @@ const ImportModal = forwardRef<any, ImportModalType>(
                 } else {
                     if (data?.errorType && data?.errorType === 'duplicates') {
                         setDuplicates(data?.duplicates)
+                        return alertService.warn(data?.message)
                     }
-                    alertService.warn(data?.message)
                 }
             }).catch((error: any) => {
                 console.log('Esse error: ', error.message)
@@ -114,7 +171,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <Errors dataErrors={{columns, data: duplicates}} />;
+                return <Errors />;
               case 3:
                 return <Finalizar />;
               default: <>Teste</>
@@ -203,7 +260,9 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                                 <span 
                                                     onClick={() => {  
                                                         setColumnData([])
-                                                        setRowData([]) 
+                                                        setRowData([])
+                                                        updateData([])
+                                                        setStep(1)
                                                     }}
                                                 >
                                                     Remove

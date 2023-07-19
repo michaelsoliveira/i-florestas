@@ -52,7 +52,6 @@ export const AddEdit = forwardRef<any, AddEditType>(
             if (isAddMode) {
                 await client.post(`/eq-volume`, data)
                     .then((response: any) => {
-                        console.log(response)
                         const { error, message } = response.data
                         
                         if (error) {
