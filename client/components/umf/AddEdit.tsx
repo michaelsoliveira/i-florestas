@@ -27,7 +27,7 @@ const Umf = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: umf } = await client.get(`/umf/${id}`)
-                console.log(umf)
+
                 setEstado({
                     label: umf?.estado?.nome,
                     value: umf?.estado?.id
@@ -51,7 +51,6 @@ const Umf = ({ id }: any) => {
     }, [session, isAddMode, client, id, setValue, setEstado])
 
     const selectedEstado = (data: any) => {
-        console.log(data)
         setEstado(data)
         setValue('estado', data?.value)
     }

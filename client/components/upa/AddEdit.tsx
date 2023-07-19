@@ -30,7 +30,7 @@ const AddEdit = ({ id }: any) => {
     const loadEquacoes = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/projeto/${projeto?.id}/eq-volume?search=${inputValue}`)
         const { equacoes } = response.data
-        console.log(equacoes)
+
         callback(equacoes?.map((eqVolume: any) => ({
             value: eqVolume.id,
             label: eqVolume.nome

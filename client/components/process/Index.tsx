@@ -37,8 +37,7 @@ const Index = () => {
     const loadUts = useCallback(async () => {
         const { data } = await client.get('/planejo/uts')
         setUts(data?.uts)
-        console.log(data?.uts)
-    }, [])
+    }, [client])
 
     const poaExists = poas?.length
 

@@ -130,7 +130,6 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     const selectUpa = async (upa: any) => {
         const upaSelected = upas.find((u: any) => u.id === upa.value)
-        console.log(upaSelected)
         
         dispatch(setUpa({
             id: upaSelected.id,
