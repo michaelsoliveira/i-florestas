@@ -227,24 +227,29 @@ const Index = () => {
                                         </button>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className="text-sm font-medium">{ut?.ano}</div>
+                                            <div className={classNames("px-3 whitespace-nowrap",
+                                                ut?.volume_area_util > 30 && "text-white")}>{ut?.ano}</div>
                                     
                                         </td>
-                                        <td className="px-3 whitespace-nowrap">
+                                        <td className={classNames("px-3 whitespace-nowrap",
+                                                ut?.volume_area_util > 30 && "text-white")}>
                                             <div className="text-sm">{ut?.numero_ut}</div>
                                         </td>
-                                        <td className="px-3 whitespace-nowrap">
-                                        <span className="text-sm font-medium text-gray-900">
+                                        <td className={classNames("px-3 whitespace-nowrap",
+                                                ut?.volume_area_util > 30 && "text-white")}>
+                                        <span className="text-sm font-medium">
                                             <div className="text-sm text-gray-500">{ut?.volume_total}</div>
                                         </span>
                                         </td>
-                                        <td className="px-3 whitespace-nowrap">
-                                            <span className="text-sm font-medium text-gray-900">
+                                        <td className={classNames("px-3 whitespace-nowrap",
+                                                ut?.volume_area_util > 30 && "text-white")}>
+                                            <span className="text-sm font-medium">
                                                 <div className="text-sm text-gray-500">{ut?.volume_explorar}</div>
                                             </span>
                                         </td>
-                                        <td className="px-3  whitespace-nowrap">
-                                            <span className="text-sm font-medium text-gray-900">
+                                        <td className={classNames("px-3 whitespace-nowrap",
+                                                ut?.volume_area_util > 30 && "text-white")}>
+                                            <span className="text-sm font-medium">
                                                 <div className="text-sm text-gray-500">{ut?.volume_area_util}</div>
                                             </span>
                                         </td>
