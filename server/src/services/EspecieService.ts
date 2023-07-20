@@ -128,6 +128,7 @@ class EspecieService {
                 }
             } else {
                 for (const [index, especie] of Object.entries(data) as any) {
+                    console.log(especie)
                     if (index < data.length) {
                         await prismaClient.especie.create({
                             data: {

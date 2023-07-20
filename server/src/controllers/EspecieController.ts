@@ -64,14 +64,22 @@ export class EspecieController {
     }
 
     async deleteEspecies(request: Request, response: Response) {
-        const { ids } = request.body
-        especieService.deleteEspecies(ids)
+        try {
+            const { ids } = request.body
+            especieService.deleteEspecies(ids)
 
-        return response.json({
-            ids,
-            message: 'Espécies deletadas com sucesso',
-            error: false
-        })
+            return response.json({
+                ids,
+                message: 'Espécies deletadas com sucesso',
+                error: false
+            })
+        } catch (error: any) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+        
     }
 
     async findAll(request: Request, response: Response) {
@@ -172,13 +180,12 @@ export class EspecieController {
         try {
             const { data } = request.body
 
-            const especies = data.map((especie: any) => {
-                return {
-                    nome: especie?.nome_vulgar_1 ? especie?.nome_vulgar_1 : especie?.nome,
-                    nome_orgao: especie?.nome_vulgar_2 ? especie?.nome_vulgar_2 : especie?.orgao,
-                    nome_cientifico: especie.nome_cientifico
-                }
-            })
+            const especies = data.map( (especie: any, index: number) => {
+                const { nome_vulgar: nome_orgao, ...rest } = especie;
+                
+                return { nome_orgao, ...rest }
+               }
+            )
 
             const importData = await especieService.importEspecies(especies, request.user?.id)
 
@@ -194,7 +201,7 @@ export class EspecieController {
 
             return response.json({
                 error: false,
-                especies,
+                especies: [],
                 message: 'Espécies importadas com sucesso!!!'
             })
             

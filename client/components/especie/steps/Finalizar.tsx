@@ -1,6 +1,6 @@
 const Finalizar = () => {
     return (
-        <div className="mt-6">
+        <div className="mt-6 flex flex-row items-center justify-center">
             Finalizar
         </div>
     )
