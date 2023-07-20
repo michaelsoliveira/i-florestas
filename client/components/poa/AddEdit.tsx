@@ -299,7 +299,7 @@ const AddEdit = ({ id }: any) => {
 
     const handleSelectAllCategorias = () => {
         if (checkedCategorias?.length < categorias?.length) {
-            setCheckedCategorias(categorias.map(({ id }: any) => id));
+            setCheckedCategorias(categorias.filter((cat: any) => cat.nome !== 'Não definida').map(({ id }: any) => id));
         } else {
             setCheckedCategorias([]);
         }

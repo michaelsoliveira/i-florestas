@@ -24,6 +24,7 @@ import { PoaController } from "../controllers/PoaController"
 import { PlanejoController } from "../controllers/PlanejoController"
 
 const routes = express.Router()
+const bodyParser = require('body-parser')
 
 routes.get('/users', Authentication(), new UserController().findAll)
 routes.get('/users/provider/find-by-email', Authentication(), new UserController().findByEmail)
@@ -200,7 +201,7 @@ routes.get('/arvore/:id', Authentication(), new ArvoreController().findOne)
 routes.put('/arvore/:id', Authentication(), new ArvoreController().update)
 routes.delete('/arvore/single/:id', Authentication(), new ArvoreController().delete)
 routes.delete('/arvore/multiples', Authentication(), new ArvoreController().deleteArvores)
-routes.post('/arvore/import-inventario', Authentication(), new ArvoreController().importInventario)
+routes.post('/arvore/import-inventario', bodyParser.urlencoded({ extended: false }), Authentication(), new ArvoreController().importInventario)
 
 
 export default routes;
