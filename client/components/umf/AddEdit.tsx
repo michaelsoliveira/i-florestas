@@ -69,7 +69,6 @@ const Umf = ({ id }: any) => {
     async function createUmf(data: any) {
         await client.post('umf', data)
             .then((response: any) => {
-                console.log(response.data)
                 const { error, message, umf } = response.data
                 dispatch(setUmf({
                     id: umf.id,

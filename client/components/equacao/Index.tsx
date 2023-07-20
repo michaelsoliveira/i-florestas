@@ -41,7 +41,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
 
     const formSubmit = () => {
         formRef.current.handleSubmit()
-        console.log(formRef.current.errors)
+
         if (formRef.current.isValid) {
             hideModal()
         }
@@ -59,7 +59,6 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
     })
 
     const updateEquacao = (id?: string) => {
-        console.log(id)
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Equação', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
             content: <AddEdit eqModelos={eqModelos} sendForm={() => { loadEquacoes(10) }} ref={formRef} projetoId={projeto?.id} equacaoId={id} styles={stylesForm} redirect={false} />
         })    
