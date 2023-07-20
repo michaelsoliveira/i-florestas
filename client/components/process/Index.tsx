@@ -73,7 +73,7 @@ const Index = () => {
         loadCategorias()
         defaultOptions()
 
-    }, [loadCategorias, loadPoa])
+    }, [client, loadCategorias, loadPoa])
 
     const selectPoa = async (poa: any) => {
         dispatch(setPoa({
