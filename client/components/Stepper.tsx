@@ -1,7 +1,6 @@
 import { StepContext } from 'contexts/StepContext';
 import React, { useState, useEffect, useRef, useContext } from 'react'
 const Stepper = ({ steps, currentStep }: any) => {
-    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
 	const [stepperSteps, setStep] = useState<any>([]);
 	const stepsStateRef = useRef();
 	useEffect(() => {
@@ -16,7 +15,7 @@ const Stepper = ({ steps, currentStep }: any) => {
 		stepsStateRef.current = stepsState;
 		const currentSteps = updateStep(currentStep - 1, stepsState)
 		setStep(currentSteps)
-	}, [currentStep]);
+	}, [currentStep, steps]);
 	useEffect(() => {
 		const currentSteps = updateStep(currentStep - 1, stepsStateRef.current)
 		setStep(currentSteps)
