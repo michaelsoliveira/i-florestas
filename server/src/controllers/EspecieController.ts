@@ -66,7 +66,7 @@ export class EspecieController {
     async deleteEspecies(request: Request, response: Response) {
         try {
             const { ids } = request.body
-            especieService.deleteEspecies(ids)
+            await especieService.deleteEspecies(ids)
 
             return response.json({
                 ids,

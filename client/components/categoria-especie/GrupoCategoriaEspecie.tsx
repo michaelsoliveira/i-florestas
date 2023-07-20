@@ -127,14 +127,14 @@ const GrupoCategoriaEspecie = () => {
                                 }}
                             />
                         </div>
-                        
-                        <div className="relative py-4 w-3/5">
+                        <div className="grid grid-cols-6 gap-6 w-full items-center justify-center mt-4">
+                        <div className="relative col-span-5">
                             <SelectableRowList 
                                 data={especies ? especies.map((especie: any) => { return { id: especie.id, label: especie.nome } }) : []} 
                                 callBack={callBackEspecies}    
                             />
                         </div>
-                        <div>
+                        
                             <div 
                                 className="flex items-center justify-center bg-gray-300 rounded-full hover:cursor-pointer h-8 w-8 focus:ring-green-200"
                                 onClick={setCategoriaEspecies}    
@@ -158,7 +158,7 @@ const GrupoCategoriaEspecie = () => {
                                 }}
                             />
                         </div>
-                        <div className="grid py-4 w-3/5">
+                        <div className="py-4">
                             <SelectableRowList 
                                 data={especiesCategories ? especiesCategories.map((especie: any) => { return { id: especie.id, label: especie.nome } }) : []} 
                                 callBack={callBackEspecies}  
