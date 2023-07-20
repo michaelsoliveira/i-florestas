@@ -30,10 +30,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Provider store={store}>
+      <LoadingProvider>
           <ModalProvider>
             <ProjetoProvider>
               <AuthProvider>
-                <LoadingProvider>
+                
                   <StepProvider>
                     <Layout>
                     <ToastContainer />
@@ -42,10 +43,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                       <Modal />
                     </Layout>
                   </StepProvider>
-                </LoadingProvider>
+                
               </AuthProvider>
             </ProjetoProvider>
           </ModalProvider>
+          </LoadingProvider>
       </Provider>
     </SessionProvider>
   )

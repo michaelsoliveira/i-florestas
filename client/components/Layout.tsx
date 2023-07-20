@@ -112,7 +112,6 @@ const Layout = ({ children }: props) => {
                     userNavigation={userNavigation}
                 />
             </div>
-            
                 { (processPath && !poa?.id) && (
                     <div className="lg:mt-16">
                         <span className="flex items-center bg-blue-500 text-white text-sm font-bold px-4 py-3" role="alert">

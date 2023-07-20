@@ -244,6 +244,10 @@ class ArvoreService {
         }
 
         const volume = math.evaluate(eqVolume?.expressao, scope)
+        const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', {
+            PI: Math.PI,
+            DAP: dap
+        })
 
         const preparedData = upa?.tipo === 1 ? {
             numero_arvore: parseInt(data?.numero_arvore),
@@ -255,6 +259,7 @@ class ArvoreService {
             lat_x: parseFloat(data?.lat_x),
             long_y: parseFloat(data?.long_y),
             volume,
+            area_basal: areaBasal,
             ut: {
                 connect: {
                     id: ut?.id
@@ -274,6 +279,7 @@ class ArvoreService {
             long_y: parseFloat(data?.long_y),
             ponto_gps: parseInt(data?.ponto_gps),
             volume,
+            area_basal: areaBasal,
             ut: {
                 connect: {
                     id: ut?.id
