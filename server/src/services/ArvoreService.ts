@@ -239,11 +239,14 @@ class ArvoreService {
         const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
 
         let scope = {
+            dap,
             DAP: dap,
             ALTURA: parseFloat(data?.altura)
         }
 
-        const volume = math.evaluate(eqVolume?.expressao, scope)
+        console.log(eqVolume?.expressao.toLowerCase().replace("ln(", "log(e,"))
+
+        const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log(e,"), scope)
         const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', {
             PI: Math.PI,
             DAP: dap

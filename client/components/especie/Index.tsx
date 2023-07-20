@@ -73,7 +73,6 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
         try {
             client.delete(`/especie/single/${id}`)
                 .then((response: any) => {
-                    console.log(response)
                     const { error, message } = response.data
                     if (!error) {
                         alertService.success(message)
