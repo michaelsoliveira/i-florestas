@@ -160,7 +160,7 @@ export class EspecieController {
             const especies = data.map((especie: any) => {
                 return {
                     nome: especie?.nome_vulgar_1 ? especie?.nome_vulgar_1 : especie?.nome,
-                    nome_orgao: especie?.nome_vulgar_2 ? especie?.nome_vulgar_2 : especie?.orgao,
+                    nome_orgao: especie?.nome_vulgar ? especie?.nome_vulgar : especie?.nome_orgao,
                     nome_cientifico: especie.nome_cientifico
                 }
             })
