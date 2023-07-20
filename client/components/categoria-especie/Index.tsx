@@ -107,7 +107,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                 .then(() => {
                     alertService.success('A categoria de espécie foi deletada com SUCESSO!!!')
                     loadCategorias()
-                    hideModal
+                    hideModal()
                 })
         } catch (error) {
             console.log(error)
@@ -115,19 +115,12 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     }, [client, hideModal, loadCategorias])
     
     const deleteSingleModal = useCallback((id?: string) => {
-            showModal({ title: 'Deletar Categoria', onConfirm: () => { 
-                deleteCategoria(id) 
-                hideModal()
-            }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
-        }, [categoriaById, deleteCategoria, showModal, hideModal])
+            showModal({ title: 'Deletar Categoria', onConfirm: () => { deleteCategoria(id) }, 
+            styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', 
+            content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
+        }, [categoriaById, deleteCategoria, showModal])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Categorias', onConfirm: deleteCategorias, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Categorias Selecionadas?' })
-
-    function toogleDeleteModal(id: string) {
-        const categoria = currentCategorias.find((categoria: CategoriaEspecieType) => categoria.id === id)
-        setSelectedCategoria(categoria)
-        setOpenModal(true)
-    }
 
     const handleSearch = async (query: string) => {
         const paginatedData = {
