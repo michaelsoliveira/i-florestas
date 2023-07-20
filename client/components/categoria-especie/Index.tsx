@@ -119,7 +119,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                 deleteCategoria(id) 
                 hideModal()
             }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a categoria ${categoriaById(id)?.nome}?`})
-        }, [categoriaById, deleteCategoria, showModal])
+        }, [categoriaById, deleteCategoria, showModal, hideModal])
         
     const deleteMultModal = () => showModal({ title: 'Deletar Categorias', onConfirm: deleteCategorias, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Categorias Selecionadas?' })
 
