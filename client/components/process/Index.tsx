@@ -21,7 +21,7 @@ const Index = () => {
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
-    const { setLoading, loading } = useContext(LoadingContext)
+    const { setLoading } = useContext(LoadingContext)
     const [uts, setUts] = useState<any[]>([])
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -106,6 +106,7 @@ const Index = () => {
             
             if (!error) {
                 alertService.success(message)
+                loadUts()
             } else {
                 alertService.error(message)
             }
@@ -122,7 +123,7 @@ const Index = () => {
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Processamento do POA</h1>
             </div>
-            {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
+            
                 <div className="flex flex-col p-6 mx-auto">
                     
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
@@ -151,7 +152,7 @@ const Index = () => {
                             />
                         </div>
                     )}
-                    <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
+                    <div className="border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
                         <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
                             <button
@@ -166,7 +167,7 @@ const Index = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-6">
+                    <div className="border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Definir ajustes</span>
                         <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
                         <table className="min-w-full divide-y divide-gray-200 overflow-x-auto">
@@ -215,34 +216,34 @@ const Index = () => {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-gray-300">
                                 {uts?.map((ut: any) => (
-                                    <tr key={ut.numero_ut}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                    <tr key={ut.numero_ut}
+                                        className={classNames(ut?.volume_area_util > 30 && "bg-red-100")}
+                                    >
+                                        <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                         <button>
                                             <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                         </button>
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
-                        
-                                            
+                                        <td className="px-3 whitespace-nowrap">
                                             <div className="text-sm font-medium text-gray-900">{ut?.ano}</div>
                                     
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <td className="px-3 whitespace-nowrap">
                                             <div className="text-sm text-gray-900">{ut?.numero_ut}</div>
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm font-medium text-gray-900">
                                             <div className="text-sm text-gray-500">{ut?.volume_total}</div>
                                         </span>
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm font-medium text-gray-900">
                                                 <div className="text-sm text-gray-500">{ut?.volume_explorar}</div>
                                             </span>
                                         </td>
-                                        <td className="px-3 py-2 whitespace-nowrap">
+                                        <td className="px-3  whitespace-nowrap">
                                             <span className="text-sm font-medium text-gray-900">
                                                 <div className="text-sm text-gray-500">{ut?.volume_area_util}</div>
                                             </span>
@@ -254,8 +255,6 @@ const Index = () => {
                         </div>
                     </div>
                 </div>
-            )}
-                
         </>
     )
 }

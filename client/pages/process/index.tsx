@@ -1,8 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "components/withAuthentication"
 import { AuthContext } from "contexts/AuthContext"
-import { useRouter } from "next/router"
-import { RootState } from "store"
 import Index from "components/process/Index"
 
 const PoaIndex = () => {
