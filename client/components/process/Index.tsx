@@ -219,13 +219,12 @@ const Index = () => {
                             <tbody className="bg-white divide-y divide-gray-300">
                                 {uts?.map((ut: any) => (
                                     <tr key={ut.numero_ut}
-                                        className={classNames(ut?.volume_area_util > 30 && "bg-red-500 text-white")}
                                     >
                                         <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                         <button>
                                             <PencilAltIcon className={
-                                                classNames("w-5 h-5 ml-4 -mr-1",
-                                                ut?.volume_area_util > 30 ? "text-white" : "text-green-600 hover:text-green-700")
+                                                classNames("w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700",
+                                                )
                                             } />
                                         </button>
                                         </td>
@@ -237,18 +236,20 @@ const Index = () => {
                                             <div className="text-sm font-medium">{ut?.numero_ut}</div>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                        <span className="text-sm font-medium">
-                                            <div className="text-sm">{ut?.volume_total}</div>
+                                        <span className="text-sm">
+                                            <div className="text-sm font-medium">{ut?.volume_total}</div>
                                         </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <span className="text-sm font-medium">
-                                                <div className="text-sm">{ut?.volume_explorar}</div>
+                                            <span className="text-sm">
+                                                <div className="text-sm font-medium">{ut?.volume_explorar}</div>
                                             </span>
                                         </td>
-                                        <td className="px-3  whitespace-nowrap">
-                                            <span className="text-sm font-medium">
-                                                <div className="text-sm">{ut?.volume_area_util}</div>
+                                        <td className="px-3 whitespace-nowrap">
+                                            <span className="text-sm">
+                                                <div className={classNames("text-sm font-medium", 
+                                                ut?.volume_area_util > 30 && "text-red-700"
+                                                )}>{ut?.volume_area_util}</div>
                                             </span>
                                         </td>
                                     </tr>
