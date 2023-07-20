@@ -231,7 +231,7 @@ const Index = () => {
 
     const onUploadAccepted = (result: any) => {
         const columns = result.data[0].map((col: any, index: any) => {
-            const accessor = col.split(" ").join("_").toLowerCase()
+            const accessor = col.normalize("NFD").replace(" - ", " ").replace(/[^0-9a-zA-Z\s]/g, "").split(" ").join("_").toLowerCase()
             if (accessor === 'ut' || accessor === 'especie') {
                 return {
                     Header: col,
