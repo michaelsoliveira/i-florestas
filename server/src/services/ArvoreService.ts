@@ -56,18 +56,15 @@ class ArvoreService {
                 }
             }) as any
     
-            const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
+            const dap = data?.cap ? (parseFloat(data?.cap?.replace(",",".")) / Math.PI) : parseFloat(data?.dap?.replace(",","."))
     
             let scope = {
-                DAP: dap,
-                ALTURA: parseFloat(data?.altura)
+                dap,
+                altura: parseFloat(data?.altura)
             }
     
-            const volume = math.evaluate(eqVolume?.expressao, scope)
-            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', {
-                PI: Math.PI,
-                DAP: dap
-            })
+            const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
+            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
     
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
@@ -131,7 +128,7 @@ class ArvoreService {
         
     }
 
-    async createByImport(dt: any, upa?: any) {
+    async createByImport(dt: any, upa?: any): Promise<any> {
         try {
             const eqVolume = await prismaClient.equacaoVolume.findFirst({
                 where: {
@@ -143,20 +140,19 @@ class ArvoreService {
                 }
             }) as any
             
-            const data = await Promise.all(dt.map(async (arv: any, idx: number): Promise<any> => {
-                while (idx < dt.length-1) {
-                    const dap = arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap)
-                    
+            const totalArvores = dt.length
+
+            const data = await Promise.all(dt.map(async (arv: any, idx: any) : Promise<any> =>  {
+                if (idx < totalArvores - 1) {
+                    const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
+
                     let scope = {
-                        DAP: dap,
-                        ALTURA: parseFloat(arv?.altura)
+                        dap,
+                        altura: parseFloat(arv?.altura)
                     }
             
-                    const volume = math.evaluate(eqVolume?.expressao, scope)
-                    const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', {
-                        PI: Math.PI,
-                        DAP: dap
-                    })
+                    const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
+                    const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
 
                     const especie = await prismaClient.especie.findFirst({
                         where: {
@@ -184,7 +180,7 @@ class ArvoreService {
 
                     return {
                         numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
-                        dap: arv?.cap ? parseFloat(arv?.cap) / Math.PI : parseFloat(arv?.dap),
+                        dap,
                         altura: parseFloat(arv?.altura),
                         fuste: arv?.qf && parseInt(arv?.qf),
                         volume,
@@ -193,6 +189,7 @@ class ArvoreService {
                         id_ut: ut?.id,
                         id_especie: especie?.id
                     }
+                    
                 }
             }))
 
@@ -202,7 +199,10 @@ class ArvoreService {
 
         } catch(error) {
             console.log(error?.message)
-            return error.message
+            return {
+                error: true,
+                message: error.message
+            }
         }
         
     }
@@ -236,21 +236,15 @@ class ArvoreService {
             }
         }) as any
 
-        const dap = data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap)
+        const dap = data?.cap ? (parseFloat(data?.cap?.replace(",",".")) / Math.PI) : parseFloat(data?.dap?.replace(",","."))
 
         let scope = {
             dap,
-            DAP: dap,
-            ALTURA: parseFloat(data?.altura)
+            altura: parseFloat(data?.altura)
         }
 
-        console.log(eqVolume?.expressao.toLowerCase().replace("ln(", "log(e,"))
-
-        const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log(e,"), scope)
-        const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', {
-            PI: Math.PI,
-            DAP: dap
-        })
+        const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
+        const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
 
         const preparedData = upa?.tipo === 1 ? {
             numero_arvore: parseInt(data?.numero_arvore),

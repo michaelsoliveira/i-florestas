@@ -138,17 +138,22 @@ export class ArvoreController {
                 })
             }
 
-            await arvoreService.createByImport(importedData, upa)
-            
+            const importData = await arvoreService.createByImport(importedData, upa)            
 
-            return response.json({
+            const result = importData?.error ? {
+                error: true,
+                message: importData?.message
+            } : {
                 error: false,
                 message: 'Árvores importadas com sucesso!!!'
-            })
+            }
+
+            return response.json(result)
+            
         } catch (error) {
             return response.json({
                 error: true,
-                message: error
+                message: error.message
             })
         }
 

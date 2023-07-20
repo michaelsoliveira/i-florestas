@@ -127,20 +127,22 @@ class EspecieService {
                     duplicates
                 }
             } else {
-                for (const especie of data) {
-                    await prismaClient.especie.create({
-                        data: {
-                            nome: especie?.nome,
-                            nome_orgao: especie?.nome_orgao,
-                            nome_cientifico: especie?.nome_cientifico,
-                            id_projeto: user?.id_projeto_ativo,
-                            categoria_especie: {
-                                create: {
-                                    id_categoria: categoriaNaoDefinida?.id
+                for (const [index, especie] of Object.entries(data) as any) {
+                    if (index < data.length) {
+                        await prismaClient.especie.create({
+                            data: {
+                                nome: especie?.nome,
+                                nome_orgao: especie?.nome_orgao,
+                                nome_cientifico: especie?.nome_cientifico,
+                                id_projeto: user?.id_projeto_ativo,
+                                categoria_especie: {
+                                    create: {
+                                        id_categoria: categoriaNaoDefinida?.id
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
                 return {
                     error: false,
