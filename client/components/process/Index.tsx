@@ -219,7 +219,7 @@ const Index = () => {
                             <tbody className="bg-white divide-y divide-gray-300">
                                 {uts?.map((ut: any) => (
                                     <tr key={ut.numero_ut}
-                                        className={classNames(ut?.volume_area_util > 30 && "bg-red-100")}
+                                        className={classNames(ut?.volume_area_util > 30 && "bg-red-500 text-white")}
                                     >
                                         <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                         <button>
@@ -227,11 +227,11 @@ const Index = () => {
                                         </button>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">{ut?.ano}</div>
+                                            <div className="text-sm font-medium">{ut?.ano}</div>
                                     
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{ut?.numero_ut}</div>
+                                            <div className="text-sm">{ut?.numero_ut}</div>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm font-medium text-gray-900">
