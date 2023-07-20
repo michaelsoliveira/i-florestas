@@ -223,34 +223,32 @@ const Index = () => {
                                     >
                                         <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                         <button>
-                                            <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                            <PencilAltIcon className={
+                                                classNames("w-5 h-5 ml-4 -mr-1",
+                                                ut?.volume_area_util > 30 ? "text-white" : "text-green-600 hover:text-green-700")
+                                            } />
                                         </button>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className={classNames("px-3 whitespace-nowrap",
-                                                ut?.volume_area_util > 30 && "text-white")}>{ut?.ano}</div>
+                                            <div className="text-sm font-medium">{ut?.ano}</div>
                                     
                                         </td>
-                                        <td className={classNames("px-3 whitespace-nowrap",
-                                                ut?.volume_area_util > 30 && "text-white")}>
-                                            <div className="text-sm">{ut?.numero_ut}</div>
+                                        <td className="px-3 whitespace-nowrap">
+                                            <div className="text-sm font-medium">{ut?.numero_ut}</div>
                                         </td>
-                                        <td className={classNames("px-3 whitespace-nowrap",
-                                                ut?.volume_area_util > 30 && "text-white")}>
+                                        <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm font-medium">
-                                            <div className="text-sm text-gray-500">{ut?.volume_total}</div>
+                                            <div className="text-sm">{ut?.volume_total}</div>
                                         </span>
                                         </td>
-                                        <td className={classNames("px-3 whitespace-nowrap",
-                                                ut?.volume_area_util > 30 && "text-white")}>
+                                        <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm font-medium">
-                                                <div className="text-sm text-gray-500">{ut?.volume_explorar}</div>
+                                                <div className="text-sm">{ut?.volume_explorar}</div>
                                             </span>
                                         </td>
-                                        <td className={classNames("px-3 whitespace-nowrap",
-                                                ut?.volume_area_util > 30 && "text-white")}>
+                                        <td className="px-3  whitespace-nowrap">
                                             <span className="text-sm font-medium">
-                                                <div className="text-sm text-gray-500">{ut?.volume_area_util}</div>
+                                                <div className="text-sm">{ut?.volume_area_util}</div>
                                             </span>
                                         </td>
                                     </tr>
