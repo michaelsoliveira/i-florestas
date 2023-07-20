@@ -128,7 +128,7 @@ class EspecieService {
                 }
             } else {
                 for (const [index, especie] of Object.entries(data) as any) {
-                    console.log(especie)
+                    
                     if (index < data.length) {
                         await prismaClient.especie.create({
                             data: {
@@ -255,8 +255,9 @@ class EspecieService {
     }
 
     async deleteEspecies(ids: string[]) {
-        ids.forEach(id => {
-            prismaClient.especie.delete({
+        
+        ids.forEach(async (id: any) => {
+            await prismaClient.especie.delete({
                 where: { id }
             })
         })   

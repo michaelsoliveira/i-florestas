@@ -95,10 +95,11 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     const deleteEspecies = async () => {
         setLoading(true)
+
         try {
-            await client.post('/especie/multiples', { data: { ids: checkedEspecies} })
+            await client.post('/especie/multiples', { ids: checkedEspecies} )
                 .then(() => {
-                    setCheckedEspecies({})
+                    setCheckedEspecies([])
                     alertService.success('As espécies foram deletadas com SUCESSO!!!')
                     loadEspecies()
                     hideModal()
@@ -333,7 +334,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             <td className="flex justify-center">
                             <input                 
                                     value={especie?.id}
-                                    checked={checkedEspecies.includes(especie?.id)}
+                                    checked={checkedEspecies?.includes(especie?.id)}
                                     onChange={handleSelectEspecie}
                                     id="especieId"
                                     type="checkbox"
