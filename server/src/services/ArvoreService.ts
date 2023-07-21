@@ -336,16 +336,23 @@ class ArvoreService {
                 [orderByElement]: order
             }
         }
+
+        const withUt = utId === 'todos' || (typeof utId === undefined) 
+            ? {} 
+            : {
+            ut: { 
+                AND: {
+                    id: utId,
+                    id_poa: poa ? poa?.id : null
+                }
+             }
+        }
+
         const where = search ?
             {
                 AND: 
                     { numero_arvore: parseInt(search) },
-                    ut: { 
-                        AND: {
-                            id: utId,
-                            id_poa: poa ? poa?.id : null
-                        }
-                     },
+                    ...withUt,
                     especie: {
                         AND: {
                             id_projeto: projeto ? projeto?.id : null,
@@ -361,12 +368,7 @@ class ArvoreService {
             } : {
                 AND: 
                     {
-                        ut: { 
-                            AND: {
-                                id: utId,
-                                id_poa: poa ? poa?.id : null
-                            }
-                         },
+                        ...withUt,
                         especie: {
                             AND: {
                                 id_projeto: projeto ? projeto?.id : null,
@@ -381,10 +383,12 @@ class ArvoreService {
                         }
                     }
             }
+
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
                 include: {
                     especie: true,
+                    situacao_arvore: true
                 },
                 where,
                 orderBy: orderByTerm,

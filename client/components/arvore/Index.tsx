@@ -177,11 +177,11 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     const selectUt = async (ut: any) => {
         
-        const utSelected = uts.find((u: any) => u.id === ut.value)
+        //const utSelected = uts.find((u: any) => u.id === ut.value)
 
         dispatch(setUt({
-            id: utSelected.id,
-            numero_ut: utSelected.numero_ut,
+            id: ut.value,
+            numero_ut: ut.label,
         }))
         
         setSelectedUt(ut)
@@ -215,12 +215,14 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     }
 
     function getUtsDefaultOptions() {
-        return uts?.map((ut: any) => {
+        const data = uts?.map((ut: any) => {
             return {
                 label: ut.numero_ut,
                 value: ut.id
             }
         })
+
+        return [{ label: 'Todos', value: 'todos' }].concat(data)
     }
 
     const deleteArvore = useCallback(async (id?: string) => {
@@ -352,6 +354,8 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <option value="20">20</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
+                                <option value="200">200</option>
+                                <option value="500">500</option>
                             </select>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
@@ -453,7 +457,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 }
                             </div>   
                         </th>
-                        {upa?.tipo === 1 ? (
+                        {upa?.tipo === 1 && (
                             <>
                                 <th
                                 scope="row"
@@ -480,61 +484,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                         : (<ChevronDownIcon className="w-5 h-5" />)
                                     }
                                 </div>                 
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('lat_x')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Coord. X
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('long_y')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Coord. Y
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            </>
-                        ) : (
-                            <>
-                                <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('lat_x')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Latitude
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
-                            </th>
-                            <th
-                                scope="row"
-                                className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('long_y')}
-                            >
-                                <div className="flex flex-row w-full justify-between">
-                                    Longitude
-                                    {sorted
-                                        ? (<ChevronUpIcon className="w-5 h-5" />)
-                                        : (<ChevronDownIcon className="w-5 h-5" />)
-                                    }
-                                </div>   
                             </th>
                             </>
                         )}
@@ -578,6 +527,32 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 }
                             </div>   
                         </th>
+                        <th
+                            scope="col"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('especie.nome')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                Espécie
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
+                        <th
+                            scope="col"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('situacao_arvore.nome')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                Situação
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
                         <th scope="col" className="relative w-1/12 px-6 py-3">
                             <span className="sr-only">Edit</span>
                         </th>
@@ -602,7 +577,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <div className="text-sm font-medium text-gray-900">{arvore?.numero_arvore}</div>
                             </div>
                             </td>
-                            {(upa?.tipo === 1) ? (
+                            {(upa?.tipo === 1) && (
                                 <>
                                     <td className="px-3 py-2 whitespace-nowrap">
                                     <div className="text-sm text-gray-900">{arvore?.faixa}</div>
@@ -612,29 +587,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                         <div className="text-sm text-gray-500">{arvore?.orient_x}</div>
                                     </span>
                                     </td>
-                                    <td className="px-3 py-2 whitespace-nowrap">
-                                    <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore.lat_x}</div>
-                                    </span>
-                                    </td>
-                                    <td className="px-3 py-2 whitespace-nowrap">
-                                    <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.long_y}</div>
-                                    </span>
-                                    </td>
-                                </>
-                            ) : (
-                                <>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                    <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.lat ? arvore?.lat : arvore?.lat_x}</div>
-                                    </span>
-                                </td>
-                                <td className="px-3 py-2 whitespace-nowrap">
-                                    <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.lng ? arvore?.lng : arvore?.long_y}</div>
-                                    </span>
-                                </td>
                                 </>
                             )}
                             <td className="px-3 py-2 whitespace-nowrap">
@@ -652,13 +604,23 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     <div className="text-sm text-gray-500">{arvore?.volume}</div>
                                 </span>
                             </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore?.especie?.nome}</div>
+                                </span>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <span className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm text-gray-500">{arvore?.situacao_arvore?.nome}</div>
+                                </span>
+                            </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
-                            <Link href={`/arvore/update/${arvore.id}`}>
-                                <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
-                            </Link>
-                            <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
-                                <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
-                            </Link>
+                                <Link href={`/arvore/update/${arvore.id}`}>
+                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                </Link>
+                                <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
+                                    <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />
+                                </Link>
                             </td>
                         </tr>
                         ))}
