@@ -284,16 +284,21 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const sortArvores = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
         const nElements = sortedBy.length
-        
+        console.log(sortBy)
         let sortedArvores: any = []        
+        const tiposNumericos = ['numero_arvore', 'lat_x', 'long_y', 'lat', 'lng']
         sortedArvores = filteredArvores.sort((a: any, b: any) => {
-            return  sorted
-                ? nElements > 1 
-                    ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
-                    : a[sortBy].toLowerCase().localeCompare(b[sortBy].toLowerCase())
-                : nElements > 1 
-                    ? b[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(a[sortedBy[0]][sortedBy[1]].toLowerCase()) 
-                    : b[sortBy].toLowerCase().localeCompare(a[sortBy].toLowerCase());
+            if (!tiposNumericos.includes(sortBy)) {
+                return sorted ?
+                nElements > 1
+                ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
+                : a[sortBy].toLowerCase().localeCompare(b[sortBy].toLowerCase())
+            : nElements > 1 
+                ? b[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(a[sortedBy[0]][sortedBy[1]].toLowerCase()) 
+                : b[sortBy].toLowerCase().localeCompare(a[sortBy].toLowerCase());
+            } else {
+                return sorted ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]
+            }
         })
         
         setSorted(!sorted)
@@ -508,7 +513,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 <th
                                 scope="row"
                                 className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('latitude')}
+                                onClick={() => sortArvores('lat_x')}
                             >
                                 <div className="flex flex-row w-full justify-between">
                                     Latitude
@@ -521,7 +526,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             <th
                                 scope="row"
                                 className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => sortArvores('longitude')}
+                                onClick={() => sortArvores('long_y')}
                             >
                                 <div className="flex flex-row w-full justify-between">
                                     Longitude
@@ -614,7 +619,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                     </td>
                                     <td className="px-3 py-2 whitespace-nowrap">
                                     <span className="text-sm font-medium text-gray-900">
-                                        <div className="text-sm text-gray-500">{arvore?.especie?.nome}</div>
+                                        <div className="text-sm text-gray-500">{arvore?.long_y}</div>
                                     </span>
                                     </td>
                                 </>
