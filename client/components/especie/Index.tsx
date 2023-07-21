@@ -1,6 +1,5 @@
 import { CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "../Link"
-import { Loading } from "../Loading"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
@@ -10,8 +9,6 @@ import { useModalContext } from "contexts/ModalContext"
 import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 import { ProjetoContext } from "contexts/ProjetoContext"
-import { useCSVReader } from 'react-papaparse'
-import { Button } from "../Utils/Button"
 import ImportModal from "./ImportModal"
 import { styles as stylesButton } from '../Utils/styles'
 import { StepContext } from "contexts/StepContext"
@@ -31,10 +28,10 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const { setLoading } = useContext(LoadingContext)
     const { projeto } = useContext(ProjetoContext)
     const submitImport = useRef(null) as any
-    const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
+    const { step } = useContext(StepContext)
     const steps = [
-        "Selecionar Arquivo",
-        "Verificar Erros",
+        "Arquivo",
+        "Erros",
         "Finalizar"
     ]
 
@@ -98,8 +95,9 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     const deleteEspecies = async () => {
         setLoading(true)
+
         try {
-            await client.delete('/especie/multiples', { data: { ids: checkedEspecies} })
+            await client.post('/especie/multiples', { ids: checkedEspecies} )
                 .then(() => {
                     setCheckedEspecies([])
                     alertService.success('As espécies foram deletadas com SUCESSO!!!')
@@ -336,7 +334,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             <td className="flex justify-center">
                             <input                 
                                     value={especie?.id}
-                                    checked={checkedEspecies.includes(especie?.id)}
+                                    checked={checkedEspecies?.includes(especie?.id)}
                                     onChange={handleSelectEspecie}
                                     id="especieId"
                                     type="checkbox"

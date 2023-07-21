@@ -140,9 +140,9 @@ class ArvoreService {
                 }
             }) as any
             
-            const totalArvores = dt.length
+            const totalArvores = dt?.importedData.length
 
-            const data = await Promise.all(dt.map(async (arv: any, idx: any) : Promise<any> =>  {
+            const data = await Promise.all(dt?.importedData?.map(async (arv: any, idx: any) : Promise<any> =>  {
                 if (idx < totalArvores - 1) {
                     const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
@@ -156,7 +156,7 @@ class ArvoreService {
 
                     const especie = await prismaClient.especie.findFirst({
                         where: {
-                            nome_orgao: arv?.especie
+                            nome_orgao: arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
                         }
                     })
 

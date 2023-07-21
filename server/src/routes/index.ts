@@ -191,7 +191,7 @@ routes.get('/especie', Authentication(), new EspecieController().findAll)
 routes.get('/especie/:id', Authentication(), new EspecieController().findOne)
 routes.put('/especie/:id', Authentication(), new EspecieController().update)
 routes.delete('/especie/single/:id', Authentication(), new EspecieController().delete)
-routes.delete('/especie/multiples', Authentication(), new EspecieController().deleteEspecies)
+routes.post('/especie/multiples', Authentication(), new EspecieController().deleteEspecies)
 routes.post('/especie/import', multerConfig.single('file'), Authentication(), new EspecieController().importEspecie)
 
 //Arvore

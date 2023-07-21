@@ -159,7 +159,7 @@ const Index = () => {
                                 disabled={!poa?.id}
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
-                                className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-2/6 lg:w-1/6",
+                                className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-1/2 lg:w-1/6",
                                     !poa?.id && ("hover:cursor-not-allowed opacity-50")
                                 )}
                             >
@@ -169,18 +169,17 @@ const Index = () => {
                     </div>
                     <div className="border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Definir ajustes</span>
-                        <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
-                        <table className="min-w-full divide-y divide-gray-200 overflow-x-auto">
+                        <div className='flex flex-col md:flex-row space-x-2 w-full overflow-x-auto'>
+                        <table className="min-w-full divide-y divide-gray-200 w-full">
                             <thead className="bg-gray-50 w-full">
                                 <tr>
                                     <th 
-                                    scope="col"
-                                    className="w-4"></th>
+                                    scope="col"></th>
                                     <th
                                         scope="col"
                                         className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row w-full justify-between">
+                                        <div className="flex flex-row justify-between">
                                             UPA
                                         </div>                 
                                     </th>
@@ -188,7 +187,7 @@ const Index = () => {
                                         scope="col"
                                         className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row w-full justify-between">
+                                        <div className="flex flex-row justify-between">
                                             UT
                                         </div>   
                                     </th>
@@ -196,15 +195,15 @@ const Index = () => {
                                         scope="col"
                                         className="px-3 py-3 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row w-full justify-between">
+                                        <div className="flex flex-row justify-between">
                                             Volume Total
                                         </div>   
                                     </th>
                                     <th
                                         scope="col"
-                                        className="px-3 py-3 text-left text-xs font-medium text-gray-500"
+                                        className="py-3 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row w-full justify-between">
+                                        <div className="flex flex-row justify-between">
                                             Volume Explorar
                                         </div>   
                                     </th>
@@ -220,34 +219,34 @@ const Index = () => {
                                 {uts?.map((ut: any) => (
                                     <tr key={ut.numero_ut}
                                     >
-                                        <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
+                                        <td className="w-full py-2 whitespace-nowrap text-sm flex flex-row items-center justify-center">
                                         <button>
                                             <PencilAltIcon className={
-                                                classNames("w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700",
+                                                classNames("w-5 h-5 text-green-600 hover:text-green-700",
                                                 )
                                             } />
                                         </button>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className="text-sm font-medium">{ut?.ano}</div>
+                                            <div className="text-sm">{ut?.ano}</div>
                                     
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
-                                            <div className="text-sm font-medium">{ut?.numero_ut}</div>
+                                            <div className="text-sm">{ut?.numero_ut}</div>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm">
-                                            <div className="text-sm font-medium">{ut?.volume_total}</div>
+                                            <div className="text-sm">{ut?.volume_total}</div>
                                         </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
-                                                <div className="text-sm font-medium">{ut?.volume_explorar}</div>
+                                                <div className="text-sm">{ut?.volume_explorar}</div>
                                             </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
-                                                <div className={classNames("text-sm font-medium", 
+                                                <div className={classNames("text-sm", 
                                                 ut?.volume_area_util > 30 && "text-red-700"
                                                 )}>{ut?.volume_area_util}</div>
                                             </span>

@@ -138,7 +138,7 @@ export class ArvoreController {
                 })
             }
 
-            const importData = await arvoreService.createByImport(importedData, upa)            
+            const importData = await arvoreService.createByImport({ rows, importedData }, upa)            
 
             const result = importData?.error ? {
                 error: true,

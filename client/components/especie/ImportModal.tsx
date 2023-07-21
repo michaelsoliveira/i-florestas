@@ -60,7 +60,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
 
     const getErrors = async () => {
         try {
-
+            console.log(data)
             await client.post(`/especie/import/get-errors`, {
                 columns: columns,
                 data: data
@@ -183,7 +183,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
 
     const onUploadAccepted = async (result: any) => {
         const columns = result.data[0].map((col: any, index: any) => {
-            const accessor = col.normalize("NFD").replace(/[^0-9a-zA-Z\s]/g, "").split(" ").join("_").toLowerCase()
+            const accessor = col.normalize("NFD").replace(/[^0-9a-zA-Z_\s]/g, "").split(" ").join("_").toLowerCase()
 
             return {
                 Header: col,
