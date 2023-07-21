@@ -30,8 +30,8 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const submitImport = useRef(null) as any
     const { step } = useContext(StepContext)
     const steps = [
-        "Selecionar Arquivo",
-        "Verificar Erros",
+        "Arquivo",
+        "Erros",
         "Finalizar"
     ]
 
