@@ -22,6 +22,7 @@ const AddEdit = ({ id }: any) => {
     const [especies, setEspecies] = useState<any>()
     const [orient_x, setOrientX] = useState<any>({ label: 'DIR', value: 'D' })
     const [medicao, setMedicao] = useState<any>()
+    const [fuste, setFuste] = useState<any>(1)
     const { projeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
@@ -31,20 +32,18 @@ const AddEdit = ({ id }: any) => {
     const isAddMode = !id
 
     const loadObsOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/obs-arvore/search/q?nome=${inputValue}`)
-        const json = response.data
+        const data = observacoes.filter((o: any) =>  o.nome.includes(inputValue))
         
-        callback(json?.map((observacao: any) => ({
+        callback(data?.map((observacao: any) => ({
             value: observacao.id,
             label: observacao.nome
         })))
     };
 
     const loadEspecieOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/especie/search/q?nome=${inputValue}`)
-        const json = response.data
-        
-        callback(json?.map((especie: any) => ({
+        const data = especies.filter((e: any) =>  e.nome.includes(inputValue))
+
+        callback(data?.map((especie: any) => ({
             value: especie.id,
             label: especie.nome
         })))
@@ -63,6 +62,8 @@ const AddEdit = ({ id }: any) => {
                         value: arvore?.observacao_arvore?.id
                     })
                 }
+
+                setFuste(arvore?.fuste)
 
                 setEspecie({
                     label: arvore?.especie?.nome,
@@ -92,7 +93,7 @@ const AddEdit = ({ id }: any) => {
     useEffect(() => {
         const defaultObsOptions = async () => {
             if (typeof session !== typeof undefined){
-                const response = await client.get(`obs-arvore`)
+                const response = await client.get(`/obs-arvore?order=asc&orderBy=nome`)
                 const { observacoes } = response.data
 
                 setObservacoes(observacoes)
@@ -101,7 +102,7 @@ const AddEdit = ({ id }: any) => {
 
         const defaultEspecieOptions = async () => {
             if (typeof session !== typeof undefined){
-                const response = await client.get(`especie`)
+                const response = await client.get(`/especie?order=asc&orderBy=nome`)
                 const { especies } = response.data
 
                 setEspecies(especies)
@@ -126,6 +127,7 @@ const AddEdit = ({ id }: any) => {
     async function onSubmit(data: any) {
         const preparedData = {
             ...data,
+            fuste: fuste,
             orient_x: orient_x?.value,
             id_projeto: projeto?.id,
             id_observacao: observacao?.value && observacao?.value,
@@ -147,7 +149,6 @@ const AddEdit = ({ id }: any) => {
         client.post(`/arvore`, {upa: upa?.id, ut: ut?.id, ...data})
             .then((response: any) => {
                 const { error, arvore, message } = response.data
-
                 if (!error) {
                     alertService.success(message);
                     router.push('/arvore')
@@ -355,17 +356,20 @@ const AddEdit = ({ id }: any) => {
                                         className="pb-4"
                                     />
                                 </div>
-                                <div>
-                                    <FormInput
-                                        name="fuste"
-                                        label="Fuste"
-                                        register={register}
-                                        errors={errors}
-                                        rules={ {required: 'O campo nome é obrigatório'} }
-                                        id="fuste"
-                                        type='number'
-                                        className="pb-4"
-                                    />
+                                <div className="flex flex-col px-4 w-auto pt-1">
+                                    <div>
+                                        <label htmlFor="perPage" className="px-1 text-sm">Fuste *</label>
+                                    </div>
+                                    <select
+                                        value={fuste}
+                                        onChange={(e) => setFuste(e.target.value)}
+                                        id="fuste" 
+                                        className="w-24 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    >
+                                        <option value="1">1</option>
+                                        <option value="2">1 e 2</option>
+                                        <option value="3">2 e 3</option>
+                                    </select>
                                 </div>
                                 <div className='lg:col-span-2 col-span-3 pb-4'>
                                     <Select
@@ -395,7 +399,7 @@ const AddEdit = ({ id }: any) => {
                                         selectedValue={especie}
                                         defaultOptions={getEspeciesDefaultOptions()}
                                         options={loadEspecieOptions}
-                                        label="Espécie"
+                                        label="Espécie *"
                                         callback={selectedEspecie}
                                     />
                                 </div>

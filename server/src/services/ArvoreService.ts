@@ -65,7 +65,7 @@ class ArvoreService {
     
             const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
             const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
-    
+            console.log(volume, areaBasal)
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
                 faixa: parseInt(data?.faixa),
@@ -106,6 +106,8 @@ class ArvoreService {
                     }
                 }
             }
+
+            console.log(preparedData)
 
             const dataObs = data?.id_observacao ? 
             { 
@@ -319,8 +321,11 @@ class ArvoreService {
     }
 
     async getAll(userId: string, query?: any, utId?: string): Promise<any> {
-        const projeto = await getProjeto(userId)
-        const poa = await getPoa(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -337,14 +342,15 @@ class ArvoreService {
             }
         }
 
-        const withUt = utId === 'todos' || (typeof utId === undefined) 
+        const withUt = utId === "0" || (typeof utId === undefined) 
             ? {} 
             : {
             ut: { 
-                AND: {
-                    id: utId,
-                    id_poa: poa ? poa?.id : null
-                }
+                AND: 
+                    [
+                        {id: utId},
+                        {id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null}
+                    ]
              }
         }
 
@@ -354,32 +360,32 @@ class ArvoreService {
                     { numero_arvore: parseInt(search) },
                     ...withUt,
                     especie: {
-                        AND: {
-                            id_projeto: projeto ? projeto?.id : null,
-                            categoria_especie: {
+                        AND: [
+                            { id_projeto: user?.id_projeto_ativo ? user?.id_projeto_ativo : null },
+                            { categoria_especie: {
                                 some: {
                                     categoria: {
-                                        id_poa: poa ? poa?.id : null
+                                        id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
                                     }
                                 }
-                            }
-                        }
+                            } }
+                        ]
                     }
             } : {
                 AND: 
                     {
                         ...withUt,
                         especie: {
-                            AND: {
-                                id_projeto: projeto ? projeto?.id : null,
-                                categoria_especie: {
+                            AND: [
+                                { id_projeto: user?.id_projeto_ativo ? user?.id_projeto_ativo : null },
+                                { categoria_especie: {
                                     some: {
                                         categoria: {
-                                            id_poa: poa ? poa?.id : null
+                                            id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
                                         }
                                     }
-                                }
-                            }
+                                } }
+                            ]
                         }
                     }
             }

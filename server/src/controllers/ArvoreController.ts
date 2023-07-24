@@ -8,7 +8,15 @@ export class ArvoreController {
         try {    
             const data = request.body
 
-            const arvore = await arvoreService.create(data)
+            const arvore = await arvoreService.create(data).catch((e: any) => {
+                return response.json({
+                    error: true,
+                    arvore: null,
+                    message: e.message
+                })
+            })
+
+            console.log(arvore)
             return response.json({
                 error: false,
                 arvore,
@@ -18,7 +26,7 @@ export class ArvoreController {
         } catch (error) {
             return response.json({
                 error: true,
-                especie: null,
+                arvore: null,
                 message: error.message
             })
         }

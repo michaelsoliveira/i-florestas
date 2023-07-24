@@ -426,26 +426,26 @@ class PoaService {
                 e.nome as especie, 
                 t1.total_especie, 
                 t2.volume_corte,
-                trunc(CAST(t2.volume_corte/100 AS numeric), 4) as volume_corte_ha
+                trunc(CAST(t2.volume_corte/u.area_util AS numeric), 4) as volume_corte_ha
             FROM
                 especie e, poa p, categoria_especie_poa cep, categoria_especie cat, arvore a, ut u,
                 (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie) as total_especie 
                 FROM especie e
-                INNER JOIN arvore a ON a.id_especie = e.id
-                INNER JOIN ut u on u.id = a.id_ut
-                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
-                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
+                    INNER JOIN arvore a ON a.id_especie = e.id
+                    INNER JOIN ut u on u.id = a.id_ut
+                    INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                    INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
                 WHERE 
-                a.id_especie = e.id
-                AND a.id_ut = u.id
-                AND a.id_situacao = 2
+                    a.id_especie = e.id
+                    AND a.id_ut = u.id
+                    AND a.id_situacao = 2
                 GROUP BY e.id, u.id, cat.id_poa) as t1,
                 (SELECT cat.id_poa, e.id as id_especie, u.id as id_ut, sum(a.volume) as volume_corte
                 FROM especie e
-                INNER JOIN arvore a ON a.id_especie = e.id
-                INNER JOIN ut u on u.id = a.id_ut
-                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
-                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
+                    INNER JOIN arvore a ON a.id_especie = e.id
+                    INNER JOIN ut u on u.id = a.id_ut
+                    INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                    INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
                 WHERE 
                     a.id_especie = e.id
                     AND a.id_ut = u.id
@@ -465,7 +465,7 @@ class PoaService {
                 AND cat.id_poa = ${user?.id_poa_ativo}
                 AND e.id_projeto = ${user?.id_projeto_ativo}
                 AND u.id = ${ut}
-            GROUP BY e.id, e.nome, t1.total_especie, t2.volume_corte
+            GROUP BY e.id, e.nome, t1.total_especie, t2.volume_corte, u.area_util
             ORDER BY e.nome
         `
 

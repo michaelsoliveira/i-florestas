@@ -13,6 +13,7 @@ import { setUmf, UmfType } from "../../store/umfSlice"
 import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import ListArvore from "./ListArvore"
+import { useRouter } from "next/router"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
     
@@ -32,6 +33,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const { projeto } = useContext(ProjetoContext)
 
     const dispatch = useAppDispatch()
+    const router = useRouter()
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
@@ -207,7 +209,16 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             }
         })
 
-        return [{ label: 'Todos', value: 'todos' }].concat(data)
+        return [{ label: 'Todos', value: 0 }].concat(data)
+    }
+
+    const goToAddForm = () => {
+        console.log(ut)
+        if (ut.numero_ut.toString() === 'Todos' || typeof ut === undefined) {
+            alertService.warn('Selecione uma UT para iniciar o cadastro de uma árvore')
+        } else {
+            router.push('/arvore/add')
+        }
     }
         
     useEffect(() => {
@@ -234,7 +245,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         const nElements = sortedBy.length
 
         let sortedArvores: any = []        
-        const tiposNumericos = ['numero_arvore', 'lat_x', 'long_y', 'lat', 'lng']
+        const tiposNumericos = ['numero_arvore', 'lat_x', 'long_y', 'lat', 'lng', 'cap', 'dap']
         sortedArvores = filteredArvores.sort((a: any, b: any) => {
             if (!tiposNumericos.includes(sortBy)) {
                 return sorted ?
@@ -257,12 +268,12 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         <div>
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
-                <Link
-                    href='/arvore/add'
+                <button
+                    onClick={goToAddForm}
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
-                </Link>
+                </button>
             </div>
             <div className="flex flex-col p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">

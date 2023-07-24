@@ -270,8 +270,10 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const projeto = await getProjeto(userId) as any
-        const { perPage, page, order, search, orderBy, poa } = query
+        const user = await prismaClient.user.findUnique({
+            where: { id: userId }
+        })
+        const { perPage, page, order, search, orderBy } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
 
@@ -289,34 +291,41 @@ class EspecieService {
 
         const where = search ?
             {
-                AND: {
-                        nome: { mode: Prisma.QueryMode.insensitive, contains: search },
-                        projeto: {
-                            id: projeto?.id
+                AND: [
+                        { nome: { mode: Prisma.QueryMode.insensitive, contains: search } },
+                        {
+                            projeto: {
+                                id: user?.id_projeto_ativo
+                            }
                         },
-                        categoria_especie: {
-                            some: {
-                                categoria: {
-                                    id_poa: poa ? poa : null
+                        {
+                            categoria_especie: {
+                                some: {
+                                    categoria: {
+                                        id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
+                                    }
                                 }
                             }
                         }
-                    }
+                    ]
                 } : {
                     AND: 
                     [
                         {
-                        projeto: {
-                            id: projeto?.id
+                            projeto: {
+                                id: user?.id_projeto_ativo
+                            }
                         },
-                        categoria_especie: {
-                            some: {
-                                categoria: {
-                                    id_poa: poa ? poa : null
+                        {
+                            categoria_especie: {
+                                some: {
+                                    categoria: {
+                                        id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
+                                    }
                                 }
                             }
                         }
-                    }]
+                    ]
             }
 
         const [data, total] = await prismaClient.$transaction([
