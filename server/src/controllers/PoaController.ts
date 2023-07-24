@@ -14,7 +14,7 @@ export class PoaController {
             })
 
         } catch (error) {
-            console.log(error.message)
+
             return response.json({
                 error: true,
                 poa: null,
@@ -77,6 +77,49 @@ export class PoaController {
                 message: error.message
             })
         }
+    }
+
+    async getVolumePorEspecie(request: Request, response: Response) {
+        try {
+            const { ut }: any = request.query
+
+            const data = await poaService.getVolumePorEspecie(request.user?.id, ut)
+
+            return response.json({
+                error: false,
+                data
+            })
+        } catch (error: any) {
+            return response.json({
+                error: true,
+                message: 'Error ao carregar as espécies!'
+            })
+        }
+    }
+
+    async getArvorePorEspecie(request: Request, response: Response) {
+        try {
+
+            const { data, count } = await poaService.getArvorePorEspecie(request.user?.id, request.query)
+            
+            return response.json({
+                error: false,
+                data,
+                total: count
+            })
+        } catch (error: any) {
+            return response.json({
+                error: true,
+                message: 'Error ao carregar as árvores!'
+            })
+        }
+    }
+
+    async handleAjusteInventario(request: Request, response: Response): Promise<Response> {
+        const { arvores } = request.body
+        
+        const data = await poaService.ajustarInventario(arvores)
+        return response.json(data)
     }
 
     async changeActive(request: Request, response: Response) : Promise<Response> {

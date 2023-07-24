@@ -18,9 +18,6 @@ import { setPoa } from "store/poaSlice"
 const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPage, perPage, loading, loadCategorias }: any) => {
     
     const [filteredCategorias, setFilteredCategorias] = useState<CategoriaEspecieType[]>(currentCategorias)
-    const [selectedCategoria, setSelectedCategoria] = useState<CategoriaEspecieType>()
-    const [uploading, setUploading] = useState<boolean>(false)
-    const [openModal, setOpenModal] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
     const [checkedCategorias, setCheckedCategorias] = useState<any>([])
     const [sorted, setSorted] = useState(false)
@@ -28,7 +25,6 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
     const poa = useAppSelector((state: RootState) => state.poa)
     const [selectedPoa, setSelectedPoa] = useState<OptionType>()
     const dispatch = useAppDispatch()
-    const { projeto } = useContext(ProjetoContext)
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -69,12 +65,12 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
 
     const selectPoa = async (poa: any) => {
 
-        dispatch(setPoa({
-            id: poa.value,
-            descricao: poa.label,
-            data_ultimo_plan: new Date('2000-01-01'),
-            pmfs: ''
-        }))
+        // dispatch(setPoa({
+        //     id: poa.value,
+        //     descricao: poa.label,
+        //     data_ultimo_plan: new Date('2000-01-01'),
+        //     pmfs: ''
+        // }))
         setSelectedPoa(poa)
 
         const response = await client.get(`/categoria?orderBy=nome&order=asc&poa=${poa.value}`)
@@ -318,7 +314,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {currentCategorias?.map((categoria: CategoriaEspecieType) => (
+                        {filteredCategorias?.map((categoria: CategoriaEspecieType) => (
                         <tr key={categoria.id}>
                             <td className="flex justify-center">
                                 <input                 
