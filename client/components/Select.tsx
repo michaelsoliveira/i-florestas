@@ -8,7 +8,7 @@ interface State {
 
 export interface OptionType {
     readonly label: string;
-    readonly value: string;
+    readonly value: string | Number;
 }
 
 export type SelectType = {

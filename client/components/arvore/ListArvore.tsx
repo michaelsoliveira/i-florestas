@@ -363,16 +363,21 @@ const ListArvore = ({
                                 <div className="text-sm text-gray-500">{arvore?.volume}</div>
                             </span>
                         </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore?.fuste}</div>
-                            </span>
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                            <span className="text-sm font-medium text-gray-900">
-                                <div className="text-sm text-gray-500">{arvore?.area_basal.toFixed(4)}</div>
-                            </span>
-                        </td>
+                        { planejar && (
+                            <>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.fuste}</div>
+                                    </span>
+                                </td>
+                                <td className="px-3 py-2 whitespace-nowrap">
+                                    <span className="text-sm font-medium text-gray-900">
+                                        <div className="text-sm text-gray-500">{arvore?.area_basal.toFixed(4)}</div>
+                                    </span>
+                                </td>
+                            </>
+                        ) }
+                        
                         { !planejar && (
                             <>
                             <td className="px-3 py-2 whitespace-nowrap">
