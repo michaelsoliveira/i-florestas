@@ -102,8 +102,6 @@ class UpaService {
 
         const utsId: any = uts.map((ut: any) => ut.id)
 
-        console.log(uts, utsId)
-
         const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
             where: {
                 upa: {
@@ -116,15 +114,15 @@ class UpaService {
 
         const areaBasal = `PI() * (DAP ^ 2) / 40000`
 
-        const sqlABasal = `UPDATE arvore SET area_basal = ${areaBasal}
+        const sqlUpdate = `UPDATE arvore SET area_basal = ${areaBasal}, volume = ${eqVolume.expressao} 
         WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
 
-        const sqlEqVolume = `
-        UPDATE arvore SET volume = ${eqVolume.expressao} 
-        WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
+        //const sqlEqVolume = `
+        //UPDATE arvore SET volume = ${eqVolume.expressao} 
+        //WHERE id_ut IN (${uts.map((ut: any) => `'${ut.id}'`).join(",")})`
 
-        await prismaClient.$queryRaw(Prisma.raw(sqlABasal))
-        await prismaClient.$queryRaw(Prisma.raw(sqlEqVolume))
+        await prismaClient.$queryRaw(Prisma.raw(sqlUpdate))
+        //await prismaClient.$queryRaw(Prisma.raw(sqlEqVolume))
 
         return this.findById(id)
     }

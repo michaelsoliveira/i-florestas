@@ -80,10 +80,15 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
             nome: umf.label
         }))
         setSelectedUmf(umf)
-        const response = await client.get(`/poa?orderBy=nome&order=asc&umf=${umf.value}`)
-        const { poas } = response.data
+        const paginatedData = {
+            currentPage: 1,
+            perPage,
+            orderBy,
+            order,
+            totalItems: filteredPoas ? filteredPoas.length : 0
+        }
         
-        setFilteredPoas(poas)
+        onPageChanged(paginatedData)
     }
 
     function getUmfsDefaultOptions() {

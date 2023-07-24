@@ -91,7 +91,7 @@ const Layout = ({ children }: props) => {
         { name: 'Cadastro', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: [ menuProjeto, ...resources] },
         { name: 'Inventário', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: inventario },
         { name: 'Planejamento', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: planejamento },
-        { name: 'Estatística', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: estatistica },
+        { name: 'Análise de Dados', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: estatistica },
         { name: 'Cadeia de Custódia', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: custodia },
         { name: 'Relatórios', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: reports }
     ]

@@ -11,6 +11,9 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 import classNames from "classnames"
 import { PencilAltIcon } from "@heroicons/react/solid"
+import { useModalContext } from "contexts/ModalContext"
+import { styles } from "../Utils/styles"
+import Exploracao from "../poa/exploracao/Index"
 
 const Index = () => {
     
@@ -23,6 +26,7 @@ const Index = () => {
     const { projeto } = useContext(ProjetoContext)
     const { setLoading } = useContext(LoadingContext)
     const [uts, setUts] = useState<any[]>([])
+    const { showModal } = useModalContext()
 
     const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/poa/search/q?nome=${inputValue}`)
@@ -37,7 +41,7 @@ const Index = () => {
     const loadUts = useCallback(async () => {
         const { data } = await client.get('/planejo/uts')
         setUts(data?.uts)
-    }, [client])
+    }, [client, setUts])
 
     const poaExists = poas?.length
 
@@ -65,7 +69,6 @@ const Index = () => {
             const response = await client.get(`/poa?orderBy=descricao&order=asc`)
             const { poas } = response.data
             setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-            
         }
 
         loadPoa()
@@ -83,6 +86,7 @@ const Index = () => {
             pmfs: ''
         }))
         setSelectedPoa(poa)
+
         const response = await client.get(`/categoria/get-by-poa?poaId=${poa.value}`)
         const { categorias } = response.data
         setCategorias(categorias)
@@ -118,6 +122,15 @@ const Index = () => {
         })
     }
 
+    function ajusteExploracao(utId: any): void {
+        showModal({
+            title: 'Ajustar Exploração de Espécies na UT',
+            size: 'max-w-5xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton,
+            content: <div><Exploracao ut={utId} loadUts={loadUts} /></div>
+        })
+    }
+
     return (
         <>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
@@ -126,7 +139,7 @@ const Index = () => {
             
                 <div className="flex flex-col p-6 mx-auto">
                     
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
+                    {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
                         <div className="lg:flex lg:flex-wrap lg:w-6/12 px-4">
                             <span className="w-3/12 flex items-center">POA: </span>
                             <div className="w-3/4">
@@ -143,7 +156,7 @@ const Index = () => {
                                 />
                             </div>
                         </div>
-                    </div>     
+                    </div>      */}
                     {categorias && (
                         <div className="overflow-x-auto border border-gray-300 rounded-md">
                             <CriterioPoa 
@@ -220,7 +233,7 @@ const Index = () => {
                                     <tr key={ut.numero_ut}
                                     >
                                         <td className="w-full py-2 whitespace-nowrap text-sm flex flex-row items-center justify-center">
-                                        <button>
+                                        <button onClick={() => ajusteExploracao(ut?.id_ut)}>
                                             <PencilAltIcon className={
                                                 classNames("w-5 h-5 text-green-600 hover:text-green-700",
                                                 )
@@ -236,19 +249,19 @@ const Index = () => {
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm">
-                                            <div className="text-sm">{ut?.volume_total}</div>
+                                            <div className="text-sm">{ut?.volume_total.toFixed(2)}</div>
                                         </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
-                                                <div className="text-sm">{ut?.volume_explorar}</div>
+                                                <div className="text-sm">{ut?.volume_explorar.toFixed(4)}</div>
                                             </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
                                                 <div className={classNames("text-sm", 
                                                 ut?.volume_area_util > 30 && "text-red-700"
-                                                )}>{ut?.volume_area_util}</div>
+                                                )}>{ut?.volume_area_util.toFixed(4)}</div>
                                             </span>
                                         </td>
                                     </tr>

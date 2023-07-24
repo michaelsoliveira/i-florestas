@@ -118,7 +118,10 @@ routes.delete('/upa/multiples', Authentication(), new UpaController().deleteUpas
 //POA
 routes.post('/poa/', Authentication(), new PoaController().store)
 routes.get('/poa/', Authentication(), new PoaController().findAll)
+routes.get('/poa/get-volume-ut', Authentication(), new PoaController().getVolumePorEspecie)
+routes.get('/poa/get-arvore-especie', Authentication(), new PoaController().getArvorePorEspecie)
 routes.get('/poa/active/get', Authentication(), new PoaController().getActive)
+routes.post('/poa/inventario', Authentication(), new PoaController().handleAjusteInventario)
 routes.post('/poa/active/', Authentication(), new PoaController().changeActive)
 routes.get('/poa/:id', Authentication(), new PoaController().findOne)
 routes.get('/poa/search/q', Authentication(), new PoaController().search)

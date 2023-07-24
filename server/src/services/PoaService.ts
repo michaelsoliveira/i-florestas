@@ -297,6 +297,181 @@ class PoaService {
         }
     }
 
+    async ajustarInventario(arvores: any) {
+        try {
+            await prismaClient.arvore.updateMany({
+                where: {
+                    id: {
+                        in: arvores
+                    }
+                },
+                data: {
+                    id_situacao: 5,
+                    id_motivo_preservacao: 10
+                }
+            })
+
+            return {
+                error: false,
+                message: 'Inventário Atualizado com Sucesso!'
+            }
+        } catch(e: any) {
+            return {
+                error: true,
+                message: e.message
+            }
+        }
+        
+    }
+
+    async getArvorePorEspecie(userId: string, query: any) {
+        const { orderBy, order, ut, especie } = query
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+        
+        let orderByTerm = {}
+        
+        const orderByElement = orderBy ? orderBy.split('.') : {}
+        if (orderByElement instanceof Array) {
+            orderByTerm = orderByElement.length == 2 ? 
+            {
+                [orderByElement[1]]: order,
+            } : {}
+        } else {
+            orderByTerm = {
+                [orderByElement]: order
+            }
+        }
+
+        const byEspecie = especie ? {
+            id_especie: especie
+        } : {}
+
+        const where = {
+            AND: [
+                { id_ut: ut },
+                { id_situacao: 2 },
+                byEspecie
+            ]
+        }
+
+        const [data, total] = await prismaClient.$transaction([
+            prismaClient.arvore.findMany({
+                select: {
+                    id: true,
+                    id_especie: true,
+                    numero_arvore: true,
+                    dap: true,
+                    altura: true,
+                    fuste: true,
+                    area_basal: true,
+                    volume: true,
+                    especie: {
+                        select: {
+                            nome: true
+                        }
+                    },
+                    observacao_arvore: {
+                        select: {
+                            nome: true
+                        }
+                    },
+                    comentario: true
+                },
+                where: {
+                    AND: [
+                        { id_ut: ut },
+                        { id_situacao: 2 },
+                        byEspecie,
+                        {
+                            especie: {
+                                categoria_especie: {
+                                    some: {
+                                        categoria: {
+                                            id_poa: user?.id_poa_ativo
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                },
+                orderBy: {
+                    ...orderByTerm
+                }
+            }),
+            prismaClient.arvore.count({where})
+        ])
+        
+
+        return {
+            data,
+            count: total
+        }
+    }
+
+    async getVolumePorEspecie(userId: string, ut: string) {
+        const user: any = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        const data = await prismaClient.$queryRaw`
+            SELECT
+                e.id as id_especie,
+                e.nome as especie, 
+                t1.total_especie, 
+                t2.volume_corte,
+                trunc(CAST(t2.volume_corte/100 AS numeric), 4) as volume_corte_ha
+            FROM
+                especie e, poa p, categoria_especie_poa cep, categoria_especie cat, arvore a, ut u,
+                (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie) as total_especie 
+                FROM especie e
+                INNER JOIN arvore a ON a.id_especie = e.id
+                INNER JOIN ut u on u.id = a.id_ut
+                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
+                WHERE 
+                a.id_especie = e.id
+                AND a.id_ut = u.id
+                AND a.id_situacao = 2
+                GROUP BY e.id, u.id, cat.id_poa) as t1,
+                (SELECT cat.id_poa, e.id as id_especie, u.id as id_ut, sum(a.volume) as volume_corte
+                FROM especie e
+                INNER JOIN arvore a ON a.id_especie = e.id
+                INNER JOIN ut u on u.id = a.id_ut
+                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
+                WHERE 
+                    a.id_especie = e.id
+                    AND a.id_ut = u.id
+                    AND a.id_situacao = 2
+                    GROUP BY e.id, u.id, cat.id_poa) as t2
+            WHERE 
+                cep.id_especie = e.id
+                AND a.id_especie = e.id
+                AND u.id = a.id_ut
+                AND cat.id = cep.id_categoria
+                AND t1.id_especie = e.id
+                AND t2.id_especie = e.id
+                AND t1.id_poa = p.id
+                AND t2.id_poa = p.id
+                AND t1.id_ut = u.id
+                AND t2.id_ut = u.id
+                AND cat.id_poa = ${user?.id_poa_ativo}
+                AND e.id_projeto = ${user?.id_projeto_ativo}
+                AND u.id = ${ut}
+            GROUP BY e.id, e.nome, t1.total_especie, t2.volume_corte
+            ORDER BY e.nome
+        `
+
+        return data
+    }
+
     async deletePoas(poas: string[]): Promise<any> {
         await prismaClient.poa.deleteMany({
             where: {
@@ -389,37 +564,42 @@ class PoaService {
         return user?.poa_ativo
     }
 
-    async utsByPoa(userId?: string) {
-        const poa: any = await getPoa(userId)
+    async utsByPoa(userId?: string, poa?: string) {
+        const user: any = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
         
         const uts = await prismaClient.$queryRaw`
-            SELECT
-                upa.ano,
-                u.numero_ut,
-                COALESCE(round(SUM(a.volume),0), 4) as volume_total,
-                round(t1.volume_explorar, 4) as volume_explorar,
-	            round(CAST((t1.volume_explorar/u.area_util) AS decimal),4) as volume_area_util
-            FROM ut u, upa, arvore a, poa p, 
-                (SELECT u.id, COALESCE(SUM(a.volume),0) as volume_explorar
-                    FROM ut u
-                    INNER JOIN arvore a ON a.id_ut =u.id
-                        INNER JOIN poa p ON p.id = u.id_poa
-                    WHERE a.id_situacao = 2
-                    GROUP BY p.id, u.id
-                ) AS t1,
-                (SELECT u.id, (COALESCE(SUM(a.volume),0)/u.area_util) as volume_area_util
-                FROM ut u
-                INNER JOIN arvore a ON a.id_ut =u.id
-                    INNER JOIN poa p on p.id = u.id_poa
-                WHERE a.id_situacao = 2
-                GROUP BY p.id, u.id, u.area_util
-                ) AS t2
-            WHERE p.id = ${poa?.id}
-                AND a.id_ut = u.id
-                AND t1.id = u.id
-                AND t2.id = u.id
-            GROUP BY p.id, u.id, upa.ano, t1.volume_explorar, t2.volume_area_util
-            ORDER BY u.numero_ut
+            WITH dados AS (
+                SELECT e.id_projeto, u.id as id_ut, up.ano, p.id as id_poa, u.numero_ut, t1.volume_explorar, 
+                trunc(CAST((t1.volume_explorar / u.area_util) AS numeric),4) as volume_area_util,
+                COALESCE(SUM(a.volume),0) as volume_total
+                    FROM ut u, arvore a, poa p, upa up, especie e,
+                        (SELECT u.id_poa, u.id as id_ut, COALESCE(SUM(a.volume),0) as volume_explorar
+                            FROM ut u 
+                                INNER JOIN arvore a on a.id_ut = u.id
+                                INNER JOIN poa p on p.id = u.id_poa
+                                INNER JOIN especie e on e.id = a.id_especie
+                                INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
+                                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
+                            WHERE a.id_situacao = 2
+                                AND cat.id_poa = p.id
+                            GROUP BY u.id_poa, u.id
+                        ) as t1
+                    WHERE u.id = a.id_ut
+                        AND p.id = u.id_poa
+                        AND t1.id_poa = u.id_poa
+                        AND t1.id_ut = u.id
+                        AND up.id = u.id_upa
+                        AND e.id = a.id_especie
+                GROUP BY e.id_projeto, up.ano, p.id, u.id, t1.volume_explorar
+            )
+            SELECT id_ut, ano, numero_ut, volume_total, volume_explorar, volume_area_util FROM dados
+            WHERE id_poa = ${user?.id_poa_ativo}
+                AND dados.id_projeto = ${user?.id_projeto_ativo}
+            ORDER BY numero_ut
         `
 
         return uts

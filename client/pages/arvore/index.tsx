@@ -91,7 +91,6 @@ const ArvoreIndex = () => {
     }
 
     const changeItemsPerPage = (evt: ChangeEvent<HTMLSelectElement>) => {
-        console.log(evt.target)
         onPageChanged({
             name: router.pathname,
             currentPage: 1,
@@ -120,7 +119,7 @@ const ArvoreIndex = () => {
                 order={order}
                 currentPage={currentPage}
                 onPageChanged={onPageChanged}    
-                pageNeighbours={3}
+                pageNeighbours={5}
             />
     </div>
     )

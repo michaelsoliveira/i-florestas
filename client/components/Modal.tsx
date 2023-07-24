@@ -133,7 +133,8 @@ export default function Modal(props: ModaType) {
                   </div>
                   {options && (
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-full">
-                      <button
+                      { confirmBtn && (
+                        <button
                         type={type === "submit" ? 'submit' : 'button'}
                           className={classNames(
                               'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm',
@@ -144,6 +145,8 @@ export default function Modal(props: ModaType) {
                       >
                         {confirmBtn}
                       </button>
+                      )}
+                      
                       <button
                         ref={cancelButtonRef}
                         type="button"

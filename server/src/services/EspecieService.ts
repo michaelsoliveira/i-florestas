@@ -161,7 +161,7 @@ class EspecieService {
 
     async getErrors(data: any, userId: any) {
         try {
-            
+            console.log(data)
             const user = await prismaClient.user.findUnique({
                 where: {
                     id: userId
@@ -176,9 +176,15 @@ class EspecieService {
     
             const nomes = especies.map((especie: any) => especie.nome)
             const nomesNaoDefinidos = data.filter((especie: any) => especie.nome === '')
-            const duplicates = data.map((d: any, idx: number) => { 
-                const { nome, nome_orgao, nome_cientifico } = d
-                return {  linha: idx, nome, nome_orgao, nome_cientifico } }).filter((d: any) => nomes.includes(d.nome)).map((duplicado: any) => {
+
+            const duplicates = data
+                                .map((d: any, idx: number) => { 
+                                    const { nome, nome_orgao, nome_cientifico } = d
+                                    return {  
+                                        linha: idx, nome, nome_orgao, nome_cientifico 
+                                    } 
+                                })
+                                .filter((d: any) => nomes.includes(d.nome)).map((duplicado: any) => {
                 
                 return {
                     linha: duplicado?.linha + 1,
