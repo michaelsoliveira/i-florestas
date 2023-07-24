@@ -13,7 +13,7 @@ type ListArvoreType = {
     currentArvores: any, 
     sortArvores: (sortBy: string) => void, 
     sorted: boolean; 
-    loadArvores: any, 
+    loadArvores?: any, 
     callBack?: any,
     planejar?: boolean
 }

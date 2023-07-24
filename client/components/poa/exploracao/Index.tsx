@@ -41,10 +41,6 @@ const Exploracao = ({ ut, loadUts }:any) => {
         setFilteredArvores(sortedArvores)    
     }
 
-    const loadArvores = () => {
-        console.log('Dados atualizado!')
-    }
-
     const ajustarInventario = async () => {
         const { data } = await client.post('/poa/inventario', {
             arvores: checkedArvores
@@ -121,7 +117,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
                 : inventario.data 
 
         setFilteredArvores(filteredData ? filteredData : inventario.data)
-    }, [client, ut, setInventario, setFilteredArvores, selectedEspecie])
+    }, [client, ut, setInventario, setFilteredArvores, selectedEspecie, fuste])
 
     useEffect(() => {
         loadData()
@@ -296,8 +292,10 @@ const Exploracao = ({ ut, loadUts }:any) => {
                 </div>
                 <div className='flex flex-row w-full items-center justify-center'>
                     <button
+                        disabled={checkedArvores.length === 0}
                         onClick={ajustarInventario}
-                        className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center"
+                        className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center",
+                            checkedArvores.length === 0 && "hover:cursor-not-allowed opacity-50"
                         )}
                     >
                         Executar Operação
@@ -309,7 +307,6 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     currentArvores={filteredArvores}
                     sortArvores={sortArvores}
                     sorted={sorted} 
-                    loadArvores={loadArvores}
                     planejar
                     callBack={callBack}
                 />
