@@ -16,6 +16,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
     const [sorted, setSorted] = useState(false)
     const [fuste, setFuste] = useState<any>(Number(0))
     const [checkedArvores, setCheckedArvores] = useState<any>([])
+    const [volumePreservado, setVolumePreservado] = useState<any>()
 
     const sortArvores = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
@@ -58,7 +59,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
     }
 
     const loadData = useCallback(async () => {
-        const result = await client.get(`/poa/get-volume-ut?ut=${ut}`)
+        const result = await client.get(`/poa/get-volume-ut?ut=${ut?.id_ut}`)
         const { error, data } = result?.data
         setData(data)
 
@@ -102,7 +103,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
     }
 
     const loadInventario = useCallback(async () => {
-        const res = await client.get(`/poa/get-arvore-especie?order=asc&orderBy=numero_arvore&ut=${ut}`)
+        const res = await client.get(`/poa/get-arvore-especie?order=asc&orderBy=numero_arvore&ut=${ut?.id_ut}`)
         const { error, data: inventario, total } = res
         setInventario(inventario.data)
         const filteredData = 
@@ -137,6 +138,13 @@ const Exploracao = ({ ut, loadUts }:any) => {
     }
 
     const callBack = async (data: any) => {
+        const selecionados = filteredArvores.filter((arv: any) => data.includes(arv?.id))
+        const volumeSomado = selecionados.reduce((acc: any, curr: any) => acc + Number(curr.volume), 0)
+
+        setVolumePreservado({
+            total: Number(totais.total_corte - volumeSomado),
+            area_util: Number(totais.total_corte - volumeSomado)/ut?.area_util
+        })
         setCheckedArvores(data)
     }
 
@@ -310,8 +318,20 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     planejar
                     callBack={callBack}
                 />
-            </div>
+            </div>            
         </div>
+        { volumePreservado && (
+            <div className='mt-2'>
+                <div className='flex flex-col w-full items-center justify-center'>
+                    <span className='font-medium'>
+                        Volume Total: {volumePreservado?.total.toFixed(4)}
+                    </span>
+                    <span className='font-medium'>
+                        Volume / ha: {volumePreservado?.area_util.toFixed(4)}
+                    </span>
+                </div>
+            </div>
+        ) }
         </>
     );
 };

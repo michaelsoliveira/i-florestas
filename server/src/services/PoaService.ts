@@ -426,7 +426,7 @@ class PoaService {
                 e.nome as especie, 
                 t1.total_especie, 
                 t2.volume_corte,
-                trunc(CAST(t2.volume_corte/u.area_util AS numeric), 4) as volume_corte_ha
+                trunc(CAST(t2.volume_corte/u.area_util AS numeric), 5) as volume_corte_ha
             FROM
                 especie e, poa p, categoria_especie_poa cep, categoria_especie cat, arvore a, ut u,
                 (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie) as total_especie 
@@ -564,7 +564,7 @@ class PoaService {
         return user?.poa_ativo
     }
 
-    async utsByPoa(userId?: string, poa?: string) {
+    async utsByPoa(userId?: string) {
         const user: any = await prismaClient.user.findUnique({
             where: {
                 id: userId
@@ -573,8 +573,8 @@ class PoaService {
         
         const uts = await prismaClient.$queryRaw`
             WITH dados AS (
-                SELECT e.id_projeto, u.id as id_ut, up.ano, p.id as id_poa, u.numero_ut, t1.volume_explorar, 
-                trunc(CAST((t1.volume_explorar / u.area_util) AS numeric),4) as volume_area_util,
+                SELECT e.id_projeto, u.id as id_ut, up.ano, p.id as id_poa, u.area_util, u.numero_ut, t1.volume_explorar, 
+                trunc(CAST((t1.volume_explorar / u.area_util) AS numeric),5) as volume_area_util,
                 COALESCE(SUM(a.volume),0) as volume_total
                     FROM ut u, arvore a, poa p, upa up, especie e,
                         (SELECT u.id_poa, u.id as id_ut, COALESCE(SUM(a.volume),0) as volume_explorar
@@ -596,7 +596,7 @@ class PoaService {
                         AND e.id = a.id_especie
                 GROUP BY e.id_projeto, up.ano, p.id, u.id, t1.volume_explorar
             )
-            SELECT id_ut, ano, numero_ut, volume_total, volume_explorar, volume_area_util FROM dados
+            SELECT id_ut, ano, numero_ut, area_util, volume_total, volume_explorar, volume_area_util FROM dados
             WHERE id_poa = ${user?.id_poa_ativo}
                 AND dados.id_projeto = ${user?.id_projeto_ativo}
             ORDER BY numero_ut
