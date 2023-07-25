@@ -34,7 +34,7 @@ const CategoriaEspecie = forwardRef<any, any>(
     const { projeto } = useContext(ProjetoContext)
     const poa = useAppSelector((state: RootState) => state.poa)
     const { showModal, hideModal, store } = useModalContext()
-    const { visible } = store
+    const [fuste, setFuste] = useState(1)
 
     useEffect(() => {        
         async function loadCategoria() {
@@ -42,7 +42,7 @@ const CategoriaEspecie = forwardRef<any, any>(
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: categoria } = await client.get(`/categoria/${id}`)
-               
+                setFuste(categoria?.criterio_fuste)
                 for (const [key, value] of Object.entries(categoria)) {
                     setValue(key, value, {
                         shouldValidate: true,
@@ -57,7 +57,7 @@ const CategoriaEspecie = forwardRef<any, any>(
     }, [session, isAddMode, client, id, setValue])
 
     async function onSubmit(data: any) {
-        const preparedData = { ...data, id_projeto: projeto?.id, id_poa: poa.id }
+        const preparedData = { ...data, id_projeto: projeto?.id, id_poa: poa.id, criterio_fuste: fuste }
         try {
             return isAddMode
                 ? createCategoria(preparedData)
@@ -134,24 +134,20 @@ const CategoriaEspecie = forwardRef<any, any>(
                     />
                 </div>
                 <div className='flex flex-col md:flex-row space-x-0 md:space-x-4'>
-                    <div>
-                        <FormInput
-                            id="criterio_fuste"
-                            name="criterio_fuste"
-                            label="Fuste"
-                            type="number"
-                            register={register}
-                            errors={errors}
-                            rules={
-                                {
-                                    valueAsNumber: true,
-                                    pattern: {
-                                        value: /^[0-3]+$/,
-                                        message: 'Por favor entre com um valor numérico entre 1 e 3'
-                                    }
-                                }}
-                            className="pb-4"
-                        />
+                    <div className="flex flex-col w-auto pt-2">
+                        <div>
+                            <label htmlFor="perPage" className="px-1 text-sm">Fuste</label>
+                        </div>
+                        <select
+                            value={fuste}
+                            onChange={(e) => setFuste(Number(e.target.value))}
+                            id="fuste" 
+                            className="w-24 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                            <option value="1">1</option>
+                            <option value="2">1, 2</option>
+                            <option value="3">1, 2 e 3</option>
+                        </select>
                     </div>
                     <div>
                         <FormInput

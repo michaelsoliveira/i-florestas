@@ -294,8 +294,8 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     >
                         <option value="0">Todos</option>
                         <option value="1">1</option>
-                        <option value="2">1 e 2</option>
-                        <option value="3">2 e 3</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
                     </select>
                 </div>
                 <div className='flex flex-row w-full items-center justify-center'>
