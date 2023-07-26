@@ -30,7 +30,7 @@ const ArvoreIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/arvore/get-all?${ut?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/arvore/get-all?utId=${ut?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
 
@@ -43,8 +43,25 @@ const ArvoreIndex = () => {
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, ut?.id])
 
     const exportCsv = async () => {
-        var { data } = await client.get(`/arvore/get-all`)
-        exportToCSV(data?.arvores, 'inventario', {
+        var { data: response } = await client.get(`/arvore/get-all?utId=${ut?.id ? ut?.id : null}&order=asc&orderBy=numero_arvore`)
+        const data = response?.arvores.map((arv: any) => {
+            const { id, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
+            return {
+                id, 
+                numero_arvore, 
+                altura, 
+                dap,
+                volume, 
+                fuste, 
+                area_basal, 
+                id_especie,
+                especie: especie?.nome, 
+                id_situacao,
+                situacao_arvore: situacao_arvore?.nome
+            }
+        })
+
+        exportToCSV(data, `inventario_${new Date(Date.now()).toLocaleString().replace(",", "_")}`, {
             delimiter: ';'
         })
     }
@@ -67,7 +84,7 @@ const ArvoreIndex = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -76,7 +93,7 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all?${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,

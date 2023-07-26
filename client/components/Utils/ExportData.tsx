@@ -25,28 +25,25 @@ function convertToCSV(data: CSVRow[], config?: any): string {
   return Papa.unparse(dataArray, config);
 }
 
+function convertToISO88591(text: string) {
+  const encoder = new TextEncoder();
+  return encoder.encode(text);
+}
+
 export function exportToCSV(data: CSVRow[], filename: string, config?: any): void {
-  var csvData = convertToCSV(data, config);
-  var link
+    var csvData = convertToCSV(data, config);
+    //var link;
+    const encoding = config?.encoding ? config?.encoding : 'utf-8'
 
-        if (csvData == null) return;
-        filename = filename || 'export.csv';
-
-        if (!csvData.match(/^data:text\/csv/i)) {
-                csvData = 'data:text/csv;charset=utf-8,' + csvData;
-        }
-        link = document.createElement('a');
-
-        link = document.createElement('a');
-        link.setAttribute('href', encodeURI(csvData));
-        link.setAttribute('download', filename);
-        link.click();
-
-//   fs.writeFile(filename, csvData, (err) => {
-//     if (err) {
-//       console.error('Error exporting to CSV:', err);
-//     } else {
-//       console.log(`Data exported to ${filename}`);
-//     }
-//   });
+    if (csvData == null) return;
+    filename = filename || 'export.csv';
+    const csvBlob = new Blob([csvData], { type: `text/csv;charset=${encoding};` });
+    const url = URL.createObjectURL(csvBlob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }

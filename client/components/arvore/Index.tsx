@@ -14,6 +14,7 @@ import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import ListArvore from "./ListArvore"
 import { useRouter } from "next/router"
+import { ArrowCircleUpIcon } from '@heroicons/react/outline'
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores, exportCsv }: any) => {
     
@@ -271,20 +272,27 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-row items-center justify-between p-6 bg-gray-100 items-center">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
-                <button
-                    onClick={exportCsv}
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Exportar
-                </button>
-                <button
-                    onClick={goToAddForm}
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Adicionar
-                </button>
+                <div className="flex flex-row space-x-2">
+                    <div
+                        onClick={exportCsv}
+                        className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        <div className="flex flex-row justify-around w-full">
+                            <ArrowCircleUpIcon className="block h-6 w-6 text-white" aria-hidden="true" />
+                            <span>
+                                Exportar
+                            </span>
+                        </div>
+                    </div>
+                    <div
+                        onClick={goToAddForm}
+                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        Adicionar
+                    </div>
+                </div>
             </div>
             <div className="flex flex-col p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">

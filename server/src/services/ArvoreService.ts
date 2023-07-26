@@ -327,7 +327,7 @@ class ArvoreService {
             }
         })
         const { perPage, page, search, orderBy, order } = query
-        const skip = (page - 1) * perPage
+        const skip = perPage && (page - 1) * perPage
         let orderByTerm = {}
         
         const orderByElement = orderBy ? orderBy.split('.') : {}
@@ -398,7 +398,7 @@ class ArvoreService {
                 },
                 where,
                 orderBy: orderByTerm,
-                take: perPage ? parseInt(perPage) : 50,
+                take: perPage && parseInt(perPage),
                 skip: skip ? skip : 0,
             }),
             prismaClient.arvore.count({ where })
