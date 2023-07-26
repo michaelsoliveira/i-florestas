@@ -8,6 +8,7 @@ import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import { LoadingContext } from "contexts/LoadingContext"
+import { exportToCSV } from "@/components/Utils/ExportData"
 
 const ArvoreIndex = () => {
     const { client } = useContext(AuthContext)
@@ -29,7 +30,7 @@ const ArvoreIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/arvore/get-all/${ut?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/arvore/get-all?${ut?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
 
@@ -40,6 +41,13 @@ const ArvoreIndex = () => {
         setLoading(false)
         
     }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, ut?.id])
+
+    const exportCsv = async () => {
+        var { data } = await client.get(`/arvore/get-all`)
+        exportToCSV(data?.arvores, 'inventario', {
+            delimiter: ';'
+        })
+    }
 
     useEffect(() => {  
         loadArvores(itemsPerPage)
@@ -59,7 +67,7 @@ const ArvoreIndex = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all/${ut?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/arvore/get-all?${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -68,7 +76,7 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all/${ut?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -76,8 +84,6 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         }
-
-        console.log(totalItems)
         
         dispatch(paginate(paginatedData))
 
@@ -111,6 +117,7 @@ const ArvoreIndex = () => {
                 onPageChanged={onPageChanged}
                 perPage={itemsPerPage}
                 changeItemsPerPage={changeItemsPerPage}
+                exportCsv={exportCsv}
                 />
             <Pagination
                 perPage={itemsPerPage}

@@ -82,7 +82,7 @@ export class ArvoreController {
     }
 
     async findAll(request: Request, response: Response) {
-        const { utId } = request.params
+        const { utId }: any = request.query
         try {
             const { data, perPage, page, skip, count } = await arvoreService.getAll(request.user?.id, request.query, utId)
             return response.json({
