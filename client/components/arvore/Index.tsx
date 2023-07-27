@@ -14,7 +14,8 @@ import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import ListArvore from "./ListArvore"
 import { useRouter } from "next/router"
-import { ArrowCircleUpIcon } from '@heroicons/react/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores, exportCsv }: any) => {
     
@@ -279,8 +280,10 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         onClick={exportCsv}
                         className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                     >
-                        <div className="flex flex-row justify-around w-full">
-                            <ArrowCircleUpIcon className="block h-6 w-6 text-white" aria-hidden="true" />
+                        <div className="flex flex-row justify-around w-full space-x-2">
+                            <div>
+                                <FontAwesomeIcon icon={faFileExport} />
+                            </div>
                             <span>
                                 Exportar
                             </span>
@@ -290,7 +293,14 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                         onClick={goToAddForm}
                         className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                     >
-                        Adicionar
+                        <div className="flex flex-row justify-around w-full space-x-2">
+                            <div>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </div>
+                            <span>
+                                Adicionar
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

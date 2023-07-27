@@ -166,8 +166,8 @@ model Arvore {
   volume                Decimal?  @db.Decimal(5,2)
   comentario            String? @db.Text
   orient_x              String? @db.Char(1)
-  lat_x                 Float?
-  long_y                Float?
+  lat_y                 Float?
+  long_x                Float?
   faixa                 Int?
   derrubada             Boolean @default(false)
   motivo_nao_derrubada  String?    @db.VarChar(120)

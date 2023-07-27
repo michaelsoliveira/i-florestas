@@ -426,7 +426,7 @@ class PoaService {
                 e.nome as especie, 
                 t1.total_especie, 
                 t2.volume_corte,
-                trunc(CAST(t2.volume_corte/u.area_util AS numeric), 5) as volume_corte_ha
+                trunc(CAST(t2.volume_corte/u.area_util AS numeric), 6) as volume_corte_ha
             FROM
                 especie e, poa p, categoria_especie_poa cep, categoria_especie cat, arvore a, ut u,
                 (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie) as total_especie 

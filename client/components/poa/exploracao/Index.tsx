@@ -74,7 +74,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
         const totEspecies = data.reduce((acc: any, curr: any) => acc + curr.total_especie, 0)
         const totVolCorte = data.reduce((acc: any, curr: any) => acc + curr.volume_corte, 0)
         const totVolCorteHa = data.reduce((acc: any, curr: any) => acc + curr.volume_corte_ha, 0)
-
+        console.log(totVolCorteHa)
         setTotais({
           total_individuos: totEspecies,
           total_corte: totVolCorte,
@@ -220,12 +220,12 @@ const Exploracao = ({ ut, loadUts }:any) => {
                                 </td>
                                 <td className="px-3 whitespace-nowrap">
                                     <span className="text-sm">
-                                        <div className="text-sm">{especie?.volume_corte.toFixed(2)}</div>
+                                        <div className="text-sm">{especie?.volume_corte.toFixed(4)}</div>
                                     </span>
                                 </td>
                                 <td className="px-3 whitespace-nowrap">
                                     <span className="text-sm">
-                                        <div className="text-sm">{especie?.volume_corte_ha.toFixed(2)}</div>
+                                        <div className="text-sm">{especie?.volume_corte_ha.toFixed(4)}</div>
                                     </span>
                                 </td>
                             </tr>
@@ -248,7 +248,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     </td>
                     <td className="px-3 whitespace-nowrap">
                         <span className="text-sm">
-                            <div className="text-sm">{totais?.total_corte.toFixed(2)}</div>
+                            <div className="text-sm">{totais?.total_corte.toFixed(4)}</div>
                         </span>
                     </td>
                     <td className="px-3 whitespace-nowrap">
