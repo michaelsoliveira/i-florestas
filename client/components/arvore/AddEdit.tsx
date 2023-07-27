@@ -367,8 +367,8 @@ const AddEdit = ({ id }: any) => {
                                         className="w-24 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     >
                                         <option value="1">1</option>
-                                        <option value="2">1 e 2</option>
-                                        <option value="3">2 e 3</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
                                     </select>
                                 </div>
                                 <div className='lg:col-span-2 col-span-3 pb-4'>

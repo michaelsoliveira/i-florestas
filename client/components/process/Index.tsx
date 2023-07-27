@@ -123,11 +123,14 @@ const Index = () => {
     }
 
     function ajusteExploracao(utId: any): void {
+        const selectedUt = uts.find((ut: any) => ut?.id_ut === utId)
+
         showModal({
-            title: 'Ajustar Exploração de Espécies na UT',
+            title: `Ajustar Exploração de Espécies na UT: ${selectedUt?.numero_ut}`,
             size: 'max-w-5xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton,
-            content: <div><Exploracao ut={utId} loadUts={loadUts} /></div>
+            cancelName: 'Fechar',
+            content: <div><Exploracao ut={selectedUt} loadUts={loadUts} /></div>
         })
     }
 

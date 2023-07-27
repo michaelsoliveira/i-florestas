@@ -69,8 +69,7 @@ export class PlanejoController {
     }
 
     async utsByPoa(request: Request, response: Response) {
-        const { poa }: any = request.query
-        const uts = await poaService.utsByPoa(request.user?.id, poa)
+        const uts = await poaService.utsByPoa(request.user?.id)
 
         return response.json({
             error: false,

@@ -4,7 +4,8 @@ import {
   Marker,
   DirectionsRenderer,
   Circle,
-  MarkerClusterer
+  MarkerClusterer,
+  Polygon
 } from "@react-google-maps/api";
 import Places from "./Places";
 import Distance from "./Distance";
@@ -21,6 +22,18 @@ export default function Map({ setLocation }: MapProps) {
     x: window.innerWidth,
     y: window.innerHeight
   })
+
+  const polylineCoordinates = [
+    { lat: 40.712776, lng: -74.005974 }, // Nova York
+    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
+    { lat: 41.878113, lng: -87.629799 },  // Chicago
+  ];
+
+  const polygonCoordinates = [
+    { lat: 37.774929, lng: -122.419418 }, // San Francisco
+    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
+    { lat: 32.715736, lng: -117.161087 }, // San Diego
+  ];
 
   const updateSize = () => {
     setSize({
@@ -106,6 +119,16 @@ export default function Map({ setLocation }: MapProps) {
           onUnmount={onUnmount}
           onClick={getLocation}
         >
+          {/* <Polygon
+            paths={polygonCoordinates}
+            options={{
+              fillColor: '#00FF00',
+              fillOpacity: 0.4,
+              strokeColor: '#00FF00',
+              strokeOpacity: 1,
+              strokeWeight: 2,
+            }}
+          /> */}
           {directions && (
             <DirectionsRenderer
               directions={directions}

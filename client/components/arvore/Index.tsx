@@ -14,8 +14,10 @@ import { setUpa } from "../../store/upaSlice"
 import { setUt } from "../../store/utSlice"
 import ListArvore from "./ListArvore"
 import { useRouter } from "next/router"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
 
-const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores }: any) => {
+const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores, exportCsv }: any) => {
     
     const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
     const [searchInput, setSearchInput] = useState("")
@@ -112,22 +114,27 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const defaultUtsOptions = useCallback(async () => {
         const response = await client.get(`/ut?orderBy=nome&order=asc&upa=${upa?.id}`)
         const { uts } = response.data
-            setUts(uts)
-            if (uts && uts.length === 0) {
-                setSelectedUt({
-                    value: '0',
-                    label: 'Nenhuma UT Cadastrada'
-                })
-            }
+        setUts(uts)
+        if (uts && uts.length === 0) {
+            setSelectedUt({
+                value: '0',
+                label: 'Nenhuma UT Cadastrada'
+            })
+        }
 
-            const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
+        const compareUt = uts ? uts.find((u: any) => u.id === ut.id) : null
 
-            if (compareUt) {
-                setSelectedUt({
-                    value: ut?.id,
-                    label: ut?.numero_ut.toString()
-                })
-            }
+        if (compareUt) {
+            setSelectedUt({
+                value: ut?.id,
+                label: ut?.numero_ut.toString()
+            })
+        } else {
+            setSelectedUt({
+                value: '0',
+                label: 'Todos'
+            })
+        }
     }, [client, upa?.id, ut.id, ut?.numero_ut])
 
     const selectUmf = async (umf: any) => {
@@ -209,7 +216,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
             }
         })
 
-        return [{ label: 'Todos', value: 0 }].concat(data)
+        return [{ label: 'Todos', value: '0' }].concat(data)
     }
 
     const goToAddForm = () => {
@@ -238,7 +245,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         }
         setSearchInput(evt.target?.value)
         onPageChanged(paginatedData)
-    }
+    }    
 
     const sortArvores = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
@@ -266,14 +273,36 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-row items-center justify-between p-6 bg-gray-100 items-center">
                 <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
-                <button
-                    onClick={goToAddForm}
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                >
-                    Adicionar
-                </button>
+                <div className="flex flex-row space-x-2">
+                    <div
+                        onClick={exportCsv}
+                        className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        <div className="flex flex-row justify-around w-full space-x-2">
+                            <div>
+                                <FontAwesomeIcon icon={faFileExport} />
+                            </div>
+                            <span>
+                                Exportar
+                            </span>
+                        </div>
+                    </div>
+                    <div
+                        onClick={goToAddForm}
+                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        <div className="flex flex-row justify-around w-full space-x-2">
+                            <div>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </div>
+                            <span>
+                                Adicionar
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className="flex flex-col p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">

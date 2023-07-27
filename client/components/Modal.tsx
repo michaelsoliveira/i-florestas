@@ -20,7 +20,8 @@ type ModalProps = {
     content?: ReactNode,
     type?: string,
     hookForm?: string,
-    options?: boolean
+    options?: boolean,
+    cancelName?: string
 }
 
 export default function Modal(props: ModaType) {
@@ -38,7 +39,8 @@ export default function Modal(props: ModaType) {
           content,
           type,
           hookForm,
-          options = true
+          options = true,
+          cancelName
         } : ModalProps = store
   const KEY_NAME_ESC = 'Escape';
 
@@ -153,7 +155,7 @@ export default function Modal(props: ModaType) {
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                         onClick={hideModal}
                       >
-                        Cancelar
+                        { cancelName ? cancelName : 'Cancelar' }
                       </button>
                     </div>
                   )}

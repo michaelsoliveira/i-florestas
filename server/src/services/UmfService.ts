@@ -56,19 +56,22 @@ class UmfService {
     }
 
     async update(id: string, data: UmfType): Promise<Umf> {
+        const preparedData = {
+            nome: data.nome,
+            localizacao: data.localizacao,
+            municipio: data.municipio,
+        }
         await prismaClient.umf.update({
             where: {
                 id
             },
-            data: {
-                nome: data.nome,
-                localizacao: data.localizacao,
-                municipio: data.municipio,
+            data: !data.estado ? preparedData : {
+                ...preparedData, 
                 estado: {
                     connect: {
                         id: data.estado
                     }
-                },
+                }
             }
         })
 

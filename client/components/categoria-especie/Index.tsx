@@ -87,8 +87,16 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
             }
         })
 
-        return data
-           
+        return data           
+    }
+
+    const getFuste = (fuste: number) => {
+        switch(fuste) {
+            case 1: return '1';            
+            case 2: return '1, 2';            
+            case 3: return '1, 2 e 3';            
+            default:
+        }
     }
 
     const { hideModal, showModal, store } = useModalContext()
@@ -332,7 +340,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                                 </div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">{categoria?.criterio_fuste}</div>
+                                <div className="text-sm text-gray-900">{getFuste(Number(categoria?.criterio_fuste))}</div>
                             </td>
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">

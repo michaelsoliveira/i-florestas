@@ -73,8 +73,8 @@ class ArvoreService {
                 altura: parseFloat(data?.altura),
                 fuste: parseInt(data?.fuste),
                 orient_x: data?.orient_x,
-                lat_x: parseFloat(data?.lat_x),
-                long_y: parseFloat(data?.long_y),
+                lat_y: parseFloat(data?.lat_y),
+                long_x: parseFloat(data?.long_x),
                 volume,
                 area_basal: areaBasal,
                 ut: {
@@ -176,8 +176,8 @@ class ArvoreService {
                         orient_x: arv?.orient_x,
                     } : {
                         ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
-                        lat_x: parseFloat(arv?.latitude?.replace(",", ".")),
-                        long_y: parseFloat(arv?.longitude?.replace(",", ".")),
+                        lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
+                        long_x: parseFloat(arv?.longitude?.replace(",", ".")),
                     }
 
                     return {
@@ -255,8 +255,8 @@ class ArvoreService {
             altura: parseFloat(data?.altura),
             fuste: parseInt(data?.fuste),
             orient_x: data?.orient_x,
-            lat_x: parseFloat(data?.lat_x),
-            long_y: parseFloat(data?.long_y),
+            lat_y: parseFloat(data?.lat_y),
+            long_x: parseFloat(data?.long_x),
             volume,
             area_basal: areaBasal,
             ut: {
@@ -274,8 +274,8 @@ class ArvoreService {
             dap: data?.cap ? parseFloat(data?.cap) / Math.PI : parseFloat(data?.dap),
             altura: parseFloat(data?.altura),
             fuste: parseInt(data?.fuste),
-            lat_x: parseFloat(data?.lat_x),
-            long_y: parseFloat(data?.long_y),
+            lat_y: parseFloat(data?.lat_y),
+            long_x: parseFloat(data?.long_x),
             ponto_gps: parseInt(data?.ponto_gps),
             volume,
             area_basal: areaBasal,
@@ -327,7 +327,7 @@ class ArvoreService {
             }
         })
         const { perPage, page, search, orderBy, order } = query
-        const skip = (page - 1) * perPage
+        const skip = perPage && (page - 1) * perPage
         let orderByTerm = {}
         
         const orderByElement = orderBy ? orderBy.split('.') : {}
@@ -398,7 +398,7 @@ class ArvoreService {
                 },
                 where,
                 orderBy: orderByTerm,
-                take: perPage ? parseInt(perPage) : 50,
+                take: perPage && parseInt(perPage),
                 skip: skip ? skip : 0,
             }),
             prismaClient.arvore.count({ where })
