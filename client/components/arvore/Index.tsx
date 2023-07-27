@@ -3,8 +3,6 @@ import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
-import { useModalContext } from "contexts/ModalContext"
-import { LoadingContext } from "contexts/LoadingContext"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { RootState } from "store"
 import { OptionType, Select } from "../Select"
@@ -252,7 +250,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         const nElements = sortedBy.length
 
         let sortedArvores: any = []        
-        const tiposNumericos = ['numero_arvore', 'lat_x', 'long_y', 'lat', 'lng', 'cap', 'dap']
+        const tiposNumericos = ['numero_arvore', 'lat_y', 'long_x', 'lat', 'lng', 'cap', 'dap']
         sortedArvores = filteredArvores.sort((a: any, b: any) => {
             if (!tiposNumericos.includes(sortBy)) {
                 return sorted ?

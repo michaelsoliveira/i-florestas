@@ -144,7 +144,7 @@ class ArvoreService {
             
             const totalArvores = dt?.importedData.length
 
-            const data = await Promise.all(dt?.importedData?.map(async (arv: any, idx: any) : Promise<any> =>  {
+            dt?.importedData?.forEach(async (arv: any, idx: any) : Promise<any> =>  {
                 if (idx < totalArvores - 1) {
                     const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
@@ -180,7 +180,7 @@ class ArvoreService {
                         long_x: parseFloat(arv?.longitude?.replace(",", ".")),
                     }
 
-                    return {
+                    const data = {
                         numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
                         dap,
                         altura: parseFloat(arv?.altura),
@@ -188,16 +188,26 @@ class ArvoreService {
                         volume,
                         area_basal: areaBasal,
                         ...preparedData,
-                        id_ut: ut?.id,
-                        id_especie: especie?.id
+                        ut: {
+                            connect: {
+                                id: ut?.id
+                            }
+                        },
+                        especie: {
+                            connect: {
+                                id: especie?.id
+                            }
+                        }
                     }
-                    
+                    await prismaClient.arvore.create({
+                        data
+                    })
                 }
-            }))
-
-            await prismaClient.arvore.createMany({
-                data
             })
+
+            // await prismaClient.arvore.createMany({
+            //     data
+            // })
 
         } catch(error) {
             console.log(error?.message)
