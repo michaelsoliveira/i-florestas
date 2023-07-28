@@ -20,6 +20,7 @@ const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
     const upa = useAppSelector((state: RootState) => state.upa)
+    const [arvores, setArvores] = useState<any>([])
     const { data: session } = useSession()
     const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral | null>(null)
     const router = useRouter()
@@ -51,12 +52,21 @@ const AddEdit = ({ id }: any) => {
                         }
                     }
                 }
+                const { data } = await client.get(`/arvore/get-all?utId=${id}`)
+                const arvores = data.arvores?.map(({ lat, lng }: any) => {
+                    return {
+                        lat,
+                        lng
+                    }
+                })
+
+                setArvores(arvores)
             }
         }
 
         loadUt()
 
-    }, [session, isAddMode, client, id, setValue, upa])
+    }, [session, isAddMode, client, id, setValue, upa, setArvores])
 
     async function onSubmit(data: any) {
         try {
@@ -283,6 +293,7 @@ const AddEdit = ({ id }: any) => {
                                         (
                                             <Map 
                                                 setLocation={setLocation}
+                                                arvores={arvores}
                                             />
                                         )
                                     }

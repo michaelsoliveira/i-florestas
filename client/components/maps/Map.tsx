@@ -9,6 +9,8 @@ import {
 } from "@react-google-maps/api";
 import Places from "./Places";
 import Distance from "./Distance";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEraser } from "@fortawesome/free-solid-svg-icons"
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -16,10 +18,11 @@ type MapOptions = google.maps.MapOptions;
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
   callBackPolygon?: (data: any) => void
+  arvores?: Array<LatLngLiteral>
 }
 
-export default function Map({ setLocation, callBackPolygon }: MapProps) {
-  const [polygon, setPolygon] = useState<boolean>(false)
+export default function Map({ setLocation, arvores, callBackPolygon }: MapProps) {
+  const [polygon, setPolygon] = useState<boolean>(true)
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
@@ -92,7 +95,7 @@ export default function Map({ setLocation, callBackPolygon }: MapProps) {
   return (
     <div className="mt-2">
       <div className="pb-2">
-      
+        
         <Places
           setOffice={(position: any) => {
             setUtLocation(position);
@@ -100,8 +103,31 @@ export default function Map({ setLocation, callBackPolygon }: MapProps) {
             mapRef.current?.panTo(position);
           }}
         />
-        {!utLocation && <p>Selecione no mapa as coordenadas da UT em defina nos campos acima</p>}
-        {directions && <Distance leg={directions.routes[0].legs[0]} />}
+        <div className="flex flex-row items-center justify-between w-full">
+          <div className="w-full">
+            {!utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
+            {directions && <Distance leg={directions.routes[0].legs[0]} />}
+          </div>
+          <div className="flex flex-row items-center w-full space-x-2 justify-end">
+            <div className="space-x-2">
+              <input type="checkbox" 
+                checked={polygon}
+                onChange={() => setPolygon(!polygon)}
+              /> Shape
+            </div> 
+            { polygon && polygonPath.length > 0 && (
+              <div onClick={() => setPolygonPath([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
+                <div>
+                    <FontAwesomeIcon icon={faEraser} />
+                </div>
+                <span>
+                    Limpar
+                </span>
+                </div>
+            ) }
+           
+          </div>
+        </div>
       </div>
       <div className="map">
         <GoogleMap
@@ -119,6 +145,7 @@ export default function Map({ setLocation, callBackPolygon }: MapProps) {
           { polygon && (
             <Polygon
               paths={polygonPath}
+              editable
               options={{
                 fillColor: '#00FF00',
                 fillOpacity: 0.4,
@@ -140,24 +167,26 @@ export default function Map({ setLocation, callBackPolygon }: MapProps) {
               }}
             />
           )}
-
-          {utLocation && (
+          { utLocation && (
             <>
               <Marker
                 position={utLocation}
                 icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
               />
-
+            </>
+          ) }
+          {arvores && (
+            <>
               <MarkerClusterer>
                 {(clusterer) =>
                   <>
-                    {houses.map((house: any) => (
+                    {arvores?.map((arv: any, idx: any) => (
                       <Marker
-                        key={house.lat}
-                        position={house}
+                        key={idx}
+                        position={arv}
                         clusterer={clusterer}
                         onClick={() => {
-                          fetchDirections(house);
+                          fetchDirections(arv);
                         } } 
                       />
                     ))}
