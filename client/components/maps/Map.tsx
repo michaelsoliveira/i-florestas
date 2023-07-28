@@ -15,25 +15,17 @@ type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
+  callBackPolygon?: (data: any) => void
 }
 
-export default function Map({ setLocation }: MapProps) {
+export default function Map({ setLocation, callBackPolygon }: MapProps) {
+  const [polygon, setPolygon] = useState<boolean>(false)
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
   })
 
-  const polylineCoordinates = [
-    { lat: 40.712776, lng: -74.005974 }, // Nova York
-    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
-    { lat: 41.878113, lng: -87.629799 },  // Chicago
-  ];
-
-  const polygonCoordinates = [
-    { lat: 37.774929, lng: -122.419418 }, // San Francisco
-    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
-    { lat: 32.715736, lng: -117.161087 }, // San Diego
-  ];
+  const [polygonPath, setPolygonPath] = useState<any>([]);
 
   const updateSize = () => {
     setSize({
@@ -66,9 +58,14 @@ export default function Map({ setLocation }: MapProps) {
     []
   )
 
-  const getLocation = (e: any) => {
-    setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-    setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+  const handleClick = (e: any) => {
+    if (!polygon) {
+      setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+      setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+    } else {
+      const { latLng } = e;
+      setPolygonPath((prevPath: any) => [...prevPath, { lat: latLng.lat(), lng: latLng.lng() }]);
+    }
   }
 
   const onLoad = useCallback((map) => (mapRef.current = map), []);
@@ -117,18 +114,20 @@ export default function Map({ setLocation }: MapProps) {
           options={options}
           onLoad={onLoad}
           onUnmount={onUnmount}
-          onClick={getLocation}
+          onClick={handleClick}
         >
-          {/* <Polygon
-            paths={polygonCoordinates}
-            options={{
-              fillColor: '#00FF00',
-              fillOpacity: 0.4,
-              strokeColor: '#00FF00',
-              strokeOpacity: 1,
-              strokeWeight: 2,
-            }}
-          /> */}
+          { polygon && (
+            <Polygon
+              paths={polygonPath}
+              options={{
+                fillColor: '#00FF00',
+                fillOpacity: 0.4,
+                strokeColor: '#00FF00',
+                strokeOpacity: 1,
+                strokeWeight: 2,
+              }}
+            />
+          ) }
           {directions && (
             <DirectionsRenderer
               directions={directions}
