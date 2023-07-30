@@ -16,6 +16,8 @@ import { useJsApiLoader } from '@react-google-maps/api'
 
 export const libraries = String(['places', 'geometry', 'drawing'])
 
+type LatLngLiteral = google.maps.LatLngLiteral;
+
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
@@ -26,6 +28,7 @@ const AddEdit = ({ id }: any) => {
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isAddMode = !id
+    const [polygonPath, setPolygonPath] = useState<any>([])
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -33,16 +36,30 @@ const AddEdit = ({ id }: any) => {
         [libraries]: libraries
     })
 
+    const callBackPolygon = (data: Array<LatLngLiteral>) => {
+        setPolygonPath(data)
+    }
+
     useEffect(() => {        
         async function loadUt() {
             
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: ut } = await client.get(`/ut/${id}`)
-
+                const polygon_path = JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
+                    return {
+                        lat: polygon[1],
+                        lng: polygon[0]
+                    }
+                })
+                console.log(polygon_path)
                 for (const [key, value] of Object.entries(ut)) {
                     switch(key) {
-                        case 'upa': setValue('upa', ut?.upa.id);
+                        case 'upa': setValue('upa', ut?.id_upa);
+                        break;
+                        case 'polygon_path': polygon_path.map((poly: any) => {
+                            setPolygonPath((prevPath: any) => [...prevPath, { lat: poly.lat, lng: poly.lng }])
+                        })
                         break;
                         default: {
                             setValue(key, value, {
@@ -71,8 +88,8 @@ const AddEdit = ({ id }: any) => {
     async function onSubmit(data: any) {
         try {
             return isAddMode
-                ? createUt(data)
-                : updateUt(id, data)
+                ? createUt({...data, polygon_path: polygonPath})
+                : updateUt(id, {...data, polygon_path: polygonPath})
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -294,6 +311,8 @@ const AddEdit = ({ id }: any) => {
                                             <Map 
                                                 setLocation={setLocation}
                                                 arvores={arvores}
+                                                callBackPolygon={callBackPolygon}
+                                                polygonPath={polygonPath}
                                             />
                                         )
                                     }

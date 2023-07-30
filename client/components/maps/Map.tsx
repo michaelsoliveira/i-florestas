@@ -17,18 +17,17 @@ type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
-  callBackPolygon?: (data: any) => void
+  callBackPolygon?: any
   arvores?: Array<LatLngLiteral>
+  polygonPath?: any
 }
 
-export default function Map({ setLocation, arvores, callBackPolygon }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, callBackPolygon }: MapProps) {
   const [polygon, setPolygon] = useState<boolean>(true)
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
   })
-
-  const [polygonPath, setPolygonPath] = useState<any>([]);
 
   const updateSize = () => {
     setSize({
@@ -48,7 +47,7 @@ export default function Map({ setLocation, arvores, callBackPolygon }: MapProps)
   }, [])
 
   const center = useMemo<LatLngLiteral>(
-    () => ({ lat: 0.7, lng: -51.8 }),
+    () => ({ lat: -3, lng: -49.8 }),
     []
   );
 
@@ -67,7 +66,7 @@ export default function Map({ setLocation, arvores, callBackPolygon }: MapProps)
       setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
     } else {
       const { latLng } = e;
-      setPolygonPath((prevPath: any) => [...prevPath, { lat: latLng.lat(), lng: latLng.lng() }]);
+      callBackPolygon((prevPath: any) => [...prevPath, { lat: latLng.lat(), lng: latLng.lng() }])
     }
   }
 
@@ -116,7 +115,7 @@ export default function Map({ setLocation, arvores, callBackPolygon }: MapProps)
               /> Shape
             </div> 
             { polygon && polygonPath.length > 0 && (
-              <div onClick={() => setPolygonPath([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
+              <div onClick={() => callBackPolygon([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
                 <div>
                     <FontAwesomeIcon icon={faEraser} />
                 </div>
@@ -131,7 +130,7 @@ export default function Map({ setLocation, arvores, callBackPolygon }: MapProps)
       </div>
       <div className="map">
         <GoogleMap
-          zoom={9}
+          zoom={8}
           center={center}
           mapContainerStyle={{
             width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
@@ -194,9 +193,9 @@ export default function Map({ setLocation, arvores, callBackPolygon }: MapProps)
                 }
               </MarkerClusterer>
 
-              <Circle center={utLocation} radius={15000} options={closeOptions} />
+              {/* <Circle center={utLocation} radius={15000} options={closeOptions} />
               <Circle center={utLocation} radius={30000} options={middleOptions} />
-              <Circle center={utLocation} radius={45000} options={farOptions} />
+              <Circle center={utLocation} radius={45000} options={farOptions} /> */}
             </>
           )}
         </GoogleMap>

@@ -432,6 +432,7 @@ model Ut {
   longitude          Float?
   shapefile          Bytes?
   origem             Unsupported("geometry")?
+  polygon_path       Unsupported("geometry")?
   id_upa             String?                  @db.Uuid
   upa                Upa?                     @relation(fields: [id_upa], references: [id], onDelete: NoAction, map: "FK_cb45ccb0356c31c3bf2f00b0086")
   id_poa             String?                  @db.Uuid
