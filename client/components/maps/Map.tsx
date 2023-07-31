@@ -93,7 +93,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
         }
     }
 
-  }, [callBackPolygon]);
+  }, [callBackPolygon, polygon]);
 
   const handleClick = (e: any) => {
     const { latLng } = e;
