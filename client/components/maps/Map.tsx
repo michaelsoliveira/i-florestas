@@ -21,12 +21,13 @@ type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
   callBackPolygon?: any
   arvores?: Array<LatLngLiteral>
-  polygonPath?: any
+  polygonPath?: any;
+  shapeText?: string;
 }
 
 
 
-export default function Map({ setLocation, arvores, polygonPath, callBackPolygon }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, callBackPolygon, shapeText = 'Shape' }: MapProps) {
   const [polygon, setPolygon] = useState<boolean>(true)
   const [size, setSize] = useState({
     x: window.innerWidth,
@@ -84,7 +85,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           return { lat: latLng.lat(), lng: latLng.lng() };
         });
 
-        callBackPolygon(nextPath);
+        polygon ? callBackPolygon(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
 
         if (e.domEvent?.ctrlKey) {
           // console.log(e)
@@ -161,7 +162,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
               <input type="checkbox" 
                 checked={polygon}
                 onChange={() => setPolygon(!polygon)}
-              /> Shape
+              /> { shapeText }
             </div> 
             { polygon && polygonPath.length > 0 && (
               <div onClick={() => callBackPolygon([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
@@ -191,17 +192,14 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           onUnmount={onUnmount}
           onClick={handleClick}
         >
-          { polygon && (
+          { polygonPath.length > 0 && (
             <>
             <Polygon
               paths={polygonPath}
-              editable
-              draggable
+              editable={polygon}
+              draggable={polygon}
               // Event used when manipulating and adding points
               onMouseUp={onEdit}
-              onRightClick={(e) => {
-                console.log(e)
-              }}
               // Event used when dragging the whole Polygon
               onDragEnd={onEdit}
               onLoad={onLoadPolygon}
