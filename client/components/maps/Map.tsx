@@ -12,6 +12,7 @@ import Places from "./Places";
 import Distance from "./Distance";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser } from "@fortawesome/free-solid-svg-icons"
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -74,7 +75,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
   const listenersRef = useRef<any[]>([]);
 
   // Call setPath with new edited path
-  const onEdit = useCallback(() => {
+  const onEdit = useCallback((e) => {
     if (polygonRef.current) {
       const nextPath = polygonRef.current
         .getPath()
@@ -83,8 +84,14 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           return { lat: latLng.lat(), lng: latLng.lng() };
         });
 
-      callBackPolygon(nextPath);
+        callBackPolygon(nextPath);
+
+        if (e.domEvent?.ctrlKey) {
+          // console.log(e)
+          polygonRef.current?.getPath().removeAt(e.vertex)
+        }
     }
+
   }, [callBackPolygon]);
 
   const handleClick = (e: any) => {
@@ -109,9 +116,6 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
         path?.addListener("set_at", onEdit),
         path?.addListener("insert_at", onEdit),
         path?.addListener("remove_at", onEdit),
-        path?.addListener("mousedown", (e: any) => {
-          path.removeAt(e.vertex)
-        })
       );
     },
     [onEdit]
@@ -195,6 +199,9 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
               draggable
               // Event used when manipulating and adding points
               onMouseUp={onEdit}
+              onRightClick={(e) => {
+                console.log(e)
+              }}
               // Event used when dragging the whole Polygon
               onDragEnd={onEdit}
               onLoad={onLoadPolygon}
