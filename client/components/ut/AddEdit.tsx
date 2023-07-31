@@ -319,6 +319,7 @@ const AddEdit = ({ id }: any) => {
                                                 arvores={arvores}
                                                 callBackPolygon={callBackPolygon}
                                                 polygonPath={polygonPath}
+                                                shapeText='Definir área da UT'
                                             />
                                         )
                                     }
