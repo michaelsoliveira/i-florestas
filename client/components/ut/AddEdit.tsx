@@ -52,13 +52,19 @@ const AddEdit = ({ id }: any) => {
                         lng: polygon[0]
                     }
                 })
-                console.log(polygon_path)
+
+                const polygonValues = polygon_path.map((poly: any) => {
+                    return {
+                        lat: poly.lat, lng: poly.lng
+                    }
+                })
+
                 for (const [key, value] of Object.entries(ut)) {
                     switch(key) {
                         case 'upa': setValue('upa', ut?.id_upa);
                         break;
                         case 'polygon_path': polygon_path.map((poly: any) => {
-                            setPolygonPath((prevPath: any) => [...prevPath, { lat: poly.lat, lng: poly.lng }])
+                            setPolygonPath(polygonValues)
                         })
                         break;
                         default: {

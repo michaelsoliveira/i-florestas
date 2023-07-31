@@ -73,8 +73,6 @@ class UtService {
             quadrante: parseInt(quadrante), 
         } : preparedData
 
-        console.log(data)
-
         const fieldsUt = 'numero_ut, area_util, area_total, latitude, longitude, id_upa'
         const withPolygon = polygon_path ? `${fieldsUt}, polygon_path` : fieldsUt
         const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withPolygon
@@ -97,8 +95,6 @@ class UtService {
             INSERT INTO ut(${fields})
                 VALUES('${values.join(`', '` )}')
         `
-
-        console.log('QUERY: ', query)
         
         const ut: Ut = await prismaClient.$queryRawUnsafe(query)
 
@@ -118,7 +114,8 @@ class UtService {
             quadrante,
             latitude, 
             longitude,
-            id_upa
+            id_upa,
+            polygon_path
         } = dataRequest
 
         const preparedData = 
@@ -152,6 +149,15 @@ class UtService {
             },
             data
         })
+
+        const polygonString = polygon_path.reduce((acc: any, curr: any, idx: any) => {
+            const point = idx < polygon_path.length - 1? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat))
+            return acc + point
+        }, '')
+
+        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = '${id}'`
+
+        polygon_path && polygon_path.length > 0 && await prismaClient.$executeRawUnsafe(query)
 
         return ut
     }

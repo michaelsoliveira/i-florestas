@@ -5,7 +5,8 @@ import {
   DirectionsRenderer,
   Circle,
   MarkerClusterer,
-  Polygon
+  Polygon,
+  OverlayView
 } from "@react-google-maps/api";
 import Places from "./Places";
 import Distance from "./Distance";
@@ -21,6 +22,8 @@ type MapProps = {
   arvores?: Array<LatLngLiteral>
   polygonPath?: any
 }
+
+
 
 export default function Map({ setLocation, arvores, polygonPath, callBackPolygon }: MapProps) {
   const [polygon, setPolygon] = useState<boolean>(true)
@@ -46,6 +49,12 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     mapRef.current = undefined
   }, [])
 
+  const onUnmountPolygon = useCallback(() => {
+      listenersRef.current.forEach((lis: any) => lis?.remove());
+      polygonRef.current = null;
+      mapRef.current = undefined
+  }, [])
+
   const center = useMemo<LatLngLiteral>(
     () => ({ lat: -3, lng: -49.8 }),
     []
@@ -60,17 +69,53 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     []
   )
 
+  // Define refs for Polygon instance and listeners
+  const polygonRef = useRef<any>(null);
+  const listenersRef = useRef<any[]>([]);
+
+  // Call setPath with new edited path
+  const onEdit = useCallback(() => {
+    if (polygonRef.current) {
+      const nextPath = polygonRef.current
+        .getPath()
+        .getArray()
+        .map((latLng: any) => {
+          return { lat: latLng.lat(), lng: latLng.lng() };
+        });
+
+      callBackPolygon(nextPath);
+    }
+  }, [callBackPolygon]);
+
   const handleClick = (e: any) => {
+    const { latLng } = e;
     if (!polygon) {
-      setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-      setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+      setLocation({ lat: latLng.lat(), lng: latLng.lng() })
+      setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
     } else {
-      const { latLng } = e;
-      callBackPolygon((prevPath: any) => [...prevPath, { lat: latLng.lat(), lng: latLng.lng() }])
+      
+      callBackPolygon((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
     }
   }
 
-  const onLoad = useCallback((map) => (mapRef.current = map), []);
+  const onLoad = useCallback((map) => {  
+    mapRef.current = map
+  }, []);
+  const onLoadPolygon = useCallback(
+    polygon => {
+      polygonRef.current = polygon;
+      const path = polygon.getPath();
+      listenersRef.current.push(
+        path?.addListener("set_at", onEdit),
+        path?.addListener("insert_at", onEdit),
+        path?.addListener("remove_at", onEdit),
+        path?.addListener("mousedown", (e: any) => {
+          path.removeAt(e.vertex)
+        })
+      );
+    },
+    [onEdit]
+  );
   const houses = useMemo(() => generateHouses(center), [center]);
 
   const fetchDirections = (house: LatLngLiteral) => {
@@ -129,6 +174,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
         </div>
       </div>
       <div className="map">
+        
         <GoogleMap
           zoom={8}
           center={center}
@@ -142,9 +188,17 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           onClick={handleClick}
         >
           { polygon && (
+            <>
             <Polygon
               paths={polygonPath}
               editable
+              draggable
+              // Event used when manipulating and adding points
+              onMouseUp={onEdit}
+              // Event used when dragging the whole Polygon
+              onDragEnd={onEdit}
+              onLoad={onLoadPolygon}
+              onUnmount={onUnmountPolygon}
               options={{
                 fillColor: '#00FF00',
                 fillOpacity: 0.4,
@@ -153,6 +207,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
                 strokeWeight: 2,
               }}
             />
+            </>
           ) }
           {directions && (
             <DirectionsRenderer
