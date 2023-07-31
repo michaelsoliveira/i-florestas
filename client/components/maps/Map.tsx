@@ -5,35 +5,33 @@ import {
   DirectionsRenderer,
   Circle,
   MarkerClusterer,
-  Polygon
+  Polygon,
+  OverlayView
 } from "@react-google-maps/api";
 import Places from "./Places";
 import Distance from "./Distance";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEraser } from "@fortawesome/free-solid-svg-icons"
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
+  callBackPolygon?: any
+  arvores?: Array<LatLngLiteral>
+  polygonPath?: any
 }
 
-export default function Map({ setLocation }: MapProps) {
+
+
+export default function Map({ setLocation, arvores, polygonPath, callBackPolygon }: MapProps) {
+  const [polygon, setPolygon] = useState<boolean>(true)
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
   })
-
-  const polylineCoordinates = [
-    { lat: 40.712776, lng: -74.005974 }, // Nova York
-    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
-    { lat: 41.878113, lng: -87.629799 },  // Chicago
-  ];
-
-  const polygonCoordinates = [
-    { lat: 37.774929, lng: -122.419418 }, // San Francisco
-    { lat: 34.052235, lng: -118.243683 }, // Los Angeles
-    { lat: 32.715736, lng: -117.161087 }, // San Diego
-  ];
 
   const updateSize = () => {
     setSize({
@@ -52,8 +50,14 @@ export default function Map({ setLocation }: MapProps) {
     mapRef.current = undefined
   }, [])
 
+  const onUnmountPolygon = useCallback(() => {
+      listenersRef.current.forEach((lis: any) => lis?.remove());
+      polygonRef.current = null;
+      mapRef.current = undefined
+  }, [])
+
   const center = useMemo<LatLngLiteral>(
-    () => ({ lat: 0.7, lng: -51.8 }),
+    () => ({ lat: -3, lng: -49.8 }),
     []
   );
 
@@ -66,12 +70,56 @@ export default function Map({ setLocation }: MapProps) {
     []
   )
 
-  const getLocation = (e: any) => {
-    setLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-    setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+  // Define refs for Polygon instance and listeners
+  const polygonRef = useRef<any>(null);
+  const listenersRef = useRef<any[]>([]);
+
+  // Call setPath with new edited path
+  const onEdit = useCallback((e) => {
+    if (polygonRef.current) {
+      const nextPath = polygonRef.current
+        .getPath()
+        .getArray()
+        .map((latLng: any) => {
+          return { lat: latLng.lat(), lng: latLng.lng() };
+        });
+
+        callBackPolygon(nextPath);
+
+        if (e.domEvent?.ctrlKey) {
+          // console.log(e)
+          polygonRef.current?.getPath().removeAt(e.vertex)
+        }
+    }
+
+  }, [callBackPolygon]);
+
+  const handleClick = (e: any) => {
+    const { latLng } = e;
+    if (!polygon) {
+      setLocation({ lat: latLng.lat(), lng: latLng.lng() })
+      setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
+    } else {
+      
+      callBackPolygon((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
+    }
   }
 
-  const onLoad = useCallback((map) => (mapRef.current = map), []);
+  const onLoad = useCallback((map) => {  
+    mapRef.current = map
+  }, []);
+  const onLoadPolygon = useCallback(
+    polygon => {
+      polygonRef.current = polygon;
+      const path = polygon.getPath();
+      listenersRef.current.push(
+        path?.addListener("set_at", onEdit),
+        path?.addListener("insert_at", onEdit),
+        path?.addListener("remove_at", onEdit),
+      );
+    },
+    [onEdit]
+  );
   const houses = useMemo(() => generateHouses(center), [center]);
 
   const fetchDirections = (house: LatLngLiteral) => {
@@ -95,7 +143,7 @@ export default function Map({ setLocation }: MapProps) {
   return (
     <div className="mt-2">
       <div className="pb-2">
-      
+        
         <Places
           setOffice={(position: any) => {
             setUtLocation(position);
@@ -103,12 +151,36 @@ export default function Map({ setLocation }: MapProps) {
             mapRef.current?.panTo(position);
           }}
         />
-        {!utLocation && <p>Selecione no mapa as coordenadas da UT em defina nos campos acima</p>}
-        {directions && <Distance leg={directions.routes[0].legs[0]} />}
+        <div className="flex flex-row items-center justify-between w-full">
+          <div className="w-full">
+            {!utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
+            {directions && <Distance leg={directions.routes[0].legs[0]} />}
+          </div>
+          <div className="flex flex-row items-center w-full space-x-2 justify-end">
+            <div className="space-x-2">
+              <input type="checkbox" 
+                checked={polygon}
+                onChange={() => setPolygon(!polygon)}
+              /> Shape
+            </div> 
+            { polygon && polygonPath.length > 0 && (
+              <div onClick={() => callBackPolygon([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
+                <div>
+                    <FontAwesomeIcon icon={faEraser} />
+                </div>
+                <span>
+                    Limpar
+                </span>
+                </div>
+            ) }
+           
+          </div>
+        </div>
       </div>
       <div className="map">
+        
         <GoogleMap
-          zoom={9}
+          zoom={8}
           center={center}
           mapContainerStyle={{
             width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
@@ -117,18 +189,33 @@ export default function Map({ setLocation }: MapProps) {
           options={options}
           onLoad={onLoad}
           onUnmount={onUnmount}
-          onClick={getLocation}
+          onClick={handleClick}
         >
-          {/* <Polygon
-            paths={polygonCoordinates}
-            options={{
-              fillColor: '#00FF00',
-              fillOpacity: 0.4,
-              strokeColor: '#00FF00',
-              strokeOpacity: 1,
-              strokeWeight: 2,
-            }}
-          /> */}
+          { polygon && (
+            <>
+            <Polygon
+              paths={polygonPath}
+              editable
+              draggable
+              // Event used when manipulating and adding points
+              onMouseUp={onEdit}
+              onRightClick={(e) => {
+                console.log(e)
+              }}
+              // Event used when dragging the whole Polygon
+              onDragEnd={onEdit}
+              onLoad={onLoadPolygon}
+              onUnmount={onUnmountPolygon}
+              options={{
+                fillColor: '#00FF00',
+                fillOpacity: 0.4,
+                strokeColor: '#00FF00',
+                strokeOpacity: 1,
+                strokeWeight: 2,
+              }}
+            />
+            </>
+          ) }
           {directions && (
             <DirectionsRenderer
               directions={directions}
@@ -141,24 +228,26 @@ export default function Map({ setLocation }: MapProps) {
               }}
             />
           )}
-
-          {utLocation && (
+          { utLocation && (
             <>
               <Marker
                 position={utLocation}
                 icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
               />
-
+            </>
+          ) }
+          {arvores && (
+            <>
               <MarkerClusterer>
                 {(clusterer) =>
                   <>
-                    {houses.map((house: any) => (
+                    {arvores?.map((arv: any, idx: any) => (
                       <Marker
-                        key={house.lat}
-                        position={house}
+                        key={idx}
+                        position={arv}
                         clusterer={clusterer}
                         onClick={() => {
-                          fetchDirections(house);
+                          fetchDirections(arv);
                         } } 
                       />
                     ))}
@@ -166,9 +255,9 @@ export default function Map({ setLocation }: MapProps) {
                 }
               </MarkerClusterer>
 
-              <Circle center={utLocation} radius={15000} options={closeOptions} />
+              {/* <Circle center={utLocation} radius={15000} options={closeOptions} />
               <Circle center={utLocation} radius={30000} options={middleOptions} />
-              <Circle center={utLocation} radius={45000} options={farOptions} />
+              <Circle center={utLocation} radius={45000} options={farOptions} /> */}
             </>
           )}
         </GoogleMap>

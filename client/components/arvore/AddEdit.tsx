@@ -260,8 +260,8 @@ const AddEdit = ({ id }: any) => {
                                             </div>
                                             <div>
                                                 <FormInput
-                                                    id="lat_x"
-                                                    name="lat_x"
+                                                    id="long_x"
+                                                    name="long_x"
                                                     label="Coord. X"
                                                     register={register}
                                                     errors={errors}
@@ -282,8 +282,8 @@ const AddEdit = ({ id }: any) => {
                                             </div>
                                             <div>
                                                 <FormInput
-                                                    id="long_y"
-                                                    name="long_y"
+                                                    id="long_x"
+                                                    name="long_x"
                                                     label="Coord. Y"
                                                     register={register}
                                                     errors={errors}

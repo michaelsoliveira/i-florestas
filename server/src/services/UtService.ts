@@ -30,7 +30,8 @@ class UtService {
             quadrante,
             latitude, 
             longitude,
-            id_upa
+            id_upa,
+            polygon_path
         } = dataRequest
 
         const upa = await prismaClient.upa.findUnique({where: { id: id_upa }})
@@ -53,20 +54,17 @@ class UtService {
 
         const preparedData = 
             {
-                numero_ut: parseInt(numero_ut), 
+                numero_ut: parseFloat(numero_ut), 
                 area_util: parseFloat(area_util), 
                 area_total: parseFloat(area_total), 
                 latitude: parseFloat(latitude), 
                 longitude: parseFloat(longitude),
-                upa: {
-                    connect: {
-                        id: id_upa
-                    }
-                }
+                polygon_path,
+                id_upa,
             }
         
 
-        const data = upa?.tipo === 1 ? { 
+        const data: any = upa?.tipo === 1 ? { 
             ...preparedData, 
             quantidade_faixas: parseInt(quantidade_faixas), 
             comprimento_faixas: parseInt(comprimento_faixas), 
@@ -74,8 +72,31 @@ class UtService {
             azimute: parseFloat(azimute),
             quadrante: parseInt(quadrante), 
         } : preparedData
+
+        const fieldsUt = 'numero_ut, area_util, area_total, latitude, longitude, id_upa'
+        const withPolygon = polygon_path ? `${fieldsUt}, polygon_path` : fieldsUt
+        const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withPolygon
+
+        let values: any = []
+        for (const [key, value] of Object.entries(data))  {
+            if (key !== 'polygon_path') {
+                values.push(value?.toString())
+            }
+        };
+
+        const polygonString = polygon_path.reduce((acc: any, curr: any, idx: any) => {
+            const point = idx < polygon_path.length - 1? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat))
+            return acc + point
+        }, '')
+
+        values.push(`POLYGON((${polygonString}))`)
         
-        const ut = await prismaClient.ut.create({data})
+        const query: any = `
+            INSERT INTO ut(${fields})
+                VALUES('${values.join(`', '` )}')
+        `
+        
+        const ut: Ut = await prismaClient.$queryRawUnsafe(query)
 
         return ut
     }
@@ -93,7 +114,8 @@ class UtService {
             quadrante,
             latitude, 
             longitude,
-            id_upa
+            id_upa,
+            polygon_path
         } = dataRequest
 
         const preparedData = 
@@ -127,6 +149,15 @@ class UtService {
             },
             data
         })
+
+        const polygonString = polygon_path.reduce((acc: any, curr: any, idx: any) => {
+            const point = idx < polygon_path.length - 1? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat))
+            return acc + point
+        }, '')
+
+        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = '${id}'`
+
+        polygon_path && polygon_path.length > 0 && await prismaClient.$executeRawUnsafe(query)
 
         return ut
     }
@@ -230,14 +261,21 @@ class UtService {
     }
 
     async findById(id: string) : Promise<any> {
-        const ut = await prismaClient.ut.findUnique({ 
-            where: { id },
-            include: {
-                upa: true
-            }
-        })
+        const ut = await prismaClient.$queryRaw<any>`
+            SELECT 
+                a.id, 
+                a.numero_ut, 
+                a.area_util, 
+                a.area_total,
+                a.latitude,
+                a.longitude,
+                ST_AsGeoJSON(a.polygon_path) as polygon_path , 
+                a.id_upa
+            FROM ut a
+            WHERE a.id = ${id}
+        `
 
-        return ut
+        return ut[0]
     }
 }
 

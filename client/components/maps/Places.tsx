@@ -14,7 +14,7 @@ import usePlacesAutocomplete, {
   type PlacesProps = {
     setOffice: (position: google.maps.LatLngLiteral) => void;
   };
-  
+
   export default function Places({ setOffice }: PlacesProps) {
     const {
       ready,

@@ -1,6 +1,7 @@
 // import { User } from "../entities/User"
 import { Request, Response } from "express";
 import utService from "../services/UtService";
+import { Ut } from "@prisma/client";
 
 export class UtController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -108,8 +109,9 @@ export class UtController {
     async findOne(request: Request, response: Response) : Promise<Response>{
         const { id } = request.params
         try {
-            const upa = await utService.findById(id)
-            return response.json(upa)
+            const ut = await utService.findById(id)
+
+            return response.json(ut)
         } catch(error) {
             return response.json(error.message)
         }
