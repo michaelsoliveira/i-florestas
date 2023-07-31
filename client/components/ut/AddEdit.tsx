@@ -46,12 +46,12 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: ut } = await client.get(`/ut/${id}`)
-                const polygon_path = JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
+                const polygon_path = ut.polygon_path.length > 0 ? JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
                     return {
                         lat: polygon[1],
                         lng: polygon[0]
                     }
-                })
+                }) : []
 
                 const polygonValues = polygon_path.map((poly: any) => {
                     return {
