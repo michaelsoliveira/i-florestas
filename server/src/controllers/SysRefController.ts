@@ -61,7 +61,7 @@ export class SysRefController {
     async findAll(request: Request, response: Response) {
         try {
             const { data, perPage, page, orderBy, order, skip, count } = await sysRefService.getAll(request.query)
-            
+
             return response.json({
                 error: false,
                 sysRefs: data,

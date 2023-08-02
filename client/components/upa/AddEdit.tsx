@@ -38,9 +38,8 @@ const AddEdit = ({ id }: any) => {
     }
 
     const loadSysRefs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/sys-ref/search/q?nome=${inputValue}`)
-        const data = response.data
-        
+        const data = sysRefs.filter((srid: any) => srid.srtext?.toLowerCase().includes(inputValue))
+        console.log(data)
         callback(data?.map((sysRef: any) => ({
             value: sysRef.srid,
             label: sysRef.srtext
