@@ -11,7 +11,7 @@ export class EspecieController {
             const especie = await especieService.create({ data: request.body, userId: request.user?.id })
 
             return response.json({
-                error:true,
+                error: false,
                 especie: especie,
                 message: `Espécie ${especie?.nome} cadastrado com sucesso!`
             })
