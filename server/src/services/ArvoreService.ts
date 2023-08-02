@@ -222,11 +222,13 @@ class ArvoreService {
             lotes.push(dados.slice(i, i + size));
         }
 
-        const promises = lotes?.map((lote: any) => this.inserirLoteDeDados(lote, upa))
+        const promises = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, upa))
         
         try {
-            await Promise.all(promises)
-            console.log('Dados Importados com Sucesso!')
+            await Promise.all(promises).then(() => {
+                console.log('Dados Importados com Sucesso!')
+            })
+            
         } catch (error) {
             console.error('Erro ao inserir dados em paralelo:', error?.message);
         }
