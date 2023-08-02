@@ -10,7 +10,7 @@ export interface ArvoreType {
     id_projeto: string;
 }
 
-const NUM_WRITES = 250;
+const NUM_WRITES = 1000;
 
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
