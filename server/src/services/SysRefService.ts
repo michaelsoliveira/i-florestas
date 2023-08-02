@@ -1,4 +1,4 @@
-import { SpatialRefSys } from "@prisma/client";
+import { Prisma, SpatialRefSys } from "@prisma/client";
 import { prismaClient } from "../database/prismaClient";
 
 export interface SysRefType {
@@ -87,12 +87,15 @@ class SysRefService {
         let orderByTerm = {}
         const searchTermFilter = search
             ? {
-                OR: [
+                AND: [
                     {
                         ...OR
                     },
                     {
-                        srtext: { contains: search }
+                        srtext: { 
+                            mode: Prisma.QueryMode.insensitive,
+                            contains: search 
+                        }
                     },
                 ],
             }
@@ -129,16 +132,16 @@ class SysRefService {
                 }
             })
 
-            sysRefs.map((sysRef: any) => {
+            const data = sysRefs.map((sysRef: any) => {
                 const text = sysRef.srtext.split("\"")
-                sysRefsTrait.push({
+                return {
                     srid: sysRef.srid, 
                     srtext: text[1]
-                })
+                }
             })
 
         return {
-            data: sysRefsTrait,
+            data,
             perPage,
             page,
             skip,
@@ -159,7 +162,7 @@ class SysRefService {
     async search(text: any) {
         const sysRefs = await prismaClient.spatialRefSys.findMany({
             where: {
-                OR: [
+                AND: [
                     {
                         srtext: { mode: 'insensitive', contains: text }
                     },
