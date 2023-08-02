@@ -107,8 +107,6 @@ class ArvoreService {
                 }
             }
 
-            console.log(preparedData)
-
             const dataObs = data?.id_observacao ? 
             { 
                 ...preparedData, 
@@ -144,7 +142,7 @@ class ArvoreService {
             
             const totalArvores = dt?.importedData.length
 
-            dt?.importedData?.forEach(async (arv: any, idx: any) : Promise<any> =>  {
+            Promise.all([dt?.importedData?.forEach(async (arv: any, idx: any) : Promise<any> =>  {
                 if (idx < totalArvores - 1) {
                     const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
@@ -202,6 +200,11 @@ class ArvoreService {
                     await prismaClient.arvore.create({
                         data
                     })
+                }
+            })]).then(() => {
+                return {
+                    error: false,
+                    message: 'Importação Realizada com Sucesso!!!'
                 }
             })
 
