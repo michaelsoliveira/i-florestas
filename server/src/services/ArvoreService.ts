@@ -10,6 +10,8 @@ export interface ArvoreType {
     id_projeto: string;
 }
 
+const NUM_WRITES = 250;
+
 class ArvoreService {
     async create(data: any): Promise<Arvore> {
         try {
@@ -124,95 +126,120 @@ class ArvoreService {
             return arvore
         } catch(e) {
             return e
+        }        
+    }
+
+    // Função para inserir um lote de dados usando Prisma
+    async inserirLoteDeDados(dados: any, upa: any){
+    try {
+
+        const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
+            where: {
+                upa: {
+                    some: {
+                        id: upa?.id
+                    }
+                }
+            }
+        }) as any
+
+        const data = dados?.map(async (arv: any) =>  {
+
+            const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
+
+            let scope = {
+                dap,
+                altura: parseFloat(arv?.altura)
+            }
+    
+            const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
+            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
+
+            const especie: any = await prismaClient.especie.findFirst({
+                where: {
+                    nome_orgao: arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
+                }
+            })
+
+            const ut: any = arv?.ut && await prismaClient.ut.findFirst({
+                where: {
+                    AND: [
+                            { numero_ut: parseInt(arv?.ut) },
+                            { id_upa: upa?.id }
+                        ]
+                }
+            })
+
+            const preparedData = upa?.tipo === 1 ? {
+                faixa: parseInt(arv?.faixa),
+                orient_x: arv?.orient_x,
+            } : {
+                ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
+                lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
+                long_x: parseFloat(arv?.longitude?.replace(",", ".")),
+            }
+
+            arv?.numero_arvore && await prismaClient.arvore.create({
+                data: {
+                    numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
+                    dap,
+                    altura: parseFloat(arv?.altura),
+                    fuste: arv?.qf && parseInt(arv?.qf),
+                    volume,
+                    area_basal: areaBasal,
+                    ...preparedData,
+                    ut: {
+                        connect: {
+                            id: ut?.id
+                        }
+                    },
+                    especie: {
+                        connect: {
+                            id: especie?.id
+                        }
+                    }
+                }
+            })
+        })
+
+        // console.log(data)
+
+    // const resultado = await prismaClient.arvore.createMany({
+    //     data
+    // })
+    
+      return data;
+    } catch (error) {
+      console.error('Erro ao inserir lote de dados:', error);
+    //   throw error;
+    }
+  }
+
+    // Função para inserir todos os dados em paralelo usando Promise.all
+    async inserirDadosEmParalelo(dados: any, upa: any, size: any) {
+        let lotes = [];
+        for (let i = 0; i < dados.length; i += size) {
+            lotes.push(dados.slice(i, i + size));
         }
+
+        const promises = lotes?.map((lote: any) => this.inserirLoteDeDados(lote, upa))
         
+        try {
+            await Promise.all(promises)
+            console.log('Dados Importados com Sucesso!')
+        } catch (error) {
+            console.error('Erro ao inserir dados em paralelo:', error?.message);
+        }
     }
 
     async createByImport(dt: any, upa?: any): Promise<any> {
         try {
-            const eqVolume = await prismaClient.equacaoVolume.findFirst({
-                where: {
-                    upa: {
-                        some: {
-                            id: upa?.id
-                        }
-                    }
-                }
-            }) as any
-            
-            const totalArvores = dt?.importedData.length
-
-            Promise.all([dt?.importedData?.forEach(async (arv: any, idx: any) : Promise<any> =>  {
-                if (idx < totalArvores - 1) {
-                    const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
-
-                    let scope = {
-                        dap,
-                        altura: parseFloat(arv?.altura)
-                    }
-            
-                    const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
-                    const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
-
-                    const especie = await prismaClient.especie.findFirst({
-                        where: {
-                            nome_orgao: arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
-                        }
-                    })
-
-                    const ut = arv?.ut && await prismaClient.ut.findFirst({
-                        where: {
-                            AND: [
-                                    { numero_ut: parseInt(arv?.ut) },
-                                    { id_upa: upa?.id }
-                                ]
-                        }
-                    })
-
-                    const preparedData = upa?.tipo === 1 ? {
-                        faixa: parseInt(arv?.faixa),
-                        orient_x: arv?.orient_x,
-                    } : {
-                        ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
-                        lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
-                        long_x: parseFloat(arv?.longitude?.replace(",", ".")),
-                    }
-
-                    const data = {
-                        numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
-                        dap,
-                        altura: parseFloat(arv?.altura),
-                        fuste: arv?.qf && parseInt(arv?.qf),
-                        volume,
-                        area_basal: areaBasal,
-                        ...preparedData,
-                        ut: {
-                            connect: {
-                                id: ut?.id
-                            }
-                        },
-                        especie: {
-                            connect: {
-                                id: especie?.id
-                            }
-                        }
-                    }
-                    await prismaClient.arvore.create({
-                        data
-                    })
-                }
-            })]).then(() => {
-                return {
-                    error: false,
-                    message: 'Importação Realizada com Sucesso!!!'
-                }
-            })
+            const data = this.inserirDadosEmParalelo(dt?.importedData, upa, NUM_WRITES)
 
             return {
-                error: true,
-                message: 'Ocorreu um erro na importação do inventário'
+                error: false,
+                message: 'Importação Realizada com Sucesso!!!'
             }
-
         } catch(error) {
             console.log(error?.message)
             return {

@@ -161,7 +161,6 @@ class EspecieService {
 
     async getErrors(data: any, userId: any) {
         try {
-            console.log(data)
             const user = await prismaClient.user.findUnique({
                 where: {
                     id: userId
