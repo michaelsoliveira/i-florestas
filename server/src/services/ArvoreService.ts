@@ -208,9 +208,10 @@ class ArvoreService {
                 }
             })
 
-            // await prismaClient.arvore.createMany({
-            //     data
-            // })
+            return {
+                error: true,
+                message: 'Ocorreu um erro na importação do inventário'
+            }
 
         } catch(error) {
             console.log(error?.message)
