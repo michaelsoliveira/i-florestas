@@ -207,7 +207,7 @@ const Index = () => {
             setLoading(true)
             await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                 columns: columnData,
-                data: rowData
+                data: rowData.slice(0, rowData.length - 1)
             })
             .then((result: any) => {
                 const { data } = result
