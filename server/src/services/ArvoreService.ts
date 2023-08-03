@@ -143,21 +143,23 @@ class ArvoreService {
             }
         }) as any
 
-        const data = dados?.map(async (arv: any) =>  {
-
+        const getData: any = async () => { 
+            return await Promise.all(dados?.map(async (arv: any) =>  {
             const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
             let scope = {
                 dap,
                 altura: parseFloat(arv?.altura)
             }
+
+            const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
     
             const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
             const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
 
-            const especie: any = await prismaClient.especie.findFirst({
+            const especie: any = nome_especie && await prismaClient.especie.findFirst({
                 where: {
-                    nome_orgao: arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
+                    nome_orgao: nome_especie
                 }
             })
 
@@ -179,36 +181,30 @@ class ArvoreService {
                 long_x: parseFloat(arv?.longitude?.replace(",", ".")),
             }
 
-            arv?.numero_arvore && await prismaClient.arvore.create({
-                data: {
-                    numero_arvore: arv?.numero_arvore && parseInt(arv?.numero_arvore),
-                    dap,
-                    altura: parseFloat(arv?.altura),
-                    fuste: arv?.qf && parseInt(arv?.qf),
-                    volume,
-                    area_basal: areaBasal,
-                    ...preparedData,
-                    ut: {
-                        connect: {
-                            id: ut?.id
-                        }
-                    },
-                    especie: {
-                        connect: {
-                            id: especie?.id
-                        }
-                    }
-                }
+            const result = arv?.numero_arvore !== '' && {
+                numero_arvore: parseInt(arv?.numero_arvore),
+                dap,
+                altura: parseFloat(arv?.altura),
+                fuste: arv?.qf && parseInt(arv?.qf),
+                volume,
+                area_basal: areaBasal,
+                ...preparedData,
+                id_ut: ut?.id,
+                id_especie: especie?.id
+            }
+
+            return result
+        }))
+    }
+        getData().then(async (data: any) => {
+            await prismaClient.arvore.createMany({
+                data
             })
+        }).catch((error: any) => {
+            console.log(error)
         })
 
-        // console.log(data)
-
-    // const resultado = await prismaClient.arvore.createMany({
-    //     data
-    // })
-    
-      return data;
+        
     } catch (error) {
       console.error('Erro ao inserir lote de dados:', error);
     //   throw error;
@@ -222,11 +218,11 @@ class ArvoreService {
             lotes.push(dados.slice(i, i + size));
         }
 
-        const promises = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, upa))
+        const promises: any = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, upa))
         
         try {
-            await Promise.all(promises).then(() => {
-                console.log('Dados Importados com Sucesso!')
+            return await Promise.all(promises).then(() => {
+                console.log('IMPORTS DONE')
             })
             
         } catch (error) {
@@ -236,7 +232,7 @@ class ArvoreService {
 
     async createByImport(dt: any, upa?: any): Promise<any> {
         try {
-            const data = this.inserirDadosEmParalelo(dt?.importedData, upa, NUM_WRITES)
+            await this.inserirDadosEmParalelo(dt?.importedData, upa, NUM_WRITES)
 
             return {
                 error: false,
