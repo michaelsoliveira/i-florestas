@@ -52,13 +52,17 @@ class UtService {
             throw new Error('Já existe uma Ut cadastrada com este número')
         }
 
+        const coordFields = (latitude && longitude) && {
+            latitude: Number(latitude), 
+                longitude: Number(longitude),
+        } 
+
         const preparedData = 
             {
                 numero_ut: parseFloat(numero_ut), 
                 area_util: parseFloat(area_util), 
                 area_total: parseFloat(area_total), 
-                latitude: parseFloat(latitude), 
-                longitude: parseFloat(longitude),
+                ...coordFields,
                 polygon_path,
                 id_upa,
             }
@@ -73,9 +77,10 @@ class UtService {
             quadrante: parseInt(quadrante), 
         } : preparedData
 
-        const fieldsUt = 'numero_ut, area_util, area_total, latitude, longitude, id_upa'
+        const fieldsUt = 'numero_ut, area_util, area_total, id_upa'
         const withPolygon = polygon_path ? `${fieldsUt}, polygon_path` : fieldsUt
-        const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withPolygon
+        const withCoords = (latitude && longitude) ? withPolygon.concat(', latitude, longitude') : withPolygon
+        const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withCoords
 
         let values: any = []
         for (const [key, value] of Object.entries(data))  {

@@ -358,12 +358,19 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     }
                                 </div>        
                             </th>
-                            <th
-                                scope="col"
-                                className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                                Coordenadas
-                            </th>
+                            {
+                                upa?.tipo === 1 && (
+                                    <>
+                                        <th
+                                            scope="col"
+                                            className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                            Coordenadas
+                                        </th>
+                                    </>
+                                )
+                            }
+                            
                             <th
                                 scope="col"
                                 className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -399,9 +406,13 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     <div className="text-sm font-medium text-gray-900">{ut?.numero_ut}</div>
                                 </div>
                             </td>
-                            <td className="px-3 py-2 whitespace-nowrap">
-                                <div className="text-sm text-gray-900">[{ ut?.latitude }, { ut?.longitude }]</div>
-                            </td>
+                            {
+                                upa?.tipo === 1 && (
+                                    <td className="px-3 py-2 whitespace-nowrap">
+                                        <div className="text-sm text-gray-900">[{ ut?.latitude }, { ut?.longitude }]</div>
+                                    </td>
+                                )
+                            }
                             <td className="px-3 py-2 whitespace-nowrap">
                                 <span className="text-sm font-medium text-gray-900">
                                     <div className="text-sm text-gray-500">{ ut?.area_util }</div>
