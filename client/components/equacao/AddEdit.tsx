@@ -39,11 +39,11 @@ export const AddEdit = forwardRef<any, AddEditType>(
             expressao: Yup.string()
                     .test(
                         "len",
-                        "A expressão tem que ter entre 3 e 80 caracteres.",
+                        "A expressão tem que ter entre 3 e 200 caracteres.",
                         (val: any) =>
                         val &&
                         val.toString().length >= 3 &&
-                        val.toString().length <= 80
+                        val.toString().length <= 200
                     )
                     .required("Campo obrigatório!")
             });

@@ -501,7 +501,7 @@ model EquacaoModelo {
 model EquacaoVolume {
   id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   nome       String
-  expressao  String  @db.VarChar(100)
+  expressao  String  @db.VarChar(250)
   observacao String?
   id_projeto String?  @db.Uuid
   projeto    Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
