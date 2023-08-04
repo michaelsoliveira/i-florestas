@@ -78,7 +78,7 @@ class UtService {
         } : preparedData
 
         const fieldsUt = 'numero_ut, area_util, area_total, id_upa'
-        const withPolygon = polygon_path ? `${fieldsUt}, polygon_path` : fieldsUt
+        const withPolygon = polygon_path.length > 0 ? `${fieldsUt}, polygon_path` : fieldsUt
         const withCoords = (latitude && longitude) ? withPolygon.concat(', latitude, longitude') : withPolygon
         const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withCoords
 
@@ -94,7 +94,7 @@ class UtService {
             return acc + point
         }, '')
 
-        values.push(`POLYGON((${polygonString}))`)
+        polygon_path.length && values.push(`POLYGON((${polygonString}))`)
         
         const query: any = `
             INSERT INTO ut(${fields})
