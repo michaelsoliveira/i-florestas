@@ -107,7 +107,7 @@ const Layout = ({ children }: props) => {
 
     return (
         <>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-6GKM1MGNL6" />
         <Script id="google-analytics"> 
             {
                 `
