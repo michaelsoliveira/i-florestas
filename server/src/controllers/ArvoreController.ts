@@ -146,7 +146,7 @@ export class ArvoreController {
                 })
             }
 
-            const { error, message } = await arvoreService.createByImport({ rows, importedData }, upa)            
+            const { error, message } = await arvoreService.createByImport({ rows, importedData }, request.user?.id, upa)            
 
             return response.json({
                 error,

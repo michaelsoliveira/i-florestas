@@ -1,7 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
 import { Arvore } from "@prisma/client";
-import { getProjeto } from "./ProjetoService";
-import { getPoa } from "./PoaService";
 
 const math = require('mathjs')
 
@@ -130,8 +128,14 @@ class ArvoreService {
     }
 
     // Função para inserir um lote de dados usando Prisma
-    async inserirLoteDeDados(dados: any, upa: any){
+    async inserirLoteDeDados(dados: any, userId: string, upa: any){
     try {
+        console.log(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
 
         const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
             where: {
@@ -153,13 +157,17 @@ class ArvoreService {
             }
 
             const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
-    
-            const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
-            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
+            const expressao = eqVolume?.expressao.toLowerCase().replaceAll("ln(", "log(")
+            const volume = math.evaluate(expressao, scope)
 
+            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
+            
             const especie: any = nome_especie && await prismaClient.especie.findFirst({
                 where: {
-                    nome_orgao: nome_especie
+                    AND: [
+                        { nome_orgao: nome_especie },
+                        { id_projeto: user?.id_projeto_ativo }
+                    ]
                 }
             })
 
@@ -212,13 +220,13 @@ class ArvoreService {
   }
 
     // Função para inserir todos os dados em paralelo usando Promise.all
-    async inserirDadosEmParalelo(dados: any, upa: any, size: any) {
+    async inserirDadosEmParalelo(dados: any, userId: string, upa: any, size: any) {
         let lotes = [];
         for (let i = 0; i < dados.length; i += size) {
             lotes.push(dados.slice(i, i + size));
         }
 
-        const promises: any = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, upa))
+        const promises: any = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, userId, upa))
         
         try {
             return await Promise.all(promises).then(() => {
@@ -230,9 +238,9 @@ class ArvoreService {
         }
     }
 
-    async createByImport(dt: any, upa?: any): Promise<any> {
+    async createByImport(dt: any, userId: string, upa?: any): Promise<any> {
         try {
-            await this.inserirDadosEmParalelo(dt?.importedData, upa, NUM_WRITES)
+            await this.inserirDadosEmParalelo(dt?.importedData, userId, upa, NUM_WRITES)
 
             return {
                 error: false,

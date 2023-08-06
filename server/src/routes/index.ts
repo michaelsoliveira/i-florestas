@@ -135,6 +135,7 @@ routes.get('/planejo/uts/', Authentication(), new PlanejoController().utsByPoa)
 
 //Ut
 routes.post('/ut/', Authentication(), new UtController().store)
+routes.post('/ut/create-auto/', Authentication(), new UtController().createAuto)
 routes.get('/ut/', Authentication(), new UtController().findAll)
 routes.get('/ut/:id', Authentication(), new UtController().findOne)
 routes.get('/ut/search/q', Authentication(), new UtController().search)

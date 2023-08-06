@@ -78,31 +78,6 @@ const Index = () => {
 
     }, [client, loadUts, loadCategorias, loadPoa])
 
-    const selectPoa = async (poa: any) => {
-        dispatch(setPoa({
-            id: poa.value,
-            descricao: poa.label,
-            data_ultimo_plan: new Date(),
-            pmfs: ''
-        }))
-        setSelectedPoa(poa)
-
-        const response = await client.get(`/categoria/get-by-poa?poaId=${poa.value}`)
-        const { categorias } = response.data
-        setCategorias(categorias)
-    }
-
-    function getPoasDefaultOptions() {
-        const data = poas?.map((poa: any, idx: any) => {
-            return {
-                label: poa.descricao,
-                value: poa.id
-            }
-        })
-
-        return data
-    }
-
     async function PlanejarPOA(event: any): Promise<any> {
         setLoading(true)
         await client.post('/planejo', { poa: poa?.id }).then(({ data }: any) => {

@@ -156,7 +156,11 @@ class UpaService {
             }
         }
 
-        const projeto = await getProjeto(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
 
         const where = {
                 descricao: {
@@ -170,7 +174,7 @@ class UpaService {
                     {
                         umf: {
                         projeto: {
-                            id: projeto?.id
+                            id: user?.id_projeto_ativo
                         }
                     }
                 }   
@@ -213,13 +217,17 @@ class UpaService {
     }
 
     async search(userId: string, q: any) : Promise<Upa[]> {
-        const projeto = await getProjeto(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
         const upas = await prismaClient.upa.findMany({
             where: {
                 AND: [{
                     umf: {
                         projeto: {
-                            id: projeto?.id
+                            id: user?.id_projeto_ativo
                         }
                     },
                     descricao: {

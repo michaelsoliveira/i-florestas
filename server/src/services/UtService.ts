@@ -180,9 +180,40 @@ class UtService {
         })
     }
 
+    async createAuto(data: any, upaId: string): Promise<any> {        
+        try {
+            const preparedData = data?.map(({ numero_ut, area_util, area_total }: any) => {
+                return {
+                    numero_ut, area_util, area_total, id_upa: upaId
+                }
+            })
+
+            console.log(preparedData)
+    
+            const result = await prismaClient.ut.createMany({
+                data: preparedData
+            })
+
+            return {
+                error: false,
+                message: 'UTs cadastradas com sucesso!',
+                result
+            }
+        } catch(e: any) {
+            return {
+                error: true,
+                message: e.message
+            }
+        }        
+    }
+
     async getAll(userId: string, query?: any): Promise<any> {
 
-        const projeto = await getProjeto(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
 
         const { perPage, page, search, upa } = query
         const skip = (page - 1) * perPage
@@ -193,7 +224,7 @@ class UtService {
                         upa: {
                             umf: {
                                 projeto: {
-                                    id: projeto?.id
+                                    id: user?.id_projeto_ativo
                                 }
                             }
                         }
@@ -206,7 +237,7 @@ class UtService {
                     upa: {
                         umf: {
                             projeto: {
-                                id: projeto?.id
+                                id: user?.id_projeto_ativo
                             }
                         }
                     }

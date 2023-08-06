@@ -21,7 +21,7 @@ type ImportModalType = {
 }
 
 const ImportModal = forwardRef<any, ImportModalType>(
-    function ChangeActive({ loadEspecies, steps, callback }, ref) {
+    function ImportModal({ loadEspecies, steps, callback }, ref) {
     const { client } = useContext(AuthContext)
     const { showModal, hideModal, store } = useModalContext()
     const { visible } = store

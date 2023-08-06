@@ -86,6 +86,26 @@ export class UtController {
         }
     }
 
+    async createAuto(request: Request, response: Response) : Promise<any> {
+        try {
+            const data = request.body
+            const { upaId }: any = request.query
+
+            const res = await utService.createAuto(data, upaId)
+
+            return response.json({
+                error: false,
+                data: {...res}
+            })
+        } catch(e) {
+            return response.json({
+                error: true,
+                message: e.message
+            })
+        }
+        
+    }
+
     async deleteUts(request: Request, response: Response) {
         const { ids } = request.body
         

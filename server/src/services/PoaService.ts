@@ -255,7 +255,11 @@ class PoaService {
             }
         }
 
-        const projeto = await getProjeto(userId)
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
 
         const where = {
                 descricao: {
@@ -265,7 +269,7 @@ class PoaService {
                 AND: [
                 {    
                     projeto: {
-                        id: projeto?.id
+                        id: user?.id_projeto_ativo
                     }
                     
                 }   

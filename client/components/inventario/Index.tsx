@@ -166,17 +166,6 @@ const Index = () => {
             console.log(error)
         }       
     }, [])
-    
-    const deleteSingleModal = useCallback((id?: string) => {
-            showModal({ title: 'Deletar Árvore', onConfirm: () => { deleteArvore(id) }, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem certeza que deseja excluir a Árvore de número?`})
-        }, [deleteArvore, showModal])
-        
-    const deleteMultModal = () => showModal({ title: 'Deletar Árvores', onConfirm: deleteArvores, styleButton: styleDelBtn, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir Todas as Árvores Selecionadas?' })
-
-    useEffect(() => {
-        defaultUmfsOptions()
-        defaultUpasOptions()
-    }, [defaultUmfsOptions, defaultUpasOptions])
 
     const deleteArvores = async () => {
         setLoading(true)
@@ -204,21 +193,29 @@ const Index = () => {
 
     const handleImportInventario = async () => {
         try {
-            setLoading(true)
-            await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
-                columns: columnData,
-                data: rowData.slice(0, rowData.length - 1)
-            })
-            .then((result: any) => {
-                const { data } = result
-                setLoading(false)
-                if (!data.error) {
-                    alertService.success(data?.message)
-                } else {
-                    alertService.warn(data?.message)
-                }
-                console.log(data?.message)
-            })
+            const { data } = await client.get('/poa?order=asc&orderBy=descricao')
+            console.log(data?.count)
+            if (data?.count === 0) {
+                alertService.warn('Por favor, crie um POA para iniciar a importação do inventário')
+                return
+            } else {
+                setLoading(true)
+                await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
+                    columns: columnData,
+                    data: rowData
+                })
+                .then((result: any) => {
+                    const { data } = result
+                    setLoading(false)
+                    if (!data.error) {
+                        alertService.success(data?.message)
+                    } else {
+                        alertService.warn(data?.message)
+                    }
+                    console.log(data?.message)
+                })
+            }
+            
         } catch(e) {
 
         }
@@ -245,7 +242,7 @@ const Index = () => {
                 }
             }
         })
-
+        console.log(result.data)
         const rows = result.data.slice(1).map((row: any) => {
             return row.reduce((acc: any, curr: any, index: any) => {
                 acc[columns[index].accessor] = curr;
@@ -263,6 +260,7 @@ const Index = () => {
                     <CSVReader 
                         config={
                             {
+                                skipEmptyLines: true,
                                 encoding
                             }
                         }
