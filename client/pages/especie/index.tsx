@@ -44,7 +44,7 @@ const EspecieIndex = () => {
         }, 500)
         //setLoading(false)
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, poa?.id, projeto?.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
 
     useEffect(() => {  
         

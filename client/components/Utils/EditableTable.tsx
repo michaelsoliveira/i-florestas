@@ -27,10 +27,11 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
       <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
         <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
+            {headerGroups.map((headerGroup: any, key: any) => (
+              <tr {...headerGroup.getHeaderGroupProps()} key={key}>
+                {headerGroup.headers.map((column: any, i: any) => (
                   <th
+                    key={i}
                     {...column.getHeaderProps()}
                     className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
@@ -44,10 +45,13 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
             {rows.map((row: any, i: number) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>
-                  {row.cells.map((cell: any) => {
+                <tr {...row.getRowProps()} 
+                    key={i}
+                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>
+                    {row.cells.map((cell: any, i: any) => {
                     return (
                       <td
+                        key={i}
                         {...cell.getCellProps()}
                         className="px-6 py-4 whitespace-nowrap"
                       >
