@@ -12,10 +12,12 @@ import { ProjetoContext } from "contexts/ProjetoContext"
 import ImportModal from "./ImportModal"
 import { styles as stylesButton } from '../Utils/styles'
 import { StepContext } from "contexts/StepContext"
+import { useAppSelector } from "store/hooks"
+import { RootState } from "store"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
-    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>(currentEspecies)
+    const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>([])
     const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
@@ -27,6 +29,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const { visible } = store
     const { setLoading } = useContext(LoadingContext)
     const { projeto } = useContext(ProjetoContext)
+    const poa = useAppSelector((state: RootState) => state.poa)
     const submitImport = useRef(null) as any
     const { step } = useContext(StepContext)
     const steps = [
@@ -91,7 +94,8 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
-    }, [currentEspecies])
+        console.log(poa)
+    }, [currentEspecies, poa])
 
     const deleteEspecies = async () => {
         setLoading(true)

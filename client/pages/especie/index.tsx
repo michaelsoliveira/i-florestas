@@ -31,20 +31,18 @@ const EspecieIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/especie?poa=${poa?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
         setCurrentPage(currentPagePagination)
 
         const { data } = await client.get(url)
 
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
+
+        setLoading(false)
+
         
-        setTimeout(() => {
-            setLoading(false)
-        }, 500)
-        //setLoading(false)
-        
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, poa])
 
     useEffect(() => {  
         
