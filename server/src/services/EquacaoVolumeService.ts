@@ -3,20 +3,21 @@ import { prismaClient } from "../database/prismaClient";
 
 export interface EquacaoVolumeType {
     nome: string;
-    expressao: string;
+    expressao: any;
     observacao: string;
     id_projeto: string;
 }
 
 class EquacaoVolumeService {
     async create(data: EquacaoVolumeType, userId: string): Promise<EquacaoVolume> {
+        const expressao = data.expressao?.replaceAll(',', '.')
         const equacaoVolumeExists = await prismaClient.equacaoVolume.findFirst({
             where: {
                 AND: {
                     OR: 
                     [
                         { nome: data.nome },
-                        { expressao: data.expressao }
+                        { expressao: expressao }
                     ],
                     projeto: {
                         id: data?.id_projeto
@@ -32,7 +33,7 @@ class EquacaoVolumeService {
         const eqVolume = await prismaClient.equacaoVolume.create({
             data: {
                 nome: data.nome,
-                expressao: data.expressao,
+                expressao: expressao,
                 observacao: data?.observacao,
                 projeto: {
                     connect: {
@@ -52,7 +53,7 @@ class EquacaoVolumeService {
             },
             data: {
                 nome: data?.nome,
-                expressao: data?.expressao,
+                expressao: data.expressao?.replaceAll(',', '.'),
                 observacao: data?.observacao
             }
         })
