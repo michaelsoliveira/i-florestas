@@ -205,14 +205,13 @@ const Index = () => {
                     data: rowData
                 })
                 .then((result: any) => {
-                    const { data } = result
                     setLoading(false)
+                    const { data } = result
                     if (!data.error) {
                         alertService.success(data?.message)
                     } else {
                         alertService.warn(data?.message)
                     }
-                    console.log(data?.message)
                 })
             }
             
