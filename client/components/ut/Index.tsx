@@ -14,6 +14,9 @@ import { UtType } from "types/IUtType"
 import { useModalContext } from "contexts/ModalContext"
 import { styles } from "../Utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
+import AddAuto from "./AddAuto"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
 
 const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUts }: any) => {
     
@@ -30,6 +33,8 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
+    const maxNumUt = currentUts?.length > 0 ? Math.max(...currentUts?.map((ut: any) => Number(ut.numero_ut))) : 0
+    const newUt = useRef<any>()
 
     const dispatch = useAppDispatch()
 
@@ -162,6 +167,21 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         })
     }
 
+    const saveAuto = (data: any) => {
+        newUt.current.click()
+    }
+
+    function addAutomatico(): void {
+
+        showModal({
+            title: `Adicionar UT automáticamente`,
+            size: 'max-w-2xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton,
+            onConfirm: saveAuto, confirmBtn: 'Salvar',
+            content: <div><AddAuto ref={newUt} maxNumUt={maxNumUt} loadUts={loadUts} /></div>
+        })
+    }
+
     function toogleDeleteModal(id?: string) {        
         const ut = currentUts.find((ut: UtType) => ut.id === id)
         setSelectedUt(ut)
@@ -248,6 +268,22 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         <div>
             <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Unidades de Trabalho</h1>
+                { upa?.tipo === 0 && (
+                    <div
+                        onClick={addAutomatico}
+                        className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    >
+                        <div className="flex flex-row justify-around w-full space-x-2">
+                            <div>
+                                <FontAwesomeIcon icon={faPlus} />
+                            </div>
+                            <span>
+                                Add Auto
+                            </span>
+                        </div>
+                    </div>
+                ) }
+                    
                 <Link
                     href='/ut/add'
                     className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"

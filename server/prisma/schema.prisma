@@ -190,6 +190,7 @@ model Arvore {
   id_substituta         String?  @db.Uuid
   substituta            Arvore?    @relation("Substitutas", fields: [id_substituta], references: [id])
   substitutas           Arvore[]    @relation("Substitutas")
+  @@unique([numero_arvore, id_ut])
   @@map("arvore")
 }
 

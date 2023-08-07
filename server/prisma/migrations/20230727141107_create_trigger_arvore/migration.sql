@@ -23,21 +23,19 @@ DECLARE arvore geometry;
 BEGIN
 epsg := (SELECT COALESCE(b.srid) FROM ut a INNER JOIN upa b on b.id = a.id_upa WHERE a.id = NEW.id_ut GROUP BY b.srid);
 tipo_gps := (SELECT COALESCE(b.tipo) FROM ut a INNER JOIN upa b on b.id = a.id_upa WHERE a.id = NEW.id_ut GROUP BY b.tipo);
-SELECT INTO largura, lat_ut,  long_ut, azimute, quadrante COALESCE(a.largura_faixas), COALESCE(a.latitude), COALESCE(a.longitude), COALESCE(a.azimute), COALESCE(a.quadrante) FROM ut a WHERE a.id = NEW.id_ut;
-
    
 IF ((NEW.lat_y IS NULL) OR (NEW.long_x IS  NULL)) THEN
 	RETURN NEW;
 END IF;
 
-IF ((lat_ut IS NULL) OR (long_ut IS NULL)) THEN
-	RETURN NEW;
-END IF;
-
-
 IF (tipo_gps=1) THEN
-
-    origem := ST_geomfromtext('POINT(' || long_ut || ' ' || lat_ut  || ')',epsg);
+	SELECT INTO largura, lat_ut,  long_ut, azimute, quadrante COALESCE(a.largura_faixas), COALESCE(a.latitude), COALESCE(a.longitude), COALESCE(a.azimute), COALESCE(a.quadrante) FROM ut a WHERE a.id = NEW.id_ut;
+    
+	IF ((lat_ut IS NULL) OR (long_ut IS NULL)) THEN
+		RETURN NEW;
+	END IF;
+	
+	origem := ST_geomfromtext('POINT(' || long_ut || ' ' || lat_ut  || ')',epsg);
 
     IF ((epsg=4326) OR (epsg=4674)) THEN
         epsg_utm := get_utmzone(origem);
