@@ -98,8 +98,7 @@ export class PlanejoService {
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
-                AND p.id = cat.id_poa
-                AND us.id_poa_ativo = p.id
+                AND p.id = us.id_poa_ativo
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.dap < cat.criterio_dminc
@@ -125,8 +124,8 @@ export class PlanejoService {
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
-                AND p.id = cat.id_poa
-                AND us.id_poa_ativo = p.id
+                AND p.id = us.id_poa_ativo
+                AND cat.id_poa = p.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.fuste > cat.criterio_fuste; 
@@ -152,8 +151,8 @@ export class PlanejoService {
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
-                AND p.id = cat.id_poa
-                AND us.id_poa_ativo = p.id
+                AND p.id = us.id_poa_ativo
+                AND cat.id_poa = p.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.dap > cat.criterio_dmaxc
@@ -179,8 +178,8 @@ export class PlanejoService {
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
-                AND p.id = cat.id_poa
-                AND us.id_poa_ativo = p.id
+                AND p.id = us.id_poa_ativo
+                AND cat.id_poa = p.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.altura > cat.criterio_altura
@@ -206,8 +205,8 @@ export class PlanejoService {
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
-                AND p.id = cat.id_poa
-                AND us.id_poa_ativo = p.id
+                AND p.id = us.id_poa_ativo
+                AND cat.id_poa = p.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.volume > cat.criterio_volume
@@ -255,11 +254,10 @@ export class PlanejoService {
                 INNER JOIN ut u ON u.id = a.id_ut
                 INNER JOIN categoria_especie_poa cep ON cep.id_especie = e.id
                 INNER JOIN categoria_especie cat ON cat.id = cep.id_categoria
-                INNER JOIN poa p ON p.id = cat.id_poa
-                INNER JOIN users us ON us.id_poa_ativo = p.id
+                INNER JOIN users us ON us.id = ${userId}
+                INNER JOIN poa p ON p.id = us.id_poa_ativo
             WHERE
-                us.id = ${userId}  
-                AND u.id = ${this.ut}
+                u.id = ${this.ut}
                 AND u.id_poa = ${this.poa}
                 AND a.id_situacao = 2
             GROUP BY u.id_upa, a.id_especie, a.id_ut, cat.criterio_perc_min, cat.criterio_n_min, u.id_poa, u.area_util;
@@ -274,8 +272,8 @@ export class PlanejoService {
                         from 
                             arvore a, ut u, poa p, users us
                         where a.id_ut = u.id
-                            and p.id = u.id_poa
-                            and us.id_poa_ativo = p.id
+                            and us.id = ${userId}
+                            and p.id = us.id_poa_ativo
                             and u.id = ${percente.id_ut}
                             and u.id_poa = ${percente.id_poa}
                             and a.id_especie = ${percente.id_especie}
