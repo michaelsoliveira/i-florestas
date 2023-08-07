@@ -13,9 +13,7 @@ export class PlanejoService {
     async explorar() : Promise<void> {
         await prismaClient.arvore.updateMany({
             where: {
-                ut: {
-                    id: this.ut
-                }
+                id_ut: this.ut
             },
             data: {
                 id_situacao: 2, 
