@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 import especieService from "../services/EspecieService";
 import { Readable } from 'stream'
 import readline from "readline";
-import { Especie } from '@prisma/client'
+import { Especie, User } from '@prisma/client'
+import { prismaClient } from "../database/prismaClient";
 
 export class EspecieController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -108,9 +109,13 @@ export class EspecieController {
 
     async findByCategoria(request: Request, response: Response) {
         const { categoriaId }: any = request.query
-
+        const user: any = await prismaClient.user.findUnique({
+            where: {
+                id: request.user?.id
+            }
+        })
         try {
-            const especies = await especieService.findByCategoria(categoriaId)
+            const especies = await especieService.findByCategoria(categoriaId, user)
 
             return response.json({
                 error: false,

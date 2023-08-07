@@ -272,8 +272,8 @@ class EspecieService {
         const user: any = await prismaClient.user.findUnique({
             where: { id: userId }
         })
-        console.log(user)
-        const { perPage, page, order, search, orderBy } = query
+
+        const { perPage, page, order, search, orderBy, poa } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
 
@@ -321,7 +321,9 @@ class EspecieService {
                         },
                         {
                             categoria: {
-                                id_poa: user?.id_poa_ativo
+                                poa: {
+                                    id: poa ? poa : user?.id_poa_ativo
+                                }
                             }
                         }
                     ]
@@ -329,6 +331,7 @@ class EspecieService {
 
         const [data, total] = await prismaClient.$transaction([
             prismaClient.categoriaEspeciePoa.findMany({
+                distinct: ['id_especie'],
                 include: {
                     especie: true,
                     categoria: {
@@ -367,14 +370,19 @@ class EspecieService {
         }
     }
 
-    async findByCategoria(id: string) : Promise<any> {
+    async findByCategoria(id: string, user?: User) : Promise<any> {
         const especies = await prismaClient.$queryRaw<Especie|undefined>`
-            SELECT e.*, ce.id as id_categoria, ce.nome as nome_categoria 
+            SELECT DISTINCT e.*, cat.id as id_categoria, cat.nome as nome_categoria 
                 FROM especie e
                 INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
-                INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
+                INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
             WHERE
-                ce.id = ${id}
+                cep.id_categoria = ${id}
+                and cat.id_poa = ${user?.id_poa_ativo}
+                and e.id_projeto = ${user?.id_projeto_ativo}
+                and cat.id_projeto = e.id_projeto
+                and cep.id_especie = e.id
+                and cep.id_categoria = cat.id
             ORDER BY e.nome
         `
 

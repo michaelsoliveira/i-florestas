@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const SelectableRowList = ({ data, callBack }: any) => {
   const [selectedRows, setSelectedRows] = useState<any>([]);

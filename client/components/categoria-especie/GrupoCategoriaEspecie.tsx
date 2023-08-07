@@ -21,9 +21,9 @@ const GrupoCategoriaEspecie = () => {
     const [especiesResponse, setEspeciesResponse] = useState<any>()
 
     const loadEspecies = useCallback(async () => {
-        const { especies } = await client.get(`/especie?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
+        const { especies } = await client.get(`/especie?poa=${poa?.id}&order=asc&orderBy=nome`)
         setEspecies(especies)
-    }, [client, poa?.id, projeto?.id])
+    }, [client, poa])
 
     const loadCategorias = useCallback(async () => {
         const { data } = await client.get(`/categoria/grupo`)
