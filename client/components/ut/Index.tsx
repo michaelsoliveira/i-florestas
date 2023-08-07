@@ -33,7 +33,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
-    const maxNumUt = currentUts.length > 0 ? Math.max(...currentUts?.map((ut: any) => Number(ut.numero_ut))) : 0
+    const maxNumUt = currentUts?.length > 0 ? Math.max(...currentUts?.map((ut: any) => Number(ut.numero_ut))) : 0
     const newUt = useRef<any>()
 
     const dispatch = useAppDispatch()

@@ -23,7 +23,7 @@ const UtIndex = () => {
     const dispatch = useAppDispatch()
     const router = useRouter()
     
-    const loadUts = useCallback(async (itemsPerPage = 1, currentPage?: number) => {
+    const loadUts = useCallback(async (itemsPerPage = 10, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : currentPage
         const perPage = pagination.perPage ? pagination.perPage : itemsPerPage

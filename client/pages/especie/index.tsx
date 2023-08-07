@@ -31,10 +31,11 @@ const EspecieIndex = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}&poa=${poa?.id}&projetoId=${projeto?.id}`
+        const url = `/especie?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
         setCurrentPage(currentPagePagination)
 
         const { data } = await client.get(url)
+
         setTotalItems(data?.count)
         setCurrentEspecies(data?.especies)
         

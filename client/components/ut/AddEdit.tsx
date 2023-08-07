@@ -93,6 +93,7 @@ const AddEdit = ({ id }: any) => {
 
     async function onSubmit(data: any) {
         try {
+            console.log(data)
             return isAddMode
                 ? createUt({...data, polygon_path: polygonPath})
                 : updateUt(id, {...data, polygon_path: polygonPath})
@@ -122,7 +123,7 @@ const AddEdit = ({ id }: any) => {
             }) 
     }
 
-    async function setLocation(location: google.maps.LatLngLiteral) {
+    async function setLocation(location: any) {
         setUtLocation(location)
         setValue('latitude', location.lat)
         setValue('longitude', location.lng)
