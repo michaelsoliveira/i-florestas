@@ -60,7 +60,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
 
     const getErrors = async () => {
         try {
-            console.log(data)
             await client.post(`/especie/import/get-errors`, {
                 columns: columns,
                 data: data
@@ -209,6 +208,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
                     <CSVReader 
                         config={
                             {
+                                skipEmptyLines: true,
                                 encoding
                             }
                         }

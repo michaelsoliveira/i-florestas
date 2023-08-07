@@ -242,7 +242,7 @@ const Index = () => {
                 }
             }
         })
-        console.log(result.data)
+
         const rows = result.data.slice(1).map((row: any) => {
             return row.reduce((acc: any, curr: any, index: any) => {
                 acc[columns[index].accessor] = curr;
