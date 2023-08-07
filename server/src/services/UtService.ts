@@ -149,6 +149,8 @@ class UtService {
             azimute: parseFloat(azimute),
             quadrante: parseInt(quadrante)
         } : preparedData
+
+        console.log(data)
         
         const ut = await prismaClient.ut.update({
             where: {

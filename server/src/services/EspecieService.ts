@@ -269,9 +269,10 @@ class EspecieService {
     }
 
     async getAll(query?: any, userId?: string): Promise<any> {
-        const user = await prismaClient.user.findUnique({
+        const user: any = await prismaClient.user.findUnique({
             where: { id: userId }
         })
+        console.log(user)
         const { perPage, page, order, search, orderBy } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -280,7 +281,9 @@ class EspecieService {
         
         if (orderByElement.length == 2) {
             orderByTerm = {
-                [orderByElement[1]]: order
+                [orderByElement[0]]: {
+                    [orderByElement[1]]: order
+                }
             }
         } else {
             orderByTerm = {
@@ -291,19 +294,18 @@ class EspecieService {
         const where = search ?
             {
                 AND: [
-                        { nome: { mode: Prisma.QueryMode.insensitive, contains: search } },
+                        
                         {
-                            projeto: {
-                                id: user?.id_projeto_ativo
-                            }
+                            especie: {
+                                nome: { mode: Prisma.QueryMode.insensitive, contains: search } ,
+                                projeto: {
+                                    id: user?.id_projeto_ativo
+                                }
+                            } 
                         },
                         {
-                            categoria_especie: {
-                                some: {
-                                    categoria: {
-                                        id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
-                                    }
-                                }
+                            categoria: {
+                                id_poa: user?.id_poa_ativo
                             }
                         }
                     ]
@@ -311,50 +313,53 @@ class EspecieService {
                     AND: 
                     [
                         {
-                            projeto: {
-                                id: user?.id_projeto_ativo
-                            }
+                            especie: {
+                                projeto: {
+                                    id: user?.id_projeto_ativo
+                                }
+                            } 
                         },
                         {
-                            categoria_especie: {
-                                some: {
-                                    categoria: {
-                                        id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null
-                                    }
-                                }
+                            categoria: {
+                                id_poa: user?.id_poa_ativo
                             }
                         }
                     ]
             }
 
         const [data, total] = await prismaClient.$transaction([
-            prismaClient.especie.findMany({
+            prismaClient.categoriaEspeciePoa.findMany({
                 include: {
-                    categoria_especie: {
-                        include: {
-                            categoria: {
-                                select: {
-                                    id: true,
-                                    nome: true
-                                }
-                            }
-                        } 
+                    especie: true,
+                    categoria: {
+                        select: {
+                            id: true,
+                            nome: true
+                        }
                     }
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
                 skip: skip ? skip : 0,
-                orderBy: {
-                    ...orderByTerm
-                }
+                orderBy: { ...orderByTerm }
             }),
-            prismaClient.especie.count({where})
+            prismaClient.categoriaEspeciePoa.count({where})
         ])
+
+        const especies = data.map(({ especie, categoria }: any) => {
+            return {
+                ...especie,
+                categoria: {
+                    id: categoria.id,
+                    nome: categoria.nome
+                }
+            }
+        })
                 
         return {
             orderBy,
             order,
-            data,
+            data: especies,
             perPage,
             page,
             skip,
