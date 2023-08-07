@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { CategoriaEspecie } from '@prisma/client'
+import { CategoriaEspecie, User } from '@prisma/client'
 import { getPoa } from "./PoaService";
 
 export class PlanejoService {
@@ -28,40 +28,28 @@ export class PlanejoService {
         })
     }
 
-    async preservar() : Promise<void> {
-        await prismaClient.arvore.updateMany({
-            where: {
-                AND: [
-                    { 
-                        ut: {
-                            id: this.ut
-                        } 
-                    },
-                    { 
-                        ut: {
-                            poa: {
-                                id: this.poa
-                            }
-                        } 
-                    },
-                    { 
-                        especie: {
-                            categoria_especie: {
-                                some: {
-                                    categoria: {
-                                        preservar: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ]
-            },
-            data: {
-                id_situacao: 1,
-                id_motivo_preservacao: 4
-            }
-        })
+    async preservar(user: User) : Promise<any> {
+
+        const updateArvores = await prismaClient.$queryRaw`
+            UPDATE 
+                arvore as a
+            SET 
+                id_situacao = 1,
+                id_motivo_preservacao = 4
+            FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
+            WHERE
+                us.id = ${user?.id}
+                AND u.id = a.id_ut
+                AND e.id = a.id_especie
+                AND cep.id_especie = e.id
+                AND cat.id = cep.id_categoria
+                AND p.id = us.id_poa_ativo
+                AND a.id_situacao = 2
+                AND cat.preservar = true
+        `;
+          
+        return updateArvores; 
+        
     }
 
     async criterioEspecieNDef() {

@@ -18,10 +18,10 @@ export class PlanejoController {
             })
     
             for (const ut of uts) {
-                const planejoService = new PlanejoService(user?.id_poa_ativo, ut?.id)
+                const planejoService = new PlanejoService(user?.id_poa_ativo, user)
             
                 await planejoService.explorar()
-                await planejoService.preservar()
+                await planejoService.preservar(user?.id)
                 await planejoService.criterioEspecieNDef()
                 await planejoService.criterioDMin(3, 2, user?.id)
                 await planejoService.criterioDMax(1, 3, user?.id)
