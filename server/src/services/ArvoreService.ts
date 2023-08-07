@@ -396,7 +396,7 @@ class ArvoreService {
                 AND: 
                     [
                         {id: utId},
-                        {id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null}
+                        //{id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null}
                     ]
              }
         }

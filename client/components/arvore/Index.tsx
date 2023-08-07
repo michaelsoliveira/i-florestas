@@ -180,6 +180,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         const paginatedData = {
             currentPage: 1,
             perPage,
+            utId: ut?.value,
             orderBy,
             order,
             totalItems: filteredArvores ? filteredArvores.length : 0
@@ -218,7 +219,6 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     }
 
     const goToAddForm = () => {
-        console.log(ut)
         if (ut.numero_ut.toString() === 'Todos' || typeof ut === undefined) {
             alertService.warn('Selecione uma UT para iniciar o cadastro de uma árvore')
         } else {
@@ -366,7 +366,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                                 defaultOptions={getUtsDefaultOptions()}
                                 options={loadUts}
                                 label="UT:"
-                                callback={(e) => {selectUt(e)}}
+                                callback={selectUt}
                             />
                         </div>
                     </div>

@@ -150,8 +150,6 @@ class UtService {
             quadrante: parseInt(quadrante)
         } : preparedData
 
-        console.log(data)
-        
         const ut = await prismaClient.ut.update({
             where: {
                 id
@@ -251,7 +249,7 @@ class UtService {
         const [uts, total] = await prismaClient.$transaction([
             prismaClient.ut.findMany({
                 where,
-                take: perPage ? parseInt(perPage) : 10,
+                take: perPage ? parseInt(perPage) : 100,
                 skip: skip ? skip : 0,
                 orderBy: {
                     numero_ut: 'asc'

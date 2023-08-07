@@ -6,9 +6,6 @@ const Errors = () => {
     const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
     const { errors } = dataStep
     const { duplicates, nomes_vazio } = errors
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
     
     return (
         <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-10">

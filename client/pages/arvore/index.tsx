@@ -79,12 +79,13 @@ const ArvoreIndex = () => {
             totalPages,
             orderBy,
             order,
-            search
+            search,
+            utId
         } = paginatedData
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
             
             paginatedData = {
                 name,
@@ -93,7 +94,7 @@ const ArvoreIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
