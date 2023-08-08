@@ -8,11 +8,18 @@ export interface ObservacaoType {
 }
 
 class ObservacaoArvoreService {
-    async create(data: ObservacaoType): Promise<ObservacaoArvore> {
+    async create(data: ObservacaoType, userId: string): Promise<ObservacaoArvore> {
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
         const observacaoExists = await prismaClient.observacaoArvore.findFirst({ 
             where: { 
                 AND: {
                     nome: data.nome,
+                    id_projeto: user?.id_projeto_ativo
                 }
             } 
         })
@@ -22,7 +29,10 @@ class ObservacaoArvoreService {
         }
 
         const observacao = await prismaClient.observacaoArvore.create({
-            data
+            data: {
+                ...data,
+                id_projeto: user?.id_projeto_ativo
+            }
         })
 
         return observacao
@@ -49,6 +59,12 @@ class ObservacaoArvoreService {
     }
 
     async getAll(userId: string, query?: any): Promise<any> {
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
         const { perPage, page, search, orderBy, order } = query
         const skip = (page - 1) * perPage
         let orderByTerm = {}
@@ -57,16 +73,23 @@ class ObservacaoArvoreService {
         
         if (orderByElement.length == 2) {
             orderByTerm = {
-                [orderByElement[1]]: order
+                [orderByElement[0]]: {
+                    [orderByElement[1]]: order
+                }
             }
         } else {
             orderByTerm = {
                 [orderByElement]: order
             }
         }
-        const where = 
+        const where = search ?
                 {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: search }
+                    AND: [
+                        { nome: { mode: Prisma.QueryMode.insensitive, contains: search } },
+                        { id_projeto: user?.id_projeto_ativo }
+                    ]
+                } : { 
+                    id_projeto: user?.id_projeto_ativo 
                 }
            
         const [data, total] = await prismaClient.$transaction([
@@ -97,12 +120,26 @@ class ObservacaoArvoreService {
     }
 
     async search(q: any, userId?: string) {
+        const { perPage, page, search, order } = q
+        const skip = (page - 1) * perPage
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
         const data = await prismaClient.observacaoArvore.findMany({
             where: {
-                AND: {
-                    nome: { mode: Prisma.QueryMode.insensitive, contains: q },
-                }
-            }
+                AND: [
+                        { nome: { mode: Prisma.QueryMode.insensitive, contains: search } },
+                        { id_projeto: user?.id_projeto_ativo }
+                    ]
+            },
+            orderBy: {
+                nome: order
+            },
+            take: perPage ? parseInt(perPage) : 50,
+            skip: skip ? skip : 0,
         })
         return data
     }
