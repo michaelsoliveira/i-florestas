@@ -130,8 +130,7 @@ class ArvoreService {
     // Função para inserir um lote de dados usando Prisma
     async inserirLoteDeDados(dados: any, userId: string, upa: any){
     try {
-        console.log(userId)
-        const user = await prismaClient.user.findUnique({
+        const user: any = await prismaClient.user.findUnique({
             where: {
                 id: userId
             }
@@ -162,11 +161,29 @@ class ArvoreService {
 
             const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
             
-            const especie: any = nome_especie && await prismaClient.especie.findFirst({
+            const especie: any = nome_especie && await prismaClient.categoriaEspeciePoa.findFirst({
+                distinct: ['id_especie'],
+                include: {
+                    especie: true
+                },
                 where: {
-                    AND: [
-                        { nome_orgao: nome_especie },
-                        { id_projeto: user?.id_projeto_ativo }
+                    AND: 
+                    [
+                        {
+                            especie: {
+                                nome: nome_especie,
+                                projeto: {
+                                    id: user?.id_projeto_ativo
+                                }
+                            } 
+                        },
+                        {
+                            categoria: {
+                                poa: {
+                                    id: user?.id_poa_ativo
+                                }
+                            }
+                        }
                     ]
                 }
             })
@@ -198,7 +215,7 @@ class ArvoreService {
                 area_basal: areaBasal,
                 ...preparedData,
                 id_ut: ut?.id,
-                id_especie: especie?.id
+                id_especie: especie?.id_especie
             }
 
             return result
