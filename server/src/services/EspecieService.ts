@@ -287,7 +287,7 @@ class EspecieService {
             }
         } else {
             orderByTerm = {
-                [orderByElement]: order
+                [orderBy]: order
             }
         }
 
