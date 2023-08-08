@@ -32,7 +32,7 @@ const AddEdit = ({ id }: any) => {
     const isAddMode = !id
 
     const loadObsOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = observacoes.filter((o: any) =>  o.nome.includes(inputValue))
+        const data = observacoes.filter((o: any) =>  o.nome.toLowerCase().includes(inputValue) || o.nome.includes(inputValue))
         
         callback(data?.map((observacao: any) => ({
             value: observacao.id,
@@ -41,7 +41,7 @@ const AddEdit = ({ id }: any) => {
     };
 
     const loadEspecieOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = especies.filter((e: any) =>  e.nome.includes(inputValue))
+        const data = especies.filter((e: any) =>  e.nome.toLowerCase().includes(inputValue) || e.nome.includes(inputValue))
 
         callback(data?.map((especie: any) => ({
             value: especie.id,
@@ -55,7 +55,7 @@ const AddEdit = ({ id }: any) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: arvore } = await client.get(`/arvore/${id}`)
-
+                console.log(arvore)
                 if(arvore?.observacao_arvore) {
                     setObservances({
                         label: arvore?.observacao_arvore?.nome,
@@ -102,7 +102,7 @@ const AddEdit = ({ id }: any) => {
 
         const defaultEspecieOptions = async () => {
             if (typeof session !== typeof undefined){
-                const response = await client.get(`/especie?order=asc&orderBy=nome`)
+                const response = await client.get(`/especie?order=asc&orderBy=especie.nome`)
                 const { especies } = response.data
 
                 setEspecies(especies)
