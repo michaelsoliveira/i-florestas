@@ -50,8 +50,6 @@ const Index = () => {
     
     const data = useMemo(() => rowData, [rowData])
 
-    const styleDelBtn = 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
         const data = response.data
@@ -115,6 +113,11 @@ const Index = () => {
                 })
             }
     }, [client, umf?.id, upa?.descricao, upa.id])
+
+    useEffect(() => {
+        defaultUmfsOptions()
+        defaultUpasOptions()
+    }, [defaultUmfsOptions, defaultUpasOptions])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
