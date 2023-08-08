@@ -342,7 +342,7 @@ class EspecieService {
                     }
                 },
                 where,
-                take: perPage ? parseInt(perPage) : 50,
+                take: perPage ? parseInt(perPage) : 1000,
                 skip: skip ? skip : 0,
                 orderBy: { ...orderByTerm }
             }),

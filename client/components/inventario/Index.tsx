@@ -29,8 +29,6 @@ const Index = () => {
     
     const [uploading, setUploading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
-    const { showModal, hideModal, store } = useModalContext()
-    const { visible } = store
     const { setLoading } = useContext(LoadingContext)
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
@@ -43,6 +41,7 @@ const Index = () => {
     const [rowData, setRowData] = useState([])
     const [encoding, setEncoding] = useState('iso-8859-1')
     const { CSVReader } = useCSVReader()
+    const poa = useAppSelector((state: RootState) => state.poa)
 
     const dispatch = useAppDispatch()
       
@@ -197,9 +196,8 @@ const Index = () => {
     const handleImportInventario = async () => {
         try {
             const { data } = await client.get('/poa?order=asc&orderBy=descricao')
-            console.log(data?.count)
-            if (data?.count === 0) {
-                alertService.warn('Por favor, crie um POA para iniciar a importação do inventário')
+            if (data?.count === 0 || poa.id === '') {
+                alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
                 return
             } else {
                 setLoading(true)

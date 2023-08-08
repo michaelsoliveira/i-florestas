@@ -19,6 +19,9 @@ import {
     TagIcon,
     GlobeAltIcon
 } from '@heroicons/react/outline'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faNoteSticky } from "@fortawesome/free-solid-svg-icons"
+import { DocumentTextIcon } from '@heroicons/react/solid'
 
 export const resources = [
     {
@@ -38,6 +41,13 @@ export const resources = [
         description: 'Unidade de Trabalho',
         href: '/ut',
         icon: CalendarIcon,
+    },
+    {
+        name: 'Observações',
+        description: 'Observações Padronizadas',
+        href: '/obs-arvore',
+        faIcon: true,
+        icon: DocumentTextIcon,
     },
     {
         name: 'Especies',

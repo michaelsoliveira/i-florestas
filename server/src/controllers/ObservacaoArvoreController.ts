@@ -4,7 +4,7 @@ import observacaoService from "../services/ObservacaoArvoreService";
 export class ObservacaoArvoreController {
     async store(request : Request, response: Response) : Promise<Response> {
         try {    
-            const observacao = await observacaoService.create(request.body)
+            const observacao = await observacaoService.create(request.body, request.user?.id)
             return response.json({
                 error: false,
                 observacao,

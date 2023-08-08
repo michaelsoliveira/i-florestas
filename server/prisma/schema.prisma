@@ -114,10 +114,12 @@ model MotivoPreservacao {
 }
 
 model ObservacaoArvore {
-  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome      String?
-  preservar Boolean @default(true)
-  arvore    Arvore[]
+  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome        String?
+  preservar   Boolean @default(true)
+  id_projeto  String? @db.Uuid
+  projeto     Projeto? @relation(fields: [id_projeto], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  arvore      Arvore[]
   @@map("observacao_arvore")
 }
 
@@ -282,6 +284,7 @@ model Projeto {
   users_roles              UserRole[]
   users                    User[]
   poa                      Poa[]
+  observacao_arvore        ObservacaoArvore[]
   @@map("projeto")
 }
 
