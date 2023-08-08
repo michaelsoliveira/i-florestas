@@ -23,6 +23,7 @@ type SubMenuType = {
         href?: string,
         subMenuItems?: SubMenuType[],
         icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element
+        faIcon?: boolean;
     }
     type NavigationType = {
         name: string,
@@ -262,6 +263,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                     {subMenu?.icon && (
                                                         <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
                                                     )}
+                                                    
                                                     <div className="ml-4" aria-hidden="true">
                                                         <p className="font-medium text-gray-900">{subMenu.name}</p>
                                                         {subMenu?.description && (
