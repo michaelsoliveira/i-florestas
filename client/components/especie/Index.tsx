@@ -14,6 +14,7 @@ import { styles as stylesButton } from '../Utils/styles'
 import { StepContext } from "contexts/StepContext"
 import { useAppSelector } from "store/hooks"
 import { RootState } from "store"
+import ExportPDF from "./ExportPDF"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     

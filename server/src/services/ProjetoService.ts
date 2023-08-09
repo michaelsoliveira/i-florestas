@@ -38,7 +38,8 @@ class ProjetoService {
                             user_id: data?.id_user ? data?.id_user : userId
                         }
                     },
-                    nome: data.nome
+                    nome: data.nome,
+                    excluido: false
                 }
             }
         })
@@ -113,12 +114,19 @@ class ProjetoService {
     }
 
     async changeActive(projetoId: string, userId: string): Promise<Projeto> {
+        const projeto = await prismaClient.projeto.findUnique({
+            where: {
+                id: projetoId
+            }
+        })
+
         const user = await prismaClient.user.update({
             include: {
                 projeto: true
             },
             data: {
-                id_projeto_ativo: projetoId
+                id_projeto_ativo: projetoId,
+                id_poa_ativo: projeto?.id_poa_ativo
             },
             where: {
                 id: userId
@@ -131,7 +139,11 @@ class ProjetoService {
     async getDefaultData(projetoId: string | any, userId: string) : Promise<any> {
         const data = await prismaClient.umf.findFirst({
             include: {
-                projeto: true,
+                projeto: {
+                    include: {
+                        poa_ativo: true
+                    }
+                },
                 upa: true
             },
             where: {
@@ -369,9 +381,12 @@ class ProjetoService {
             where: { id }
         })
 
-        const projetoAtivo = await prismaClient.projeto.findUnique({
+        const projetoAtivo = await prismaClient.projeto.findFirst({
             where: {
-                id: user?.id_projeto_ativo
+                AND: [
+                    { id: user?.id_projeto_ativo },
+                    { excluido: false }
+                ]
             }
         })
 

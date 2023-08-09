@@ -54,8 +54,8 @@ const Projetos = () => {
             const { projetos, error, message } = response.data
             
             const { data: { projeto } } = await client.get('/projeto/active/get')
-
-            setProjeto(projeto)
+            
+            setProjeto(projeto ? projeto : null)
             
             if (error) {
                 console.log(message)
@@ -70,6 +70,7 @@ const Projetos = () => {
     useEffect(() => {
         
         loadProjetos()    
+        console.log(session)
 
     }, [loadProjetos])
 
