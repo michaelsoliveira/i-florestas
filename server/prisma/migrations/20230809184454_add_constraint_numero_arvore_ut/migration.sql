@@ -5,4 +5,4 @@
 
 */
 -- CreateIndex
-CREATE UNIQUE INDEX "arvore_numero_arvore_id_ut_key" ON "arvore"("numero_arvore", "id_ut");
+CREATE UNIQUE INDEX "numero_arvore_id_ut_key" ON "arvore"("numero_arvore", "id_ut");
