@@ -11,9 +11,9 @@ const styles = StyleSheet.create({
     tableContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginTop: 24,
+        marginTop: 10,
         borderWidth: 1,
-        borderColor: '#bff0fd',
+        borderColor: '#000',
     },
 });
 

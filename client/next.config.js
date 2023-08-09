@@ -1,4 +1,5 @@
-const nextConfig = {
+const withFonts = require('next-fonts');
+const nextConfig = withFonts({
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve = {
@@ -18,6 +19,6 @@ const nextConfig = {
     domains: ['images.unsplash.com', 'placeimg.com', 'www.revixpert.ch'],
   },
   output: 'standalone',
-}
+})
 
 module.exports = nextConfig

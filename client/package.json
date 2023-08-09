@@ -33,6 +33,7 @@
     "mathjs": "^11.4.0",
     "next": "latest",
     "next-auth": "^4.20.1",
+    "next-fonts": "^1.5.1",
     "nextjs-progressbar": "^0.0.16",
     "nookies": "^2.5.2",
     "prop-types": "^15.8.1",

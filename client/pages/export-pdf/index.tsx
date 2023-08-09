@@ -10,16 +10,11 @@ const Invoice = dynamic(() => import('../../components/reports/Invoice'), {ssr: 
 const ExportPDFIndex = () => {
     return (
         <>
-            Teste
+            <div className='flex items-center justify-center w-full my-10'>
+                <Invoice invoice={invoice} />
+            </div>
         </>
     )
-    /*
-        <>
-            <PDFViewer width="1000" height="600" className="app" >
-                <Invoice invoice={invoice} />
-            </PDFViewer>
-        </>
-    */
 }
 
 export default ExportPDFIndex

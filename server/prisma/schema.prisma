@@ -153,6 +153,7 @@ model Poa {
   ut                  Ut[]
   categoria_especie   CategoriaEspecie[]
   users               User[] @relation("poa_ativo")
+  projeto_poa         Projeto[] @relation("projeto_poa_ativo")
   @@map("poa")
 }
 
@@ -275,6 +276,8 @@ model Projeto {
   excluido                 Boolean              @default(false)
   intervalo_dmin_relatorio Int?
   reg_ambiental            String?              @db.VarChar(50)
+  id_poa_ativo             String?  @db.Uuid
+  poa_ativo                Poa?    @relation("projeto_poa_ativo", fields: [id_poa_ativo], references: [id], onDelete: NoAction, onUpdate: NoAction)
   resp_tecnico             ResponsavelTecnico[]
   categoria_especie        CategoriaEspecie[]
   equacao_Volume           EquacaoVolume[]
