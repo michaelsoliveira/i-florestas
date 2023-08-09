@@ -70,8 +70,6 @@ const Projetos = () => {
     useEffect(() => {
         
         loadProjetos()    
-        console.log(session)
-
     }, [loadProjetos])
 
     async function deleteProjeto(){
