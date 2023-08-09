@@ -4,6 +4,8 @@ import { useCallback, useContext, useEffect } from 'react'
 import alertService from '../../services/alert'
 import { AuthContext } from 'contexts/AuthContext'
 import { useModalContext } from 'contexts/ModalContext'
+import { useAppDispatch } from 'store/hooks'
+import { setPoa } from 'store/poaSlice'
 
 type AddEditType = {
     reloadData: () => void;
@@ -15,6 +17,7 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
     const isAddMode = !data
     const { client } = useContext(AuthContext)
     const { hideModal } = useModalContext()
+    const dispatch = useAppDispatch()
 
     const loadData = useCallback(() => {
         if (data) {
@@ -56,6 +59,13 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
                     alertService.success(message);
                     hideModal()
                     reloadData()
+                    
+                    dispatch(setPoa({
+                        id: '',
+                        descricao: 'Padrão',
+                        data_ultimo_plan: new Date(),
+                        pmfs: ''
+                    }))
                 } else {
                     alertService.error(message)
                 }

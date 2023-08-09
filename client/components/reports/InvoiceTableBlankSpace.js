@@ -5,7 +5,7 @@ const borderColor = '#000'
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
-        borderBottomColor: '#000',
+        borderBottom: '#000',
         borderBottomWidth: 1,
         alignItems: 'center',
         height: 24,

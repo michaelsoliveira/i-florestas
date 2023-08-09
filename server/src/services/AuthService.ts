@@ -25,7 +25,16 @@ class AuthService {
         
         const user = await prismaClient.user.findUnique({
             include: {
-                users_roles: true
+                users_roles: {
+                    include: {
+                        roles: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                }
             },
             where: {
                 email: email
@@ -64,7 +73,7 @@ class AuthService {
                 username: user.username,
                 email: user.email,
                 image: user.image,
-                roles: user.users_roles,
+                roles: user.users_roles?.map((role: any) => {return {projeto: role.id_projeto, role: role.roles}}),
                 access_token,
                 expires_in,
                 refresh_token

@@ -5,8 +5,8 @@ const borderColor = '#000'
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
-        borderBottomColor: '#bff0fd',
-        borderBottomWidth: 1,
+        //borderBottomColor: '#000',
+        //borderBottomWidth: 1,
         alignItems: 'center',
         height: 24,
         fontSize: 12,

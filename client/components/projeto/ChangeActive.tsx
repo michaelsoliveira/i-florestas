@@ -24,7 +24,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         const [selectedProjeto, setSelectedProjeto] = useState<any>()
         const [projetos, setProjetos] = useState<any>()
         const { projeto, setProjeto } = useContext(ProjetoContext)
-        const dispath = useAppDispatch()
+        const dispatch = useAppDispatch()
 
         const loadProjetos = useCallback(async () => {
             if (typeof session !== typeof undefined){
@@ -82,38 +82,47 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         }
 
         async function handleSubmit(dataRequest: any) {
-            const { data: projetoResponse } = await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
+            await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
             const response = await client.get(`/projeto/${dataRequest?.projeto.value}/default-data`)
             const { data } = response.data
-            dispath(setUmf({
+            const { projeto } = data
+
+            dispatch(setUmf({
                 id: data?.id,
                 nome: data?.nome
             }))
 
             if (data?.upa.length > 0) {
-                data?.upa.map((upa: any) => {
-                    dispath(setUpa({
-                        id: upa.id,
-                        descricao: upa.descricao,
-                        tipo: upa.tipo
-                    })) 
-                })
+                dispatch(setUpa({
+                    id: data?.upa[0].id,
+                    descricao: data?.upa[0].descricao,
+                    tipo: data?.upa[0].tipo
+                }))
             } else {
-                dispath(setUpa({
+                dispatch(setUpa({
                     id: '',
                     descricao: 'NEHUMA UPA CADASTRADA',
                     tipo: 0
                 }))
             }
 
-            dispath(setPoa({
-                id: '',
-                descricao: 'Padrão',
-                data_ultimo_plan: new Date(),
-                pmfs: ''
-            }))
+            if (projeto?.poa_ativo) {
+                dispatch(setPoa({
+                    id: projeto?.poa_ativo?.id,
+                    descricao: projeto?.poa_ativo?.descricao,
+                    data_ultimo_plan: projeto?.poa_ativo?.data_ultimo_plan,
+                    pmfs: projeto?.poa_ativo?.pmfs
+                }))
+            } else {
+                dispatch(setPoa({
+                    id: '',
+                    descricao: 'Padrão',
+                    data_ultimo_plan: new Date(),
+                    pmfs: ''
+                }))
+            }
                 
-            setProjeto(projetoResponse?.projeto)
+            setProjeto(projeto)
             hideModal()
         }
 
