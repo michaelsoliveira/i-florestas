@@ -162,15 +162,7 @@ export class EspecieController {
         try {
             const { data } = request.body
 
-            const especies = data.map((especie: any) => {
-                return {
-                    nome: especie?.nome_vulgar_1 ? especie?.nome_vulgar_1 : especie?.nome,
-                    nome_orgao: especie?.nome_vulgar ? especie?.nome_vulgar : especie?.nome_orgao,
-                    nome_cientifico: especie.nome_cientifico
-                }
-            })
-
-            const errors = await especieService.getErrors(especies, request.user?.id)
+            const errors = await especieService.getErrors(data, request.user?.id)
 
             return response.json({
                 error: true,
@@ -186,9 +178,9 @@ export class EspecieController {
             const { data } = request.body
 
             const especies = data.map( (especie: any, index: number) => {
-                const { nome_vulgar: nome_orgao, ...rest } = especie;
-                
-                return { nome_orgao, ...rest }
+                const { nome, nome_vulgar, nome_vulgar_1, nome_vulgar_2, nome_orgao, ...rest } = especie;
+
+                return { nome: nome_vulgar ? nome_vulgar : nome_vulgar_1 ? nome_vulgar_1 : nome, nome_orgao: nome_vulgar_2 ? nome_vulgar_2 : nome_orgao, ...rest }
                }
             )
 
