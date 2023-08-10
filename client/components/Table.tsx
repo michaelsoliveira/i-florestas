@@ -5,6 +5,7 @@ import { Button, PageButton } from './Utils/Button'
 import classNames from './Utils/classNames'
 import { SortIcon, SortUpIcon, SortDownIcon } from './Utils/Icons'
 import Image from 'next/image'
+import { useModalContext } from 'contexts/ModalContext'
 
 export type InputSize = 'small' | 'medium' | 'large';
 
@@ -169,6 +170,8 @@ function Table({ columns, data, size, inputSize }: any) {
   )
 
   const isEven = (idx: number) => idx % 2 === 0
+  const { store } = useModalContext()
+  const { visible } = store
 
   // Render the UI for your table
   return (
@@ -195,9 +198,10 @@ function Table({ columns, data, size, inputSize }: any) {
       <div className="mt-4 flex flex-col">
         <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-6">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div className={classNames("shadow overflow-hidden border-b border-gray-200 sm:rounded-lg",
+                      visible && "overflow-y-auto max-h-80")}>
               <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-50 w-full sticky top-0">
                   {headerGroups.map((headerGroup: any, key: any) => (
                     <tr {...headerGroup.getHeaderGroupProps()} key={key}>
                       {headerGroup.headers.map((column: any, i: any) => (

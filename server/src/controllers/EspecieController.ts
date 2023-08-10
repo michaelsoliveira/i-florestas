@@ -165,8 +165,7 @@ export class EspecieController {
             const errors = await especieService.getErrors(data, request.user?.id)
 
             return response.json({
-                error: true,
-                errors
+                ...errors
             })
         } catch(error) {
             return response.json(error.message)
@@ -186,20 +185,9 @@ export class EspecieController {
 
             const importData = await especieService.importEspecies(especies, request.user?.id)
 
-            if (importData?.error && importData?.type === 'duplicates') {
-                return response.json({
-                    error: true,
-                    duplicates: importData?.duplicates,
-                    errorType: importData?.type,
-                    especies: null,
-                    message: 'Existem espécies duplicadas na planilha'
-                }) 
-            }
-
             return response.json({
-                error: false,
-                especies: [],
-                message: 'Espécies importadas com sucesso!!!'
+                error: importData?.error,
+                message: importData?.message
             })
             
         } catch (error) {
