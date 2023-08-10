@@ -179,7 +179,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <Errors />;
+                return dataStep?.errors?.length > 0 ? <Errors /> : <div className="mt-8"><div className="flex flex-row items-center justify-center py-4 border rounded-md"><span className="font-medium text-lg">Nenhum Erro</span></div></div>;
               case 3:
                 return <Finalizar />;
               default: <>Teste</>

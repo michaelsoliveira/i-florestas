@@ -47,16 +47,16 @@ const ArvoreIndex = () => {
         const data = response?.arvores.map((arv: any) => {
             const { id, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
             return {
-                id, 
+                //id, 
                 numero_arvore, 
                 altura: altura.replace('.', ','), 
                 dap: dap.replace('.', ','),
                 volume: volume.replace('.', ','), 
                 fuste, 
-                area_basal, 
-                id_especie,
+                area_basal: area_basal.toString().replace('.', ','), 
+                //id_especie,
                 especie: especie?.nome, 
-                id_situacao,
+                //id_situacao,
                 situacao_arvore: situacao_arvore?.nome
             }
         })
