@@ -177,28 +177,30 @@ class EspecieService {
             const nomesNaoDefinidos = data.filter((especie: any) => especie.nome === '')
 
             const duplicates = data
-                                .map((d: any, idx: number) => { 
-                                    const { nome, nome_orgao, nome_cientifico } = d
-                                    return {  
-                                        linha: idx, nome, nome_orgao, nome_cientifico 
-                                    } 
-                                })
-                                .filter((d: any) => nomes.includes(d.nome)).map((duplicado: any) => {
-                
-                return {
-                    linha: duplicado?.linha + 1,
-                    nome: duplicado?.nome,
-                    nome_orgao: duplicado?.nome_orgao,
-                    nome_cientifico: duplicado?.nome_cientifico
-                }
-                
-            })
+                .map((d: any, idx: number) => { 
+                    const { nome, nome_vulgar, nome_vulgar_1, nome_vulgar_2, nome_orgao, ...rest } = d
+                    return {  
+                        linha: idx, 
+                        nome: nome_vulgar ? nome_vulgar : nome_vulgar_1 ? nome_vulgar_1 : nome, 
+                        nome_orgao: nome_vulgar_2 ? nome_vulgar_2 : nome_orgao, 
+                        ...rest 
+                    } 
+                })
+                .filter((d: any) => nomes.includes(d.nome)).map((duplicado: any) => {
+                    return {
+                        linha: duplicado?.linha + 1,
+                        nome: duplicado?.nome,
+                        nome_orgao: duplicado?.nome_orgao,
+                        nome_cientifico: duplicado?.nome_cientifico
+                    }
+                    
+                })
             
             return {
                 error: true,
                 type: 'duplicates',
                 duplicates,
-                nomes_vazios: nomesNaoDefinidos
+                nomes_vazios: nomesNaoDefinidos.map((d: any, index: number) => { return { linha: index + 1 } })
             }
              
         } catch(error: any) {
