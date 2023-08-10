@@ -5,15 +5,30 @@ import { useContext, useEffect } from "react"
 const Errors = () => {
     const { step, nextStep, prevStep, data: dataStep, updateData } = useContext(StepContext)
     const { errors } = dataStep
-    const { duplicates, nomes_vazio } = errors
-    
+    const { duplicates, nomes_vazios }: any = errors
+    console.log(nomes_vazios)
     return (
         <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full mt-10">
-            <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Duplicidades</span>
-
+            <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Errors</span>
+            
             {
-               duplicates && (
-                <Table columns={duplicates?.columns} data={duplicates?.data} />
+               duplicates.data?.length > 0 && (
+                <>
+                    <span className="flex py-2 px-2 font-medium text-lg w-full bg-indigo-100 mb-2 rounded-md">Duplicidades</span>
+                    <div className="max-h-72 overflow-y-auto overflow-x-hidden w-full">
+                        <Table columns={duplicates?.columns} data={duplicates?.data} />
+                    </div>
+                </>
+               )
+            }
+            {
+               nomes_vazios.data?.length > 0 && (
+                <div>
+                    <span className="flex py-2 px-2 font-medium text-lg w-full bg-indigo-100 my-4 rounded-md">Valor Vazio</span>
+                    <div className="max-h-72 overflow-y-auto overflow-x-hidden w-full">
+                        <Table columns={nomes_vazios?.columns} data={nomes_vazios?.data} />
+                    </div>
+                </div>
                )
             }
         

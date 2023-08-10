@@ -23,7 +23,7 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
   const isEven = (idx: number) => idx % 2 === 0
 
   return (
-    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8 h-64 overflow-y-auto">
+    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8 h-96 overflow-y-auto">
       <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
         <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
           <thead>

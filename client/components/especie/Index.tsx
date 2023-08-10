@@ -117,9 +117,9 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     const handleImportTemplate = async () => {
         const data = [
-            { nome: 'Teste1', nome_vulgar: 'Teste1', nome_cientifico: 'Teste1' },
-            { nome: 'Teste2', nome_vulgar: 'Teste2', nome_cientifico: 'Teste2' },
-            { nome: 'Teste3', nome_vulgar: 'Teste3', nome_cientifico: 'Teste3' }
+            { nome_vulgar: 'Teste1', nome_orgao: 'Teste1', nome_cientifico: 'Teste1' },
+            { nome_vulgar: 'Teste2', nome_orgao: 'Teste2', nome_cientifico: 'Teste2' },
+            { nome_vulgar: 'Teste3', nome_orgao: 'Teste3', nome_cientifico: 'Teste3' }
         ]
         
         CsvDataService.exportToCsv('template_especie', data)

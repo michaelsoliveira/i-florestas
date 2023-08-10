@@ -89,6 +89,15 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                 }
                             ],
                             data: duplicates
+                        },
+                        nomes_vazios: {
+                            columns: [
+                                {
+                                    "Header": 'Linha',
+                                    "accessor": 'linha'
+                                }
+                            ],
+                            data: nomes_vazios
                         }
                     }
                 })

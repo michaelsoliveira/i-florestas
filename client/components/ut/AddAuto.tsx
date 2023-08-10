@@ -58,16 +58,16 @@ const AddAuto = forwardRef<any, any>(
             row.original.isEditing ? (
               <>
                 <button onClick={() => handleButtonClick("save", row.original)} className="px-2">
-                  Save
+                  Salvar
                 </button>
                 <button onClick={() => handleButtonClick("cancel", row.original)}>
-                  Cancel
+                  Cancelar
                 </button>
               </>
             ) : (
               <>
                 <button onClick={() => handleButtonClick("edit", row.original)} className="px-2">
-                  Edit
+                  Editar
                 </button>
                   <button onClick={() => {
                     const dataCopy = [...data];
@@ -75,7 +75,7 @@ const AddAuto = forwardRef<any, any>(
                     dataCopy.splice(row.index, 1);
                     setData(dataCopy);
                   }}>
-                  Delete
+                  Excluir
                 </button>
               </>
             ),
@@ -106,26 +106,28 @@ const AddAuto = forwardRef<any, any>(
       };
     
       return (
-        <div>
+        <div className="flex flex-col items-center h-full">
           <div
               onClick={newUt}
-              className="w-36 px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+              className="py-4"
           >
-              <div className="flex flex-row  justify-around w-full space-x-2">
-                  <div>
-                      <FontAwesomeIcon icon={faPlus} />
-                  </div>
+              <button className="flex flex-row w-36 px-4 py-2 justify-around w-full space-x-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer">
                   <span>
-                      Add Auto
+                      <FontAwesomeIcon icon={faPlus} />
                   </span>
-              </div>
+                  
+                      Add Auto
+                  
+              </button>
           </div>
+
           <EditableTable
             columns={columns}
             data={data}
             setData={setData}
             handleButtonClick={handleButtonClick}
           />
+
           <span
                 className="hidden"
                 ref={ref}

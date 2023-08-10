@@ -174,7 +174,15 @@ class EspecieService {
             }) 
     
             const nomes = especies.map((especie: any) => especie.nome)
-            const nomesNaoDefinidos = data.filter((especie: any) => especie.nome === '')
+            const nomesNaoDefinidos = data.map((d: any, idx: number) => { 
+                const { nome, nome_vulgar, nome_vulgar_1, nome_vulgar_2, nome_orgao, ...rest } = d
+                return {  
+                    linha: idx, 
+                    nome: nome_vulgar ? nome_vulgar : nome_vulgar_1 ? nome_vulgar_1 : nome, 
+                    nome_orgao: nome_vulgar_2 ? nome_vulgar_2 : nome_orgao, 
+                    ...rest 
+                } 
+            }).filter((especie: any) => especie.nome === '')
 
             const duplicates = data
                 .map((d: any, idx: number) => { 
