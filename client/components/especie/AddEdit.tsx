@@ -154,7 +154,7 @@ const AddEdit = ({ id }: any) => {
                             
                             <FormInput
                                 name="nome"
-                                label="Nome"
+                                label="Nome Vulgar (empresa)"
                                 register={register}
                                 errors={errors}
                                 rules={ {required: 'O campo nome é obrigatório'} }
@@ -164,7 +164,7 @@ const AddEdit = ({ id }: any) => {
                             <FormInput
                                 id="nome_orgao"
                                 name="nome_orgao"
-                                label="Nome Vulgar"
+                                label="Nome Vulgar (Órgão Ambiental)"
                                 register={register}
                                 errors={errors}
                                 rules={

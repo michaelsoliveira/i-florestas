@@ -175,7 +175,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
 
         showModal({
             title: `Adicionar UT automáticamente`,
-            size: 'max-w-2xl',
+            size: 'max-w-3xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton,
             onConfirm: saveAuto, confirmBtn: 'Salvar',
             content: <div><AddAuto ref={newUt} maxNumUt={maxNumUt} loadUts={loadUts} /></div>
