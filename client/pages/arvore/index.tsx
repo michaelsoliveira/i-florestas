@@ -53,7 +53,7 @@ const ArvoreIndex = () => {
                 dap: dap.replace('.', ','),
                 volume: volume.replace('.', ','), 
                 fuste, 
-                area_basal: area_basal && area_basal.replace('.', ','), 
+                area_basal, 
                 id_especie,
                 especie: especie?.nome, 
                 id_situacao,
