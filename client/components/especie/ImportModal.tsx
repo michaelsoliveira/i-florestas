@@ -32,6 +32,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
     
     const [uploading, setUploading] = useState<boolean>(false)
     const [duplicates, setDuplicates] = useState([])
+    const [nomes_vazios, setNomesVazios] = useState([])
     const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
     
     const [columnData, setColumnData] = useState([])
@@ -55,7 +56,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
     }, [setStep])
 
     const isErrors = () => {
-        return duplicates.length > 0
+        return duplicates.length > 0 || nomes_vazios.length > 0
     }
 
     const getErrors = async () => {
@@ -66,7 +67,9 @@ const ImportModal = forwardRef<any, ImportModalType>(
             })
             .then((result: any) => {
                 const { data } = result
-                const { errors: { duplicates, nomes_vazios } } = data
+                const { error, duplicates, nomes_vazios } = data
+                setDuplicates(duplicates),
+                setNomesVazios(nomes_vazios)
                 updateData({
                     errors: {
                         duplicates: {
@@ -127,14 +130,18 @@ const ImportModal = forwardRef<any, ImportModalType>(
             }
         
             if (data.length > 0 && step < steps.length) {
+                if (step === 2 && isErrors()) return alertService.warn('Verifique as Incosistências para realizar a importação')
                 direction === 'next' ? newStep++ : newStep--
             } else {
                 newStep--
             }
 
             if (step === steps.length && !isErrors() && direction === 'next') {
+                console.log(duplicates)
                 await handleImportEspecies()
             }
+
+            console.log(step, steps.length)
 
             step === 1 && visible && !direction && hideModal()
 
@@ -159,11 +166,6 @@ const ImportModal = forwardRef<any, ImportModalType>(
                     alertService.success(data?.message)
                     loadEspecies()
                     hideModal()
-                } else {
-                    if (data?.errorType && data?.errorType === 'duplicates') {
-                        setDuplicates(data?.duplicates)
-                        return alertService.warn(data?.message)
-                    }
                 }
             }).catch((error: any) => {
                 console.log('Esse error: ', error.message)
@@ -179,7 +181,14 @@ const ImportModal = forwardRef<any, ImportModalType>(
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <Errors />;
+                return duplicates || nomes_vazios
+                        ? <Errors /> 
+                        : 
+                            <div className="mt-8">
+                                <div className="flex flex-row items-center justify-center py-4 border rounded-md">
+                                    <span className="font-medium text-lg">Nenhum Erro</span>
+                                </div>
+                            </div>;
               case 3:
                 return <Finalizar />;
               default: <>Teste</>

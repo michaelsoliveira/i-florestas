@@ -162,7 +162,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
 
         dispatch(setUt({
             id: uts[0]?.id,
-            numero_ut: uts[0].numero_ut
+            numero_ut: uts[0]?.numero_ut
         }))
         
         setUts(uts)

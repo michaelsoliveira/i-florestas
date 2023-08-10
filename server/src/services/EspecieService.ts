@@ -80,7 +80,7 @@ class EspecieService {
         return especie
     }
 
-    async importEspecies(data: any, userId: any) {
+    async importEspecies(data: any, userId: any) : Promise<any> {
         try {
             const user = await prismaClient.user.findUnique({
                 where: {
@@ -110,45 +110,25 @@ class EspecieService {
                     }
                 }
             })
-    
-            const especies = await prismaClient.especie.findMany({
-                where: {
-                    id_projeto: user?.id_projeto_ativo
-                }
-            }) 
-    
-            const nomes = especies.map((especie: any) => especie.nome)
-            const duplicates = data.map((d: any) => d.nome).filter((d: any) => nomes.includes(d))
-            
-            if (duplicates.length > 0) {
-                return {
-                    error: true,
-                    type: 'duplicates',
-                    duplicates
-                }
-            } else {
-                for (const [index, especie] of Object.entries(data) as any) {
-                    
-                    if (index < data.length) {
-                        await prismaClient.especie.create({
-                            data: {
-                                nome: especie?.nome,
-                                nome_orgao: especie?.nome_orgao,
-                                nome_cientifico: especie?.nome_cientifico,
-                                id_projeto: user?.id_projeto_ativo,
-                                categoria_especie: {
-                                    create: {
-                                        id_categoria: categoriaNaoDefinida?.id
-                                    }
-                                }
+
+            for (const [index, especie] of Object.entries(data) as any) {                              
+                await prismaClient.especie.create({
+                    data: {
+                        nome: especie?.nome,
+                        nome_orgao: especie?.nome_orgao,
+                        nome_cientifico: especie?.nome_cientifico,
+                        id_projeto: user?.id_projeto_ativo,
+                        categoria_especie: {
+                            create: {
+                                id_categoria: categoriaNaoDefinida?.id
                             }
-                        })
+                        }
                     }
-                }
-                return {
-                    error: false,
-                    message: 'Importação Realizada com Sucesso!'
-                }
+                })                                                
+            }
+            return {
+                error: false,
+                message: 'Importação Realizada com Sucesso!'
             }
         } catch(error: any) {
             console.log(error.message)
@@ -167,13 +147,33 @@ class EspecieService {
                 }
             })
     
-            const especies = await prismaClient.especie.findMany({
+            const especies = await prismaClient.categoriaEspeciePoa.findMany({
+                include: {
+                    especie: true
+                },
                 where: {
-                    id_projeto: user?.id_projeto_ativo
+                    AND: 
+                    [
+                        {
+                            especie: {
+                                projeto: {
+                                    id: user?.id_projeto_ativo
+                                }
+                            } 
+                        },
+                        {
+                            categoria: {
+                                id_poa: user?.id_poa_ativo
+                            }
+                        }
+                    ]
                 }
             }) 
     
-            const nomes = especies.map((especie: any) => especie.nome)
+            const nomes = especies.map(({ especie }: any) => {
+                return { ...especie }
+            }).map((especie: any) => especie.nome)
+
             const nomesNaoDefinidos = data.map((d: any, idx: number) => { 
                 const { nome, nome_vulgar, nome_vulgar_1, nome_vulgar_2, nome_orgao, ...rest } = d
                 return {  
@@ -203,12 +203,12 @@ class EspecieService {
                     }
                     
                 })
+                const nomes_vazios = nomesNaoDefinidos.map((d: any, index: number) => { return { linha: index + 1 } })
             
             return {
-                error: true,
-                type: 'duplicates',
+                error: duplicates.length > 0 || nomes_vazios.length > 0,
                 duplicates,
-                nomes_vazios: nomesNaoDefinidos.map((d: any, index: number) => { return { linha: index + 1 } })
+                nomes_vazios
             }
              
         } catch(error: any) {
@@ -331,9 +331,7 @@ class EspecieService {
                         },
                         {
                             categoria: {
-                                poa: {
-                                    id: poa ? poa : user?.id_poa_ativo
-                                }
+                                id_poa: user?.id_poa_ativo
                             }
                         }
                     ]
