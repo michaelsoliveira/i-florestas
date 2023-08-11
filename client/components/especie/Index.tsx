@@ -95,7 +95,6 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     useEffect(() => {
         setFilteredEspecies(currentEspecies)
-        console.log(poa)
     }, [currentEspecies, poa])
 
     const deleteEspecies = async () => {

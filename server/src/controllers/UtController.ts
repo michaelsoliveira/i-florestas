@@ -86,6 +86,23 @@ export class UtController {
         }
     }
 
+    async getUtsByUpa(request: Request, response: Response) : Promise<Response<any, Record<string, any>> | undefined>{
+        try {
+            const { upaId }: any = request.query
+            const uts = await utService.getUtsByUpa(upaId)
+
+            return response.json({
+                error: false,
+                uts
+            })
+        } catch(error: any) {
+            return response.json({
+                error: true,
+                message: error.message
+            })
+        }
+    }
+
     async createAuto(request: Request, response: Response) : Promise<any> {
         try {
             const data = request.body
