@@ -48,16 +48,16 @@ const ArvoreIndex = () => {
             const { ut, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
             return {
                 'UT': ut?.numero_ut, 
-                numero_arvore, 
-                altura: altura.replace('.', ','), 
-                dap: dap.replace('.', ','),
-                volume: volume.replace('.', ','), 
-                fuste, 
-                area_basal: area_basal.toString().replace('.', ','), 
+                'Num Árvore': numero_arvore, 
+                'Altura': altura.replace('.', ','), 
+                'Dap': dap.replace('.', ','),
+                'Volume': volume.replace('.', ','), 
+                'Fuste': fuste, 
+                'Área Basal': area_basal.toString().replace('.', ','), 
                 //id_especie,
-                especie: especie?.nome, 
+                'Espécie': especie?.nome, 
                 //id_situacao,
-                situacao_arvore: situacao_arvore?.nome
+                'Situação': situacao_arvore?.nome
             }
         })
 
