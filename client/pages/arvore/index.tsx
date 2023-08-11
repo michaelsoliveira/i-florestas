@@ -45,9 +45,9 @@ const ArvoreIndex = () => {
     const exportCsv = async () => {
         var { data: response } = await client.get(`/arvore/get-all?utId=${ut?.id ? ut?.id : null}&order=asc&orderBy=numero_arvore`)
         const data = response?.arvores.map((arv: any) => {
-            const { numero_ut, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
+            const { ut, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
             return {
-                'UT': numero_ut, 
+                'UT': ut?.numero_ut, 
                 numero_arvore, 
                 altura: altura.replace('.', ','), 
                 dap: dap.replace('.', ','),
