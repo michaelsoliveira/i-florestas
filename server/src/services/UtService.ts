@@ -180,6 +180,20 @@ class UtService {
         })
     }
 
+    async getUtsByUpa(upaId: string): Promise<Ut[] | undefined> {
+        try {
+            const uts = await prismaClient.ut.findMany({
+                where: {
+                    id_upa: upaId
+                }
+            })
+
+            return uts
+        } catch(error: any) {
+            return []
+        }
+    }
+
     async createAuto(data: any, upaId: string): Promise<any> {        
         try {
             const preparedData = data?.map(({ numero_ut, area_util, area_total }: any) => {

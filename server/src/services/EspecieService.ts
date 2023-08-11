@@ -177,12 +177,12 @@ class EspecieService {
             const nomesNaoDefinidos = data.map((d: any, idx: number) => { 
                 const { nome, nome_vulgar, nome_vulgar_1, nome_vulgar_2, nome_orgao, ...rest } = d
                 return {  
-                    linha: idx, 
+                    linha: idx + 1, 
                     nome: nome_vulgar ? nome_vulgar : nome_vulgar_1 ? nome_vulgar_1 : nome, 
                     nome_orgao: nome_vulgar_2 ? nome_vulgar_2 : nome_orgao, 
                     ...rest 
                 } 
-            }).filter((especie: any) => especie.nome === '')
+            }).filter((especie: any) => especie.nome === undefined || especie.nome_orgao === undefined || especie.nome_cientifico === undefined)
 
             const duplicates = data
                 .map((d: any, idx: number) => { 
@@ -203,7 +203,7 @@ class EspecieService {
                     }
                     
                 })
-                const nomes_vazios = nomesNaoDefinidos.map((d: any, index: number) => { return { linha: index + 1 } })
+                const nomes_vazios = nomesNaoDefinidos.map(({ ...rest }: any) => { return { ...rest } })
             
             return {
                 error: duplicates.length > 0 || nomes_vazios.length > 0,

@@ -32,6 +32,7 @@ const Index = () => {
     const { setLoading } = useContext(LoadingContext)
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
+    const [uts, setUts] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
@@ -112,10 +113,17 @@ const Index = () => {
             }
     }, [client, umf?.id, upa?.descricao, upa.id])
 
+    const getUts = useCallback(async () => {
+        const response = await client.get(`/ut?upaId=${upa?.id}`)
+            const { error, uts } = response.data
+            setUts(uts)
+    }, [client, upa?.id])
+
     useEffect(() => {
         defaultUmfsOptions()
         defaultUpasOptions()
-    }, [defaultUmfsOptions, defaultUpasOptions])
+        getUts()
+    }, [defaultUmfsOptions, defaultUpasOptions, getUts])
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -160,24 +168,6 @@ const Index = () => {
         })
     }
 
-    const deleteArvore = useCallback(async (id?: string) => {
-        try {
-           
-        } catch (error) {
-            console.log(error)
-        }       
-    }, [])
-
-    const deleteArvores = async () => {
-        setLoading(true)
-        try {
-           
-        setLoading(false)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     const handleImportTemplate = async () => {
         const data = upa.tipo === 0 ? [
             { ut: 1, numero_arvore: 1, especie: 'Abiu', dap: 10, altura: 20.0, qf: 1, ponto_gps: 1, latitude: 2.565, longitude: 0.56, obs: '', comentario: '' },
@@ -194,10 +184,10 @@ const Index = () => {
 
     const handleImportInventario = async () => {
         try {
+            if (uts.length === 0) return alertService.warn('Por favor, crie as UTs antes de realizar a importação')
             const { data } = await client.get('/poa?order=asc&orderBy=descricao')
             if (data?.count === 0 || poa.id === '') {
-                alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
-                return
+                return alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
             } else {
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {

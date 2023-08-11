@@ -79,7 +79,7 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                     "accessor": 'linha'
                                 },
                                 {
-                                    "Header": 'Nome',
+                                    "Header": 'Nome Vulgar',
                                     "accessor": 'nome'
                                 },
                                 {
@@ -98,6 +98,18 @@ const ImportModal = forwardRef<any, ImportModalType>(
                                 {
                                     "Header": 'Linha',
                                     "accessor": 'linha'
+                                },
+                                {
+                                    "Header": 'Nome Vulgar',
+                                    "accessor": 'nome'
+                                },
+                                {
+                                    "Header": 'Nome Orgão',
+                                    "accessor": 'nome_orgao'
+                                },
+                                {
+                                    "Header": 'Nome Científico',
+                                    "accessor": 'nome_cientifico'
                                 }
                             ],
                             data: nomes_vazios
@@ -137,11 +149,8 @@ const ImportModal = forwardRef<any, ImportModalType>(
             }
 
             if (step === steps.length && !isErrors() && direction === 'next') {
-                console.log(duplicates)
                 await handleImportEspecies()
             }
-
-            console.log(step, steps.length)
 
             step === 1 && visible && !direction && hideModal()
 
