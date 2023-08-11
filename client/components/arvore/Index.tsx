@@ -250,7 +250,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         const nElements = sortedBy.length
 
         let sortedArvores: any = []        
-        const tiposNumericos = ['numero_arvore', 'lat_y', 'long_x', 'lat', 'lng', 'cap', 'dap']
+        const tiposNumericos = ['numero_arvore', 'lat_y', 'long_x', 'lat', 'lng', 'cap', 'dap', 'ut.numero_ut']
         sortedArvores = filteredArvores.sort((a: any, b: any) => {
             if (!tiposNumericos.includes(sortBy)) {
                 return sorted ?
