@@ -149,6 +149,19 @@ const ListArvore = ({
                         )}
                     <th
                         scope="col"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        onClick={() => sortArvores('ut.numero_ut')}
+                    >
+                        <div className="flex flex-row w-full justify-between">
+                            UT
+                            {sorted
+                                ? (<ChevronUpIcon className="w-5 h-5" />)
+                                : (<ChevronDownIcon className="w-5 h-5" />)
+                            }
+                        </div>   
+                    </th>
+                    <th
+                        scope="col"
                         className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                         onClick={() => sortArvores('numero_arvore')}
                     >
@@ -321,11 +334,15 @@ const ListArvore = ({
                             />    
                         </td>
                         <td className="px-3 py-2 whitespace-nowrap">
+                            <div className="flex flex-col items-starter">
+                                <div className="text-sm font-medium text-gray-900">{arvore?.ut?.numero_ut}</div>
+                            </div>
+                        </td>
+                        <td className="px-3 py-2 whitespace-nowrap">
                         <div className="flex flex-col items-starter">
-                            
                             <div className="text-sm font-medium text-gray-900">{arvore?.numero_arvore}</div>
                         </div>
-                        </td>
+                        </td>                        
                         <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">
                                 <div className="text-sm text-gray-500">{arvore?.especie?.nome}</div>

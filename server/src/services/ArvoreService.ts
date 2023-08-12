@@ -226,13 +226,13 @@ class ArvoreService {
                 data
             })
         }).catch((error: any) => {
-            console.log(error)
+            throw error
         })
 
         
     } catch (error) {
-      console.error('Erro ao inserir lote de dados:', error);
-    //   throw error;
+        //console.error('Erro ao inserir lote de dados:', error);
+        throw error;
     }
   }
 
@@ -247,21 +247,27 @@ class ArvoreService {
         
         try {
             return await Promise.all(promises).then(() => {
-                console.log('IMPORTS DONE')
+                return {
+                    error: false,
+                    message: 'Importação Realizada com Sucesso!!!'
+                }
             })
             
         } catch (error) {
-            console.error('Erro ao inserir dados em paralelo:', error?.message);
+            throw error
         }
     }
 
     async createByImport(dt: any, userId: string, upa?: any): Promise<any> {
         try {
-            await this.inserirDadosEmParalelo(dt?.importedData, userId, upa, NUM_WRITES)
+            const data = await this.inserirDadosEmParalelo(dt?.importedData, userId, upa, NUM_WRITES).then((data: any) => {
+                return {
+                    ...data
+                }
+            })
 
             return {
-                error: false,
-                message: 'Importação Realizada com Sucesso!!!'
+                ...data
             }
         } catch(error) {
             console.log(error?.message)
@@ -458,7 +464,8 @@ class ArvoreService {
             prismaClient.arvore.findMany({
                 include: {
                     especie: true,
-                    situacao_arvore: true
+                    situacao_arvore: true,
+                    ut: true
                 },
                 where,
                 orderBy: orderByTerm,
