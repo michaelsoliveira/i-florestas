@@ -3,7 +3,7 @@ import { useModalContext } from "contexts/ModalContext"
 import AddEdit from "./AddEdit"
 import { styles } from "../Utils/styles"
 import CategoriaEspecie from "./CategoriaEspecie"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 
 export const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias, handleSelectCategoria, loadCategorias }: any) => {
     const { showModal } = useModalContext()
