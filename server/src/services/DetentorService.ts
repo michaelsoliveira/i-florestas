@@ -48,11 +48,7 @@ class DetentorService {
                     logradouro: endereco?.logradouro,
                     bairro: endereco?.bairro,
                     municipio: endereco?.municipio,
-                    estado: {
-                        connect: {
-                            id: endereco?.id_estado
-                        }
-                    }
+                    id_estado: endereco?.id_estado
                 }
             },
             projeto: {
@@ -107,11 +103,7 @@ class DetentorService {
                     logradouro: endereco?.logradouro,
                     bairro: endereco?.bairro,
                     municipio: endereco?.municipio,
-                    estado: {
-                        connect: {
-                            id: endereco?.id_estado
-                        }
-                    }
+                    id_estado: endereco?.id_estado
                 }
             },
             projeto: {
@@ -157,7 +149,7 @@ class DetentorService {
                 
             }
         }
-        
+
         const detentor = await prismaClient.pessoa.update({
             data: {
                 ...basicData,

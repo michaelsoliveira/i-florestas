@@ -12,7 +12,7 @@ import PessoaJuridica from "../Form/PessoaJuridica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 
-const AddEdit = () => {
+const AddEdit = ({ id }: any) => {
     const router = useRouter()
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()
@@ -29,7 +29,6 @@ const AddEdit = () => {
     }
 
     const loadDetentor = useCallback(async () => {
-
             const { data } = await client.get(`/detentor/${projeto?.id}`)
             setDetentor(data)
             if (data?.tipo === 'J') { 
@@ -74,7 +73,7 @@ const AddEdit = () => {
         try {
             return isAddMode
                 ? createDetentor({...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J'})
-                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id })
+                : updateDetentor(detentor?.id, { ...data, id_projeto: projeto?.id, tipo: tipoPessoa === 0 ? 'F' : 'J' })
         } catch (error: any) {
             alertService.error(error.message);
         } 

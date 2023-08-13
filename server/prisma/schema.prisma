@@ -67,7 +67,7 @@ model PessoaFisica {
   cpf             String?   @db.VarChar(14)
   data_nascimento DateTime?
   id_pessoa       String?   @unique @db.Uuid
-  pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  pessoa          Pessoa?  @relation(fields: [id_pessoa], references: [id], onDelete: Cascade, onUpdate: Cascade)
   proponete       Proponente[]
   detentor        Detentor[]
   @@map("pessoa_fisica")

@@ -193,7 +193,7 @@ const AddEdit = ({ id }: any) => {
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
-        setCategorias(categorias)   
+        setCategorias(categorias.filter((cat: any) => cat.nome !== 'Não definida').map((categoria: any) => categoria))   
     }, [client, poa.id, projeto?.id])
 
     const defaultUmfsOptions = useCallback(async() => {
@@ -299,7 +299,7 @@ const AddEdit = ({ id }: any) => {
 
     const handleSelectAllCategorias = () => {
         if (checkedCategorias?.length < categorias?.length) {
-            setCheckedCategorias(categorias.filter((cat: any) => cat.nome !== 'Não definida').map(({ id }: any) => id));
+            setCheckedCategorias(categorias.map(({ id }: any) => id));
         } else {
             setCheckedCategorias([]);
         }
@@ -624,7 +624,7 @@ const AddEdit = ({ id }: any) => {
                                                 <>
                                                     <CriterioPoa 
                                                         checkedCategorias={checkedCategorias} 
-                                                        categorias={categorias.filter((categoria: any) => categoria.nome !== 'Não definida')} 
+                                                        categorias={categorias} 
                                                         handleSelectAllCategorias={handleSelectAllCategorias} 
                                                         handleSelectCategoria={handleSelectCategoria} 
                                                     />

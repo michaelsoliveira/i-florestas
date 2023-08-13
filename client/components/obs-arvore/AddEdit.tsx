@@ -118,7 +118,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                                     className={styles.field} 
                                                     id="nome" 
                                                     name="nome" 
-                                                    placeholder="Nome da Equação" />
+                                                    placeholder="Nome da Observação" />
                                                 <ErrorMessage className='text-sm text-red-500 mt-1' name="nome" component="div" />
                                             </div>
                                             <div>

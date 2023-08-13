@@ -122,7 +122,11 @@ class ProjetoService {
 
         const user = await prismaClient.user.update({
             include: {
-                projeto: true
+                projeto: {
+                    include: {
+                        pessoa: true
+                    }
+                }
             },
             data: {
                 id_projeto_ativo: projetoId,
@@ -382,6 +386,9 @@ class ProjetoService {
         })
 
         const projetoAtivo = await prismaClient.projeto.findFirst({
+            include: {
+                pessoa: true
+            },
             where: {
                 AND: [
                     { id: user?.id_projeto_ativo },
