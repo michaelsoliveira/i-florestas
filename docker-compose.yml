@@ -42,6 +42,7 @@ services:
     depends_on:
       - postgres
     container_name: backend
+    restart: always
     ports:
       - '3333:3333'
     build:
