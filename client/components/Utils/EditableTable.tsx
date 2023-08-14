@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { SortIcon, SortUpIcon, SortDownIcon } from '../Utils/Icons'
 
-const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
+const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort }: any) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
@@ -64,7 +64,7 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
               return (
                 <tr {...row.getRowProps()} 
                     key={i}
-                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>
+                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-25' : '')}>
                     {row.cells.map((cell: any, i: any) => {
                     return (
                       <td
