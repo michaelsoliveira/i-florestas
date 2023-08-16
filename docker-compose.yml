@@ -25,19 +25,19 @@ services:
     volumes:
       - pgadmindata:/var/lib/pgadmin
     restart: unless-stopped
-  prisma:
-    depends_on:
-      - postgres
-    container_name: prisma
-    ports:
-      - '5555:5555'
-    build:
-      context: server/prisma
-      dockerfile: Dockerfile
-    environment:
-      POSTGRES_URL: ${POSTGRES_URL}
-    volumes:
-      - /app/prisma
+  #prisma:
+  #  depends_on:
+  #    - postgres
+  #  container_name: prisma
+  #  ports:
+  #    - '5555:5555'
+  #  build:
+  #    context: server/prisma
+  #    dockerfile: ./Dockerfile
+  #  environment:
+  #    POSTGRES_URL: ${POSTGRES_URL}
+  #  volumes:
+  #    - /app/prisma
   backend:
     depends_on:
       - postgres
@@ -47,7 +47,7 @@ services:
       - '3333:3333'
     build:
       context: server
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
       args:
         - POSTGRES_URL=${POSTGRES_URL}
     environment:
@@ -63,7 +63,7 @@ services:
       - '3000:3000'
     build:
       context: client
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     environment:
       BACKEND_URL: ${BACKEND_URL}
     volumes:

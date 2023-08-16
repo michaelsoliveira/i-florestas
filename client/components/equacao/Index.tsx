@@ -156,7 +156,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
             
             <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
                 <div>
-                    <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
+                    <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
                 </div>
                 <h1 className="font-medium text-2xl font-roboto">Equações de Volume</h1>
                 

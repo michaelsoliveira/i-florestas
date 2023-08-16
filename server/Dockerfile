@@ -16,11 +16,13 @@ COPY .env ./
 # COPY tsconfig.json file
 COPY tsconfig.json ./
 
-# Install package.json dependencies
-RUN npm install
-
 # COPY
 COPY . .
+
+RUN apk add --update openssl openssl-dev libc6-compat
+
+# Install package.json dependencies
+RUN npm install
 
 # Generate prisma client
 RUN npx prisma generate

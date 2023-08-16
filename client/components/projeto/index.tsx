@@ -124,12 +124,6 @@ const Projetos = () => {
                                     <UsersIcon className="h-5 w-5" />
                                 </div>
                             </Link>
-
-                            <Link href={`/projeto/equacao`} className="text-center w-auto hover:bg-sky-600 bg-sky-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200">
-                                <div className='flex flex-row items-center justify-center space-x-2'>
-                                    <CalculatorIcon className="h-5 w-5" />
-                                </div>
-                            </Link>
                             
                             <Link href="#" className="text-center w-auto hover:bg-red-600 bg-red-700 text-sm font-medium text-white p-3 rounded-full transition ease duration-200" onClick={deleteSingleModal}>
                                 <div className='flex flex-row items-center justify-center space-x-2'>
