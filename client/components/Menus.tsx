@@ -17,7 +17,8 @@ import {
     BellIcon,
     TableIcon,
     TagIcon,
-    GlobeAltIcon
+    GlobeAltIcon,
+    CalculatorIcon
 } from '@heroicons/react/outline'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faNoteSticky } from "@fortawesome/free-solid-svg-icons"
@@ -35,6 +36,12 @@ export const resources = [
         description: 'Unidade de Produção Anual',
         href: '/upa',
         icon: BookmarkAltIcon,
+    },
+    {
+        name: 'Equação de Volume',
+        description: 'Equações de Volumes',
+        href: '/equacao',
+        icon: CalculatorIcon,
     },
     {
         name: 'UT',

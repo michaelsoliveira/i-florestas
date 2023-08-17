@@ -1,14 +1,19 @@
 import classNames from "classnames";
 import React, { useState } from "react";
-import { useTable } from "react-table";
+import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
+import { SortIcon, SortUpIcon, SortDownIcon } from '../Utils/Icons'
 
-const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
+const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort }: any) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
       data,
       initialState: { hiddenColumns: ['id'] }
-    });
+    },
+    useFilters, // useFilters!
+    useGlobalFilter,
+    useSortBy,
+    usePagination)
 
   const handleInputChange = (event: any, row: any, columnId: any) => {
     const newData = data.map((rowData: any) => {
@@ -32,10 +37,22 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
                 {headerGroup.headers.map((column: any, i: any) => (
                   <th
                     key={i}
-                    {...column.getHeaderProps()}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
+                    <div className="flex flex-row">
                     {column.render("Header")}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? <SortDownIcon className="w-4 h-4 text-gray-400" />
+                          : <SortUpIcon className="w-4 h-4 text-gray-400" />
+                        : (
+                          <SortIcon className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100" />
+                        )}
+                    </span>
+                    </div>
                   </th>
                 ))}
               </tr>
@@ -47,7 +64,7 @@ const EditableTable = ({ columns, data, setData, handleButtonClick }: any) => {
               return (
                 <tr {...row.getRowProps()} 
                     key={i}
-                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>
+                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-25' : '')}>
                     {row.cells.map((cell: any, i: any) => {
                     return (
                       <td

@@ -1,5 +1,5 @@
 # add the Node.js docker image
-FROM node:alpine
+FROM node:18-alpine
 
 # Create directory that runs the app on docker
 WORKDIR /app
@@ -16,11 +16,13 @@ COPY .env ./
 # COPY tsconfig.json file
 COPY tsconfig.json ./
 
-# Install package.json dependencies
-RUN npm install
-
 # COPY
 COPY . .
+
+RUN apk add --update --no-cache openssl1.1-compat
+
+# Install package.json dependencies
+RUN npm install
 
 # Generate prisma client
 RUN npx prisma generate
