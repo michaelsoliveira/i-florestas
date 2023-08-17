@@ -19,7 +19,7 @@ COPY tsconfig.json ./
 # COPY
 COPY . .
 
-RUN apk add --update openssl openssl-dev libc6-compat
+RUN apk add --update --no-cache openssl1.1-compat
 
 # Install package.json dependencies
 RUN npm install

@@ -55,7 +55,7 @@ async function refreshAccessToken(token: any) {
   switch (provider) {
     case 'local': {
       try {
-        const response = await fetch(`${process.env.PUBLIC_API_URL}/auth/refresh`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -160,7 +160,7 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
           name: 'Credentials',
           credentials: {
-            email: { label: "Email", type: "text", placeholder: "smithmichael@gmail.com" },
+            email: { label: "Email", type: "text", placeholder: "email@bomanejo.online" },
             password: {  label: "Password", type: "password" }
           },
             async authorize(credentials, req) {
