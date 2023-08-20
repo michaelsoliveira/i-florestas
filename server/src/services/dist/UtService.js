@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -54,14 +58,14 @@ var UtService = /** @class */ (function () {
     }
     UtService.prototype.create = function (dataRequest, userId) {
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, azimute, quadrante, latitude, longitude, id_upa, upa, utExists, preparedData, data, ut;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, azimute, quadrante, latitude, longitude, id_upa, polygon_path, upa, utExists, coordFields, preparedData, data, fieldsUt, withPolygon, withCoords, fields, values, _i, _a, _b, key, value, polygonString, query, ut;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        numero_ut = dataRequest.numero_ut, area_util = dataRequest.area_util, area_total = dataRequest.area_total, quantidade_faixas = dataRequest.quantidade_faixas, comprimento_faixas = dataRequest.comprimento_faixas, largura_faixas = dataRequest.largura_faixas, azimute = dataRequest.azimute, quadrante = dataRequest.quadrante, latitude = dataRequest.latitude, longitude = dataRequest.longitude, id_upa = dataRequest.id_upa;
+                        numero_ut = dataRequest.numero_ut, area_util = dataRequest.area_util, area_total = dataRequest.area_total, quantidade_faixas = dataRequest.quantidade_faixas, comprimento_faixas = dataRequest.comprimento_faixas, largura_faixas = dataRequest.largura_faixas, azimute = dataRequest.azimute, quadrante = dataRequest.quadrante, latitude = dataRequest.latitude, longitude = dataRequest.longitude, id_upa = dataRequest.id_upa, polygon_path = dataRequest.polygon_path;
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({ where: { id: id_upa } })];
                     case 1:
-                        upa = _a.sent();
+                        upa = _c.sent();
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.findFirst({
                                 where: {
                                     AND: {
@@ -73,26 +77,40 @@ var UtService = /** @class */ (function () {
                                 }
                             })];
                     case 2:
-                        utExists = _a.sent();
+                        utExists = _c.sent();
                         if (utExists) {
                             throw new Error('Já existe uma Ut cadastrada com este número');
                         }
-                        preparedData = {
-                            numero_ut: parseInt(numero_ut),
-                            area_util: parseFloat(area_util),
-                            area_total: parseFloat(area_total),
-                            latitude: parseFloat(latitude),
-                            longitude: parseFloat(longitude),
-                            upa: {
-                                connect: {
-                                    id: id_upa
-                                }
-                            }
+                        coordFields = (latitude && longitude) && {
+                            latitude: Number(latitude),
+                            longitude: Number(longitude)
                         };
+                        preparedData = __assign(__assign({ numero_ut: parseFloat(numero_ut), area_util: parseFloat(area_util), area_total: parseFloat(area_total) }, coordFields), { polygon_path: polygon_path,
+                            id_upa: id_upa });
                         data = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? __assign(__assign({}, preparedData), { quantidade_faixas: parseInt(quantidade_faixas), comprimento_faixas: parseInt(comprimento_faixas), largura_faixas: parseInt(largura_faixas), azimute: parseFloat(azimute), quadrante: parseInt(quadrante) }) : preparedData;
-                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.create({ data: data })];
+                        fieldsUt = 'numero_ut, area_util, area_total, id_upa';
+                        withPolygon = polygon_path.length > 0 ? fieldsUt + ", polygon_path" : fieldsUt;
+                        withCoords = (latitude && longitude) ? withPolygon.concat(', latitude, longitude') : withPolygon;
+                        fields = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? fieldsUt + ", quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path" : withCoords;
+                        values = [];
+                        for (_i = 0, _a = Object.entries(data); _i < _a.length; _i++) {
+                            _b = _a[_i], key = _b[0], value = _b[1];
+                            if (key !== 'polygon_path') {
+                                values.push(value === null || value === void 0 ? void 0 : value.toString());
+                            }
+                        }
+                        ;
+                        polygonString = polygon_path.reduce(function (acc, curr, idx) {
+                            var point = idx < polygon_path.length - 1
+                                ? curr.lng.toString().concat(' ', curr.lat, ', ')
+                                : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat));
+                            return acc + point;
+                        }, '');
+                        polygon_path.length && values.push("POLYGON((" + polygonString + "))");
+                        query = "\n            INSERT INTO ut(" + fields + ")\n                VALUES('" + values.join("', '") + "')\n        ";
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$queryRawUnsafe(query)];
                     case 3:
-                        ut = _a.sent();
+                        ut = _c.sent();
                         return [2 /*return*/, ut];
                 }
             });
@@ -100,11 +118,11 @@ var UtService = /** @class */ (function () {
     };
     UtService.prototype.update = function (id, dataRequest) {
         return __awaiter(this, void 0, Promise, function () {
-            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, azimute, quadrante, latitude, longitude, id_upa, preparedData, upa, data, ut;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var numero_ut, area_util, area_total, quantidade_faixas, comprimento_faixas, largura_faixas, azimute, quadrante, latitude, longitude, id_upa, polygon_path, preparedData, upa, data, ut, polygonString, query, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        numero_ut = dataRequest.numero_ut, area_util = dataRequest.area_util, area_total = dataRequest.area_total, quantidade_faixas = dataRequest.quantidade_faixas, comprimento_faixas = dataRequest.comprimento_faixas, largura_faixas = dataRequest.largura_faixas, azimute = dataRequest.azimute, quadrante = dataRequest.quadrante, latitude = dataRequest.latitude, longitude = dataRequest.longitude, id_upa = dataRequest.id_upa;
+                        numero_ut = dataRequest.numero_ut, area_util = dataRequest.area_util, area_total = dataRequest.area_total, quantidade_faixas = dataRequest.quantidade_faixas, comprimento_faixas = dataRequest.comprimento_faixas, largura_faixas = dataRequest.largura_faixas, azimute = dataRequest.azimute, quadrante = dataRequest.quadrante, latitude = dataRequest.latitude, longitude = dataRequest.longitude, id_upa = dataRequest.id_upa, polygon_path = dataRequest.polygon_path;
                         preparedData = {
                             numero_ut: parseInt(numero_ut),
                             area_util: parseFloat(area_util),
@@ -119,7 +137,7 @@ var UtService = /** @class */ (function () {
                         };
                         return [4 /*yield*/, prismaClient_1.prismaClient.upa.findUnique({ where: { id: id_upa } })];
                     case 1:
-                        upa = _a.sent();
+                        upa = _b.sent();
                         data = (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 ? __assign(__assign({}, preparedData), { quantidade_faixas: parseInt(quantidade_faixas), comprimento_faixas: parseInt(comprimento_faixas), largura_faixas: parseInt(largura_faixas), azimute: parseFloat(azimute), quadrante: parseInt(quadrante) }) : preparedData;
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.update({
                                 where: {
@@ -128,7 +146,20 @@ var UtService = /** @class */ (function () {
                                 data: data
                             })];
                     case 2:
-                        ut = _a.sent();
+                        ut = _b.sent();
+                        polygonString = polygon_path.reduce(function (acc, curr, idx) {
+                            var point = idx < polygon_path.length - 1 ? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat));
+                            return acc + point;
+                        }, '');
+                        query = "UPDATE ut SET polygon_path = 'POLYGON((" + polygonString + "))' WHERE id = '" + id + "'";
+                        _a = polygon_path && polygon_path.length > 0;
+                        if (!_a) return [3 /*break*/, 4];
+                        return [4 /*yield*/, prismaClient_1.prismaClient.$executeRawUnsafe(query)];
+                    case 3:
+                        _a = (_b.sent());
+                        _b.label = 4;
+                    case 4:
+                        _a;
                         return [2 /*return*/, ut];
                 }
             });
@@ -153,14 +184,77 @@ var UtService = /** @class */ (function () {
             });
         });
     };
+    UtService.prototype.getUtsByUpa = function (upaId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var uts, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.findMany({
+                                where: {
+                                    id_upa: upaId
+                                }
+                            })];
+                    case 1:
+                        uts = _a.sent();
+                        return [2 /*return*/, uts];
+                    case 2:
+                        error_1 = _a.sent();
+                        return [2 /*return*/, []];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    UtService.prototype.createAuto = function (data, upaId) {
+        return __awaiter(this, void 0, Promise, function () {
+            var preparedData, result, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        preparedData = data === null || data === void 0 ? void 0 : data.map(function (_a) {
+                            var numero_ut = _a.numero_ut, area_util = _a.area_util, area_total = _a.area_total;
+                            return {
+                                numero_ut: numero_ut, area_util: area_util, area_total: area_total,
+                                id_upa: upaId
+                            };
+                        });
+                        console.log(preparedData);
+                        return [4 /*yield*/, prismaClient_1.prismaClient.ut.createMany({
+                                data: preparedData
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, {
+                                error: false,
+                                message: 'UTs cadastradas com sucesso!',
+                                result: result
+                            }];
+                    case 2:
+                        e_1 = _a.sent();
+                        return [2 /*return*/, {
+                                error: true,
+                                message: e_1.message
+                            }];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UtService.prototype.getAll = function (userId, query) {
         return __awaiter(this, void 0, Promise, function () {
-            var projeto, perPage, page, search, upa, skip, where, _a, uts, total;
+            var user, perPage, page, search, upa, skip, where, _a, uts, total;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, ProjetoService_1.getProjeto(userId)];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.user.findUnique({
+                            where: {
+                                id: userId
+                            }
+                        })];
                     case 1:
-                        projeto = _b.sent();
+                        user = _b.sent();
                         perPage = query.perPage, page = query.page, search = query.search, upa = query.upa;
                         skip = (page - 1) * perPage;
                         where = search ?
@@ -169,7 +263,7 @@ var UtService = /** @class */ (function () {
                                         upa: {
                                             umf: {
                                                 projeto: {
-                                                    id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                                    id: user === null || user === void 0 ? void 0 : user.id_projeto_ativo
                                                 }
                                             }
                                         }
@@ -181,7 +275,7 @@ var UtService = /** @class */ (function () {
                                     upa: {
                                         umf: {
                                             projeto: {
-                                                id: projeto === null || projeto === void 0 ? void 0 : projeto.id
+                                                id: user === null || user === void 0 ? void 0 : user.id_projeto_ativo
                                             }
                                         }
                                     }
@@ -190,7 +284,7 @@ var UtService = /** @class */ (function () {
                         return [4 /*yield*/, prismaClient_1.prismaClient.$transaction([
                                 prismaClient_1.prismaClient.ut.findMany({
                                     where: where,
-                                    take: perPage ? parseInt(perPage) : 10,
+                                    take: perPage ? parseInt(perPage) : 100,
                                     skip: skip ? skip : 0,
                                     orderBy: {
                                         numero_ut: 'asc'
@@ -264,15 +358,10 @@ var UtService = /** @class */ (function () {
             var ut;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.ut.findUnique({
-                            where: { id: id },
-                            include: {
-                                upa: true
-                            }
-                        })];
+                    case 0: return [4 /*yield*/, prismaClient_1.prismaClient.$queryRaw(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n            SELECT \n                a.id, \n                a.numero_ut, \n                a.area_util, \n                a.area_total,\n                a.latitude,\n                a.longitude,\n                ST_AsGeoJSON(a.polygon_path) as polygon_path , \n                a.id_upa\n            FROM ut a\n            WHERE a.id = ", "\n        "], ["\n            SELECT \n                a.id, \n                a.numero_ut, \n                a.area_util, \n                a.area_total,\n                a.latitude,\n                a.longitude,\n                ST_AsGeoJSON(a.polygon_path) as polygon_path , \n                a.id_upa\n            FROM ut a\n            WHERE a.id = ", "\n        "])), id)];
                     case 1:
                         ut = _a.sent();
-                        return [2 /*return*/, ut];
+                        return [2 /*return*/, ut[0]];
                 }
             });
         });
@@ -280,3 +369,4 @@ var UtService = /** @class */ (function () {
     return UtService;
 }());
 exports["default"] = new UtService;
+var templateObject_1;

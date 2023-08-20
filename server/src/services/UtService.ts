@@ -83,7 +83,7 @@ class UtService {
         const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withCoords
 
         let values: any = []
-        for (const [key, value] of Object.entries(data))  {
+        for (const [key, value] of Object.entries(data) as any)  {
             if (key !== 'polygon_path') {
                 values.push(value?.toString())
             }
