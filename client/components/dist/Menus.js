@@ -2,6 +2,7 @@
 exports.__esModule = true;
 exports.reports = exports.custodia = exports.inventario = exports.estatistica = exports.planejamento = exports.solutions = exports.resources = void 0;
 var outline_1 = require("@heroicons/react/outline");
+var solid_1 = require("@heroicons/react/solid");
 exports.resources = [
     {
         name: 'UMF',
@@ -16,10 +17,23 @@ exports.resources = [
         icon: outline_1.BookmarkAltIcon
     },
     {
+        name: 'Equação de Volume',
+        description: 'Equações de Volumes',
+        href: '/equacao',
+        icon: outline_1.CalculatorIcon
+    },
+    {
         name: 'UT',
         description: 'Unidade de Trabalho',
         href: '/ut',
         icon: outline_1.CalendarIcon
+    },
+    {
+        name: 'Observações',
+        description: 'Observações Padronizadas',
+        href: '/obs-arvore',
+        faIcon: true,
+        icon: solid_1.DocumentTextIcon
     },
     {
         name: 'Especies',
@@ -32,6 +46,12 @@ exports.resources = [
         description: 'Critérios de seleção',
         href: '/categoria-especie',
         icon: outline_1.TemplateIcon
+    },
+    {
+        name: 'Grupo Categoria de Espécies',
+        description: 'Relaciona Categoria -> Espécie',
+        href: '/categoria-especie/grupo',
+        icon: outline_1.CogIcon
     }
 ];
 exports.solutions = [
@@ -64,15 +84,15 @@ exports.solutions = [
 exports.planejamento = [
     {
         name: 'Cadastro do POA',
-        description: 'Cadastro do Planejamento Operacional Anual',
+        description: 'Planejamento Operacional Anual',
         href: '/poa',
-        icon: outline_1.ChartBarIcon
+        icon: outline_1.GlobeAltIcon
     },
     {
         name: 'Seleção de Árvores',
         description: 'Seleção de Árvores do POA',
         href: '/process',
-        icon: outline_1.BellIcon
+        icon: outline_1.TagIcon
     },
 ];
 exports.estatistica = [
@@ -96,12 +116,12 @@ exports.inventario = [
         href: '/arvore',
         icon: outline_1.ChartBarIcon
     },
-    {
-        name: 'Linkar GPS',
-        description: 'Linka as posições do GPS com as árvores',
-        href: '#',
-        icon: outline_1.MapIcon
-    },
+    //{
+    //    name: 'Linkar GPS',
+    //    description: 'Linka as posições do GPS com as árvores',
+    //    href: '#',
+    //    icon: MapIcon
+    //},
     {
         name: 'Importar Inventário',
         description: 'Realizar importação de inventário a partir de um dataset',

@@ -62,12 +62,7 @@ const Layout = ({ children }: props) => {
                 description: 'Gerenciar Permissões',
                 href: `/projeto/users`,
                 icon: UserGroupIcon
-            },
-            {
-                name: 'Equações',
-                description: 'Gerenciar Equações',
-                href: `/projeto/equacao`,
-            },
+            }
         ]
      : [
         {

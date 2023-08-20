@@ -20,8 +20,6 @@ import {
     GlobeAltIcon,
     CalculatorIcon
 } from '@heroicons/react/outline'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faNoteSticky } from "@fortawesome/free-solid-svg-icons"
 import { DocumentTextIcon } from '@heroicons/react/solid'
 
 export const resources = [
