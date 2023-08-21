@@ -1,11 +1,11 @@
 import React, { DetailedHTMLProps, InputHTMLAttributes, useMemo, useState } from 'react'
-import { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } from 'react-table'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
 import { Button, PageButton } from './Utils/Button'
 import classNames from './Utils/classNames'
 import { SortIcon, SortUpIcon, SortDownIcon } from './Utils/Icons'
 import Image from 'next/image'
 import { useModalContext } from 'contexts/ModalContext'
+const { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } = require('react-table')
 
 export type InputSize = 'small' | 'medium' | 'large';
 
@@ -235,7 +235,7 @@ function Table({ columns, data, size, inputSize }: any) {
                   {...getTableBodyProps()}
                   className="bg-white divide-y divide-gray-200"
                 >
-                  {page.map((row, i) => {  // new
+                  {page.map((row: any, i: any) => {  // new
                     prepareRow(row)
                     return (
                       <tr {...row.getRowProps()} key={i} className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-10' : '')}>

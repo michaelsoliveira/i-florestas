@@ -11,11 +11,12 @@ import { Provider } from 'react-redux'
 import { store } from 'store'
 import { saveState } from 'store/browser-storage'
 import Layout from 'components/Layout'
-import { ToastContainer } from 'react-toastify';
 import { SessionProvider } from 'next-auth/react'
-import { debounce } from "debounce"
 import Modal from "@/components/Modal"
 import NextNProgress from 'nextjs-progressbar'
+
+const { ToastContainer } = require('react-toastify')
+const { debounce } = require("debounce")
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   

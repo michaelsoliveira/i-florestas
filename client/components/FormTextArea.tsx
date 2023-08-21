@@ -7,7 +7,7 @@ import {
   UseFormRegister,
   Path,
 } from 'react-hook-form';
-import get from 'lodash.get';
+import lodash from 'lodash';
 import { ErrorMessage } from '@hookform/error-message';
 import { FormErrorMessage } from './atoms/form-error-message';
 
@@ -17,7 +17,7 @@ export type FormTextareaProps<TFormValues> = {
   label: string;
   className?: string;
   rules?: RegisterOptions;
-  register?: UseFormRegister<TFormValues>;
+  register?: UseFormRegister<TFormValues | any>;
   errors?: Partial<DeepMap<TFormValues, FieldError>>;
 } & DetailedHTMLProps<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -35,7 +35,7 @@ export const FormTextarea = <TFormValues extends Record<string, any>>({
   ...props
 }: FormTextareaProps<TFormValues>): JSX.Element => {
   // If the name is in a FieldArray, it will be 'fields.index.fieldName' and errors[name] won't return anything, so we are using lodash get
-  const errorMessages = get(errors, name);
+  const errorMessages = lodash.get(errors, name) as any;
   const hasError = !!(errors && errorMessages);
 
   return (
