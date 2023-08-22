@@ -198,12 +198,13 @@ class UtService {
         try {
             const preparedData = data?.map(({ numero_ut, area_util, area_total }: any) => {
                 return {
-                    numero_ut, area_util, area_total, id_upa: upaId
+                    numero_ut: Number(numero_ut), 
+                    area_util: Number(area_util), 
+                    area_total: Number(area_total), 
+                    id_upa: upaId
                 }
             })
-
-            console.log(preparedData)
-    
+            
             const result = await prismaClient.ut.createMany({
                 data: preparedData
             })
