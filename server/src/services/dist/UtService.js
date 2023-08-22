@@ -217,7 +217,9 @@ var UtService = /** @class */ (function () {
                         preparedData = data === null || data === void 0 ? void 0 : data.map(function (_a) {
                             var numero_ut = _a.numero_ut, area_util = _a.area_util, area_total = _a.area_total;
                             return {
-                                numero_ut: numero_ut, area_util: area_util, area_total: area_total,
+                                numero_ut: Number(numero_ut),
+                                area_util: Number(area_util),
+                                area_total: Number(area_total),
                                 id_upa: upaId
                             };
                         });
