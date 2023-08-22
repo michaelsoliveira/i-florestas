@@ -129,112 +129,112 @@ class ArvoreService {
 
     // Função para inserir um lote de dados usando Prisma
     async inserirLoteDeDados(dados: any, userId: string, upa: any){
-    try {
-        const user: any = await prismaClient.user.findUnique({
-            where: {
-                id: userId
-            }
-        })
+        try {
+            const user: any = await prismaClient.user.findUnique({
+                where: {
+                    id: userId
+                }
+            })
 
-        const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
-            where: {
-                upa: {
-                    some: {
-                        id: upa?.id
+            const eqVolume: any = await prismaClient.equacaoVolume.findFirst({
+                where: {
+                    upa: {
+                        some: {
+                            id: upa?.id
+                        }
                     }
                 }
-            }
-        }) as any
+            }) as any
 
-        const getData: any = async () => { 
-            return await Promise.all(dados?.map(async (arv: any) =>  {
-            const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
+            const getData: any = async () => { 
+                return await Promise.all(dados?.map(async (arv: any) =>  {
+                const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
-            let scope = {
-                dap,
-                altura: parseFloat(arv?.altura)
-            }
+                let scope = {
+                    dap,
+                    altura: parseFloat(arv?.altura)
+                }
 
-            const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
-            const expressao = eqVolume?.expressao.toLowerCase().replaceAll("ln(", "log(")
-            const volume = math.evaluate(expressao, scope)
+                const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
+                const expressao = eqVolume?.expressao.toLowerCase().replaceAll("ln(", "log(")
+                const volume = math.evaluate(expressao, scope)
 
-            const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
-            
-            const especie: any = nome_especie && await prismaClient.categoriaEspeciePoa.findFirst({
-                distinct: ['id_especie'],
-                include: {
-                    especie: true
-                },
-                where: {
-                    AND: 
-                    [
-                        {
-                            especie: {
-                                nome: nome_especie,
-                                projeto: {
-                                    id: user?.id_projeto_ativo
-                                }
-                            } 
-                        },
-                        {
-                            categoria: {
-                                poa: {
-                                    id: user?.id_poa_ativo
+                const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
+                
+                const especie: any = nome_especie && await prismaClient.categoriaEspeciePoa.findFirst({
+                    distinct: ['id_especie'],
+                    include: {
+                        especie: true
+                    },
+                    where: {
+                        AND: 
+                        [
+                            {
+                                especie: {
+                                    nome: nome_especie,
+                                    projeto: {
+                                        id: user?.id_projeto_ativo
+                                    }
+                                } 
+                            },
+                            {
+                                categoria: {
+                                    poa: {
+                                        id: user?.id_poa_ativo
+                                    }
                                 }
                             }
-                        }
-                    ]
-                }
-            })
-
-            const ut: any = arv?.ut && await prismaClient.ut.findFirst({
-                where: {
-                    AND: [
-                            { numero_ut: parseInt(arv?.ut) },
-                            { id_upa: upa?.id }
                         ]
+                    }
+                })
+
+                const ut: any = arv?.ut && await prismaClient.ut.findFirst({
+                    where: {
+                        AND: [
+                                { numero_ut: parseInt(arv?.ut) },
+                                { id_upa: upa?.id }
+                            ]
+                    }
+                })
+
+                const preparedData = upa?.tipo === 1 ? {
+                    faixa: parseInt(arv?.faixa),
+                    orient_x: arv?.orient_x,
+                } : {
+                    ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
+                    lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
+                    long_x: parseFloat(arv?.longitude?.replace(",", ".")),
                 }
+
+                const result = arv?.numero_arvore !== '' && {
+                    numero_arvore: parseInt(arv?.numero_arvore),
+                    dap,
+                    altura: parseFloat(arv?.altura),
+                    fuste: arv?.qf && parseInt(arv?.qf),
+                    volume,
+                    area_basal: areaBasal,
+                    ...preparedData,
+                    id_ut: ut?.id,
+                    id_especie: especie?.id_especie
+                }
+
+                return result
+            }))
+        }
+            getData().then(async (data: any) => {
+                await prismaClient.arvore.createMany({
+                    data
+                })
+            }).catch((error: any) => {
+                throw error
             })
 
-            const preparedData = upa?.tipo === 1 ? {
-                faixa: parseInt(arv?.faixa),
-                orient_x: arv?.orient_x,
-            } : {
-                ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
-                lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
-                long_x: parseFloat(arv?.longitude?.replace(",", ".")),
-            }
-
-            const result = arv?.numero_arvore !== '' && {
-                numero_arvore: parseInt(arv?.numero_arvore),
-                dap,
-                altura: parseFloat(arv?.altura),
-                fuste: arv?.qf && parseInt(arv?.qf),
-                volume,
-                area_basal: areaBasal,
-                ...preparedData,
-                id_ut: ut?.id,
-                id_especie: especie?.id_especie
-            }
-
-            return result
-        }))
+            
+        } catch (error) {
+            //console.error('Erro ao inserir lote de dados:', error);
+            throw error;
+        }
     }
-        getData().then(async (data: any) => {
-            await prismaClient.arvore.createMany({
-                data
-            })
-        }).catch((error: any) => {
-            throw error
-        })
-
-        
-    } catch (error) {
-        //console.error('Erro ao inserir lote de dados:', error);
-        throw error;
-    }
-  }
 
     // Função para inserir todos os dados em paralelo usando Promise.all
     async inserirDadosEmParalelo(dados: any, userId: string, upa: any, size: any) {

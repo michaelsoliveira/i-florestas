@@ -204,9 +204,7 @@ class UtService {
                     id_upa: upaId
                 }
             })
-
-            console.log(preparedData)
-    
+            
             const result = await prismaClient.ut.createMany({
                 data: preparedData
             })

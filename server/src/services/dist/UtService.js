@@ -223,7 +223,6 @@ var UtService = /** @class */ (function () {
                                 id_upa: upaId
                             };
                         });
-                        console.log(preparedData);
                         return [4 /*yield*/, prismaClient_1.prismaClient.ut.createMany({
                                 data: preparedData
                             })];
