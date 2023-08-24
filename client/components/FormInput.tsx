@@ -17,7 +17,7 @@ import { FormErrorMessage } from './atoms/form-error-message';
 export type FormInputProps<TFormValues extends FieldValues> = {
     label?: Path<TFormValues>;
     name: Path<TFormValues>;
-    rules?: RegisterOptions;
+    rules?: RegisterOptions | any;
     innerRef?: any;
     register?: UseFormRegister<TFormValues>;
     layout?: 'default' | 'floatLabel',
