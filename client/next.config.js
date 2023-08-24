@@ -1,6 +1,6 @@
 const withFonts = require('next-fonts');
 const nextConfig = withFonts({
-  webpack: (config, { isServer }) => {
+  /*webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve = {
         ...config.resolve,
@@ -15,6 +15,7 @@ const nextConfig = withFonts({
     }
     return config;
   },
+  */
   images: {
     domains: ['images.unsplash.com', 'placeimg.com', 'www.revixpert.ch'],
   },
