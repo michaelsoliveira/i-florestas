@@ -8,7 +8,6 @@ const useClient = (options?: any) => {
   const { data: session } = useSession();
   
   const token = session?.accessToken;
-  console.log(token)
 
   return useMemo(() => {
     

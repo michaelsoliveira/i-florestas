@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { LockClosedIcon } from '@heroicons/react/solid'
-import AlertService from 'src/services/alert';
+import alertService from '@/services/alert';
 import { signIn, getCsrfToken } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
 import { useModalContext } from '@/context/ModalContext';
@@ -51,13 +51,12 @@ function Login() {
             password,
             // callbackUrl: `${window.location.origin}`,
           }).then((response: any) => {
-            
             if (response.ok) {
-              AlertService.success('Login realizado com sucesso')
+              alertService.success('Login realizado com sucesso')
               hideModal()
               router.push('/')
             } else {
-              AlertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
+              alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
             }
           }).catch ((e) => {
             console.log(e)
@@ -66,7 +65,7 @@ function Login() {
         
       } catch (error: any) {
         console.log(error)
-        AlertService.error(error)
+        alertService.error(error?.message)
       }
       
     }

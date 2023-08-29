@@ -163,22 +163,26 @@ export const authOptions: NextAuthOptions = {
             email: { label: "Email", type: "text", placeholder: "email@bomanejo.online" },
             password: {  label: "Password", type: "password" }
           },
-            async authorize(credentials, req) {
+            async authorize(credentials) {
             try {
+              if (!credentials?.email || !credentials.password) {
+                return null;
+              }
+
               const res: any = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                   method: 'POST',
                   body: JSON.stringify(credentials),
                   headers: { "Content-Type": "application/json" }
               })
-              
+
               const user = res.json().then((data: any) => {
                 const response = {
                   local: true,
                   ...data.user
                 }
                 return response
-              
-                
+              }).catch(() => {
+                return null
               })
               // If no error and we have user data, return it
               if (res.ok && user) {

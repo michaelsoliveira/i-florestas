@@ -6,7 +6,7 @@ import Logo from '@/components/Logo'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link';
 
-const Pagelogin = async () => {
+const Pagelogin = () => {
 
   const router = useRouter()
 
