@@ -11,7 +11,7 @@ var react_2 = require("next-auth/react");
 var SigupPage = function () {
     var hideModal = ModalContext_1.useModalContext().hideModal;
     var session = react_2.useSession().data;
-    var formRef = react_1["default"].createRef();
+    var formRef = react_1.createRef();
     var submitForm = function () {
         if (formRef.current) {
             formRef.current.handleSubmit();

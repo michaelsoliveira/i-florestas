@@ -2,7 +2,7 @@ import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
 import { UserAddIcon } from '@heroicons/react/solid'
 import Link from 'next/link';
-import React from 'react';
+import React, { createRef } from 'react';
 
 import { styles } from 'components/helpers/defaultStyles'
 import { useModalContext } from 'contexts/ModalContext';
@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 const SigupPage = () => {
   const { hideModal } = useModalContext()
   const { data: session } = useSession()
-  const formRef: any = React.createRef()
+  const formRef = createRef<any>()
 
   const submitForm = () => {
     if (formRef.current) {
