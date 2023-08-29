@@ -3,7 +3,7 @@
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
 import { useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '../../context/AuthContext'
@@ -17,8 +17,14 @@ import { ProjetoContext } from '@/context/ProjetoContext'
 
 import { useParams } from 'next/navigation'
 
-const AddEdit = () => {
-    const params = useParams()
+interface UpaProps {
+    params: {
+        id: string
+    }
+}
+
+const AddEdit = ({ params }: UpaProps) => {
+    //const params = useParams()
     const id = params?.id as string
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [equacao_volume, setEquacao] = useState<OptionType>()

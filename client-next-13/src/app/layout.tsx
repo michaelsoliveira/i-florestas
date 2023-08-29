@@ -47,10 +47,10 @@ async function RootLayout({
                 <ProjetoProvider>
                   <AuthProvider>
                       <StepProvider>
-                        <Layout>
-                          <ToastContainer />                
+                        <Layout>    
                           <NextNProgress />
                           <Modal />
+                          <ToastContainer />   
                             { children }
                         </Layout>
                       </StepProvider>

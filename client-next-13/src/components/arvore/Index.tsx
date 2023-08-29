@@ -13,13 +13,17 @@ import { setUmf, UmfType } from "@/redux/features/umfSlice"
 import { setUpa } from "@/redux/features/upaSlice"
 import { setUt } from "@/redux/features/utSlice"
 import ListArvore from "./ListArvore"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
+import { LoadingContext } from "@/context/LoadingContext"
+import { usePathname } from "next/navigation"
+import { exportToCSV } from "@/components/Utils/ExportData"
+import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
+import { Pagination } from "../Pagination"
 
-const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadArvores, exportCsv }: any) => {
+const Index = () => {
     
-    const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
     const [searchInput, setSearchInput] = useState("")
     const { client } = useContext(AuthContext)
     const [sorted, setSorted] = useState(false)
@@ -28,11 +32,123 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const [uts, setUts] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
-    const ut = useAppSelector((state: RootState) => state.ut)
+
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [selectedUt, setSelectedUt] = useState<OptionType>()
     const { projeto } = useContext(ProjetoContext)
+    const { loading, setLoading } = useContext(LoadingContext)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [itemsPerPage, setItemsPerPage] = useState(10)
+    const [totalItems, setTotalItems] = useState(0)
+    const [currentArvores, setCurrentArvores] = useState<any[]>([])
+    const [totalPages, setTotalPages] = useState(0)
+    const [orderBy, setOrderBy] = useState('numero_arvore')
+    const [order, setOrder] = useState('asc')
+    const pagination = useAppSelector((state: RootState) => state.pagination)
+    const ut = useAppSelector((state: RootState) => state.ut)
+    const poa = useAppSelector((state: RootState) => state.poa)
+    //const dispatch = useAppDispatch()
+    const pathname = usePathname()
+    const [filteredArvores, setFilteredArvores] = useState<any[]>(currentArvores)
+    
+    const loadArvores = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
+        setLoading(true)
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
+        const url = `/arvore/get-all?utId=${ut?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+
+        setCurrentPage(currentPagePagination)
+
+        const { data } = await client.get(url)
+        setTotalItems(data?.count)
+        setCurrentArvores(data?.arvores)
+
+        setLoading(false)
+        
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, setLoading, ut?.id])
+
+    const exportCsv = async () => {
+        var { data: response } = await client.get(`/arvore/get-all?utId=${ut?.id ? ut?.id : null}&order=asc&orderBy=numero_arvore`)
+        const data = response?.arvores.map((arv: any) => {
+            const { ut, numero_arvore, altura, dap, volume, fuste, area_basal, id_especie, id_situacao, especie, situacao_arvore } = arv
+            return {
+                'UT': ut?.numero_ut, 
+                'Num Árvore': numero_arvore, 
+                'Altura': altura.replace('.', ','), 
+                'Dap': dap.replace('.', ','),
+                'Volume': volume.replace('.', ','), 
+                'Fuste': fuste, 
+                'Área Basal': area_basal.toString().replace('.', ','), 
+                //id_especie,
+                'Espécie': especie?.nome, 
+                //id_situacao,
+                'Situação': situacao_arvore?.nome
+            }
+        })
+
+        exportToCSV(data, `inventario_${new Date(Date.now()).toLocaleString().replace(",", "_")}`, {
+            delimiter: ';'
+        })
+    }
+
+    useEffect(() => {  
+        loadArvores(itemsPerPage)
+    }, [loadArvores, itemsPerPage, poa])
+
+    const onPageChanged = async (paginatedData: any) => {
+        
+        const {
+            name,
+            currentPage,
+            perPage,
+            totalPages,
+            orderBy,
+            order,
+            search,
+            utId
+        } = paginatedData
+
+        if (search) {
+            
+            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            
+            paginatedData = {
+                name,
+                ...paginatedData,
+                totalPages: Math.ceil(data?.count / perPage),
+                totalItems: data?.count
+            }
+        } else {
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            paginatedData = {
+                name,
+                ...paginatedData,
+                totalPages: Math.ceil(data?.count / perPage),
+                totalItems: data?.count
+            }
+        }
+        
+        dispatch(paginate(paginatedData))
+
+        setCurrentPage(currentPage)
+        setItemsPerPage(perPage)
+        setOrderBy(orderBy)
+        setOrder(order)
+        setTotalItems(data?.count)
+        setCurrentArvores(data?.arvores)
+        setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
+    }
+
+    const changeItemsPerPage = (evt: ChangeEvent<HTMLSelectElement>) => {
+        onPageChanged({
+            name: pathname,
+            currentPage: 1,
+            perPage: evt.target.value,
+            orderBy,
+            order
+        })
+    }
 
     const dispatch = useAppDispatch()
     const router = useRouter()
@@ -181,7 +297,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
         setSelectedUt(ut)
         const paginatedData = {
             currentPage: 1,
-            perPage,
+            perPage: itemsPerPage,
             utId: ut?.value,
             orderBy,
             order,
@@ -238,7 +354,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
     const handleSearch = async (evt: ChangeEvent<HTMLInputElement>) => {
         const paginatedData = {
             currentPage: 1,
-            perPage,
+            perPage: itemsPerPage,
             orderBy,
             order,
             search: evt.target?.value
@@ -311,7 +427,7 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                             <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
                         </div>
                         <select
-                            value={perPage}
+                            value={itemsPerPage}
                             onChange={(evt: any) => changeItemsPerPage(evt)}
                             id="perPage" 
                             className="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -387,10 +503,20 @@ const Index = ({ currentArvores, onPageChanged, orderBy, order, changeItemsPerPa
                     </div>
                 </div>
                 <ListArvore 
-                    currentArvores={currentArvores}
+                    currentArvores={filteredArvores}
                     sortArvores={sortArvores}
                     sorted={sorted} 
                     loadArvores={loadArvores}
+                />
+
+                <Pagination
+                    perPage={itemsPerPage}
+                    totalItems={totalItems}
+                    orderBy={orderBy}
+                    order={order}
+                    currentPage={currentPage}
+                    onPageChanged={onPageChanged}    
+                    pageNeighbours={5}
                 />
     </div>
             
