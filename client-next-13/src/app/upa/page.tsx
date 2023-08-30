@@ -38,7 +38,7 @@ const UpaIndex = () => {
         setTotalItems(data?.count)
         setCurrentUpas(data?.upas)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, umf.id])
+    }, [client, order, orderBy, pagination.currentPage, pathname, pagination.name, pagination.perPage, umf.id])
 
     useEffect(() => {  
         loadUpas(itemsPerPage)

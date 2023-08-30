@@ -7,20 +7,17 @@ import {
     MenuIcon,
     TemplateIcon,
     PencilIcon,
-    PencilIcon,
     RefreshIcon,
     ShieldCheckIcon,
     SupportIcon,
     ViewGridIcon,
-    XIcon,
-    MapIcon,
     BellIcon,
     TableIcon,
     TagIcon,
     GlobeAltIcon,
     CalculatorIcon
 } from '@heroicons/react/outline'
-import { DocumentTextIcon } from '@heroicons/react/24/solid'
+import { DocumentTextIcon } from '@heroicons/react/solid'
 
 export const resources = [
     {

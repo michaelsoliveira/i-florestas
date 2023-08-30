@@ -1,4 +1,4 @@
-import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import { AuthContext } from 'contexts/AuthContext'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { RootState } from 'store'

@@ -1,6 +1,6 @@
 import { Link } from "components/Link"
 import alertService from 'services/alert'
-import { TrashIcon, PencilIcon, UsersIcon, InboxInIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PencilIcon } from '@heroicons/react/solid'
 import { useContext } from "react"
 import { useModalContext } from "contexts/ModalContext"
 import { EmpresaType } from "types/IEmpresa"

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Link } from "../../components/Link"
 import { Input } from "../../components/atoms/input"
-import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
@@ -10,7 +10,7 @@ import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { UserAddIcon } from '@heroicons/react/24/solid'
+import { UserAddIcon } from '@heroicons/react/solid'
 import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {

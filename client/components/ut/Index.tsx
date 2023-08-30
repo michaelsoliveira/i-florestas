@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"

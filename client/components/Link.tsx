@@ -26,19 +26,17 @@ export type LinkProps = NextLinkProps & {
 
 export const Link = forwardRef(function Link({ href, children, prefetch, replace, scroll, shallow, locale, ...props }: any, ref) {
     return (
-        <NextLink 
-            ref={ref}
-            href={href} 
+        <NextLink
+            href={href}
             replace={replace}
             scroll={scroll}
             shallow={shallow}
             locale={locale}
             passHref
-            {...props}
         >
-           
-            {children}
-            
+            <a ref={ref} {...props}>
+                {children}
+            </a>
         </NextLink>
     );
 })

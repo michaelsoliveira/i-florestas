@@ -46,7 +46,7 @@ exports.__esModule = true;
 var react_1 = require("react");
 var Link_1 = require("../../components/Link");
 var input_1 = require("../../components/atoms/input");
-var solid_1 = require("@heroicons/react/24/solid");
+var solid_1 = require("@heroicons/react/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var styles_1 = require("../Utils/styles");
@@ -54,7 +54,7 @@ var ModalContext_1 = require("contexts/ModalContext");
 var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
-var solid_2 = require("@heroicons/react/24/solid");
+var solid_2 = require("@heroicons/react/solid");
 var ProjetoContext_1 = require("contexts/ProjetoContext");
 var Users = function (_a) {
     var currentUsers = _a.currentUsers, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;

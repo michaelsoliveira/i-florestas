@@ -1,12 +1,12 @@
 'use client'
 
-import { PencilIcon } from "@heroicons/react/outline"
+import { PencilIcon } from "@heroicons/react/24/outline"
 import { useModalContext } from "@/context/ModalContext"
 import { styles } from "../Utils/styles"
 import CategoriaEspecie from "./CategoriaEspecie"
 import { useRef } from "react"
 
-export const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias, handleSelectCategoria, loadCategorias }: any) => {
+const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias, handleSelectCategoria, loadCategorias }: any) => {
     const { showModal } = useModalContext()
     const formRef = useRef() as any
 
@@ -162,3 +162,5 @@ export const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCate
         </div>
     )
 }
+
+export default CriterioPoa

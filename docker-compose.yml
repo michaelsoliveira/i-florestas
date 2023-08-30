@@ -49,7 +49,7 @@ services:
     ports:
       - '3000:3000'
     build:
-      context: client-next-13
+      context: client
       dockerfile: ./Dockerfile
     environment:
       BACKEND_URL: ${BACKEND_URL}

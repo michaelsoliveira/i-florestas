@@ -13,10 +13,8 @@ import {
     PlusIcon,
     PencilIcon,
     TrashIcon,
-    InboxInIcon,
     UsersIcon,
-    CalculatorIcon
-} from '@heroicons/react/outline'
+} from '@heroicons/react/24/outline'
 import { AddEdit } from './AddEdit'
 import { LoadingContext } from '@/context/LoadingContext'
 
@@ -61,7 +59,6 @@ const Index = () => {
             if (error) {
                 console.log(message)
             }
-
             
             setLoading(false)
             

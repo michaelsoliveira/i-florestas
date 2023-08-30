@@ -1,50 +1,51 @@
 'use client'
 
 import { useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "src/components/withAuthentication"
-import { Pagination } from "src/components/Pagination"
-import { AuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { useAuthContext } from "@/context/AuthContext"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
 import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
-import Index from "src/components/umf/Index"
-import { UmfType } from "@/types/IUMFType"
+import Users from "@/components/user/Users"
+import { Pagination } from "src/components/Pagination"
+import { UserType } from "@/types/IUserType"
 import { LoadingContext } from "@/context/LoadingContext"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
-const UmfIndex = () => {
-    const { client } = useContext(AuthContext)
+const ProjetoUsers = ({ roles }: { roles: any }) => {
+
+    const { client } = useAuthContext()
     const { loading, setLoading } = useContext(LoadingContext)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentUmfs, setCurrentUmfs] = useState<UmfType[]>([])
-    const [totalPages, setTotalPages] = useState(0)
-    const [orderBy, setOrderBy] = useState('nome')
+    const [currentUsers, setCurrentUsers] = useState<UserType[]>([])
+    const [orderBy, setOrderBy] = useState('users.username')
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
-    const pathname = usePathname()
     const { projeto } = useContext(ProjetoContext)
+    const pathname = usePathname()
     
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const loadUmfs = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
+    const loadUsers = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}`
-        
+        const url = `/projeto/${projeto?.id}/users?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`
         const { data } = await client.get(url)
-        
         setTotalItems(data?.count)
-        setCurrentUmfs(data?.umfs)
+        setCurrentUsers(data?.users)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pathname, pagination.name, pagination.perPage, projeto?.id, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pathname, projeto?.id, setLoading])
 
     useEffect(() => {  
-        loadUmfs(itemsPerPage)
-    }, [itemsPerPage, projeto, loadUmfs])
+        let isLoaded = false
+        if (!isLoaded) loadUsers(itemsPerPage)
+
+        return () => {
+            isLoaded = true
+        }
+    }, [itemsPerPage, loadUsers])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -52,17 +53,15 @@ const UmfIndex = () => {
             name,
             currentPage,
             perPage,
-            totalPages,
             orderBy,
             order,
             search
         } = paginatedData
-        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`
 
         if (search) {
             
-            var { data } = await client.get(url)
-        
+            var { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
+            
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -70,7 +69,7 @@ const UmfIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/projeto/${projeto?.id}/users?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -86,8 +85,7 @@ const UmfIndex = () => {
         setOrderBy(orderBy)
         setOrder(order)
         setTotalItems(data?.count)
-        setCurrentUmfs(data?.umfs)
-        setTotalPages(totalPages ? totalPages : Math.ceil(data?.count / perPage))
+        setCurrentUsers(data?.users)
     }
 
     const changeItemsPerPage = (value: number) => {
@@ -101,29 +99,30 @@ const UmfIndex = () => {
     }
 
     return (
-    <div>
-        <Index
-            currentUmfs={currentUmfs}
-            loading={loading}
-            loadUmfs={loadUmfs}
-            currentPage={currentPage}
-            orderBy={orderBy}
-            order={order}
-            onPageChanged={onPageChanged}
-            perPage={itemsPerPage}
-            changeItemsPerPage={changeItemsPerPage}
+        <div>
+            <Users
+                currentUsers={currentUsers}
+                loading={loading}
+                loadUsers={loadUsers}
+                currentPage={currentPage}
+                orderBy={orderBy}
+                order={order}
+                onPageChanged={onPageChanged}
+                perPage={itemsPerPage}
+                changeItemsPerPage={changeItemsPerPage}
+                roles={roles}
             />
-        <Pagination
-            perPage={itemsPerPage}
-            totalItems={totalItems}
-            orderBy={orderBy}
-            order={order}
-            currentPage={currentPage}
-            onPageChanged={onPageChanged}    
-            pageNeighbours={3}
-        />
-    </div>
+            <Pagination
+                perPage={itemsPerPage}
+                totalItems={totalItems}
+                orderBy={orderBy}
+                order={order}
+                currentPage={currentPage}
+                onPageChanged={onPageChanged}    
+                pageNeighbours={3}
+            />
+        </div>
     )
 }
 
-export default withAuthentication(UmfIndex)
+export default ProjetoUsers

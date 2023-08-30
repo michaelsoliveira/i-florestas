@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { LockClosedIcon } from '@heroicons/react/24/solid'
+import { LockClosedIcon } from '@heroicons/react/solid'
 import alertService from '@/services/alert';
 import { signIn, getCsrfToken } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';

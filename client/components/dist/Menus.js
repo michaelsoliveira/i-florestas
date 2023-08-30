@@ -2,7 +2,7 @@
 exports.__esModule = true;
 exports.reports = exports.custodia = exports.inventario = exports.estatistica = exports.planejamento = exports.solutions = exports.resources = void 0;
 var outline_1 = require("@heroicons/react/outline");
-var solid_1 = require("@heroicons/react/24/solid");
+var solid_1 = require("@heroicons/react/solid");
 exports.resources = [
     {
         name: 'UMF',

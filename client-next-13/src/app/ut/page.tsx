@@ -23,10 +23,11 @@ const UtIndex = () => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const upa = useAppSelector((state: RootState) => state.upa)
     const dispatch = useAppDispatch()
+    const pathname = usePathname()
     
     const loadUts = useCallback(async (itemsPerPage = 10, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === usePathname() && pagination.currentPage) ? pagination.currentPage : currentPage
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : currentPage
         const perPage = pagination.perPage ? pagination.perPage : itemsPerPage
         const url = `${process.env.NEXT_PUBLIC_API_URL}/ut?page=${currentPagePagination}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&upa=${upa.id}`
         
@@ -35,7 +36,7 @@ const UtIndex = () => {
         setTotalItems(data?.count)
         setCurrentUts(data?.uts)
         setLoading(false)
-    }, [client, order, orderBy, pagination?.currentPage, pagination?.name, pagination.perPage, usePathname(), upa.id])
+    }, [client, order, orderBy, pagination?.currentPage, pagination?.name, pagination.perPage, pathname, upa.id])
 
     useEffect(() => {  
         loadUts(itemsPerPage, 1)
@@ -87,7 +88,7 @@ const UtIndex = () => {
 
     const changeItemsPerPage = (value: number) => {
         onPageChanged({
-            name: usePathname(),
+            name: pathname,
             currentPage: 1,
             perPage: value,
             orderBy,

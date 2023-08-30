@@ -1,5 +1,3 @@
-'use client'
-
 import "@/app/globals.css"
 import 'react-toastify/dist/ReactToastify.css'
 import { AuthProvider } from '@/context/AuthContext'

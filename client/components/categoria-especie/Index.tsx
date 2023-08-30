@@ -1,14 +1,13 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
 import { styles } from "../Utils/styles"
 
 import { useModalContext } from "contexts/ModalContext"
-import Modal from "../Modal"
 import { OptionType, Select } from "../Select"
 import { useAppDispatch, useAppSelector } from "store/hooks"
 import { RootState } from "store"

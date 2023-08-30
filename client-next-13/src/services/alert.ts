@@ -35,5 +35,7 @@ class AlertService{
     }
 }
 
-export default new AlertService
+const alertService = new AlertService
+
+export default alertService
 
