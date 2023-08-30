@@ -7,8 +7,8 @@ import { Disclosure, Menu, Transition, Popover } from '@headlessui/react'
 import { Link } from './Link'
 import Logo from './Logo'
 import { useSession } from 'next-auth/react'
-import { MenuIcon, XIcon, BellIcon } from '@heroicons/react/outline'
-import { ChevronDownIcon, ChevronUpIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { Bars3Icon, XMarkIcon, UserIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, ChevronUpIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { usePathname } from 'next/navigation'
 import classNames from 'classnames'
 import { ProjetoContext } from '@/context/ProjetoContext'
@@ -16,7 +16,6 @@ import { useModalContext } from '@/context/ModalContext'
 import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
 import { styles } from './Utils/styles'
-import { UserIcon } from '@heroicons/react/outline'
 
 type SubMenuType = {
         name?: string,
@@ -131,7 +130,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                 }
             })
         
-    }, [changeCurrentParent, defaultNavigation])
+    }, [changeCurrentParent, defaultNavigation, pathname])
 
     const loadNavigation = useCallback(async() => {
         if (session) {
@@ -255,7 +254,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                     href={subMenu?.href}
                                                     className={classNames(
                                                     
-                                                        usePathname() === subMenu?.href && 'bg-gray-100',
+                                                        pathname === subMenu?.href && 'bg-gray-100',
                                                         'group flex rounded-md text-start items-center w-full px-2 py-2 text-sm transition duration-500 ease-in-out hover:bg-gray-100'
                                                     )}
                                                 >
@@ -318,7 +317,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                                     onClick={close}
                                                                     className={classNames(
                                                                         !subsubMenu?.icon && 'pl-8' ,
-                                                                        usePathname() === subsubMenu?.href && 'bg-gray-100',
+                                                                        pathname === subsubMenu?.href && 'bg-gray-100',
                                                                         'group flex rounded-md text-start items-center w-full px-2 py-2 text-sm transition duration-500 ease-in-out hover:bg-gray-100'
                                                                     )}
                                                                 >
@@ -473,9 +472,9 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                 <Disclosure.Button className="bg-gray-200 inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
-                    <XIcon className="block h-6 w-6" aria-hidden="true" />
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                     ) : (
-                    <MenuIcon className="block h-6 w-6" aria-hidden="true" />
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                     )}
                 </Disclosure.Button>
                 </div>

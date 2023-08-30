@@ -1,4 +1,4 @@
-import { PencilAltIcon } from "@heroicons/react/outline"
+import { PencilIcon } from "@heroicons/react/outline"
 import { useModalContext } from "contexts/ModalContext"
 import AddEdit from "./AddEdit"
 import { styles } from "../Utils/styles"
@@ -108,7 +108,7 @@ export const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCate
                                     <div>
                                         <a>
                                         <button onClick={() => updateCategoriaModal(categoria.id)}>
-                                            <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                            <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                         </button>
                                         </a>
                                     </div>

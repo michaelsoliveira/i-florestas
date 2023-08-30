@@ -2,7 +2,7 @@
 exports.__esModule = true;
 var AddEdit_1 = require("src/components/user/AddEdit");
 var Logo_1 = require("src/components/Logo");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var link_1 = require("next/link");
 var react_1 = require("react");
 var defaultStyles_1 = require("src/components/helpers/defaultStyles");

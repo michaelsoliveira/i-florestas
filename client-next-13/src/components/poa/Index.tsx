@@ -3,7 +3,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "../../context/AuthContext"
 import { OptionType, Select } from '../Select'
@@ -330,7 +330,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                     <Link href={`/poa/update/${poa.id}`}>
-                                        <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                        <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                     </Link>
                                     <Link href="#" onClick={() => deleteSingleModal(poa.id)}>
                                         <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

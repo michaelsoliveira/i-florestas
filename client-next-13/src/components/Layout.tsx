@@ -8,9 +8,8 @@ import { custodia, estatistica, inventario, planejamento, reports, resources, so
 import { Loading } from "./Loading"
 import { LoadingContext } from "../context/LoadingContext"
 import { ProjetoContext } from "../context/ProjetoContext"
-import { ClipboardListIcon } from '@heroicons/react/outline'
 import { AuthContext } from "../context/AuthContext"
-import { CogIcon, UserGroupIcon } from '@heroicons/react/outline'
+import { CogIcon, UserGroupIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import { useRouter, usePathname } from 'next/navigation'
 import { useAppSelector } from "../redux/hooks"
 import { RootState } from "../redux/store"
@@ -79,7 +78,7 @@ const Layout = ({ children }: props) => {
         name: 'Projeto',
         description: 'Dados Gerais dos Projetos',
         href: '/projeto',
-        icon: ClipboardListIcon,
+        icon: ClipboardDocumentListIcon,
         subMenuItems: withProjeto
     }
 

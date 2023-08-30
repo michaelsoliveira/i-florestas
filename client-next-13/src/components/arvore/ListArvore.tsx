@@ -1,6 +1,6 @@
 'use client'
 
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import { AuthContext } from '@/context/AuthContext'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { RootState } from '@/redux/store'
@@ -14,10 +14,10 @@ import classNames from 'classnames'
 type ListArvoreType = {
     currentArvores: any, 
     sortArvores: (sortBy: string) => void, 
-    sorted: boolean; 
+    sorted: any; 
     loadArvores?: any, 
     callBack?: any,
-    planejar?: boolean
+    planejar?: any
 }
 
 const ListArvore = ({ 
@@ -406,7 +406,7 @@ const ListArvore = ({
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                 <Link href={`/arvore/update/${arvore.id}`}>
-                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                    <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
                                 <Link href="#" onClick={() => deleteSingleModal(arvore.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

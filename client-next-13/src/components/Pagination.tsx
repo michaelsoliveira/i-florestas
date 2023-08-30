@@ -9,6 +9,7 @@ export const Pagination = function Pagination({ perPage, totalItems, orderBy, or
     const lastItem = currentPage * perPage;
     const firstItem = lastItem - perPage
     const totalPages = Math.ceil(totalItems / perPage)
+    const pathname = usePathname()
 
     pageNeighbours = typeof pageNeighbours === 'number'
         ? Math.max(0, Math.min(pageNeighbours, 2))
@@ -18,7 +19,7 @@ export const Pagination = function Pagination({ perPage, totalItems, orderBy, or
     const gotoPage = (page: any) => {
         const currentPage = Math.max(0, Math.min(page, totalPages));
         const paginationData = {
-            name: usePathname(),
+            name: pathname,
             currentPage,
             orderBy,
             order,

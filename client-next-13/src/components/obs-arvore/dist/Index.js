@@ -47,7 +47,7 @@ exports.__esModule = true;
 var react_1 = require("react");
 var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("../../context/AuthContext");
 var styles_1 = require("../Utils/styles");
@@ -245,7 +245,7 @@ var Index = function (_a) {
                                     react_2["default"].createElement("div", { className: "text-sm font-medium text-gray-900" }, obs === null || obs === void 0 ? void 0 : obs.nome))),
                             react_2["default"].createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return updateObservacao(obs.id); } },
-                                    react_2["default"].createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                    react_2["default"].createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                 react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(obs.id); } },
                                     react_2["default"].createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };

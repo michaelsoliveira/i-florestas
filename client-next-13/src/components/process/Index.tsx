@@ -12,7 +12,7 @@ import { LoadingContext } from "@/context/LoadingContext"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 import classNames from "classnames"
-import { PencilAltIcon } from "@heroicons/react/solid"
+import { PencilIcon } from "@heroicons/react/24/solid"
 import { useModalContext } from "@/context/ModalContext"
 import { styles } from "../Utils/styles"
 import Exploracao from "../poa/exploracao/Index"
@@ -214,7 +214,7 @@ const Index = () => {
                                     >
                                         <td className="w-full py-2 whitespace-nowrap text-sm flex flex-row items-center justify-center">
                                         <button onClick={() => ajusteExploracao(ut?.id_ut)}>
-                                            <PencilAltIcon className={
+                                            <PencilIcon className={
                                                 classNames("w-5 h-5 text-green-600 hover:text-green-700",
                                                 )
                                             } />

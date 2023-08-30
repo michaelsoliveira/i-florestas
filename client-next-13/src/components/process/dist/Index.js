@@ -52,7 +52,7 @@ var LoadingContext_1 = require("@/context/LoadingContext");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var classnames_1 = require("classnames");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var ModalContext_1 = require("@/context/ModalContext");
 var styles_1 = require("../Utils/styles");
 var Index_1 = require("../poa/exploracao/Index");
@@ -211,7 +211,7 @@ var Index = function () {
                         React.createElement("tbody", { className: "bg-white divide-y divide-gray-300" }, uts === null || uts === void 0 ? void 0 : uts.map(function (ut) { return (React.createElement("tr", { key: ut.numero_ut },
                             React.createElement("td", { className: "w-full py-2 whitespace-nowrap text-sm flex flex-row items-center justify-center" },
                                 React.createElement("button", { onClick: function () { return ajusteExploracao(ut === null || ut === void 0 ? void 0 : ut.id_ut); } },
-                                    React.createElement(solid_1.PencilAltIcon, { className: classnames_1["default"]("w-5 h-5 text-green-600 hover:text-green-700") }))),
+                                    React.createElement(solid_1.PencilIcon, { className: classnames_1["default"]("w-5 h-5 text-green-600 hover:text-green-700") }))),
                             React.createElement("td", { className: "px-3 whitespace-nowrap" },
                                 React.createElement("div", { className: "text-sm" }, ut === null || ut === void 0 ? void 0 : ut.ano)),
                             React.createElement("td", { className: "px-3 whitespace-nowrap" },

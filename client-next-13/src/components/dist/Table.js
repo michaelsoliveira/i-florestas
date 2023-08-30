@@ -21,7 +21,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 exports.AvatarCell = exports.StatusPill = exports.SelectColumnFilter = void 0;
 var react_1 = require("react");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var Button_1 = require("./Utils/Button");
 var classNames_1 = require("./Utils/classNames");
 var Icons_1 = require("./Utils/Icons");

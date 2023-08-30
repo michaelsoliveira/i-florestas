@@ -1,7 +1,7 @@
 import { CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
 import { EspecieType } from "@/types/IEspecieType"
@@ -366,7 +366,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                             <Link href={`/especie/update/${especie.id}`}>
-                                <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
                             <Link href="#" onClick={() => deleteSingleModal(especie.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

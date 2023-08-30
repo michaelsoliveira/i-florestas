@@ -2,7 +2,7 @@
 exports.__esModule = true;
 exports.reports = exports.custodia = exports.inventario = exports.estatistica = exports.planejamento = exports.solutions = exports.resources = void 0;
 var outline_1 = require("@heroicons/react/outline");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 exports.resources = [
     {
         name: 'UMF',
@@ -134,7 +134,7 @@ exports.custodia = [
         name: 'Cadastro de Derrubada',
         description: 'Cadastro de Deburrada',
         href: '#',
-        icon: outline_1.PencilAltIcon
+        icon: outline_1.PencilIcon
     },
     {
         name: 'Cadastro de Toras',
@@ -154,7 +154,7 @@ exports.reports = [
         name: 'Relatório de Espécies',
         // description: 'Cadastro de Deburrada',
         href: '#',
-        icon: outline_1.PencilAltIcon
+        icon: outline_1.PencilIcon
     },
     {
         name: 'Relatório de UTs',

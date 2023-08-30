@@ -48,7 +48,7 @@ exports.CriterioPoa = function (_a) {
                         React.createElement("div", null,
                             React.createElement("a", null,
                                 React.createElement("button", { onClick: function () { return updateCategoriaModal(categoria.id); } },
-                                    React.createElement(outline_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" }))))))),
+                                    React.createElement(outline_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" }))))))),
                 React.createElement("td", { className: "px-3 py-2 whitespace-nowrap" },
                     React.createElement("div", { className: "flex flex-col items-starter" },
                         React.createElement("div", { className: "text-sm font-medium text-gray-900" }, categoria === null || categoria === void 0 ? void 0 : categoria.nome))),

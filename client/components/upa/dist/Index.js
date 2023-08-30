@@ -57,7 +57,7 @@ exports.__esModule = true;
 var react_1 = require("react");
 var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var Select_1 = require("../Select");
@@ -318,7 +318,7 @@ var Index = function (_a) {
                                         React.createElement("div", { className: "text-sm text-gray-500" }, (_a = upa === null || upa === void 0 ? void 0 : upa.equacao_volume) === null || _a === void 0 ? void 0 : _a.nome))),
                                 React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                     React.createElement(Link_1.Link, { href: "/upa/update/" + upa.id },
-                                        React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                        React.createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                     React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(upa.id); } },
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
                         })))))))));

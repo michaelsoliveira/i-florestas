@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Link } from "../../components/Link"
 import { Input } from "../../components/atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
@@ -10,7 +10,7 @@ import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { UserAddIcon } from '@heroicons/react/24/solid'
 import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
@@ -278,7 +278,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                             <Link href="#" onClick={() => updateUser(user.id)}>
-                                <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
                             <Link href="#" onClick={() => deleteSingleModal(user.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

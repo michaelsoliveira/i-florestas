@@ -6,7 +6,7 @@ import {
     CursorClickIcon,
     MenuIcon,
     TemplateIcon,
-    PencilAltIcon,
+    PencilIcon,
     PencilIcon,
     RefreshIcon,
     ShieldCheckIcon,
@@ -20,7 +20,7 @@ import {
     GlobeAltIcon,
     CalculatorIcon
 } from '@heroicons/react/outline'
-import { DocumentTextIcon } from '@heroicons/react/solid'
+import { DocumentTextIcon } from '@heroicons/react/24/solid'
 
 export const resources = [
     {
@@ -160,7 +160,7 @@ export const custodia = [
         name: 'Cadastro de Derrubada',
         description: 'Cadastro de Deburrada',
         href: '#',
-        icon: PencilAltIcon,
+        icon: PencilIcon,
     },
     {
         name: 'Cadastro de Toras',
@@ -181,7 +181,7 @@ export const reports = [
         name: 'Relatório de Espécies',
         // description: 'Cadastro de Deburrada',
         href: '#',
-        icon: PencilAltIcon,
+        icon: PencilIcon,
     },
     {
         name: 'Relatório de UTs',

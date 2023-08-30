@@ -44,7 +44,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var AuthContext_1 = require("@/context/AuthContext");
 var react_1 = require("react");
 var hooks_1 = require("@/redux/hooks");
@@ -289,7 +289,7 @@ var ListArvore = function (_a) {
                                     React.createElement("div", { className: "text-sm text-gray-500" }, (_c = arvore === null || arvore === void 0 ? void 0 : arvore.situacao_arvore) === null || _c === void 0 ? void 0 : _c.nome))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 React.createElement(Link_1.Link, { href: "/arvore/update/" + arvore.id },
-                                    React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                    React.createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                 React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(arvore.id); } },
                                     React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))))));
                 }))))));

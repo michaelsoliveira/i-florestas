@@ -1,7 +1,7 @@
 'use client'
 
 import React, { DetailedHTMLProps, InputHTMLAttributes, useMemo, useState } from 'react'
-import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
+import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/24/solid'
 import { Button, PageButton } from './Utils/Button'
 import classNames from './Utils/classNames'
 import { SortIcon, SortUpIcon, SortDownIcon } from './Utils/Icons'

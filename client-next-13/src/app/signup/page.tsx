@@ -1,6 +1,6 @@
 import { AddEdit } from '@/components/user/AddEdit'
 import Logo from '@/components/Logo'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { UserCircleIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link';
 import React, { createRef } from 'react';
 
@@ -40,7 +40,7 @@ const SigupPage = () => {
                     onClick={submitForm}
                   >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                      <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                      <UserCircleIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
                     </span>
                   Cadastrar
                 </button>

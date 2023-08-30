@@ -4,7 +4,7 @@ import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } fro
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import alertService from '@/services/alert'
-import { AuthContext } from "../../context/AuthContext"
+import { useAuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 import { OptionType, Select } from "../Select"
@@ -25,8 +25,8 @@ import { Pagination } from "../Pagination"
 const Index = () => {
     
     const [searchInput, setSearchInput] = useState("")
-    const { client } = useContext(AuthContext)
-    const [sorted, setSorted] = useState(false)
+    const { client } = useAuthContext()
+    const [sorted, setSorted] = useState<boolean>(false)
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
     const [uts, setUts] = useState<any>()
@@ -41,7 +41,7 @@ const Index = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
     const [totalItems, setTotalItems] = useState(0)
-    const [currentArvores, setCurrentArvores] = useState<any[]>([])
+    const [currentArvores, setCurrentArvores] = useState<any>()
     const [totalPages, setTotalPages] = useState(0)
     const [orderBy, setOrderBy] = useState('numero_arvore')
     const [order, setOrder] = useState('asc')
@@ -66,7 +66,7 @@ const Index = () => {
 
         setLoading(false)
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, setLoading, ut?.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, pathname, setLoading, ut?.id])
 
     const exportCsv = async () => {
         var { data: response } = await client.get(`/arvore/get-all?utId=${ut?.id ? ut?.id : null}&order=asc&orderBy=numero_arvore`)

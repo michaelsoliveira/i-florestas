@@ -3,7 +3,7 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { useAuthContext } from "@/context/AuthContext"
 import { UserType } from "@/types/IUserType"
@@ -12,7 +12,7 @@ import { useModalContext } from "@/context/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { UserCircleIcon } from '@heroicons/react/24/solid'
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
@@ -152,7 +152,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                 onClick={addUser}
               >
                 <span className="flex items-center">
-                  <UserAddIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
+                  <UserCircleIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
                 </span>
                 <div>Novo</div>
               </button>
@@ -280,7 +280,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                             <Link href="#" onClick={() => updateUser(user.id)}>
-                                <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                             </Link>
                             <Link href="#" onClick={() => deleteSingleModal(user.id)}>
                                 <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

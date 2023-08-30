@@ -1,6 +1,6 @@
 import { AddEdit } from '@/components/user/AddEdit'
 import Logo from 'components/Logo'
-import { UserAddIcon } from '@heroicons/react/solid'
+import { UserAddIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link';
 import React, { createRef } from 'react';
 

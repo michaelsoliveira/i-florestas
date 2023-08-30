@@ -165,7 +165,7 @@ var Link_1 = require("../Link");
 
 var input_1 = require("../atoms/input");
 
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 
 var alert_1 = require("../../../services/alert");
 
@@ -665,7 +665,7 @@ var Index = function Index(_a) {
       className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center"
     }, React.createElement(Link_1.Link, {
       href: "/categoria-especie/update/" + categoria.id
-    }, React.createElement(solid_1.PencilAltIcon, {
+    }, React.createElement(solid_1.PencilIcon, {
       className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700"
     })), React.createElement(Link_1.Link, {
       href: "#",

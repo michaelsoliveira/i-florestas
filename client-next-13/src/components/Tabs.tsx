@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import Login from './Login'
 import { AddEdit } from './user/AddEdit'
 import React, { createRef } from 'react'
-import { UserAddIcon } from '@heroicons/react/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 const styles = {
   label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',
@@ -81,7 +81,7 @@ const Tabs = () => {
                   className="my-4 group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 >
                   <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                    <UserAddIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                    <UserCircleIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
                   </span>
                   Cadastrar
                 </button>

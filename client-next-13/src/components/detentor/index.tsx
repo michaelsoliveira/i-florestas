@@ -1,6 +1,6 @@
 import { Link } from "src/components/Link"
 import alertService from 'services/alert'
-import { TrashIcon, PencilAltIcon, UsersIcon, InboxInIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, UsersIcon, InboxInIcon } from '@heroicons/react/24/solid'
 import { useContext } from "react"
 import { useModalContext } from "@/context/ModalContext"
 import { EmpresaType } from "types/IEmpresa"
@@ -116,7 +116,7 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) =>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                     <Link href={`/projeto/${projetoId}/detentor/update/${empresa.id}`}>
-                                        <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                        <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                     </Link>
                                     <Link href="#" onClick={() => deleteSingleModal(empresa.id)}>
                                         <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

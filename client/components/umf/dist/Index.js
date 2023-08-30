@@ -46,7 +46,7 @@ exports.__esModule = true;
 var react_1 = require("react");
 var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("../../services/alert");
 var AuthContext_1 = require("../../contexts/AuthContext");
 var ModalContext_1 = require("contexts/ModalContext");
@@ -211,7 +211,7 @@ var Umfs = function (_a) {
                                         React.createElement("div", { className: "text-sm text-gray-500" }, (_a = umf === null || umf === void 0 ? void 0 : umf.estado) === null || _a === void 0 ? void 0 : _a.uf))),
                                 React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                     React.createElement(Link_1.Link, { href: "/umf/update/" + umf.id },
-                                        React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                        React.createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                     React.createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(umf.id); } },
                                         React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" })))));
                         })))))))));

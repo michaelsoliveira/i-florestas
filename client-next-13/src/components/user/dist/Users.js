@@ -47,7 +47,7 @@ exports.__esModule = true;
 var react_1 = require("react");
 var Link_1 = require("../Link");
 var input_1 = require("../atoms/input");
-var solid_1 = require("@heroicons/react/solid");
+var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
 var styles_1 = require("../Utils/styles");
@@ -55,7 +55,7 @@ var ModalContext_1 = require("@/context/ModalContext");
 var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
-var solid_2 = require("@heroicons/react/solid");
+var solid_2 = require("@heroicons/react/24/solid");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var Users = function (_a) {
     var currentUsers = _a.currentUsers, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUsers = _a.loadUsers, roles = _a.roles;
@@ -254,7 +254,7 @@ var Users = function (_a) {
                                     react_2["default"].createElement("div", { className: "text-sm text-gray-500" }, user.roles && user.roles.map(function (role) { return role ? role.name : ''; }).join(', ')))),
                             react_2["default"].createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return updateUser(user.id); } },
-                                    react_2["default"].createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                    react_2["default"].createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                 react_2["default"].createElement(Link_1.Link, { href: "#", onClick: function () { return deleteSingleModal(user.id); } },
                                     react_2["default"].createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };
