@@ -2,10 +2,11 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY next.config.js .eslintrc.json .env.local tsconfig.json ./
-COPY tailwind.config.js postcss.config.js ./
 COPY package.json package-lock.json ./
 RUN  npm install --production
+
+COPY next.config.js .eslintrc.json .env.local tsconfig.json ./
+COPY tailwind.config.js postcss.config.js ./
 
 FROM node:18-alpine AS builder
 WORKDIR /app
