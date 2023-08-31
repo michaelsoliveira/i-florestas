@@ -7,10 +7,10 @@ import alertService from "@/services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "../Link";
-import RadioGroup from "../Form/RadioGroup";
-import Option from "../Form/Option";
-import PessoaFisica from "../Form/PessoaFisica";
-import PessoaJuridica from "../Form/PessoaJuridica";
+import RadioGroup from "../form/RadioGroup";
+import Option from "../form/Option";
+import PessoaFisica from "../form/PessoaFisica";
+import PessoaJuridica from "../form/PessoaJuridica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "@/context/ProjetoContext";
 

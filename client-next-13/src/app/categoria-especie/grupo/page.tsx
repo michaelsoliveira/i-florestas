@@ -3,6 +3,11 @@
 import GrupoCategoriaEspecie from "@/components/categoria-especie/GrupoCategoriaEspecie";
 import withAuthentication from "@/components/withAuthentication";
 
-export default function Page() {
-    return withAuthentication(GrupoCategoriaEspecie)
+function CategoriaGrupoPage() {
+    
+    return (
+        <GrupoCategoriaEspecie />
+    )
 }
+
+export default withAuthentication(CategoriaGrupoPage)

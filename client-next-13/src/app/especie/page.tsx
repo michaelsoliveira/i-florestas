@@ -7,7 +7,7 @@ import { Pagination } from "src/components/Pagination"
 import { AuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import { EspecieType } from "@/types/IEspecieType"
 import { LoadingContext } from "@/context/LoadingContext"
@@ -25,13 +25,13 @@ const EspecieIndex = () => {
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
-    const router = useRouter()
     const { projeto } = useContext(ProjetoContext)
     const poa = useAppSelector((state: RootState) => state.poa)
+    const pathname = usePathname()
     
     const loadEspecies = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
         const url = `/especie?poa=${poa?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
         setCurrentPage(currentPagePagination)
@@ -44,7 +44,7 @@ const EspecieIndex = () => {
         setLoading(false)
 
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, setLoading, poa])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, pathname, setLoading, poa])
 
     useEffect(() => {  
         
@@ -97,7 +97,7 @@ const EspecieIndex = () => {
 
     const changeItemsPerPage = (evt: ChangeEvent<HTMLSelectElement>) => {
         onPageChanged({
-            name: router.pathname,
+            name: pathname,
             currentPage: 1,
             perPage: evt.target.value,
             orderBy,

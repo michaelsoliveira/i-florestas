@@ -3,7 +3,7 @@
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '@/context/AuthContext'

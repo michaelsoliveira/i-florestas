@@ -6,7 +6,7 @@ import { Pagination } from "src/components/Pagination"
 import { AuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { paginate } from "@/redux/features/paginationSlice"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import Index from "src/components/poa/Index"
 
@@ -23,12 +23,12 @@ const PoaIndex = () => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const umf = useAppSelector((state: RootState) => state.umf)
     const dispatch = useAppDispatch()
-    const router = useRouter()
+    const pathname = usePathname()
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadPoas = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
         const url = `/poa?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : pagination.perPage}&orderBy=${orderBy}&order=${order}&umf=${umf.id}`
         
@@ -37,7 +37,7 @@ const PoaIndex = () => {
         setTotalItems(data?.count)
         setCurrentPoas(data?.poas)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, router.pathname, umf.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, pathname, umf.id])
 
     useEffect(() => {  
         loadPoas(itemsPerPage)
@@ -90,7 +90,7 @@ const PoaIndex = () => {
 
     const changeItemsPerPage = (value: number) => {
         onPageChanged({
-            name: router.pathname,
+            name: pathname,
             currentPage: 1,
             perPage: value,
             orderBy,

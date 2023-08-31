@@ -6,7 +6,6 @@ import { AuthContext } from '@/context/AuthContext'
 import { useModalContext } from '@/context/ModalContext'
 import { OptionType, Select } from '../Select'
 import { useSession } from 'next-auth/react'
-import { ProjetoContext } from '@/context/ProjetoContext'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import * as Yup from 'yup'
 import { setPoa } from '@/redux/features/poaSlice';
@@ -23,7 +22,6 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         const { data: session } = useSession()
         const [selectedPoa, setSelectedPoa] = useState<any>()
         const [poas, setPoas] = useState<any>()
-        const { projeto, setProjeto } = useContext(ProjetoContext)
         const dispath = useAppDispatch()
         const poa = useAppSelector((state: RootState) => state.poa)
 

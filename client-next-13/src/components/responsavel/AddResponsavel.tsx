@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { useRouter } from "next/router"
 import alertService from "@/services/alert";
 import { AuthContext } from "../../context/AuthContext";
-import PessoaFisica from "../Form/PessoaFisica";
+import PessoaFisica from "../form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "@/context/ProjetoContext";
 import { FormInput } from "../FormInput";

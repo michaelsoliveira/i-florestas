@@ -7,7 +7,6 @@ import { AuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
 import IndexCategory from "src/components/categoria-especie/Index"
-import { useRouter } from "next/router"
 import { RootState } from "@/redux/store"
 import { CategoriaEspecieType } from "@/types/ICategoriaEspecieType"
 import { ProjetoContext } from "@/context/ProjetoContext"
@@ -23,7 +22,6 @@ const CategoriaIndex = () => {
     const [totalPages, setTotalPages] = useState(0)
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
-    const router = useRouter()
     const poa = useAppSelector((state: RootState) => state.poa)
     const { projeto } = useContext(ProjetoContext)
     

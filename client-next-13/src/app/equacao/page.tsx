@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { AuthContext } from "@/context/AuthContext"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import Equacoes from "src/components/equacao/Index"
 import { Pagination } from "src/components/Pagination"
@@ -24,19 +24,19 @@ const ProjetoEquacoesIndex = () => {
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
-    const router = useRouter()
+    const pathname = usePathname()
     const { projeto } = useContext(ProjetoContext)
     
     const loadEquacoes = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
         const { data } = await client.get(`/projeto/${projeto?.id}/eq-volume?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         console.log(data)
         setTotalItems(data?.count)
         setCurrentEquacoes(data?.equacoes)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, projeto?.id, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, projeto?.id, pathname, setLoading])
 
     useEffect(() => {  
         loadEquacoes(itemsPerPage)
@@ -85,7 +85,7 @@ const ProjetoEquacoesIndex = () => {
 
     const changeItemsPerPage = (value: number) => {
         onPageChanged({
-            name: router.pathname,
+            name: pathname,
             currentPage: 1,
             perPage: value,
             orderBy,

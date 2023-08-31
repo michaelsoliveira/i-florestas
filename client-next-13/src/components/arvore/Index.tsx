@@ -87,9 +87,13 @@ const Index = () => {
             }
         })
 
-        exportToCSV(data, `inventario_${new Date(Date.now()).toLocaleString().replace(",", "_")}`, {
-            delimiter: ';'
-        })
+        data.length > 0 
+            ?
+                exportToCSV(data, `inventario_${new Date(Date.now()).toLocaleString().replace(",", "_")}`, {
+                    delimiter: ';'
+                })
+            :
+                alertService.warn('Não existem árvores cadastradas')
     }
 
     useEffect(() => {  
