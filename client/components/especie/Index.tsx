@@ -10,7 +10,7 @@ import { LoadingContext } from "contexts/LoadingContext"
 import { CsvDataService } from "services/create-csv"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import ImportModal from "./ImportModal"
-import { styles as stylesButton } from '../Utils/styles'
+import { styles as stylesButton } from '../utils/styles'
 import { StepContext } from "contexts/StepContext"
 import { useAppSelector } from "store/hooks"
 import { RootState } from "store"

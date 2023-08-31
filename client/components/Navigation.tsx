@@ -14,7 +14,7 @@ import { AuthContext } from 'contexts/AuthContext'
 import { useModalContext } from 'contexts/ModalContext'
 import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
-import { styles } from './Utils/styles'
+import { styles } from './utils/styles'
 import { UserIcon } from '@heroicons/react/outline'
 
 type SubMenuType = {

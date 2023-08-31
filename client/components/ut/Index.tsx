@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 import { UtType } from "types/IUtType"
 import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 import AddAuto from "./AddAuto"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

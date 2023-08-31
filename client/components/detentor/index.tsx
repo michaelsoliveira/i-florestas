@@ -5,7 +5,7 @@ import { useContext } from "react"
 import { useModalContext } from "contexts/ModalContext"
 import { EmpresaType } from "types/IEmpresa"
 import { AuthContext } from "contexts/AuthContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { LinkBack } from "../LinkBack"
 
 

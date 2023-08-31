@@ -12,7 +12,7 @@ import { RootState } from "../../store"
 import { UpaType } from "types/IUpaType"
 
 import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {

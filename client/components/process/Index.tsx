@@ -12,7 +12,7 @@ import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 import classNames from "classnames"
 import { PencilIcon } from "@heroicons/react/solid"
 import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import Exploracao from "../poa/exploracao/Index"
 
 const Index = () => {

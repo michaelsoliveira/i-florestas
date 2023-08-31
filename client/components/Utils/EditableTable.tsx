@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React, { useState } from "react";
-import { SortIcon, SortUpIcon, SortDownIcon } from '../Utils/Icons'
+import { SortIcon, SortUpIcon, SortDownIcon } from './Icons'
 const { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } = require('react-table')
 
 const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort }: any) => {

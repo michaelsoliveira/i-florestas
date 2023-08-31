@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import Papa from 'papaparse';
 
 interface CSVRow {
@@ -6,7 +5,7 @@ interface CSVRow {
 }
 
 function convertToCSV(data: CSVRow[], config?: any): string {
-  if (data.length === 0) {
+  if (data?.length === 0) {
     throw new Error('Data array is empty');
   }
 
