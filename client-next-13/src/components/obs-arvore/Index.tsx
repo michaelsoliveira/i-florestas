@@ -11,7 +11,7 @@ import { useModalContext } from "@/context/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { PlusIcon } from "@heroicons/react/outline"
+import { PlusIcon } from "@heroicons/react/24/outline"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadObservacoes }: any) => {
@@ -172,7 +172,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                         <div className="w-60 px-4 text-sm">Pesquisar Observação:</div>
                         <div className="w-full px-4">
                             <Input
-                                label="Pesquisar Equações"
+                                label="Pesquisar Observações"
                                 id="search"
                                 name="search"
                                 onChange={(e: any) => handleSearch(e.target.value)}

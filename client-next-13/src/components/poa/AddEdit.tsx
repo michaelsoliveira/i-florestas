@@ -16,11 +16,9 @@ import { setPoa } from "@/redux/features/poaSlice"
 import { ProjetoContext } from '@/context/ProjetoContext'
 import { useModalContext } from '@/context/ModalContext'
 import { styles } from '../Utils/styles'
-
-import AddResponsavel from '../responsavel/Index'
-import { CriterioPoa } from '../categoria-especie/CriterioPoa'
-
 import { useParams } from 'next/navigation'
+import CriterioPoa from '../categoria-especie/CriterioPoa'
+import AddResponsavel from '../responsavel/AddResponsavel'
 
 const AddEdit = () => {
     const params = useParams()

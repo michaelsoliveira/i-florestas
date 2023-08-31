@@ -1,3 +1,5 @@
+'use client'
+
 import { AddEdit } from '@/components/user/AddEdit'
 import Logo from '@/components/Logo'
 import { UserCircleIcon } from '@heroicons/react/24/solid'

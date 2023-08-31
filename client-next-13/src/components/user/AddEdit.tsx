@@ -4,7 +4,7 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import React, { useCallback, useContext, useEffect, forwardRef , useState } from 'react'
 import { useAppDispatch } from '@/redux/hooks'
 import { create } from '@/redux/features/userSlice'
-import * as Yup from 'yup'
+import { object, string, boolean, ref as refYup } from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 import alertService from '@/services/alert'
 import { signIn, useSession } from 'next-auth/react';
@@ -100,77 +100,68 @@ export const AddEdit = forwardRef<any, AddEditType>(
             })
         }
 
-        const validationSchema = Yup.object().shape({
-            isAddMode: Yup.boolean(),
-            projeto: Yup.string()
-            .when('id_projeto', {
-                is: (id_projeto:string) => {
-                    if (id_projeto === '') return false
-                },
-                then: Yup.string()
-                    .required('Campo nome do projeto é obrigatório')
-                    .min(6, 'O campo deve ter no mínimo 6 caracteres')
-                }),
-            username: Yup.string()
-            .when('option', {
-                is: (option:any) => option===0,
-                then: Yup.string().test(
-                    "len",
-                    "O nome de usuário tem que ter entre 3 e 40 caracteres.",
-                    (val: any) =>
-                    val &&
-                    val.toString().length >= 3 &&
-                    val.toString().length <= 40
-                )
-                .required("Campo obrigatório!")
-            })
-            ,
-            email: Yup.string()
-            .when('option', {
-                is: (option:any) => option===0,
-                then: Yup.string()
-                    .email("Este não é um email válido.")
+        const validationSchema = object({
+            isAddMode: boolean(),
+            projeto: string()
+                .when('id_projeto', {
+                    is: (id_projeto: string) => {
+                        if (id_projeto === '') return false
+                    },
+                    then: (schema: any) => 
+                        schema.string()
+                        .required('Campo nome do projeto é obrigatório')
+                        .min(6, 'O campo deve ter no mínimo 6 caracteres')
+
+                    }),
+                username: string().when('option', {
+                    is: (option: number) => option === 0,
+                    then: (schema: any) => string().test(
+                        "len",
+                        "O nome de usuário tem que ter entre 3 e 40 caracteres.",
+                        (val: any) =>
+                        val &&
+                        val.toString().length >= 3 &&
+                        val.toString().length <= 40
+                    )
                     .required("Campo obrigatório!")
-            }),
-            password:
-                Yup.string()
-                .when('option', {
-                    is: (option:any) => option===0,
-                    then: Yup.string()
-                    .when('isAddMode', {
-                        is: true,
-                        then: Yup.string().required('Senha é obrigatória').min(6, 'A senha deve possuir no mínimo 6 caracteres')
-                    })
                 }),
-                
-            confirmPassword: Yup.string()
-                .when('option', {
-                    is: (option:any) => option===0,
-                    then: Yup.string()
-                    .when('password', (password, schema) => {
-                        if (password || isAddMode) return schema.required('A confirmação de senha é obrigatória')
-                    })
-                    .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
-                }),
-            id_user: Yup.string()
-                .when('option', {
-                    is: (option:any) => option===1,
-                    then: Yup.string()
-                    .when('isAddMode', {
-                        is: true,
-                        then: Yup.string().required('É necessário selecionar um usuário')
-                    }) 
-                }),
-            // roles: Yup.array()
-            //     .when(['isAddMode'], {
-            //         is: (id_projeto: string, isAddMode: boolean) => {
-            //             if (id_projeto === '' && isAddMode) {
-            //                 return false
-            //             }
-            //         },
-            //         then: Yup.array().required('É necessário selecionar um usuário').nullable()
-            //         // .min(1, 'Selecione pelo menos 1 grupo de usuário')
-            //     })
+                email: string()
+                    .when('option', {
+                        is: (option:any) => option===0,
+                        then: () => string()
+                            .email("Este não é um email válido.")
+                            .required("Campo obrigatório!")
+                    }),
+                    password:
+                        string()
+                        .when('option', {
+                            is: (option:any) => option===0,
+                            then: () => string()
+                            .when('isAddMode', {
+                                is: true,
+                                then: () => string()
+                                    .required('Senha é obrigatória')
+                                    .min(6, 'A senha deve possuir no mínimo 6 caracteres')
+                            })
+                        }),
+                    confirmPassword: string()
+                        .when('option', {
+                            is: (option:any) => option===0,
+                            then: () => string()
+                            .when('password', (password: any, schema: any) => {
+                                if (password || isAddMode) return schema.required('A confirmação de senha é obrigatória')
+                            })
+                            .oneOf([refYup('password')], 'As senhas informadas não coincidem')
+                        }),
+                    id_user: string()
+                        .when('option', {
+                            is: (option:any) => option===1,
+                            then: () => string()
+                            .when('isAddMode', {
+                                is: true,
+                                then: () => string().required('É necessário selecionar um usuário')
+                            }) 
+                        })
             });
 
         async function handleRegister(data: any) {

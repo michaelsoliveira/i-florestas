@@ -38,5 +38,3 @@ exports.Input = react_1.forwardRef(function Input(_a, ref) {
             className,
         ]) }, rest)));
 });
-// Input.displayName = 'Input'
-//   // export default Input

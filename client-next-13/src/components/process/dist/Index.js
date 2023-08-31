@@ -50,12 +50,12 @@ var AuthContext_1 = require("../../context/AuthContext");
 var hooks_1 = require("@/redux/hooks");
 var LoadingContext_1 = require("@/context/LoadingContext");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
-var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var classnames_1 = require("classnames");
 var solid_1 = require("@heroicons/react/24/solid");
 var ModalContext_1 = require("@/context/ModalContext");
 var styles_1 = require("../Utils/styles");
 var Index_1 = require("../poa/exploracao/Index");
+var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var Index = function () {
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var _a = react_1.useState(), poas = _a[0], setPoas = _a[1];
@@ -186,7 +186,7 @@ var Index = function () {
             React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Processamento do POA")),
         React.createElement("div", { className: "flex flex-col p-6 mx-auto" },
             categorias && (React.createElement("div", { className: "overflow-x-auto border border-gray-300 rounded-md" },
-                React.createElement(CriterioPoa_1.CriterioPoa, { categorias: categorias, loadCategorias: loadCategorias }))),
+                React.createElement(CriterioPoa_1["default"], { categorias: categorias, loadCategorias: loadCategorias }))),
             React.createElement("div", { className: "border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6" },
                 React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Processamento do POA"),
                 React.createElement("div", { className: 'flex flex-col md:flex-row space-x-2 items-center w-full' },

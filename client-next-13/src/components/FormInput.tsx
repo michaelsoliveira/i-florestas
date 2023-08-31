@@ -17,7 +17,7 @@ import { Input, InputProps } from './atoms/input';
 import { FormErrorMessage } from './atoms/form-error-message';
 
 export type FormInputProps<TFormValues extends FieldValues> = {
-    label?: Path<TFormValues>;
+    label?: string;
     name: Path<TFormValues>;
     rules?: RegisterOptions | any;
     innerRef?: any;

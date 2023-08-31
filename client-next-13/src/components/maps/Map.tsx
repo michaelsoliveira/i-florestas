@@ -46,7 +46,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
   const [directions, setDirections] = useState<DirectionsResult>();
   const mapRef = useRef<GoogleMap>();
 
-  const onUnmount = useCallback(function callback(map) {
+  const onUnmount = useCallback(function callback() {
     mapRef.current = undefined
   }, [])
 
@@ -75,7 +75,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
   const listenersRef = useRef<any[]>([]);
 
   // Call setPath with new edited path
-  const onEdit = useCallback((e) => {
+  const onEdit = useCallback((e: any) => {
     if (polygonRef.current) {
       const nextPath = polygonRef.current
         .getPath()
@@ -105,11 +105,11 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     }
   }
 
-  const onLoad = useCallback((map) => {  
+  const onLoad = useCallback((map: any) => {  
     mapRef.current = map
   }, []);
   const onLoadPolygon = useCallback(
-    polygon => {
+    (polygon: any) => {
       polygonRef.current = polygon;
       const path = polygon.getPath();
       listenersRef.current.push(

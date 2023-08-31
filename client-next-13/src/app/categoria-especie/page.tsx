@@ -27,7 +27,7 @@ const CategoriaIndex = () => {
     const poa = useAppSelector((state: RootState) => state.poa)
     const { projeto } = useContext(ProjetoContext)
     
-    const loadCategorias = useCallback(async (itemsPerPage) => {
+    const loadCategorias = useCallback(async (itemsPerPage: number) => {
         setLoading(true)
         const currentPagePagination = pagination.name === 'categoria' && pagination.currentPage ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)

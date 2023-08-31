@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { AuthContext } from "@/context/AuthContext"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import Observacoes from "src/components/obs-arvore/Index"
 import { Pagination } from "src/components/Pagination"
@@ -24,19 +24,18 @@ const ObservacoesIndex = () => {
     const [order, setOrder] = useState('asc')
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
-    const router = useRouter()
-    const { projeto } = useContext(ProjetoContext)
+    const pathname = usePathname()
     
     const loadObservacoes = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
-        const currentPagePagination = (pagination.name === router.pathname && pagination.currentPage) ? pagination.currentPage : 1
+        const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
         const { data } = await client.get(`/obs-arvore?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
         console.log(data)
         setTotalItems(data?.count)
         setCurrentObservacoes(data?.observacoes)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, router.pathname, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pathname, setLoading])
 
     useEffect(() => {  
         loadObservacoes(itemsPerPage)
@@ -85,7 +84,7 @@ const ObservacoesIndex = () => {
 
     const changeItemsPerPage = (value: number) => {
         onPageChanged({
-            name: router.pathname,
+            name: pathname,
             currentPage: 1,
             perPage: value,
             orderBy,

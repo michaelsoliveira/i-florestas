@@ -54,7 +54,7 @@ var ModalContext_1 = require("@/context/ModalContext");
 var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
-var outline_1 = require("@heroicons/react/outline");
+var outline_1 = require("@heroicons/react/24/outline");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var Index = function (_a) {
     var currentEquacoes = _a.currentEquacoes, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadEquacoes = _a.loadEquacoes;

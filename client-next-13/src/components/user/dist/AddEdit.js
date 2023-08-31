@@ -49,7 +49,7 @@ var formik_1 = require("formik");
 var react_1 = require("react");
 var hooks_1 = require("@/redux/hooks");
 var userSlice_1 = require("@/redux/features/userSlice");
-var Yup = require("yup");
+var yup_1 = require("yup");
 require("react-toastify/dist/ReactToastify.css");
 var alert_1 = require("@/services/alert");
 var react_2 = require("next-auth/react");
@@ -147,62 +147,65 @@ exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
             };
         });
     }
-    var validationSchema = Yup.object().shape({
-        isAddMode: Yup.boolean(),
-        projeto: Yup.string()
+    var validationSchema = yup_1.object({
+        isAddMode: yup_1.boolean(),
+        projeto: yup_1.string()
             .when('id_projeto', {
             is: function (id_projeto) {
                 if (id_projeto === '')
                     return false;
             },
-            then: Yup.string()
-                .required('Campo nome do projeto é obrigatório')
-                .min(6, 'O campo deve ter no mínimo 6 caracteres')
+            then: function (schema) {
+                return schema.string()
+                    .required('Campo nome do projeto é obrigatório')
+                    .min(6, 'O campo deve ter no mínimo 6 caracteres');
+            }
         }),
-        username: Yup.string()
-            .when('option', {
+        username: yup_1.string().when('option', {
             is: function (option) { return option === 0; },
-            then: Yup.string().test("len", "O nome de usuário tem que ter entre 3 e 40 caracteres.", function (val) {
+            then: function (schema) { return yup_1.string().test("len", "O nome de usuário tem que ter entre 3 e 40 caracteres.", function (val) {
                 return val &&
                     val.toString().length >= 3 &&
                     val.toString().length <= 40;
             })
-                .required("Campo obrigatório!")
+                .required("Campo obrigatório!"); }
         }),
-        email: Yup.string()
+        email: yup_1.string()
             .when('option', {
             is: function (option) { return option === 0; },
-            then: Yup.string()
+            then: function () { return yup_1.string()
                 .email("Este não é um email válido.")
-                .required("Campo obrigatório!")
+                .required("Campo obrigatório!"); }
         }),
-        password: Yup.string()
+        password: yup_1.string()
             .when('option', {
             is: function (option) { return option === 0; },
-            then: Yup.string()
+            then: function () { return yup_1.string()
                 .when('isAddMode', {
                 is: true,
-                then: Yup.string().required('Senha é obrigatória').min(6, 'A senha deve possuir no mínimo 6 caracteres')
-            })
+                then: function () { return yup_1.string()
+                    .required('Senha é obrigatória')
+                    .min(6, 'A senha deve possuir no mínimo 6 caracteres'); }
+            }); }
         }),
-        confirmPassword: Yup.string()
+        confirmPassword: yup_1.string()
             .when('option', {
             is: function (option) { return option === 0; },
-            then: Yup.string()
+            then: function () { return yup_1.string()
                 .when('password', function (password, schema) {
                 if (password || isAddMode)
                     return schema.required('A confirmação de senha é obrigatória');
             })
-                .oneOf([Yup.ref('password')], 'As senhas informadas não coincidem')
+                .oneOf([yup_1.ref('password')], 'As senhas informadas não coincidem'); }
         }),
-        id_user: Yup.string()
+        id_user: yup_1.string()
             .when('option', {
             is: function (option) { return option === 1; },
-            then: Yup.string()
+            then: function () { return yup_1.string()
                 .when('isAddMode', {
                 is: true,
-                then: Yup.string().required('É necessário selecionar um usuário')
-            })
+                then: function () { return yup_1.string().required('É necessário selecionar um usuário'); }
+            }); }
         })
     });
     function handleRegister(data) {

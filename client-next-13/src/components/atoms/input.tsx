@@ -13,7 +13,7 @@ export type InputType = 'text' | 'email' | 'password' | 'number' | 'radio' | 'ch
 export type InputProps = {
   id: string;
   name: string;
-  label: string;
+  label?: string;
   type?: InputType;
   size?: InputSize;
   className?: string;

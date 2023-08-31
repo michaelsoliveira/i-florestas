@@ -7,7 +7,7 @@ import { RootState } from "@/redux/store"
 import { OptionType, Select } from "../Select"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import { AuthContext } from "@/context/AuthContext"
-import { ArrowSmRightIcon } from "@heroicons/react/outline"
+import { ArrowRightIcon } from "@heroicons/react/24/outline"
 
 const GrupoCategoriaEspecie = () => {
     const [especies, setEspecies] = useState<any>()
@@ -140,7 +140,7 @@ const GrupoCategoriaEspecie = () => {
                                 className="flex items-center justify-center bg-gray-300 rounded-full hover:cursor-pointer h-8 w-8 focus:ring-green-200"
                                 onClick={setCategoriaEspecies}    
                             >
-                                <ArrowSmRightIcon className="h-6 w-6" />
+                                <ArrowRightIcon className="h-6 w-6" />
                             </div>
                         </div>
                     </div>

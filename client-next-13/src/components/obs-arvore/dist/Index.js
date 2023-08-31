@@ -55,7 +55,7 @@ var ModalContext_1 = require("@/context/ModalContext");
 var LinkBack_1 = require("../LinkBack");
 var AddEdit_1 = require("./AddEdit");
 var react_2 = require("react");
-var outline_1 = require("@heroicons/react/outline");
+var outline_1 = require("@heroicons/react/24/outline");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var Index = function (_a) {
     var currentObservacoes = _a.currentObservacoes, onPageChanged = _a.onPageChanged, orderBy = _a.orderBy, order = _a.order, changeItemsPerPage = _a.changeItemsPerPage, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadObservacoes = _a.loadObservacoes;
@@ -211,7 +211,7 @@ var Index = function (_a) {
                         react_2["default"].createElement("option", { value: "100" }, "100"))),
                 react_2["default"].createElement("div", { className: "w-60 px-4 text-sm" }, "Pesquisar Observa\u00E7\u00E3o:"),
                 react_2["default"].createElement("div", { className: "w-full px-4" },
-                    react_2["default"].createElement(input_1.Input, { label: "Pesquisar Equa\u00E7\u00F5es", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50', autoFocus: true })),
+                    react_2["default"].createElement(input_1.Input, { label: "Pesquisar Observa\u00E7\u00F5es", id: "search", name: "search", onChange: function (e) { return handleSearch(e.target.value); }, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50', autoFocus: true })),
                 react_2["default"].createElement("div", { className: "flex items-center justify-center w-full lg:mr-4 pt-2 lg:w-32 lg:pt-0" },
                     react_2["default"].createElement("button", { 
                         // disabled={formState.isSubmitting}

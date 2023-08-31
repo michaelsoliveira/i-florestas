@@ -236,7 +236,7 @@ export const authOptions: NextAuthOptions = {
     pages: {
       // signIn: '/login',  // Displays signin buttons
       // signOut: '/auth/signout', // Displays form with sign out button
-      // error: '/login', // Error code passed in query string as ?error=
+      error: '/auth/login', // Error code passed in query string as ?error=
       // verifyRequest: '/auth/verify-request', // Used for check email page
       newUser: '/user/change-password' // If set, new users will be directed here on first sign in
     },

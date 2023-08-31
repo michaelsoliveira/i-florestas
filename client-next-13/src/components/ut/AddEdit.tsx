@@ -21,9 +21,7 @@ type LatLngLiteral = google.maps.LatLngLiteral;
 
 import { useParams } from 'next/navigation'
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ id }: { id: string }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
     const upa = useAppSelector((state: RootState) => state.upa)

@@ -10,12 +10,12 @@ import { RootState } from "@/redux/store"
 
 import { LoadingContext } from "@/context/LoadingContext"
 import { ProjetoContext } from "@/context/ProjetoContext"
-import { CriterioPoa } from "../categoria-especie/CriterioPoa"
 import classNames from "classnames"
 import { PencilIcon } from "@heroicons/react/24/solid"
 import { useModalContext } from "@/context/ModalContext"
 import { styles } from "../Utils/styles"
 import Exploracao from "../poa/exploracao/Index"
+import CriterioPoa from "../categoria-especie/CriterioPoa"
 
 const Index = () => {
     

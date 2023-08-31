@@ -63,27 +63,25 @@ var utSlice_1 = require("@/redux/features/utSlice");
 var Map_1 = require("../maps/Map");
 var api_1 = require("@react-google-maps/api");
 exports.libraries = String(['places', 'geometry', 'drawing']);
-var navigation_1 = require("next/navigation");
-var AddEdit = function () {
-    var _a;
-    var params = navigation_1.useParams();
-    var id = params === null || params === void 0 ? void 0 : params.id;
-    var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
+var AddEdit = function (_a) {
+    var _b;
+    var id = _a.id;
+    var _c = react_hook_form_1.useForm(), register = _c.register, handleSubmit = _c.handleSubmit, errors = _c.formState.errors, setValue = _c.setValue;
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
-    var _c = react_1.useState([]), arvores = _c[0], setArvores = _c[1];
+    var _d = react_1.useState([]), arvores = _d[0], setArvores = _d[1];
     var session = react_2.useSession().data;
-    var _d = react_1.useState(null), utLocation = _d[0], setUtLocation = _d[1];
+    var _e = react_1.useState(null), utLocation = _e[0], setUtLocation = _e[1];
     var router = router_1.useRouter();
     var dispatch = hooks_1.useAppDispatch();
     var isAddMode = !id;
-    var _e = react_1.useState([]), polygonPath = _e[0], setPolygonPath = _e[1];
-    var isLoaded = api_1.useJsApiLoader((_a = {
+    var _f = react_1.useState([]), polygonPath = _f[0], setPolygonPath = _f[1];
+    var isLoaded = api_1.useJsApiLoader((_b = {
             id: 'google-map-script',
             googleMapsApiKey: "" + process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
         },
-        _a[exports.libraries] = exports.libraries,
-        _a)).isLoaded;
+        _b[exports.libraries] = exports.libraries,
+        _b)).isLoaded;
     var callBackPolygon = function (data) {
         setPolygonPath(data);
     };

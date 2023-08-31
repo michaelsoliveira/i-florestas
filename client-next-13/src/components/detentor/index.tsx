@@ -1,9 +1,9 @@
 import { Link } from "src/components/Link"
-import alertService from 'services/alert'
-import { TrashIcon, PencilIcon, UsersIcon, InboxInIcon } from '@heroicons/react/24/solid'
+import alertService from '@/services/alert'
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid'
 import { useContext } from "react"
 import { useModalContext } from "@/context/ModalContext"
-import { EmpresaType } from "types/IEmpresa"
+import { EmpresaType } from "@/types/IEmpresa"
 import { AuthContext } from "@/context/AuthContext"
 import { styles } from "../Utils/styles"
 import { LinkBack } from "../LinkBack"

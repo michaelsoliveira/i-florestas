@@ -207,13 +207,16 @@ exports.authOptions = {
                 email: { label: "Email", type: "text", placeholder: "email@bomanejo.online" },
                 password: { label: "Password", type: "password" }
             },
-            authorize: function (credentials, req) {
+            authorize: function (credentials) {
                 return __awaiter(this, void 0, void 0, function () {
                     var res, user, error_4, errorMessage;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 2, , 3]);
+                                if (!(credentials === null || credentials === void 0 ? void 0 : credentials.email) || !credentials.password) {
+                                    return [2 /*return*/, null];
+                                }
                                 return [4 /*yield*/, fetch(process.env.NEXT_PUBLIC_API_URL + "/auth/login", {
                                         method: 'POST',
                                         body: JSON.stringify(credentials),
@@ -224,6 +227,8 @@ exports.authOptions = {
                                 user = res.json().then(function (data) {
                                     var response = __assign({ local: true }, data.user);
                                     return response;
+                                })["catch"](function () {
+                                    return null;
                                 });
                                 // If no error and we have user data, return it
                                 if (res.ok && user) {
@@ -270,7 +275,7 @@ exports.authOptions = {
     pages: {
         // signIn: '/login',  // Displays signin buttons
         // signOut: '/auth/signout', // Displays form with sign out button
-        // error: '/login', // Error code passed in query string as ?error=
+        error: '/auth/login',
         // verifyRequest: '/auth/verify-request', // Used for check email page
         newUser: '/user/change-password' // If set, new users will be directed here on first sign in
     },

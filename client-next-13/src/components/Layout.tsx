@@ -24,7 +24,6 @@ const Layout = ({ children }: props) => {
     const { loading } = useContext(LoadingContext)
     const { projeto, setProjeto } = useContext(ProjetoContext)
     const { client } = useContext(AuthContext)
-    const router: any = useRouter()
     const poa = useAppSelector((state: RootState) => state.poa)
 
     const getProjetoAtivo = useCallback(async () => {

@@ -2,7 +2,7 @@
 
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import { AuthContext } from '@/context/AuthContext'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { RootState } from '@/redux/store'
 import { useAppSelector } from '@/redux/hooks'
 import alertService from '@/services/alert'

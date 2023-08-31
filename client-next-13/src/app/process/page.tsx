@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useContext, useEffect, useState } from "react"
 import withAuthentication from "src/components/withAuthentication"
 import { AuthContext } from "@/context/AuthContext"

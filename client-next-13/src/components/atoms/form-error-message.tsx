@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import classNames from 'classnames';
 
 export type FormErrorMessageProps = {
   className?: string;
+  children: ReactNode;
 };
 
 export const FormErrorMessage: FC<FormErrorMessageProps> = ({

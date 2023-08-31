@@ -13,7 +13,7 @@ const withAuthentication = (WrappedComponent: any) => {
       
 
         if (typeof session !== typeof undefined) {
-            if (!session) {
+            if (status !== 'authenticated') {
                 router.push('/login')
             }
         }

@@ -4,7 +4,7 @@ import React, { createContext, ReactNode, useContext } from "react";
 import useClient from "@/services/client";
 
 type AuthContextType = {
-    client: any
+    client: any;
 }
 
 export const AuthContext = createContext({} as AuthContextType)

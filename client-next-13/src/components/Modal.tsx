@@ -2,7 +2,7 @@
 
 import { Fragment, ReactNode, useCallback, useEffect, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationIcon } from '@heroicons/react/outline'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import classNames from './Utils/classNames'
 import { useModalContext } from '@/context/ModalContext'
 
@@ -111,7 +111,7 @@ export default function Modal(props: ModaType) {
                     <div className="sm:flex sm:items-center py-2 space-x-2">
                       { (iconType === 'warn') && (
                         <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                          <ExclamationIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
+                          <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" />
                         </div>
                       ) }
                       <div className="relative pt-1 w-full">

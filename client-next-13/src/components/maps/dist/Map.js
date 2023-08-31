@@ -40,7 +40,7 @@ function Map(_a) {
     var _e = react_1.useState(), utLocation = _e[0], setUtLocation = _e[1];
     var _f = react_1.useState(), directions = _f[0], setDirections = _f[1];
     var mapRef = react_1.useRef();
-    var onUnmount = react_1.useCallback(function callback(map) {
+    var onUnmount = react_1.useCallback(function callback() {
         mapRef.current = undefined;
     }, []);
     var onUnmountPolygon = react_1.useCallback(function () {

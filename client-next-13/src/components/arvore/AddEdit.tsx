@@ -15,11 +15,8 @@ import RadioGroup from '../Form/RadioGroup'
 import Option from "../Form/Option";
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
-import { useParams } from 'next/navigation'
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ id } : { id: string }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [observacao, setObservances] = useState<OptionType>()
     const [observacoes, setObservacoes] = useState<any>()

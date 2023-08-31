@@ -70,9 +70,9 @@ var poaSlice_1 = require("@/redux/features/poaSlice");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var ModalContext_1 = require("@/context/ModalContext");
 var styles_1 = require("../Utils/styles");
-var Index_1 = require("../responsavel/Index");
-var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var navigation_1 = require("next/navigation");
+var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
+var AddResponsavel_1 = require("../responsavel/AddResponsavel");
 var AddEdit = function () {
     var params = navigation_1.useParams();
     var id = params === null || params === void 0 ? void 0 : params.id;
@@ -467,7 +467,7 @@ var AddEdit = function () {
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
             content: React.createElement("div", null,
-                React.createElement(Index_1["default"], { responseData: responseTecElab }))
+                React.createElement(AddResponsavel_1["default"], { responseData: responseTecElab }))
         });
     };
     var loadRespElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
@@ -694,7 +694,7 @@ var AddEdit = function () {
                                                         label: 'Entre com as iniciais do POA ...', value: ''
                                                     } })))),
                                     categorias.length > 0 && (React.createElement(React.Fragment, null,
-                                        React.createElement(CriterioPoa_1.CriterioPoa, { checkedCategorias: checkedCategorias, categorias: categorias, handleSelectAllCategorias: handleSelectAllCategorias, handleSelectCategoria: handleSelectCategoria })))))))),
+                                        React.createElement(CriterioPoa_1["default"], { checkedCategorias: checkedCategorias, categorias: categorias, handleSelectAllCategorias: handleSelectAllCategorias, handleSelectCategoria: handleSelectCategoria })))))))),
                         React.createElement("div", { className: 'border border-gray-200 rounded-lg p-4 mt-5 relative' },
                             React.createElement("span", { className: "text-gray-700 py-2 absolute -top-5 bg-white px-2" }, "UTs"),
                             React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4" },
