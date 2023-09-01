@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useContext, useEffect, useState } from "react"
-import SelectableRowList from "../Utils/SelectableRowList"
+import SelectableRowList from "../utils/SelectableRowList"
 import { useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 import { OptionType, Select } from "../Select"

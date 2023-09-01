@@ -190,7 +190,7 @@ exports.__esModule = true;
 
 var react_1 = require("react");
 
-var EditableTable_1 = require("../Utils/EditableTable");
+var EditableTable_1 = require("../utils/EditableTable");
 
 var react_fontawesome_1 = require("@fortawesome/react-fontawesome");
 

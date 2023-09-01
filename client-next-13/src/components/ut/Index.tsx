@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 import { UtType } from "@/types/IUtType"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import AddAuto from "./AddAuto"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

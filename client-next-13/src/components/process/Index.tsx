@@ -13,7 +13,7 @@ import { ProjetoContext } from "@/context/ProjetoContext"
 import classNames from "classnames"
 import { PencilIcon } from "@heroicons/react/24/solid"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import Exploracao from "../poa/exploracao/Index"
 import CriterioPoa from "../categoria-especie/CriterioPoa"
 

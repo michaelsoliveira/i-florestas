@@ -12,7 +12,7 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from '@/context/ProjetoContext'
 import RadioGroup from '../form/RadioGroup'
-import Option from "../form/Option";
+import Option from '../form/Option'
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 

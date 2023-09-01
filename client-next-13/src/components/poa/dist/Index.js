@@ -65,7 +65,7 @@ var Select_1 = require("../Select");
 var umfSlice_1 = require("@/redux/features/umfSlice");
 var hooks_1 = require("@/redux//hooks");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../Utils/styles");
+var styles_1 = require("../utils/styles");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var Index = function (_a) {
     var currentPoas = _a.currentPoas, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadPoas = _a.loadPoas;

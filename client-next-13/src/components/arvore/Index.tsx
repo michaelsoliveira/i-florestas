@@ -18,7 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { LoadingContext } from "@/context/LoadingContext"
 import { usePathname } from "next/navigation"
-import { exportToCSV } from "@/components/Utils/ExportData"
+import { exportToCSV } from "@/components/utils/ExportData"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
 import { Pagination } from "../Pagination"
 

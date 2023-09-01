@@ -15,7 +15,7 @@ import { RootState } from '@/redux/store'
 import { setPoa } from "@/redux/features/poaSlice"
 import { ProjetoContext } from '@/context/ProjetoContext'
 import { useModalContext } from '@/context/ModalContext'
-import { styles } from '../Utils/styles'
+import { styles } from '../utils/styles'
 import { useParams } from 'next/navigation'
 import CriterioPoa from '../categoria-especie/CriterioPoa'
 import AddResponsavel from '../responsavel/AddResponsavel'

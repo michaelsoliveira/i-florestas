@@ -6,7 +6,7 @@ import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "../../context/AuthContext"
-import { styles, stylesForm } from "../Utils/styles"
+import { styles, stylesForm } from "../utils/styles"
 import { useModalContext } from "@/context/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"

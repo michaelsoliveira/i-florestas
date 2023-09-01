@@ -44,7 +44,7 @@ var Yup = require("yup");
 require("react-toastify/dist/ReactToastify.css");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
-var FocusError_1 = require("../Form/FocusError");
+var FocusError_1 = require("../form/FocusError");
 exports.AddEdit = react_1.forwardRef(function AddEdit(_a, ref) {
     var _this = this;
     var styles = _a.styles, obsId = _a.obsId, sendForm = _a.sendForm;

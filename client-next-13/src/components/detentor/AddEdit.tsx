@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import { AuthContext } from "../../context/AuthContext";
 import { Link } from "../Link";
 import RadioGroup from "../form/RadioGroup";
-import Option from "../form/Option";
+import Option from '../form/Option'
 import PessoaFisica from "../form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "@/context/ProjetoContext";

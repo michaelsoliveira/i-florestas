@@ -6,7 +6,7 @@ import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
 import { UmfType } from "@/types/IUMFType"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     

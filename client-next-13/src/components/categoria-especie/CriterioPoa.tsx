@@ -2,7 +2,7 @@
 
 import { PencilIcon } from "@heroicons/react/24/outline"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import CategoriaEspecie from "./CategoriaEspecie"
 import { useRef } from "react"
 

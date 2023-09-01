@@ -5,7 +5,7 @@ import { ProjetoContext } from "@/context/ProjetoContext"
 import { CSSProperties, forwardRef, useContext, useEffect, useMemo, useState } from "react"
 import { useCSVReader } from "react-papaparse"
 import alertService from '@/services/alert'
-import { Button } from "../Utils/Button"
+import { Button } from "../utils/Button"
 import Table from "../Table"
 import { StepContext } from "@/context/StepContext"
 import SelectFileStep from "./steps/SelectFileStep"

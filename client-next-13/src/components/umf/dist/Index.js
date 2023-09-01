@@ -50,7 +50,7 @@ var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../Utils/styles");
+var styles_1 = require("../utils/styles");
 var Umfs = function (_a) {
     var currentUmfs = _a.currentUmfs, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUmfs = _a.loadUmfs;
     var _b = react_1.useState(currentUmfs), filteredUmf = _b[0], setFilteredUmf = _b[1];

@@ -67,7 +67,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var EditableTable_1 = require("../Utils/EditableTable");
+var EditableTable_1 = require("../utils/EditableTable");
 var react_fontawesome_1 = require("@fortawesome/react-fontawesome");
 var free_solid_svg_icons_1 = require("@fortawesome/free-solid-svg-icons");
 var ModalContext_1 = require("@/context/ModalContext");

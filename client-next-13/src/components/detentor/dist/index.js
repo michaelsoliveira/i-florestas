@@ -42,7 +42,7 @@ var solid_1 = require("@heroicons/react/24/solid");
 var react_1 = require("react");
 var ModalContext_1 = require("@/context/ModalContext");
 var AuthContext_1 = require("@/context/AuthContext");
-var styles_1 = require("../Utils/styles");
+var styles_1 = require("../utils/styles");
 var LinkBack_1 = require("../LinkBack");
 var ListEmpresas = function (_a) {
     var empresas = _a.empresas, isLoading = _a.isLoading, loadEmpresas = _a.loadEmpresas, projetoId = _a.projetoId;

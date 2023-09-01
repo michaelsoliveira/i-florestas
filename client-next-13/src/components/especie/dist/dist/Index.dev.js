@@ -181,7 +181,7 @@ var ProjetoContext_1 = require("src/contexts/ProjetoContext");
 
 var ImportModal_1 = require("./ImportModal");
 
-var styles_1 = require("../Utils/styles");
+var styles_1 = require("../utils/styles");
 
 var StepContext_1 = require("src/contexts/StepContext");
 

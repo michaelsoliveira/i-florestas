@@ -147,7 +147,7 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
 
 exports.__esModule = true;
 
-var FormInput_1 = require("../FormInput");
+var FormInput_1 = require("../formInput");
 
 var react_1 = require("react");
 
@@ -169,7 +169,7 @@ var provider_1 = require("@/redux/provider");
 
 var umfSlice_1 = require("@/redux/features/umfSlice");
 
-var SelectEstado_1 = require("../Utils/SelectEstado");
+var SelectEstado_1 = require("../utils/SelectEstado");
 
 var Umf = function Umf(_a) {
   var id = _a.id;

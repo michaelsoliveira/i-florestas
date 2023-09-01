@@ -56,7 +56,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var Select_1 = require("../Select");
-var FormInput_1 = require("../FormInput");
+var FormInput_1 = require("../formInput");
 var react_1 = require("react");
 var router_1 = require("next/router");
 var react_hook_form_1 = require("react-hook-form");
@@ -69,7 +69,7 @@ var hooks_1 = require("@/redux/hooks");
 var poaSlice_1 = require("@/redux/features/poaSlice");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../Utils/styles");
+var styles_1 = require("../utils/styles");
 var navigation_1 = require("next/navigation");
 var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var AddResponsavel_1 = require("../responsavel/AddResponsavel");

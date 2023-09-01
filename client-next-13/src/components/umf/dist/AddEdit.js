@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var FormInput_1 = require("../FormInput");
+var FormInput_1 = require("../formInput");
 var react_1 = require("react");
 var navigation_1 = require("next/navigation");
 var react_hook_form_1 = require("react-hook-form");
@@ -47,7 +47,7 @@ var LinkBack_1 = require("../LinkBack");
 var Link_1 = require("../Link");
 var hooks_1 = require("@/redux/hooks");
 var umfSlice_1 = require("@/redux/features/umfSlice");
-var SelectEstado_1 = require("../Utils/SelectEstado");
+var SelectEstado_1 = require("../utils/SelectEstado");
 var navigation_2 = require("next/navigation");
 var AddEdit = function () {
     var params = navigation_2.useParams();

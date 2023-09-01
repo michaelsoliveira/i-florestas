@@ -10,7 +10,7 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
-import SelectEstado from '../Utils/SelectEstado'
+import SelectEstado from '../utils/SelectEstado'
 
 import { useParams } from 'next/navigation'
 

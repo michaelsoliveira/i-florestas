@@ -15,7 +15,7 @@ import { ProjetoContext } from '@/context/ProjetoContext'
 import { useModalContext } from '@/context/ModalContext'
 import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
-import { styles } from './Utils/styles'
+import { styles } from './utils/styles'
 
 type SubMenuType = {
         name?: string,

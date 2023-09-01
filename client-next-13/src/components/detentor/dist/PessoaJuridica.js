@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var FormInput_1 = require("../FormInput");
+var FormInput_1 = require("../formInput");
 var PessoaJuridica = function (_a) {
     var register = _a.register, errors = _a.errors;
     return (React.createElement("div", { className: "grid grid-cols-6 gap-4" },

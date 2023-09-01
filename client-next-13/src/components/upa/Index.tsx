@@ -14,7 +14,7 @@ import { RootState } from "@/redux/store"
 import { UpaType } from "@/types/IUpaType"
 
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {

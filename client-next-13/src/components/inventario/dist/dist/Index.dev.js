@@ -185,7 +185,7 @@ var react_papaparse_1 = require("react-papaparse");
 
 var Table_1 = require("../Table");
 
-var Button_1 = require("../Utils/Button");
+var Button_1 = require("../utils/Button");
 
 var styles = {
   csvReader: {

@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef, useContext, useEffect, useState } from "react";
-import EditableTable from "../Utils/EditableTable";
+import EditableTable from "../utils/EditableTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useModalContext } from "@/context/ModalContext";

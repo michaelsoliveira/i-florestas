@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@/redux//hooks"
 import { RootState } from "@/redux/store"
 
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {

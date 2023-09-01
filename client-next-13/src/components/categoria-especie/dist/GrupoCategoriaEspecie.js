@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var SelectableRowList_1 = require("../Utils/SelectableRowList");
+var SelectableRowList_1 = require("../utils/SelectableRowList");
 var hooks_1 = require("@/redux/hooks");
 var Select_1 = require("../Select");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
