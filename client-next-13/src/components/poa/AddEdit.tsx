@@ -20,9 +20,7 @@ import { useParams } from 'next/navigation'
 import CriterioPoa from '../categoria-especie/CriterioPoa'
 import AddResponsavel from '../responsavel/AddResponsavel'
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ id }: { id: string }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [resp_elab, setRespElab] = useState<OptionType>()
     const [resp_exec, setRespExec] = useState<OptionType>()
@@ -345,7 +343,7 @@ const AddEdit = () => {
             title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <div><AddResponsavel responseData={responseTecElab} /></div>
+            content: <div><AddResponsavel id={resp_elab?.value} responseData={responseTecElab} /></div>
         })
     }
 

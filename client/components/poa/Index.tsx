@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { RootState } from "../../store"
 
 import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../utils/styles"
+import { styles } from "../Utils_1/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadPoas }: any) => {

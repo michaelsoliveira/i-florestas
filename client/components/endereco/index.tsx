@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FormInput } from "../FormInput"
 import { OptionType } from "../Select"
-import SelectEstado from "../utils/SelectEstado"
+import SelectEstado from "../Utils_1/SelectEstado"
 
 const Endereco = ({register, value, setValue, errors}: any) => {
     const [estado, setEstado] = useState<OptionType>()

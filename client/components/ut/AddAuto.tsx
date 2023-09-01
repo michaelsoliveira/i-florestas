@@ -1,5 +1,5 @@
 import { forwardRef, useContext, useEffect, useState } from "react";
-import EditableTable from "../utils/EditableTable";
+import EditableTable from "../Utils_1/EditableTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useModalContext } from "contexts/ModalContext";

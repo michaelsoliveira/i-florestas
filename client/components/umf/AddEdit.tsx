@@ -10,7 +10,7 @@ import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { useAppDispatch } from 'store/hooks'
 import { setUmf } from 'store/umfSlice'
-import SelectEstado from '../utils/SelectEstado'
+import SelectEstado from '../Utils_1/SelectEstado'
 
 const Umf = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()

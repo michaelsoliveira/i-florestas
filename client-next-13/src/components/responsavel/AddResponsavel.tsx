@@ -2,7 +2,7 @@
 
 import { forwardRef, useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from 'react-hook-form'
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import alertService from "@/services/alert";
 import { AuthContext } from "../../context/AuthContext";
 import PessoaFisica from "../form/PessoaFisica";
@@ -13,7 +13,7 @@ import { useModalContext } from '@/context/ModalContext'
 
 const AddResponsavel =  forwardRef<any, any>(
     function AddEdit(
-      { responseData }, 
+      { id, responseData }, 
       ref
     ) {
     const router = useRouter()
@@ -21,7 +21,7 @@ const AddResponsavel =  forwardRef<any, any>(
     const [ responsavel, setResponsavel ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const [estado, setEstado] = useState<any>()
-    const isAddMode = !projeto?.pessoa
+    const isAddMode = !id
     const { hideModal } = useModalContext()
 
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
@@ -82,7 +82,7 @@ const AddResponsavel =  forwardRef<any, any>(
             .then((response: any) => {
                 const responsavel = response.data
                 alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
-                router.push('/poa')
+                hideModal()
             })
     }
     

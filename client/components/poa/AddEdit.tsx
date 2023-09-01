@@ -13,7 +13,7 @@ import { RootState } from '../../store'
 import { setPoa } from "../../store/poaSlice"
 import { ProjetoContext } from 'contexts/ProjetoContext'
 import { useModalContext } from 'contexts/ModalContext'
-import { styles } from '../utils/styles'
+import { styles } from '../Utils_1/styles'
 import {
     PlusIcon,
     // PencilIcon,

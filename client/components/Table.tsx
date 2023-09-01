@@ -1,8 +1,8 @@
 import React, { DetailedHTMLProps, InputHTMLAttributes, useMemo, useState } from 'react'
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid'
 import { Button, PageButton } from './utils/Button'
-import classNames from './utils/classNames'
-import { SortIcon, SortUpIcon, SortDownIcon } from './utils/Icons'
+import classNames from './Utils_1/classNames'
+import { SortIcon, SortUpIcon, SortDownIcon } from './Utils_1/Icons'
 import Image from 'next/image'
 import { useModalContext } from 'contexts/ModalContext'
 const { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } = require('react-table')

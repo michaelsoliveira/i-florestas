@@ -181,13 +181,14 @@ export const authOptions: NextAuthOptions = {
                   ...data.user
                 }
                 return response
-              }).catch(() => {
+              }).catch((res: any) => {
+                console.log(res)
                 return null
               })
               // If no error and we have user data, return it
               if (res.ok && user) {
                 return user
-              } 
+              }
                   
               return null
             } catch (error: any) {

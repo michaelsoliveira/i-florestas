@@ -1,7 +1,7 @@
 import { PencilIcon } from "@heroicons/react/outline"
 import { useModalContext } from "contexts/ModalContext"
 import AddEdit from "./AddEdit"
-import { styles } from "../utils/styles"
+import { styles } from "../Utils_1/styles"
 import CategoriaEspecie from "./CategoriaEspecie"
 import { useEffect, useRef } from "react"
 
