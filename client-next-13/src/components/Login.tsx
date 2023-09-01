@@ -50,8 +50,8 @@ function Login() {
             email,
             password,
             // callbackUrl: `${window.location.origin}`,
-          }).then((response: any) => {
-            if (response.ok) {
+          }).then((res: any) => {
+            if (res?.error === null) {
               alertService.success('Login realizado com sucesso')
               hideModal()
               router.push('/')

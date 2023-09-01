@@ -37,7 +37,7 @@ class ResponsavelService {
 
         const basicData = {
             crea: data?.crea,
-            numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
+            //numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
             tipo: data?.tipo,
             pessoa: {
                 create: {
@@ -91,7 +91,7 @@ class ResponsavelService {
         
         const basicData = {
             crea: data?.crea,
-            numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
+            //numero_art: data?.numero_art ? Number.parseInt(data?.numero_art) : 0,
             pessoa: {
                 update: {
                     pessoaFisica: {
@@ -120,7 +120,7 @@ class ResponsavelService {
             }
         }
         
-        const detentor = await prismaClient.pessoa.update({
+        const detentor = await prismaClient.responsavelTecnico.update({
             data: {
                 ...basicData,
             },
@@ -132,7 +132,7 @@ class ResponsavelService {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.pessoa.delete({
+        await prismaClient.responsavelTecnico.delete({
             where: {
                 id
             }

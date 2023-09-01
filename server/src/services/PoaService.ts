@@ -9,6 +9,9 @@ export interface PoaType {
     resp_elab: string;
     resp_exec: string;
     situacao: string;
+    protocolo_poa: string;
+    resp_elab_art: string;
+    resp_exec_art: string;
     uts: any;
     categorias: any;
 }
@@ -63,8 +66,11 @@ class PoaService {
         const poa = await prismaClient.poa.create({
             data: {
                 descricao: data.descricao,
-                corte_maximo: data.corte_maximo,
+                corte_maximo: Number(data.corte_maximo),
                 pmfs: data.pmfs,
+                protocolo_poa: data.protocolo_poa,
+                num_art_resp_elab: data.resp_elab_art ? Number(data.resp_elab_art) : undefined,
+                num_art_resp_exec: data.resp_elab_art ? Number(data.resp_exec_art) : undefined,
                 situacao_poa: {
                     connect: {
                         id: situacaoPoa?.id

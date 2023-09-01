@@ -26,14 +26,14 @@ const AddResponsavel =  forwardRef<any, any>(
 
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
-    const loadResponsaveis = useCallback(async () => {
+    const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel`)
+            const { data } = await client.get(`/responsavel/${id}`)
             setResponsavel(data)
 
             setEstado({
-                label: data?.endereco?.estado?.nome,
-                value: data?.endereco?.estado?.id
+                label: data?.pessoa?.endereco?.estado?.nome,
+                value: data?.pessoa?.endereco?.estado?.id
             })
 
             for (const [key, value] of Object.entries(data)) {
@@ -46,8 +46,8 @@ const AddResponsavel =  forwardRef<any, any>(
     }, [client, setValue])
     
     useEffect(() => {  
-        loadResponsaveis()
-    }, [loadResponsaveis])
+        loadResponsavel()
+    }, [loadResponsavel])
 
     async function onSubmit(data: any) {
         try {
@@ -107,17 +107,7 @@ const AddResponsavel =  forwardRef<any, any>(
                                                 id="nome"
                                                 className="pb-4"
                                             />
-                                        </div> 
-                                        <div className="col-span-2">     
-                                            <FormInput
-                                                name="numero_art"
-                                                label="Número ART"
-                                                register={register}
-                                                errors={errors}
-                                                id="rg"
-                                                className="pb-4"
-                                            />
-                                        </div> 
+                                        </div>                                     
                                     </div>
                                         <PessoaFisica register={register} errors={errors} />
                                         <Endereco value={estado} setValue={setValue} register={register} errors={errors} />

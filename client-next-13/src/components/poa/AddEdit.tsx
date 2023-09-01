@@ -16,7 +16,6 @@ import { setPoa } from "@/redux/features/poaSlice"
 import { ProjetoContext } from '@/context/ProjetoContext'
 import { useModalContext } from '@/context/ModalContext'
 import { styles } from '../utils/styles'
-import { useParams } from 'next/navigation'
 import CriterioPoa from '../categoria-especie/CriterioPoa'
 import AddResponsavel from '../responsavel/AddResponsavel'
 
@@ -501,7 +500,7 @@ const AddEdit = ({ id }: { id: string }) => {
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4'>
                                 
-                                <div className='col-span-6 md:col-span-3'>
+                                <div className='col-span-6 md:col-span-2'>
                                     <FormInput
                                         name="descricao"
                                         label="Descricao"
@@ -520,7 +519,7 @@ const AddEdit = ({ id }: { id: string }) => {
                                     />
                                 </div>
                             
-                                <div className='col-span-2'>
+                                <div>
                                     <FormInput
                                         id="pmfs"
                                         name="pmfs"
@@ -530,16 +529,26 @@ const AddEdit = ({ id }: { id: string }) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div className='col-span-1'>
+                                <div>
                                     <FormInput
-                                            id="corte_maximo"
-                                            name="corte_maximo"
-                                            label="Corte Máximo"
-                                            type="text"
-                                            register={register}
-                                            errors={errors}
-                                        />
-                                    </div>
+                                        id="protocolo_poa"
+                                        name="protocolo_poa"
+                                        label="Protocolo POA"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                </div>
+                                <div>
+                                <FormInput
+                                        id="corte_maximo"
+                                        name="corte_maximo"
+                                        label="Corte Máximo"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                </div>
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
