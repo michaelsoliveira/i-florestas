@@ -18,8 +18,9 @@ import { useModalContext } from '@/context/ModalContext'
 import { styles } from '../utils/styles'
 import CriterioPoa from '../categoria-especie/CriterioPoa'
 import AddResponsavel from '../responsavel/AddResponsavel'
+import { PlusSmallIcon, PencilIcon } from '@heroicons/react/24/solid'
 
-const AddEdit = ({ id }: { id: string }) => {
+const AddEdit = ({ id }: { id: string}) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [resp_elab, setRespElab] = useState<OptionType>()
     const [resp_exec, setRespExec] = useState<OptionType>()
@@ -337,7 +338,34 @@ const AddEdit = ({ id }: { id: string }) => {
         })
     }
 
-    const addResponsavel = () => {
+    const addRespElab = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel responseData={responseTecElab} /></div>
+        })
+    }
+
+    const updateRespElab = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel id={resp_elab?.value} responseData={responseTecElab} /></div>
+        })
+    }
+
+    const addRespExec = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel responseData={responseTecExec} /></div>
+        })
+    }
+
+    const updateRespExec = () => {
         showModal({
             title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
@@ -498,9 +526,9 @@ const AddEdit = ({ id }: { id: string }) => {
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4'>
+                            <div className='grid grid-cols-2 md:grid-cols-6 gap-4'>
                                 
-                                <div className='col-span-6 md:col-span-2'>
+                                <div className='col-span-5 md:col-span-3'>
                                     <FormInput
                                         name="descricao"
                                         label="Descricao"
@@ -519,7 +547,7 @@ const AddEdit = ({ id }: { id: string }) => {
                                     />
                                 </div>
                             
-                                <div>
+                                <div className='col-span-1'>
                                     <FormInput
                                         id="pmfs"
                                         name="pmfs"
@@ -529,7 +557,7 @@ const AddEdit = ({ id }: { id: string }) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div>
+                                <div className='col-span-5 md:col-span-1'>
                                     <FormInput
                                         id="protocolo_poa"
                                         name="protocolo_poa"
@@ -552,10 +580,8 @@ const AddEdit = ({ id }: { id: string }) => {
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
-                                    <div className='flex flex-col md:flex-row space-x-2 items-center w-full justify-around'>
-                                        <div className="flex flex-row items-center">
-                                        
-                                            <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
+                                    <div className="grid grid-cols-1 md:grid-cols-3">
+                                            <div>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={resp_elab}
@@ -565,8 +591,39 @@ const AddEdit = ({ id }: { id: string }) => {
                                                     callback={selectedRespTecElab}
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="flex flex-row items-center">
+                                            <div className='mb-[6px] md:px-4 w-48'>
+                                                <FormInput
+                                                    id="resp_elab_art"
+                                                    name="resp_elab_art"
+                                                    label="Número ART"
+                                                    type="text"
+                                                    register={register}
+                                                    errors={errors}
+                                                />
+                                            </div>
+                                            <div className='flex flex-row w-full items-center justify-center space-x-2'>
+                                                <span
+                                                    onClick={addRespElab}
+                                                    className="text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
+                                                >
+                                                    <PlusSmallIcon className='w-8 h-8' />
+                                                </span>
+                                                { resp_elab && (
+                                                    <span
+                                                        onClick={updateRespElab}
+                                                        className="px-2 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
+                                                    >
+                                                        <PencilIcon className='w-4 h-4' />
+                                                    </span>
+                                                    ) 
+                                                }
+                                                
+                                            </div>
+                               
+                                    </div>
+                                        
+
+                                    <div className="flex flex-row items-center">
                                             <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
@@ -577,15 +634,24 @@ const AddEdit = ({ id }: { id: string }) => {
                                                 callback={selectedRespTecExec}
                                             />
                                             </div>
+                                            <div>
+                                                <FormInput
+                                                    id="resp_exec_art"
+                                                    name="resp_exec_art"
+                                                    label="Número ART"
+                                                    type="text"
+                                                    register={register}
+                                                    errors={errors}
+                                                />
+                                            </div>
                                         </div>
                                         <span
                                             id='btn-resp'
-                                            onClick={addResponsavel}
+                                            onClick={addRespExec}
                                             className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5"
                                         >
                                             Novo Responsável
                                         </span>
-                                    </div>
                                     </div>
                                 </div>
                                 {isAddMode && (

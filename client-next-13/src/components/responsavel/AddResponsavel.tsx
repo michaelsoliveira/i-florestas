@@ -28,26 +28,38 @@ const AddResponsavel =  forwardRef<any, any>(
 
     const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel/${id}`)
-            setResponsavel(data)
+        const { data } = await client.get(`/responsavel/${id}`)
+        setResponsavel(data)
+        console.log(data)
+        setEstado({
+            label: data?.pessoa?.endereco?.estado?.nome,
+            value: data?.pessoa?.endereco?.estado?.id
+        })
 
-            setEstado({
-                label: data?.pessoa?.endereco?.estado?.nome,
-                value: data?.pessoa?.endereco?.estado?.id
-            })
-
-            for (const [key, value] of Object.entries(data)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                }) 
-            }
-        
-    }, [client, setValue])
+        for (const [key, value] of Object.entries(data)) {
+            switch(key) {
+                case 'pessoa': {
+                    setValue('pessoaFisica.nome', data.pessoa?.pessoaFisica?.nome);
+                    setValue('pessoaFisica.rg', data.pessoa?.pessoaFisica?.rg);
+                    setValue('pessoaFisica.cpf', data.pessoa?.pessoaFisica?.cpf);
+                }
+                break;
+                default: {
+                    setValue(key, value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })
+                }
+            } 
+        }
     
-    useEffect(() => {  
+}, [client, setValue])
+
+useEffect(() => {  
+    if (!isAddMode) {
         loadResponsavel()
-    }, [loadResponsavel])
+    }    
+}, [loadResponsavel])
 
     async function onSubmit(data: any) {
         try {
@@ -71,7 +83,6 @@ const AddResponsavel =  forwardRef<any, any>(
                     responseData(responsavel)
                     hideModal()
                     alertService.success(`Responsável Técnico cadastrada com SUCESSO!!!`);
-                    //router.push(`/poa`)
                 }
             }) 
     }
@@ -80,9 +91,8 @@ const AddResponsavel =  forwardRef<any, any>(
         
         await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
-                const responsavel = response.data
-                alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
                 hideModal()
+                alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
             })
     }
     
@@ -107,7 +117,17 @@ const AddResponsavel =  forwardRef<any, any>(
                                                 id="nome"
                                                 className="pb-4"
                                             />
-                                        </div>                                     
+                                        </div> 
+                                        <div className="col-span-2">     
+                                            <FormInput
+                                                name="numero_art"
+                                                label="Número ART"
+                                                register={register}
+                                                errors={errors}
+                                                id="rg"
+                                                className="pb-4"
+                                            />
+                                        </div> 
                                     </div>
                                         <PessoaFisica register={register} errors={errors} />
                                         <Endereco value={estado} setValue={setValue} register={register} errors={errors} />

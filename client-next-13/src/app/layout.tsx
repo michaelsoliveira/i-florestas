@@ -7,11 +7,9 @@ import { ProjetoProvider } from "@/context/ProjetoContext"
 import { ModalProvider } from "@/context/ModalContext"
 import { LoadingProvider } from "@/context/LoadingContext"
 import { StepProvider } from "@/context/StepContext"
-// import { Provider } from 'react-redux'
 import { store } from '@/redux/store'
 import { saveState } from '@/redux/browser-storage'
 import Layout from '@/components/Layout'
-// import { SessionProvider } from 'next-auth/react'
 import Modal from "@/components/Modal"
 import NextNProgress from 'nextjs-progressbar'
 import React from 'react'
@@ -21,6 +19,10 @@ import { ToastContainer } from 'react-toastify'
 const { debounce } = require("debounce")
 
 import { NextAuthProvider } from "./providers"
+
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({ weight: "400", subsets: ["latin"] });
 
 function RootLayout({
   children,
@@ -38,29 +40,29 @@ function RootLayout({
   
   return (
     <html lang="en">
-      <body>
-      <Providers>
-        <NextAuthProvider>
-          <LoadingProvider>
-              <ModalProvider>
-                <ProjetoProvider>
-                  <AuthProvider>
-                      <StepProvider>
-                        <Layout>    
-                          <NextNProgress />
-                          <Modal />
-                          <ToastContainer />   
-                            { children }
-                        </Layout>
-                      </StepProvider>
-                  </AuthProvider>
-                </ProjetoProvider>
-              </ModalProvider>
-            </LoadingProvider>
-        </NextAuthProvider>
-        
-      </Providers>
-    </body>
+      <body className={roboto.className}>
+          <Providers>
+            <NextAuthProvider>
+              <LoadingProvider>
+                  <ModalProvider>
+                    <ProjetoProvider>
+                      <AuthProvider>
+                          <StepProvider>
+                            <Layout>    
+                              <NextNProgress />
+                              <Modal />
+                              <ToastContainer />   
+                                { children }
+                            </Layout>
+                          </StepProvider>
+                      </AuthProvider>
+                    </ProjetoProvider>
+                  </ModalProvider>
+                </LoadingProvider>
+            </NextAuthProvider>
+            
+          </Providers>
+      </body>
     </html>
   )
 }

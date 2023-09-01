@@ -1,10 +1,8 @@
-import { createRef, forwardRef, useCallback, useContext, useEffect, useState } from "react";
-import { useForm, useFormState } from 'react-hook-form'
+import { forwardRef, useCallback, useContext, useEffect, useState } from "react";
+import { useForm } from 'react-hook-form'
 import { useRouter } from "next/router"
 import alertService from "../../services/alert";
-import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link } from "../Link";
 import PessoaFisica from "../form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
@@ -29,7 +27,6 @@ const Responsavel =  forwardRef<any, any>(
     const loadResponsavel = useCallback(async () => {
 
         const { data } = await client.get(`/responsavel/${id}`)
-        console.log(data)
         setResponsavel(data)
 
         setEstado({
@@ -80,7 +77,6 @@ useEffect(() => {
                     responseData(responsavel)
                     hideModal()
                     alertService.success(`Responsável Técnico cadastrada com SUCESSO!!!`);
-                    //router.push(`/poa`)
                 }
             }) 
     }
