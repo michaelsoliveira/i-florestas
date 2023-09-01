@@ -2,7 +2,7 @@
 
 import { ReactNode, useCallback, useContext, useEffect } from "react"
 import Navigation from './Navigation'
-import Footer from './Footer'
+import Footer from './footer'
 import { useSession, signOut } from "next-auth/react"
 import { custodia, estatistica, inventario, planejamento, reports, resources, solutions } from "./Menus"
 import { Loading } from "./Loading"
@@ -10,7 +10,7 @@ import { LoadingContext } from "../context/LoadingContext"
 import { ProjetoContext } from "../context/ProjetoContext"
 import { AuthContext } from "../context/AuthContext"
 import { CogIcon, UserGroupIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useAppSelector } from "../redux/hooks"
 import { RootState } from "../redux/store"
 import Script from 'next/script'

@@ -10,11 +10,11 @@ import { Link } from "../Link";
 import RadioGroup from "../form/RadioGroup";
 import Option from "../form/Option";
 import PessoaFisica from "../form/PessoaFisica";
-import PessoaJuridica from "../form/PessoaJuridica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "@/context/ProjetoContext";
 
 import { useParams } from 'next/navigation'
+import PessoaJuridica from "../form/PessoaJuridica";
 
 const AddEdit = () => {
     const params = useParams()
