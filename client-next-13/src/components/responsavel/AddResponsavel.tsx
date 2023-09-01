@@ -30,7 +30,6 @@ const AddResponsavel =  forwardRef<any, any>(
 
         const { data } = await client.get(`/responsavel/${id}`)
         setResponsavel(data)
-        console.log(data)
         setEstado({
             label: data?.pessoa?.endereco?.estado?.nome,
             value: data?.pessoa?.endereco?.estado?.id
@@ -91,6 +90,8 @@ useEffect(() => {
         
         await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
+                const { responsavel } = response.data
+                responseData(responsavel)
                 hideModal()
                 alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
             })
@@ -118,29 +119,19 @@ useEffect(() => {
                                                 className="pb-4"
                                             />
                                         </div> 
-                                        <div className="col-span-2">     
-                                            <FormInput
-                                                name="numero_art"
-                                                label="Número ART"
-                                                register={register}
-                                                errors={errors}
-                                                id="rg"
-                                                className="pb-4"
-                                            />
-                                        </div> 
                                     </div>
-                                        <PessoaFisica register={register} errors={errors} />
-                                        <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
+                                    <PessoaFisica register={register} errors={errors} />
+                                    <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>
                         </div>
-                        </div>
-                    </form>
-                    
                     </div>
+                </form>
+                
                 </div>
             </div>
         </div>
+    </div>
     )
 })
 

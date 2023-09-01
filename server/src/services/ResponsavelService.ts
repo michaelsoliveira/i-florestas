@@ -120,7 +120,14 @@ class ResponsavelService {
             }
         }
         
-        const detentor = await prismaClient.responsavelTecnico.update({
+        const responsavel = await prismaClient.responsavelTecnico.update({
+            include: {
+                pessoa: {
+                    include: {
+                        pessoaFisica: true
+                    }
+                }
+            },
             data: {
                 ...basicData,
             },
@@ -128,7 +135,7 @@ class ResponsavelService {
                 id
             }
         })
-        return detentor
+        return responsavel
     }
 
     async delete(id: string): Promise<void> {

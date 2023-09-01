@@ -20,9 +20,10 @@ const { debounce } = require("debounce")
 
 import { NextAuthProvider } from "./providers"
 
-import { Roboto } from "next/font/google";
+import { Roboto, Poppins } from "next/font/google";
 
 const roboto = Roboto({ weight: "400", subsets: ["latin"] });
+const poppins = Poppins({ weight: "400", subsets: ["latin"] })
 
 function RootLayout({
   children,
@@ -40,7 +41,7 @@ function RootLayout({
   
   return (
     <html lang="en">
-      <body className={roboto.className}>
+      <body className={poppins.className}>
           <Providers>
             <NextAuthProvider>
               <LoadingProvider>
