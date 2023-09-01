@@ -4,7 +4,7 @@ import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
-import { styles, stylesForm } from "../Utils_1/styles"
+import { styles, stylesForm } from "../utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"

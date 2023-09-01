@@ -1,5 +1,4 @@
 import { OptionType, Select } from '../Select'
-import { FormInput } from '../FormInput'
 import { createRef, FormEvent, useRef, useContext, useEffect, useCallback, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
@@ -9,10 +8,11 @@ import { useSession } from 'next-auth/react'
 import { LinkBack } from '../LinkBack'
 import { Link } from '../Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
-import RadioGroup from '../Form/RadioGroup'
-import Option from "../Form/Option";
+import RadioGroup from '../form/RadioGroup'
 import { useAppSelector } from 'store/hooks'
 import { RootState } from 'store'
+import { FormInput } from '../FormInput'
+import Option from '../form/Option'
 
 const AddEdit = ({ id }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()

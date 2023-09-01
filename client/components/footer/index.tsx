@@ -1,8 +1,8 @@
 
 import React from "react";
-import ItemsContainer from "./ItemsContainer";
-import SocialIcons from "./SocialIcons";
+import SocialIcons from "@/components/footer/SocialIcons";
 import { useRouter } from "next/router";
+import ItemsContainer from "@/components/footer/ItemsContainer";
 
 const Footer = () => {
   const router = useRouter()

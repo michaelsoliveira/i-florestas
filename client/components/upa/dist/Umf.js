@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var Select_1 = require("../Select");
-var FormInput_1 = require("../FormInput");
+var FormInput_1 = require("../formInput");
 var react_1 = require("react");
 var router_1 = require("next/router");
 var react_hook_form_1 = require("react-hook-form");

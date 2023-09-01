@@ -5,7 +5,7 @@ import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicon
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { CategoriaEspecieType } from "types/ICategoriaEspecieType"
-import { styles } from "../Utils_1/styles"
+import { styles } from "../utils/styles"
 
 import { useModalContext } from "contexts/ModalContext"
 import { OptionType, Select } from "../Select"

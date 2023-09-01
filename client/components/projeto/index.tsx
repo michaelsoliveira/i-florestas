@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import { LinkBack } from '@/components/LinkBack'
 import { Link } from '@/components/Link'
 import { ProjetoContext } from 'contexts/ProjetoContext'
-import { styles } from '../Utils_1/styles'
+import { styles } from '../utils/styles'
 import { useModalContext } from 'contexts/ModalContext'
 import {
     PlusIcon,

@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useContext, useEffect, useState, useLayoutEffect } from "react"
 import Navigation from './Navigation'
-import Footer from './Footer'
 import { useSession, signOut } from "next-auth/react"
 import { custodia, estatistica, inventario, planejamento, reports, resources, solutions } from "./Menus"
 import { Loading } from "@/components/Loading"
@@ -13,6 +12,7 @@ import { useRouter } from 'next/router'
 import { useAppSelector } from "store/hooks"
 import { RootState } from "store"
 import Script from 'next/script'
+import Footer from "./footer"
 export type props = {
     children: ReactNode
 }

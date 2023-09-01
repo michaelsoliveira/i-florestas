@@ -5,7 +5,7 @@ import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicon
 import alertService from '../../services/alert'
 import { AuthContext } from "../../contexts/AuthContext"
 import { UserType } from "types/IUserType"
-import { styles, stylesForm } from "../Utils_1/styles"
+import { styles, stylesForm } from "../utils/styles"
 import { useModalContext } from "contexts/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"

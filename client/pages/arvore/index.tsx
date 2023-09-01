@@ -8,7 +8,7 @@ import { paginate, setCurrentPagePagination } from "store/paginationSlice"
 import { useRouter } from "next/router"
 import { RootState } from "store"
 import { LoadingContext } from "contexts/LoadingContext"
-import { exportToCSV } from "@/components/Utils_1/ExportData"
+import { exportToCSV } from "@/components/utils/ExportData"
 
 const ArvoreIndex = () => {
     const { client } = useContext(AuthContext)
