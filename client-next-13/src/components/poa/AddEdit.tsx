@@ -175,8 +175,8 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
 
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
-        const utsUncheked = uts.filter((ut: any) => ut.id_poa === null)
-        const filteredUts = uts.filter((ut: any) => {
+        const utsUncheked = uts?.filter((ut: any) => ut.id_poa === null)
+        const filteredUts = uts?.filter((ut: any) => {
             
             if (poa.ut?.length > 0) {
                 return poa.ut?.map((u: any) => u.id).includes(ut.id)
