@@ -2,8 +2,8 @@
 
 import { OptionType, Select } from '../Select'
 import { FormInput } from '../FormInput'
-import { createRef, FormEvent, useRef, useContext, useEffect, useCallback, useState } from 'react'
-import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '../../context/AuthContext'
@@ -14,11 +14,8 @@ import { ProjetoContext } from '@/context/ProjetoContext'
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 
-import { useParams } from 'next/navigation'
-
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [categoria, setCategoria] = useState<OptionType>()
     const [categorias, setCategorias] = useState<any>()

@@ -19,9 +19,8 @@ export const libraries = String(['places', 'geometry', 'drawing'])
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
-import { useParams } from 'next/navigation'
-
-const AddEdit = ({ id }: { id: string }) => {
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const { client } = useContext(AuthContext)
     const upa = useAppSelector((state: RootState) => state.upa)

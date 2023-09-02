@@ -10,8 +10,8 @@ export interface PoaType {
     resp_exec: string;
     situacao: string;
     protocolo_poa: string;
-    resp_elab_art: string;
-    resp_exec_art: string;
+    num_art_resp_elab: string;
+    num_art_resp_exec: string;
     uts: any;
     categorias: any;
 }
@@ -69,8 +69,8 @@ class PoaService {
                 corte_maximo: Number(data.corte_maximo),
                 pmfs: data.pmfs,
                 protocolo_poa: data.protocolo_poa,
-                num_art_resp_elab: data.resp_elab_art ? Number(data.resp_elab_art) : undefined,
-                num_art_resp_exec: data.resp_elab_art ? Number(data.resp_exec_art) : undefined,
+                num_art_resp_elab: Number(data.num_art_resp_elab),
+                num_art_resp_exec: Number(data.num_art_resp_exec),
                 situacao_poa: {
                     connect: {
                         id: situacaoPoa?.id
@@ -174,26 +174,25 @@ class PoaService {
     }
 
     async update(id: string, data: any): Promise<Poa> {
+        await prismaClient.ut.updateMany({
+            where: {
+                id_poa: id
+            },
+            data: {
+                id_poa: null
+            }
+        })
 
-            await prismaClient.ut.updateMany({
-                where: {
-                    id_poa: id
-                },
-                data: {
-                    id_poa: null
+        data?.uts && await prismaClient.ut.updateMany({
+            where: {
+                id: {
+                    in: data?.uts
                 }
-            })
-
-            data?.uts && await prismaClient.ut.updateMany({
-                where: {
-                    id: {
-                        in: data?.uts
-                    }
-                },
-                data: {
-                    id_poa: id
-                }
-            })
+            },
+            data: {
+                id_poa: id
+            }
+        })
 
         const poa = await 
             prismaClient.poa.update({
@@ -203,6 +202,8 @@ class PoaService {
                 data: {
                     resp_exec: { connect: { id: data?.resp_exec } },
                     resp_elab: { connect: { id: data?.resp_elab } },
+                    num_art_resp_elab: Number(data.num_art_resp_elab),
+                    num_art_resp_exec: Number(data.num_art_resp_exec),
                     descricao: data.descricao,
                     corte_maximo: data.corte_maximo,
                     pmfs: data?.pmfs,

@@ -8,6 +8,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'custom-green': '#6D803A',
+        'gray-light': '#F2EFEF',
+        'gray-normal': '#E3E3DB',
+        'gray-dark': '#606060'
+      },
       keyframes: {
         wiggle: {
           '0%, 100%': { transform: 'rotate(-3deg)' },

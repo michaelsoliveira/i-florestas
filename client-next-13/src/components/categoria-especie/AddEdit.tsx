@@ -5,9 +5,8 @@ import CategoriaEspecie from './CategoriaEspecie'
 
 import { useParams } from 'next/navigation'
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const isAddMode = !id
 
     return (

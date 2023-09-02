@@ -52,13 +52,13 @@ const AddResponsavel =  forwardRef<any, any>(
             } 
         }
     
-}, [client, setValue])
+}, [client, setValue, id])
 
 useEffect(() => {  
     if (!isAddMode) {
         loadResponsavel()
     }    
-}, [loadResponsavel])
+}, [loadResponsavel, isAddMode])
 
     async function onSubmit(data: any) {
         try {

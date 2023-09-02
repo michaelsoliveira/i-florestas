@@ -16,7 +16,8 @@ import Option from '../form/Option'
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 
-const AddEdit = ({ id } : { id: string }) => {
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [observacao, setObservances] = useState<OptionType>()
     const [observacoes, setObservacoes] = useState<any>()

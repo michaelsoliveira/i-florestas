@@ -16,9 +16,8 @@ import { ProjetoContext } from "@/context/ProjetoContext";
 import { useParams } from 'next/navigation'
 import PessoaJuridica from "../form/PessoaJuridica";
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const router = useRouter()
     const { client } = useContext(AuthContext)
     const { data: session } = useSession()

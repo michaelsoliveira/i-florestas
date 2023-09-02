@@ -20,7 +20,8 @@ import CriterioPoa from '../categoria-especie/CriterioPoa'
 import AddResponsavel from '../responsavel/AddResponsavel'
 import { PlusSmallIcon, PencilIcon } from '@heroicons/react/24/solid'
 
-const AddEdit = ({ id }: { id: string}) => {
+const AddEdit = ({ params }: { params: { id: string } }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [resp_elab, setRespElab] = useState<OptionType>()
     const [resp_exec, setRespExec] = useState<OptionType>()
@@ -137,6 +138,7 @@ const AddEdit = ({ id }: { id: string}) => {
 
     const loadData = useCallback(async () => {
         const { data: poa } = await client.get(`/poa/${id}`)
+        console.log(poa)
         if (!isAddMode && typeof session !== typeof undefined) {
 
             setRespElab({
@@ -593,8 +595,8 @@ const AddEdit = ({ id }: { id: string}) => {
                                             </div>
                                             <div className='mb-[6px] md:px-4 w-48'>
                                                 <FormInput
-                                                    id="resp_elab_art"
-                                                    name="resp_elab_art"
+                                                    id="num_art_resp_elab"
+                                                    name="num_art_resp_elab"
                                                     label="Número ART"
                                                     type="text"
                                                     register={register}
@@ -633,8 +635,8 @@ const AddEdit = ({ id }: { id: string}) => {
                                             </div>
                                             <div className='mb-[6px] md:px-4 w-48'>
                                                 <FormInput
-                                                    id="resp_exec_art"
-                                                    name="resp_exec_art"
+                                                    id="num_art_resp_exec"
+                                                    name="num_art_resp_exec"
                                                     label="Número ART"
                                                     type="text"
                                                     register={register}

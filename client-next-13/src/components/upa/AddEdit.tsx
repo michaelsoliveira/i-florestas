@@ -25,7 +25,7 @@ interface UpaProps {
 
 const AddEdit = ({ params }: UpaProps) => {
     //const params = useParams()
-    const id = params?.id as string
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [equacao_volume, setEquacao] = useState<OptionType>()
     const [equacoes, setEquacoes] = useState<any>()

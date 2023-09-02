@@ -14,9 +14,8 @@ import SelectEstado from '../utils/SelectEstado'
 
 import { useParams } from 'next/navigation'
 
-const AddEdit = () => {
-    const params = useParams()
-    const id = params?.id as string
+const AddEdit = ({ params } : { params: { id: string } }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
