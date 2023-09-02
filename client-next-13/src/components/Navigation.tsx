@@ -42,6 +42,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const [ menuOpened, setMenuOpened ] = useState(false)
+    const animation = false
 
     // eslint-disable-next-line react/display-name
     const CustomMenuButton = forwardRef<any, HTMLButtonElement>(({ children }: any, ref) => (
@@ -158,7 +159,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
           {({ open }) => (
             <>
               <div className={classNames(
-                "px-4 sm:px-6 lg:px-8 bg-gray-50 shadow z-40",
+                "px-4 sm:px-6 lg:px-8 bg-gray-light shadow z-40",
                 sticky ? 'lg:fixed w-full opacity-100 transition transition-ease duration-500 translate-y-0' : ''
               )
                 }>
@@ -201,8 +202,9 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     }}
                                     className={classNames(
                                     item.current
-                                    ? 'border-b-2 border-green-700 text-gray-700 bg-gray-100'
-                                    : 'text-gray-700 hover:border-b-2 hover:border-green-700 hover:text-green-800 transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105',
+                                    ? 'border-b-2 border-green-700 text-gray-dark bg-gray-100'
+                                    : 'text-gray-700 hover:border-b-2 hover:border-green-700 hover:text-green-800 transition duration-500 ease-in-out hover:bg-gray-200',
+                                    animation && 'transform hover:-translate-y-1 hover:scale-105',
                                 'px-6 py-2 text-sm font-medium hover:bg-gray-100 in-line flex'
                                 )}
                                     aria-current={item.current ? 'page' : undefined}
@@ -216,17 +218,18 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     }}
                                     as="div" className={classNames(
                                     item?.current
-                                    && 'border-b-2 border-green-700 text-gray-700 bg-gray-100',
+                                    && 'border-b-4 border-custom-green text-gray-700 bg-gray-100',
                                     "relative inline-block text-left")} key={key}>
                                 {({ open, close }) => (
                                 <>
                                     <Popover.Button className={classNames(
-                                        !item?.current && 'hover:border-b-2 hover:border-green-700 hover:text-green-800',
-                                            "inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700  transition duration-500 ease-in-out hover:bg-gray-200 transform hover:-translate-y-1 hover:scale-105")}>
+                                        !item?.current && 'hover:border-b-4 hover:border-custom-green hover:text-custom-green',
+                                            "inline-flex justify-center w-full px-4 py-2 text-sm font-bold text-custom-green transition duration-500 ease-in-out hover:bg-gray-200",
+                                            animation && 'transform hover:-translate-y-1 hover:scale-105')}>
                                         {item.name}
                                         <ChevronDownIcon
                                             className={classNames(
-                                                open ? 'text-green-700 rotate-180 transform' : 'text-gray-400',
+                                                open ? 'text-custom-green rotate-180 transform' : 'text-gray-dark',
                                                 'w-5 h-5 ml-2 -mr-1'
                                             )}
                                             aria-hidden="true"
