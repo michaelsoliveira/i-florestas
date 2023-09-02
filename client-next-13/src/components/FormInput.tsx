@@ -2,7 +2,7 @@
 
 import React, { useRef, Ref } from 'react';
 import classNames from 'classnames';
-import lodash from 'lodash';
+const lodash: any = require('lodash');
 
 import {
   RegisterOptions,

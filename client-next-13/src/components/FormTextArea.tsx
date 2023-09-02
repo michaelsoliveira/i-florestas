@@ -9,7 +9,7 @@ import {
   UseFormRegister,
   Path,
 } from 'react-hook-form';
-import lodash from 'lodash';
+const lodash: any = require('lodash');
 import { ErrorMessage } from '@hookform/error-message';
 import { FormErrorMessage } from './atoms/form-error-message';
 

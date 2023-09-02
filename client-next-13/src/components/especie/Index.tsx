@@ -183,13 +183,13 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
 
     return (
         <div>
-            <div className="flex flex-col lg:flex-row items-center justify-between p-6">
-                <h1 className="font-bold text-custom-green text-2xl font-roboto">Espécies</h1>
+            <div className="flex flex-col lg:flex-row items-center justify-between p-6 bg-gray-100">
+                <h1 className="font-medium text-2xl font-roboto">Espécies</h1>
                 <div className="flex flex-row justify-center items-center">
                     <div>
                         <a
                             onClick={handleImportTemplate}
-                            className="bg-indigo  text-white bg-custom-green hover:bg-custom-green hover:opacity-50 transition-all py-2 px-4 w-full inline-flex items-center rounded-md hover:cursor-pointer"
+                            className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -201,7 +201,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     <div className="px-4">
                         <a
                             onClick={importModal}
-                            className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green hover:opacity-50 transition-all rounded-md hover:cursor-pointer"
+                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                         >
                             Importar
                         </a>
@@ -209,7 +209,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                 <div>
                     <Link
                         href='/especie/add'
-                        className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green hover:opacity-50 transition-all rounded-md hover:cursor-pointer"
+                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
                     >
                         Adicionar
                     </Link>
@@ -219,10 +219,10 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                 
             </div>
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center text-white py-4 bg-custom-green rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-white dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -264,7 +264,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-normal w-full">
+                    <thead className="bg-gray-50 w-full">
                         <tr>
                         <th>
                             <div className="flex justify-center">
@@ -280,7 +280,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nome')}
                         >
-                            <div className="flex flex-row w-full justify-between text-gray-dark font-bold">
+                            <div className="flex flex-row w-full justify-between">
                                 Nome
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -293,7 +293,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nome_orgao')}
                         >
-                            <div className="flex flex-row w-full justify-between text-gray-dark font-bold">
+                            <div className="flex flex-row w-full justify-between">
                                 Nome Vulgar
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -306,7 +306,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('nome_cientifico')}
                         >
-                            <div className="flex flex-row w-full justify-between text-gray-dark font-bold">
+                            <div className="flex flex-row w-full justify-between">
                                 Nome Científico
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -319,7 +319,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEspecies('categoria_especie.nome')}
                         >
-                            <div className="flex flex-row w-full justify-between text-gray-dark font-bold">
+                            <div className="flex flex-row w-full justify-between">
                                 Categoria
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
