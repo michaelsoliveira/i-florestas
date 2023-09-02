@@ -22,7 +22,7 @@ import {
     // UsersIcon,
     // CalculatorIcon
 } from '@heroicons/react/outline'
-import AddResponsavel from '../responsavel/Index'
+import AddResponsavel from '../responsavel/AddResponsavel'
 import { CriterioPoa } from '../categoria-especie/CriterioPoa'
 
 const AddEdit = ({ id }: any) => {

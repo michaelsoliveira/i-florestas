@@ -9,7 +9,7 @@ import { ProjetoContext } from "contexts/ProjetoContext";
 import { FormInput } from "../FormInput";
 import { useModalContext } from 'contexts/ModalContext'
 
-const Responsavel =  forwardRef<any, any>(
+const AddResponsavel =  forwardRef<any, any>(
     function AddEdit(
       { id, responseData }, 
       ref
@@ -133,4 +133,4 @@ useEffect(() => {
     )
 })
 
-export default Responsavel
+export default AddResponsavel
