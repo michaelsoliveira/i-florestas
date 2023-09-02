@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { LockClosedIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert';
-import { signIn, getCsrfToken } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { FaFacebookF, FaGithub, FaGoogle } from 'react-icons/fa';
 import { useModalContext } from '@/context/ModalContext';
 import { useEffect } from 'react';
@@ -16,7 +16,6 @@ import { useEffect } from 'react';
 function Login() {
   const { hideModal } = useModalContext()
     const router = useRouter();
-    const csrfToken = getCsrfToken()
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -42,7 +41,7 @@ function Login() {
       setFocus('email')
     }, [setFocus])
 
-    async function onSubmit({ email, password, csrfToken }: any) {
+    async function onSubmit({ email, password }: any) {
       try {
 
           const res = await signIn('credentials', {

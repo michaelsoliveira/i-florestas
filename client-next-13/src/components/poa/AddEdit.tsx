@@ -78,7 +78,7 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
         setSelectedPoa(poa)
         const response = await client.get(`/categoria?poa=${poa.value}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
-        setCategorias(categorias)
+        setCategorias(categorias.filter((categoria: any) => categoria.nome !== 'Não definida'))
     }
 
     function getPoasDefaultOptions() {
@@ -684,9 +684,9 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
                                             {includeCategories && (
                                             <div>
                                                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
-                                                <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
-                                                    <span className="w-3/12 flex items-center">POA: </span>
-                                                    <div className="w-9/12">
+                                                <div className="lg:flex lg:flex-wrap px-4">
+                                                    <span className="flex items-center">POA: </span>
+                                                    <div className="w-full">
                                                         <Select
                         
                                                             placeholder='Selecione o POA...'

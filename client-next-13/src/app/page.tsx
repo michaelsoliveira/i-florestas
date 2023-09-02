@@ -24,7 +24,7 @@ export default function Dashboard() {
                 
                 <Image
                     className="object-cover object-center"
-                    src="/web_devices.svg"
+                    src="web_devices.svg"
                     alt=""
                     width={400}
                     height={300}

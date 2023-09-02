@@ -100,21 +100,21 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto">Unidade de Manejo Florestal</h1>
+            <div className="flex flex-row items-center justify-between p-6">
+                <h1 className="font-bold text-custom-green text-2xl font-roboto">Unidade de Manejo Florestal</h1>
                 <Link
                     href='/umf/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    className="px-6 py-2 text-white bg-custom-green hover:custom-green hover:opacity-50 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-white">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -128,7 +128,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4">Pesquisar UMF:</div>
+                        <div className="w-60 px-4 text-white">Pesquisar UMF:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar UMF"
@@ -154,7 +154,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-normal">
                         <tr>
                             <th>
                                 <div className="flex justify-center">
@@ -169,7 +169,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 className="w-3/12"
                                 onClick={() => sortUmfs()}
                             >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs text-gray-dark font-bold uppercase tracking-wider cursor-pointer">
                                     Nome
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -179,19 +179,19 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                             </th>
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs text-gray-dark font-bold uppercase tracking-wider"
                             >
                                 Município
                             </th>
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs text-gray-dark font-bold uppercase tracking-wider"
                             >
                                 Endereço
                             </th>
                             <th
                                 scope="col"
-                                className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-1/12 px-3 py-3 text-left text-xs text-gray-dark font-bold uppercase tracking-wider"
                             >
                                 Estado
                             </th>           

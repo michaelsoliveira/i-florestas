@@ -16,10 +16,9 @@ const nextConfig = withFonts({
   //  
   //  return config;
   //},
-  //experimental: {
-  //  appDir: true,
-  //  serverComponentsExternalPackages: ['@prisma/client'],
-  //},
+  // experimental: {
+  //   appDir: true
+  // },
   images: {
     domains: ['images.unsplash.com', 'placeimg.com', 'www.revixpert.ch'],
   },
