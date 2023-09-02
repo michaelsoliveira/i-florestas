@@ -83,7 +83,7 @@ class UtService {
         const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withCoords
 
         let values: any = []
-        for (const [key, value] of Object.entries(data))  {
+        for (const [key, value] of Object.entries(data) as any)  {
             if (key !== 'polygon_path') {
                 values.push(value?.toString())
             }
@@ -198,12 +198,13 @@ class UtService {
         try {
             const preparedData = data?.map(({ numero_ut, area_util, area_total }: any) => {
                 return {
-                    numero_ut, area_util, area_total, id_upa: upaId
+                    numero_ut: Number(numero_ut), 
+                    area_util: Number(area_util), 
+                    area_total: Number(area_total), 
+                    id_upa: upaId
                 }
             })
-
-            console.log(preparedData)
-    
+            
             const result = await prismaClient.ut.createMany({
                 data: preparedData
             })

@@ -1,11 +1,9 @@
-import { createRef, forwardRef, useCallback, useContext, useEffect, useState } from "react";
-import { useForm, useFormState } from 'react-hook-form'
+import { forwardRef, useCallback, useContext, useEffect, useState } from "react";
+import { useForm } from 'react-hook-form'
 import { useRouter } from "next/router"
 import alertService from "../../services/alert";
-import { useSession } from "next-auth/react";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Link } from "../Link";
-import PessoaFisica from "../Form/PessoaFisica";
+import PessoaFisica from "../form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "contexts/ProjetoContext";
 import { FormInput } from "../FormInput";
@@ -13,7 +11,7 @@ import { useModalContext } from 'contexts/ModalContext'
 
 const Responsavel =  forwardRef<any, any>(
     function AddEdit(
-      { responseData }, 
+      { id, responseData }, 
       ref
     ) {
     const router = useRouter()
@@ -21,33 +19,41 @@ const Responsavel =  forwardRef<any, any>(
     const [ responsavel, setResponsavel ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const [estado, setEstado] = useState<any>()
-    const isAddMode = !projeto?.pessoa
+    const isAddMode = !id
     const { hideModal } = useModalContext()
 
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
-    const loadResponsaveis = useCallback(async () => {
+    const loadResponsavel = useCallback(async () => {
 
-            const { data } = await client.get(`/responsavel`)
-            setResponsavel(data)
+        const { data } = await client.get(`/responsavel/${id}`)
+        setResponsavel(data)
 
-            setEstado({
-                label: data?.endereco?.estado?.nome,
-                value: data?.endereco?.estado?.id
-            })
+        setEstado({
+            label: data?.pessoa?.endereco?.estado?.nome,
+            value: data?.pessoa?.endereco?.estado?.id
+        })
 
-            for (const [key, value] of Object.entries(data)) {
-                setValue(key, value, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                }) 
-            }
-        
-    }, [client, setValue])
+        for (const [key, value] of Object.entries(data)) {
+            switch(key) {
+                case 'pessoa': setValue('nome', data?.pessoa?.pessoaFisica?.nome);
+                break;
+                default: {
+                    setValue(key, value, {
+                        shouldValidate: true,
+                        shouldDirty: true
+                    })
+                }
+            } 
+        }
     
-    useEffect(() => {  
-        loadResponsaveis()
-    }, [loadResponsaveis])
+}, [client, setValue])
+
+useEffect(() => {  
+    if (!isAddMode) {
+        loadResponsavel()
+    }    
+}, [loadResponsavel])
 
     async function onSubmit(data: any) {
         try {
@@ -71,7 +77,6 @@ const Responsavel =  forwardRef<any, any>(
                     responseData(responsavel)
                     hideModal()
                     alertService.success(`Responsável Técnico cadastrada com SUCESSO!!!`);
-                    //router.push(`/poa`)
                 }
             }) 
     }

@@ -13,7 +13,7 @@ import { RootState } from '../../store'
 import { setPoa } from "../../store/poaSlice"
 import { ProjetoContext } from 'contexts/ProjetoContext'
 import { useModalContext } from 'contexts/ModalContext'
-import { styles } from '../Utils/styles'
+import { styles } from '../utils/styles'
 import {
     PlusIcon,
     // PencilIcon,
@@ -348,7 +348,7 @@ const AddEdit = ({ id }: any) => {
             title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <div><AddResponsavel responseData={responseTecElab} /></div>
+            content: <div><AddResponsavel id={resp_elab?.value} responseData={responseTecElab} /></div>
         })
     }
 
@@ -535,23 +535,32 @@ const AddEdit = ({ id }: any) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div className='col-span-1'>
+                                <div className='col-span-2'>
                                     <FormInput
-                                            id="corte_maximo"
-                                            name="corte_maximo"
-                                            label="Corte Máximo"
-                                            type="text"
-                                            register={register}
-                                            errors={errors}
-                                        />
-                                    </div>
+                                        id="protocolo_poa"
+                                        name="protocolo_poa"
+                                        label="Protocolo POA"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                </div>
+                                <div className='col-span-1'>
+                                <FormInput
+                                        id="corte_maximo"
+                                        name="corte_maximo"
+                                        label="Corte Máximo"
+                                        type="text"
+                                        register={register}
+                                        errors={errors}
+                                    />
+                                </div>
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
-                                    <div className='flex flex-col md:flex-row space-x-2 items-center w-full justify-around'>
-                                        <div className="flex flex-row items-center">
-                                        
-                                            <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
+                                    <div className="grid grid-cols-1 md:grid-cols-3">
+                         
+                                            <div>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={resp_elab}
@@ -561,8 +570,38 @@ const AddEdit = ({ id }: any) => {
                                                     callback={selectedRespTecElab}
                                                 />
                                             </div>
-                                        </div>
-                                        <div className="flex flex-row items-center">
+                                            <div className='mb-[6px] md:px-4'>
+                                                <FormInput
+                                                    id="resp_elab_art"
+                                                    name="resp_elab_art"
+                                                    label="Número ART"
+                                                    type="text"
+                                                    register={register}
+                                                    errors={errors}
+                                                />
+                                            </div>
+                                            <div className='flex flex-row w-full items-center justify-center space-x-2'>
+                                                <span
+                                                    onClick={addResponsavel}
+                                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/5"
+                                                >
+                                                    Novo
+                                                </span>
+                                                { resp_elab && (
+                                                    <span
+                                                        onClick={addResponsavel}
+                                                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/5"
+                                                    >
+                                                        Editar
+                                                    </span>) 
+                                                }
+                                                
+                                            </div>
+                               
+                                    </div>
+                                        
+
+                                    <div className="flex flex-row items-center">
                                             <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
                                             <Select
                                                 placeholder='CPF ou iniciais do nome'
@@ -573,6 +612,16 @@ const AddEdit = ({ id }: any) => {
                                                 callback={selectedRespTecExec}
                                             />
                                             </div>
+                                            <div>
+                                                <FormInput
+                                                    id="resp_exec_art"
+                                                    name="resp_exec_art"
+                                                    label="Número ART"
+                                                    type="text"
+                                                    register={register}
+                                                    errors={errors}
+                                                />
+                                            </div>
                                         </div>
                                         <span
                                             id='btn-resp'
@@ -581,7 +630,6 @@ const AddEdit = ({ id }: any) => {
                                         >
                                             Novo Responsável
                                         </span>
-                                    </div>
                                     </div>
                                 </div>
                                 {isAddMode && (

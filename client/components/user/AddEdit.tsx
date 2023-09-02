@@ -9,9 +9,9 @@ import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { AuthContext } from 'contexts/AuthContext';
 import { Select, OptionType } from '../Select';
-import RadioGroup from '../Form/RadioGroup';
-import Option from '../Form/Option';
-import FocusError from '../Form/FocusError';
+import RadioGroup from '../form/RadioGroup';
+import Option from '../form/Option';
+import FocusError from '../form/FocusError';
 import { useModalContext } from 'contexts/ModalContext';
 
 type AddEditType = {

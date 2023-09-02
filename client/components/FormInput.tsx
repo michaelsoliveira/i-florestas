@@ -1,6 +1,6 @@
 import React, { useRef, Ref } from 'react';
 import classNames from 'classnames';
-import get from 'lodash.get';
+import lodash from 'lodash';
 
 import {
   RegisterOptions,
@@ -17,7 +17,7 @@ import { FormErrorMessage } from './atoms/form-error-message';
 export type FormInputProps<TFormValues extends FieldValues> = {
     label?: Path<TFormValues>;
     name: Path<TFormValues>;
-    rules?: RegisterOptions;
+    rules?: RegisterOptions | any;
     innerRef?: any;
     register?: UseFormRegister<TFormValues>;
     layout?: 'default' | 'floatLabel',
@@ -36,7 +36,7 @@ export const FormInput = <TFormValues extends Record<string, unknown>>({
   ...props
 }: FormInputProps<TFormValues>): JSX.Element => {
   // If the name is in a FieldArray, it will be 'fields.index.fieldName' and errors[name] won't return anything, so we are using lodash get
-  const errorMessages = get(errors, name);
+  const errorMessages = lodash.get(errors, name) as any;
   const hasError = !!(errors && errorMessages);
   const inputRef = useRef<HTMLInputElement>(null);
 

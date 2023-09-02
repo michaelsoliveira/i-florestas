@@ -12,7 +12,7 @@ import { setUpa } from "../../store/upaSlice"
 import alertService from '../../services/alert'
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
-import { Button } from "../Utils/Button"
+import { Button } from "../utils/Button"
 
 const styles = {
     csvReader: {

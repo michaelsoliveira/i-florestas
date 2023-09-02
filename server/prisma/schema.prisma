@@ -48,7 +48,6 @@ model Pessoa {
 model ResponsavelTecnico {
   id                String   @id(map: "PK_bee78e8f1760ccf9cff402118a7") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   crea              String?  @db.VarChar(50)
-  numero_art        Int?
   id_pessoa         String?  @db.Uuid
   pessoa            Pessoa? @relation(fields: [id_pessoa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   id_projeto        String?  @db.Uuid
@@ -135,7 +134,10 @@ model Poa {
   descricao           String?
   data_ultimo_plan    DateTime? @db.Timestamp(6)
   pmfs                String?
+  protocolo_poa       String?
   corte_maximo        Float?
+  num_art_resp_elab   Int?
+  num_art_resp_exec   Int?
   id_detentor         String? @db.Uuid
   id_resp_exec        String? @db.Uuid
   resp_exec           ResponsavelTecnico? @relation("resp_exec", fields: [id_resp_exec], references: [id], onDelete: Cascade, onUpdate: Cascade)

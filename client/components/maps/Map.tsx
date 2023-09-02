@@ -8,7 +8,6 @@ import {
   Polygon,
   OverlayView
 } from "@react-google-maps/api";
-import Places from "./Places";
 import Distance from "./Distance";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser } from "@fortawesome/free-solid-svg-icons"
@@ -144,14 +143,6 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
   return (
     <div className="mt-2">
       <div className="pb-2">
-        
-        <Places
-          setOffice={(position: any) => {
-            setUtLocation(position);
-            setLocation(position);
-            mapRef.current?.panTo(position);
-          }}
-        />
         <div className="flex flex-row items-center justify-between w-full">
           <div className="w-full">
             {!utLocation && <p>Selecione no mapa as coordenadas da UT</p>}

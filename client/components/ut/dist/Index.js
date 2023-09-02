@@ -408,7 +408,7 @@ var Index = function (_a) {
                                     React.createElement("div", { className: "text-sm text-gray-500" }, ut === null || ut === void 0 ? void 0 : ut.area_total))),
                             React.createElement("td", { className: "px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center" },
                                 React.createElement(Link_1.Link, { href: "/ut/update/" + ut.id },
-                                    React.createElement(solid_1.PencilAltIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
+                                    React.createElement(solid_1.PencilIcon, { className: "w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" })),
                                 React.createElement(Link_1.Link, { href: "#", onClick: function () { return toogleDeleteModal(ut.id); } },
                                     React.createElement(solid_1.TrashIcon, { className: "w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" }))))); })))))))));
 };

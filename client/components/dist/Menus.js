@@ -134,7 +134,7 @@ exports.custodia = [
         name: 'Cadastro de Derrubada',
         description: 'Cadastro de Deburrada',
         href: '#',
-        icon: outline_1.PencilAltIcon
+        icon: outline_1.PencilIcon
     },
     {
         name: 'Cadastro de Toras',
@@ -154,7 +154,7 @@ exports.reports = [
         name: 'Relatório de Espécies',
         // description: 'Cadastro de Deburrada',
         href: '#',
-        icon: outline_1.PencilAltIcon
+        icon: outline_1.PencilIcon
     },
     {
         name: 'Relatório de UTs',

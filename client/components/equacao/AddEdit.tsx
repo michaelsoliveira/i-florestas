@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import 'react-toastify/dist/ReactToastify.css';
 import alertService from '../../services/alert'
 import { AuthContext } from 'contexts/AuthContext';
-import FocusError from '../Form/FocusError';
+import FocusError from '../form/FocusError';
 import { ListEqModelo } from './ListEqModelo';
 
 type AddEditType = {

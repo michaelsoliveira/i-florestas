@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { Link } from "../Link"
 import { Input } from "../atoms/input"
-import { TrashIcon, PencilAltIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
+import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/solid'
 import alertService from '../../services/alert'
 import Modal from "../Modal"
 import { AuthContext } from "../../contexts/AuthContext"
@@ -12,7 +12,7 @@ import { RootState } from "../../store"
 import { UpaType } from "types/IUpaType"
 
 import { useModalContext } from "contexts/ModalContext"
-import { styles } from "../Utils/styles"
+import { styles } from "../utils/styles"
 import { ProjetoContext } from "contexts/ProjetoContext"
 
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {
@@ -322,7 +322,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </td>   
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex flex-row items-center">
                                 <Link href={`/upa/update/${upa.id}`}>
-                                    <PencilAltIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
+                                    <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                 </Link>
                                 <Link href="#" onClick={() => deleteSingleModal(upa.id)}>
                                     <TrashIcon className="w-5 h-5 ml-4 -mr-1 text-red-600 hover:text-red-700" />

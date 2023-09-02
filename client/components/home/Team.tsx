@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-export const Team = () => {
+const Team = () => {
     return (
         <section className="bg-white dark:bg-gray-900">
             <div className="h-[32rem] bg-gray-100 dark:bg-gray-800">
