@@ -28,7 +28,6 @@ const Responsavel =  forwardRef<any, any>(
 
         const { data } = await client.get(`/responsavel/${id}`)
         setResponsavel(data)
-
         setEstado({
             label: data?.pessoa?.endereco?.estado?.nome,
             value: data?.pessoa?.endereco?.estado?.id
@@ -36,7 +35,11 @@ const Responsavel =  forwardRef<any, any>(
 
         for (const [key, value] of Object.entries(data)) {
             switch(key) {
-                case 'pessoa': setValue('nome', data?.pessoa?.pessoaFisica?.nome);
+                case 'pessoa': {
+                    setValue('pessoaFisica.nome', data.pessoa?.pessoaFisica?.nome);
+                    setValue('pessoaFisica.rg', data.pessoa?.pessoaFisica?.rg);
+                    setValue('pessoaFisica.cpf', data.pessoa?.pessoaFisica?.cpf);
+                }
                 break;
                 default: {
                     setValue(key, value, {
@@ -47,13 +50,13 @@ const Responsavel =  forwardRef<any, any>(
             } 
         }
     
-}, [client, setValue])
+}, [client, setValue, id])
 
 useEffect(() => {  
     if (!isAddMode) {
         loadResponsavel()
     }    
-}, [loadResponsavel])
+}, [loadResponsavel, isAddMode])
 
     async function onSubmit(data: any) {
         try {
@@ -85,9 +88,10 @@ useEffect(() => {
         
         await client.put(`/responsavel/${id}`, data)
             .then((response: any) => {
-                const responsavel = response.data
+                const { responsavel } = response.data
+                responseData(responsavel)
+                hideModal()
                 alertService.success(`Responsável Técnico atualizada com SUCESSO!!!`);
-                router.push('/poa')
             })
     }
     
@@ -113,29 +117,19 @@ useEffect(() => {
                                                 className="pb-4"
                                             />
                                         </div> 
-                                        <div className="col-span-2">     
-                                            <FormInput
-                                                name="numero_art"
-                                                label="Número ART"
-                                                register={register}
-                                                errors={errors}
-                                                id="rg"
-                                                className="pb-4"
-                                            />
-                                        </div> 
                                     </div>
-                                        <PessoaFisica register={register} errors={errors} />
-                                        <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
+                                    <PessoaFisica register={register} errors={errors} />
+                                    <Endereco value={estado} setValue={setValue} register={register} errors={errors} />
                                 </div>
                             </div>
                         </div>
-                        </div>
-                    </form>
-                    
                     </div>
+                </form>
+                
                 </div>
             </div>
         </div>
+    </div>
     )
 })
 

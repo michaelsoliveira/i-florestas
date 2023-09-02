@@ -16,7 +16,7 @@ import { useModalContext } from 'contexts/ModalContext'
 import { styles } from '../utils/styles'
 import {
     PlusIcon,
-    // PencilIcon,
+    PencilIcon,
     // TrashIcon,
     // InboxInIcon,
     // UsersIcon,
@@ -82,7 +82,7 @@ const AddEdit = ({ id }: any) => {
         setSelectedPoa(poa)
         const response = await client.get(`/categoria?poa=${poa.value}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
-        setCategorias(categorias)
+        setCategorias(categorias.filter((categoria: any) => categoria.nome !== 'Não definida'))
     }
 
     function getPoasDefaultOptions() {
@@ -142,6 +142,7 @@ const AddEdit = ({ id }: any) => {
 
     const loadData = useCallback(async () => {
         const { data: poa } = await client.get(`/poa/${id}`)
+        console.log(poa)
         if (!isAddMode && typeof session !== typeof undefined) {
 
             setRespElab({
@@ -178,8 +179,8 @@ const AddEdit = ({ id }: any) => {
 
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
-        const utsUncheked = uts.filter((ut: any) => ut.id_poa === null)
-        const filteredUts = uts.filter((ut: any) => {
+        const utsUncheked = uts?.filter((ut: any) => ut.id_poa === null)
+        const filteredUts = uts?.filter((ut: any) => {
             
             if (poa.ut?.length > 0) {
                 return poa.ut?.map((u: any) => u.id).includes(ut.id)
@@ -343,12 +344,39 @@ const AddEdit = ({ id }: any) => {
         })
     }
 
-    const addResponsavel = () => {
+    const addRespElab = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel responseData={responseTecElab} /></div>
+        })
+    }
+
+    const updateRespElab = () => {
         showModal({
             title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
             content: <div><AddResponsavel id={resp_elab?.value} responseData={responseTecElab} /></div>
+        })
+    }
+
+    const addRespExec = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel responseData={responseTecExec} /></div>
+        })
+    }
+
+    const updateRespExec = () => {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles.greenButton, confirmBtn: 'Salvar',
+            content: <div><AddResponsavel id={resp_exec?.value} responseData={responseTecExec} /></div>
         })
     }
 
@@ -504,9 +532,9 @@ const AddEdit = ({ id }: any) => {
                     </div>
                     <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className='grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4'>
+                            <div className='grid grid-cols-2 md:grid-cols-6 gap-4'>
                                 
-                                <div className='col-span-6 md:col-span-3'>
+                                <div className='col-span-5 md:col-span-3'>
                                     <FormInput
                                         name="descricao"
                                         label="Descricao"
@@ -525,7 +553,7 @@ const AddEdit = ({ id }: any) => {
                                     />
                                 </div>
                             
-                                <div className='col-span-2'>
+                                <div className='col-span-1'>
                                     <FormInput
                                         id="pmfs"
                                         name="pmfs"
@@ -535,7 +563,7 @@ const AddEdit = ({ id }: any) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div className='col-span-2'>
+                                <div className='col-span-5 md:col-span-1'>
                                     <FormInput
                                         id="protocolo_poa"
                                         name="protocolo_poa"
@@ -545,7 +573,7 @@ const AddEdit = ({ id }: any) => {
                                         errors={errors}
                                     />
                                 </div>
-                                <div className='col-span-1'>
+                                <div>
                                 <FormInput
                                         id="corte_maximo"
                                         name="corte_maximo"
@@ -557,79 +585,88 @@ const AddEdit = ({ id }: any) => {
                                 </div>
                                 
                                 <div className="border border-gray-200 p-4 rounded-md col-span-6 relative w-full">
-                                <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
-                                    <div className="grid grid-cols-1 md:grid-cols-3">
-                         
-                                            <div>
+                                    <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Responsáveis Técnicos</span>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 bg-gray-100 px-4 py-2">
+                                            <div className='md:mt-[6px]'>
                                                 <Select
                                                     placeholder='CPF ou iniciais do nome'
                                                     selectedValue={resp_elab}
                                                     defaultOptions={getRespTecElabOptions()}
                                                     options={loadRespElab}
-                                                    label="pela Elaboração"
+                                                    label="Elaboração"
                                                     callback={selectedRespTecElab}
                                                 />
                                             </div>
-                                            <div className='mb-[6px] md:px-4'>
+                                            <div className='mb-[6px] md:px-4 w-48'>
                                                 <FormInput
-                                                    id="resp_elab_art"
-                                                    name="resp_elab_art"
+                                                    id="num_art_resp_elab"
+                                                    name="num_art_resp_elab"
                                                     label="Número ART"
                                                     type="text"
                                                     register={register}
                                                     errors={errors}
                                                 />
                                             </div>
-                                            <div className='flex flex-row w-full items-center justify-center space-x-2'>
+                                            <div className='flex flex-row items-center space-x-2'>
                                                 <span
-                                                    onClick={addResponsavel}
-                                                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/5"
+                                                    onClick={addRespElab}
+                                                    className="text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
                                                 >
-                                                    Novo
+                                                    <PlusIcon className='w-8 h-8' />
                                                 </span>
                                                 { resp_elab && (
                                                     <span
-                                                        onClick={addResponsavel}
-                                                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-2/5"
+                                                        onClick={updateRespElab}
+                                                        className="px-2 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
                                                     >
-                                                        Editar
-                                                    </span>) 
+                                                        <PencilIcon className='w-4 h-4' />
+                                                    </span>
+                                                    ) 
                                                 }
                                                 
                                             </div>
-                               
-                                    </div>
-                                        
-
-                                    <div className="flex flex-row items-center">
-                                            <div className='w-[21rem] md:w-[15rem] lg:w-[18rem]'>
-                                            <Select
-                                                placeholder='CPF ou iniciais do nome'
-                                                selectedValue={resp_exec}
-                                                defaultOptions={getRespTecExecOptions()}
-                                                options={loadRespExec}
-                                                label="pela Execução"
-                                                callback={selectedRespTecExec}
-                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 bg-gray-100 px-4 py-2">
+                                            <div className='md:mt-[6px]'>
+                                                <Select
+                                                    placeholder='CPF ou iniciais do nome'
+                                                    selectedValue={resp_exec}
+                                                    defaultOptions={getRespTecExecOptions()}
+                                                    options={loadRespExec}
+                                                    label="Execução"
+                                                    callback={selectedRespTecExec}
+                                                />
                                             </div>
-                                            <div>
+                                            <div className='mb-[6px] md:px-4 w-48'>
                                                 <FormInput
-                                                    id="resp_exec_art"
-                                                    name="resp_exec_art"
+                                                    id="num_art_resp_exec"
+                                                    name="num_art_resp_exec"
                                                     label="Número ART"
                                                     type="text"
                                                     register={register}
                                                     errors={errors}
                                                 />
                                             </div>
+                                            <div className='flex flex-row items-center space-x-2'>
+                                                <span
+                                                    onClick={addRespExec}
+                                                    className="text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
+                                                >
+                                                    <PlusIcon className='w-8 h-8' />
+                                                </span>
+                                                { resp_elab && (
+                                                    <span
+                                                        onClick={updateRespExec}
+                                                        className="px-2 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full"
+                                                    >
+                                                        <PencilIcon className='w-4 h-4' />
+                                                    </span>
+                                                    ) 
+                                                }
+                                                
+                                            </div>
                                         </div>
-                                        <span
-                                            id='btn-resp'
-                                            onClick={addResponsavel}
-                                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5"
-                                        >
-                                            Novo Responsável
-                                        </span>
+                                        
                                     </div>
                                 </div>
                                 {isAddMode && (
@@ -651,9 +688,9 @@ const AddEdit = ({ id }: any) => {
                                             {includeCategories && (
                                             <div>
                                                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
-                                                <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
-                                                    <span className="w-3/12 flex items-center">POA: </span>
-                                                    <div className="w-9/12">
+                                                <div className="lg:flex lg:flex-wrap px-4">
+                                                    <span className="flex items-center">POA: </span>
+                                                    <div className="w-full">
                                                         <Select
                         
                                                             placeholder='Selecione o POA...'
