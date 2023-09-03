@@ -75,7 +75,7 @@ export const Carousel = function Carousel() {
   }, []);
 
   return (
-    <div className="carousel flex flex-row  w-full my-4 mx-auto border border-green-700">
+    <div className="carousel flex flex-row  w-full my-4 mx-auto border shadow-lg">
       {/* <h2 className="text-4xl leading-8 font-semibold my-4 text-gray-800">
         Recursos
       </h2> */}
@@ -83,7 +83,7 @@ export const Carousel = function Carousel() {
         <div className="flex justify-between absolute top left w-full h-full">
           <button
             onClick={movePrev}
-            className="hover:bg-green-900/75 text-white w-10 h-full text-center opacity-75 hover:opacity-100 disabled:opacity-25 disabled:cursor-not-allowed z-10 p-0 m-0 transition-all ease-in-out duration-300"
+            className="hover:bg-custom-green text-white w-10 h-full text-center opacity-75 hover:opacity-100 disabled:opacity-25 disabled:cursor-not-allowed z-10 p-0 m-0 transition-all ease-in-out duration-300"
             disabled={isDisabled('prev')}
           >
             <svg
@@ -104,7 +104,7 @@ export const Carousel = function Carousel() {
           </button>
           <button
             onClick={moveNext}
-            className="hover:bg-green-900/75 text-white w-10 h-full text-center opacity-75 hover:opacity-100 disabled:opacity-25 disabled:cursor-not-allowed z-10 p-0 m-0 transition-all ease-in-out duration-300"
+            className="hover:bg-custom-green text-white w-10 h-full text-center opacity-75 hover:opacity-100 disabled:opacity-25 disabled:cursor-not-allowed z-10 p-0 m-0 transition-all ease-in-out duration-300"
             disabled={isDisabled('next')}
           >
             <svg
@@ -153,9 +153,9 @@ export const Carousel = function Carousel() {
                   </a>
                   <a
                     href={resource.link}
-                    className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-70 bg-green-800/75 z-10"
+                    className="h-full w-full aspect-square block absolute top-0 left-0 transition-opacity duration-300 opacity-0 hover:opacity-70 bg-custom-green/50 z-10"
                   >
-                    <h3 className="text-white py-6 px-3 mx-auto text-center text-xl">
+                    <h3 className="text-gray-800 py-6 px-3 mx-auto text-center text-xl">
                       {resource.title}
                     </h3>
                   </a>

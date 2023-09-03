@@ -13,7 +13,7 @@ const Hero = ({ session }: any) => {
     }
 
     return (
-        <div className="container mx-auto px-6 py-8">
+        <div className="mx-auto px-6 py-8">
             <div>
                 <div className="flex items-center justify-center text-center">
                 <h1 className="flex flex-col text-2xl tracking-tight font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl xl:text-3xl">
@@ -21,10 +21,10 @@ const Hero = ({ session }: any) => {
                     <span className="block text-xl text-gray-dark xl:inline">Inventário Florestal Sustentável</span>
                 </h1>
                 </div>
-            <p className="roboto mt-2 text-justify text-base text-gray-dark sm:mt-5 max-w-xl lg:max-w-3xl sm:mx-auto md:mt-5 md:text-lg lg:mx-0 mb-4">
-                O setor florestal brasileiro precisa – e demanda – de softwares que agilizem e aprimorem o processo de planejamento
-                florestal, auxiliando na seleção de árvores de corte com base em critérios claros, proporcionando melhor controle
-                sobre a produção de madeira e possibilitando o manejo florestal sustentável.
+                <p className="hidden md:flex roboto mt-2 text-justify text-base text-gray-dark sm:mt-5 max-w-lg lg:max-w-3xl md:mt-3 mb-4">
+                    O setor florestal brasileiro precisa – e demanda – de softwares que agilizem e aprimorem o processo de planejamento
+                    florestal, auxiliando na seleção de árvores de corte com base em critérios claros, proporcionando melhor controle
+                    sobre a produção de madeira e possibilitando o manejo florestal sustentável.
                 </p>
             </div>
             {!session && (

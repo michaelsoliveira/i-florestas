@@ -12,7 +12,8 @@ module.exports = {
         'custom-green': '#6D803A',
         'gray-light': '#F2EFEF',
         'gray-normal': '#E3E3DB',
-        'gray-dark': '#606060'
+        'gray-dark': '#606060',
+        'brown-normal': '#B06326'
       },
       keyframes: {
         wiggle: {

@@ -29,41 +29,41 @@ const Tabs = () => {
   return (
     <div className="w-full py-4">
       <Tab.Group>
-        <Tab.List className="flex p-1 space-x-2 bg-green-900/20 rounded-lg">
+        <Tab.List className="flex p-1 space-x-2 bg-custom-green/50 rounded-lg">
             <Tab
               className={({ selected }) =>
                 classNames(
-                  'w-full py-2.5 text-sm leading-5 font-medium rounded-md transition-all',
-                  'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-green-400 ring-white ring-opacity-60',
+                  'font-medium w-full py-2.5 text-sm leading-5 font-medium rounded-md transition-all',
+                  'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-custom-green ring-white ring-opacity-60',
                   selected
-                    ? 'bg-green-700 text-white shadow'
-                    : 'text-gray-700 hover:bg-gray-50 hover:text-gray-700'
+                    ? 'bg-custom-green/75 text-white shadow hover:bg-gray-50/50 hover:text-custom-green'
+                    : 'text-custom-green hover:bg-custom-green/50 hover:text-white'
                 )
               }
             >
-              Login
+              <span className='font-bold'>Login</span>
           </Tab>
           <Tab
               className={({ selected }) =>
-                classNames(
-                  'w-full py-2.5 text-sm leading-5 font-medium rounded-md transition-all',
-                  'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-green-400 ring-white ring-opacity-60',
-                  selected
-                    ? 'bg-green-700 text-white shadow'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-green-700'
-                )
+              classNames(
+                'w-full py-2.5 text-sm leading-5 font-medium rounded-md transition-all',
+                'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-custom-green ring-white ring-opacity-60',
+                selected
+                  ? 'bg-custom-green/75 text-white shadow hover:bg-gray-50/50 hover:text-custom-green'
+                  : 'text-custom-green hover:bg-custom-green/50 hover:text-white'
+              )
               }
             >
-              Cadastro
+              <span className='font-bold'>Cadastro</span>
             </Tab>
         </Tab.List>
         <Tab.Panels>
             <Tab.Panel
               className={classNames(
-                'px-6 py-2'
+                'px-4 py-2 text-left mx-auto flex flex-wrap justify-center items-center'
               )}
           >
-              <Login /> 
+            <Login /> 
           </Tab.Panel>
           <Tab.Panel
               className={classNames(

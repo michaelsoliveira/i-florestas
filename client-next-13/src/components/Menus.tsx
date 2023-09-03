@@ -20,7 +20,7 @@ import {
     CalculatorIcon,
     MapIcon
 } from '@heroicons/react/24/outline'
-import { DocumentTextIcon } from '@heroicons/react/24/solid'
+import { ArrowsRightLeftIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
 
 export const resources = [
     {
@@ -115,6 +115,12 @@ export const planejamento = [
     description: 'Seleção de Árvores do POA',
     href: '/process',
     icon: TagIcon,
+    },
+    {
+        name: 'change_poa',
+        description: '',
+        href: `#`,
+        icon: ArrowsRightLeftIcon
     },
 ]
 

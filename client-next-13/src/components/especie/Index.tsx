@@ -19,11 +19,9 @@ import ExportPDF from "./ExportPDF"
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     
     const [filteredEspecies, setFilteredEspecies] = useState<EspecieType[]>([])
-    const [selectedEspecie, setSelectedEspecie] = useState<EspecieType>()
     const [searchInput, setSearchInput] = useState("")
     const [uploading, setUploading] = useState<boolean>(false)
     const { client } = useContext(AuthContext)
-    const fileRef = useRef(null) as any
     const [sorted, setSorted] = useState(false)
     const [checkedEspecies, setCheckedEspecies] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
@@ -145,9 +143,9 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
     const sortEspecies = (sortBy: string) => {
         const sortedBy = sortBy.split(".")
         const nElements = sortedBy.length
-        
+
         let sortedEspecies: any = []        
-        sortedEspecies = filteredEspecies.sort((a: any, b: any) => {
+        sortedEspecies = currentEspecies.sort((a: any, b: any) => {
             return  sorted
                 ? nElements > 1 
                     ? a[sortedBy[0]][sortedBy[1]].toLowerCase().localeCompare(b[sortedBy[0]][sortedBy[1]].toLowerCase()) 
@@ -317,7 +315,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         <th
                             scope="col"
                             className="flex flex-row items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortEspecies('categoria_especie.nome')}
+                            onClick={() => sortEspecies('categoria.nome')}
                         >
                             <div className="flex flex-row w-full justify-between text-gray-dark font-bold">
                                 Categoria
@@ -333,7 +331,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {currentEspecies?.map((especie: any, idx: any) => (
+                        {filteredEspecies?.map((especie: any, idx: any) => (
                             <tr key={idx}>
                             <td className="flex justify-center">
                             <input                 

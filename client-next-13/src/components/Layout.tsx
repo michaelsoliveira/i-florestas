@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useCallback, useContext, useEffect } from "react"
+import { Fragment, ReactNode, useCallback, useContext, useEffect } from "react"
 import Navigation from './Navigation'
 import Footer from './footer'
 import { useSession, signOut } from "next-auth/react"
@@ -9,11 +9,16 @@ import { Loading } from "./Loading"
 import { LoadingContext } from "../context/LoadingContext"
 import { ProjetoContext } from "../context/ProjetoContext"
 import { AuthContext } from "../context/AuthContext"
-import { CogIcon, UserGroupIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
+import { CogIcon, UserGroupIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { usePathname } from 'next/navigation'
 import { useAppSelector } from "../redux/hooks"
 import { RootState } from "../redux/store"
 import Script from 'next/script'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { Menu, Transition } from "@headlessui/react"
+import classNames from "./utils/classNames"
+import alertService from "@/services/alert"
 export type props = {
     children: ReactNode
 }
@@ -62,7 +67,13 @@ const Layout = ({ children }: props) => {
                 description: 'Gerenciar Permissões',
                 href: `/projeto/users`,
                 icon: UserGroupIcon
-            }
+            },
+            {
+                name: 'change_projeto',
+                description: '',
+                href: `#`,
+                icon: ArrowsRightLeftIcon
+            },
         ]
      : [
         {
@@ -126,6 +137,54 @@ const Layout = ({ children }: props) => {
                 
                 <div className="relative">
                     {loading && (<Loading />)}
+
+                    <Menu as="div" className="fixed float-right right-10 bottom-10 z-50">
+                    <div>
+                        <Menu.Button className="rounded-full flex items-center hover:cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
+                            <div
+                                className="px-2 bg-brown-normal hover:opacity-75 p-1 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                            >
+                                <FontAwesomeIcon size="2x" icon={faQuestion} />
+                            </div>
+                        </Menu.Button>
+                    </div>
+                    <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                    >
+                        <Menu.Items className="-top-2 transform -translate-y-full absolute right-0 w-36 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <div className="p-1">
+                                {["Tutorial", "SAC"].map((item: any, key: any) => (
+                                    <Menu.Item key={key}>
+                                    {({ active }) => (
+                                        <Menu.Button
+                                            as='a'
+                                            href='#'
+                                            className={classNames(
+                                                active ? 'bg-custom-green/75 text-white' : 'text-gray-900',
+                                                'group flex w-full items-center rounded-md px-2 py-2 text-sm'
+                                            )}
+                                                onClick={() => { key === 0 ? 
+                                                    alertService.info('Tutorial em Desenvolvimento') : 
+                                                    alertService.info('SAC em Desenvolvimento') 
+                                                }}
+                                                aria-hidden="true"
+                                        >
+                                            {item}
+                                        </Menu.Button>
+                                    )}
+                                    </Menu.Item>
+                                ))}
+                            </div>
+                        </Menu.Items>
+                        
+                    </Transition>
+                    </Menu>
                     {children}
                 </div>
                 <div>

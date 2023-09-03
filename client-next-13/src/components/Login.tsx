@@ -112,7 +112,7 @@ function Login() {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-green-600 hover:text-green-500">
+                <a href="#" className="font-medium text-custom-green hover:opacity-75">
                   Esqueceu sua senha?
                 </a>
               </div>
@@ -122,10 +122,10 @@ function Login() {
             <button
                 disabled={formState.isSubmitting}
                 type="submit"
-                className="group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                className="group relative w-3/4 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-custom-green hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-                  <LockClosedIcon className="h-5 w-5 text-green-500 group-hover:text-green-400" aria-hidden="true" />
+                  <LockClosedIcon className="h-5 w-5 text-gray-50 group-hover:opacity-50" aria-hidden="true" />
                 </span>
                 Sign in
               </button>
