@@ -29,22 +29,18 @@ const Map = () => {
         setMap(null)
     }, [])
     
-    return (
-        <div>
-            {isLoaded && (
-                <GoogleMap
-                    mapContainerStyle={containerStyle}
-                    center={center}
-                    zoom={50}
-                    onLoad={onLoad}
-                    onUnmount={onUnmount}
-                >
-
-                </GoogleMap>
-            )}
-            
-        </div>
-    )
+    return isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={10}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        >
+          { /* Child components, such as markers, info windows, etc. */ }
+          <></>
+        </GoogleMap>
+    ) : <></>
 }
 
 export default Map

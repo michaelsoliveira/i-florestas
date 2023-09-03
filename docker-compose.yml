@@ -55,10 +55,10 @@ services:
       - ./client-next-13/.env.local
     environment:
       BACKEND_URL: ${BACKEND_URL}
-    #volumes:
-    #  - ./client-next-13:/app
-    #  - /app/node_modules
-    #  - /app/.next
+    volumes:
+     - ./client-next-13:/app
+     - /app/node_modules
+     - /app/.next
 
 volumes:
   pgdata:
