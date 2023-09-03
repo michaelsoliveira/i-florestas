@@ -42,7 +42,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const [ menuOpened, setMenuOpened ] = useState(false)
-    const animation = false
+    const animation = true
 
     // eslint-disable-next-line react/display-name
     const CustomMenuButton = forwardRef<any, HTMLButtonElement>(({ children }: any, ref) => (
@@ -73,9 +73,9 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     }
 
     const handleScroll = () => {
-        if (scrollY > 72) {
+        if (scrollY > 100) {
           setSticky(true);
-        } else if (scrollY < 72) {
+        } else if (scrollY < 100) {
           setSticky(false);
         }
     }
@@ -160,7 +160,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             <>
               <div className={classNames(
                 "px-4 sm:px-6 lg:px-8 bg-gray-light shadow z-40",
-                sticky ? 'lg:fixed w-full opacity-100 transition transition-ease duration-500 translate-y-0' : ''
+                sticky ? 'lg:fixed w-full opacity-100 transition transition-all duration-1000 translate-y-0' : ''
               )
                 }>
                 <div className="flex items-center justify-between h-16">
@@ -175,13 +175,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     as={Link}
                                     href="/"
                                 >
-                                    <Logo width='w-10' height='h-10' />
+                                    <Logo width={25} height={25} />
                                 </Disclosure.Button>
                             ) : (
                                 <Link
                                     href="/"
                                 >
-                                    <Logo width='w-10' height='h-10' />
+                                    <Logo width={25} height={25} />
                                 </Link>
                             )
                         }
@@ -356,13 +356,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             <div className='hidden lg:flex lg:flex-row'>
                 {!session && (
                 <div className="px-2 lg:space-x-2">
-                    <Link href="/login" className="bg-green-700 shadow text-sm px-6 py-3 
-                    text-white rounded-lg hover:text-white transition duration-500 ease-in-out hover:bg-green-600
+                    <Link href="/login" className="bg-custom-green shadow text-sm px-6 py-3 
+                    text-white rounded-lg hover:text-white transition duration-500 ease-in-out hover:opacity-75
                     transform hover:-translate-y-1 hover:scale-105">
                         Fazer login
                     </Link>  
-                    <Link href="/signup" className="bg-gray-100 shadow text-sm px-6 py-3
-                    text-green-700 rounded-lg hover:text-green-600 transition duration-500 ease-in-out hover:bg-gray-200
+                    <Link href="/signup" className="bg-gray-light shadow text-sm px-6 py-3
+                    text-custom-green rounded-lg hover:text-custom-green transition duration-500 ease-in-out hover:bg-gray-100
                     transform hover:-translate-y-1 hover:scale-105">
                         Cadastre-se
                     </Link>           

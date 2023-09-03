@@ -12,38 +12,57 @@ export default function Dashboard() {
 
   return (
     
-    <div className="w-full">
+    <div className="w-full items-center justify-center">
       <div className="relative flex flex-row lg:flex-col lg:overflow-hidden">
-        <div className="mx-auto mt-10 px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-12">
-          <div className="w-full relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 max-w-sm md:max-w-3xl lg:max-w-5xl xl:max-w-6xl lg:pb-16">
-          <div className='flex flex-col lg:flex-row border shadow-lg'>
+        <div className="w-full mt-10 px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-12">
+          <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-16">
+          <div className="flex flex-col lg:flex-row border shadow-lg h-96 lg:h-[32rem] md:h-[25rem]" 
+            style={{
+              backgroundImage: `url("/imgs/Hero.png")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: `95%`,
+              backgroundPosition: 'center'             
+            }}
+          >
             <div className='flex flex-row mx-auto'>
               <Hero session={session}/>
             </div>
-            <div className="mx-auto text-center items-center inset-y-0 h-full my-auto py-4 px-4">
-                
-                <Image
-                    className="object-cover object-center"
-                    src="web_devices.svg"
-                    alt=""
-                    width={400}
-                    height={300}
-                />
-              </div>
+            
           </div>
-          <div className="text-center lg:flex lg:flex-col py-4">
-            <h2 className="text-3xl leading-8 font-semibold mt-5 text-green-800">
+          <Carousel />              
+          <div className="border shadow-lg text-center flex flex-col py-4 mt-4">
+            {/* <h2 className="text-3xl leading-8 font-semibold mt-5 text-green-800">
               Recursos
-            </h2>
-              <Carousel />              
+            </h2> */}
+            <div className='mx-auto text-center items-center inset-y-0 h-full my-auto px-4 pb-10'>
+            <Image
+                  className="object-cover object-center"
+                  src="/imgs/brasao.png"
+                  alt=""
+                  width={175}
+                  height={200}
+              /> 
+            </div>
+            <div className="mx-auto text-center items-center inset-y-0 h-full my-auto px-4">
+               
+              <Image
+                  className="object-cover object-center"
+                  src="/imgs/Parceiros.png"
+                  alt=""
+                  width={900}
+                  height={300}
+              />
+            </div>
+              
           </div>
-          {!session && 
+          
+          {/* {!session && 
               (<div>
                 <div className="text-center lg:flex lg:flex-col py-4">
                   <Team />
                 </div>
             </div>
-           )} 
+           )}  */}
         </div>
       </div>
     </div>

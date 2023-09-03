@@ -73,18 +73,11 @@ const Layout = ({ children }: props) => {
         }
      ]
 
-    const menuProjeto = {
-        name: 'Projeto',
-        description: 'Dados Gerais dos Projetos',
-        href: '/projeto',
-        icon: ClipboardDocumentListIcon,
-        subMenuItems: withProjeto
-    }
-
     const defaultNavigation = [
         { name: 'Dashboard', href: '/', current: false, visible: !session, subMenu: false, subMenuItems: [] },
         { name: 'Soluções', href: '#', current: false, visible: !session, subMenu: true, subMenuItems: solutions },
-        { name: 'Cadastro', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: [ menuProjeto, ...resources] },
+        { name: 'Projeto', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: withProjeto },
+        { name: 'Cadastro', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: resources },
         { name: 'Inventário', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: inventario },
         { name: 'Planejamento', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: planejamento },
         { name: 'Análise de Dados', href: '#', current: false, visible: !!session, subMenu: true, subMenuItems: estatistica },

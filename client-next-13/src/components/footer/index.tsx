@@ -12,12 +12,12 @@ const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white">
       {index && (
-        <div className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-[#ffffff19] py-2">
+        <div className="md:flex md:justify-center md:items-center px-20 bg-custom-green py-2">
           <h1
-            className="lg:text-3xl text-3xl md:mb-0 mb-6 lg:leading-normal font-semibold
+            className="lg:text-xl text-xl md:mb-0 mb-6 lg:leading-normal
           md:w-2/5"
           >
-            <span className="text-teal-400">Acesso Gratuito</span> para o gerenciamento de inventário
+            <span className="text-white">Entre com seu email para mais informações</span>
           </h1>
           <div>
             <input
@@ -28,7 +28,7 @@ const Footer = () => {
             />
             <button
               className="bg-teal-600 hover:bg-teal-500 duration-300 px-5 py-2
-            rounded-md text-white md:w-auto w-full"
+            rounded-md text-white md:w-auto w-48"
             >
               Enviar
             </button>
