@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react"
+import { useState, useCallback } from "react"
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 
 const containerStyle = {
@@ -12,6 +12,10 @@ const center = {
 }
 
 const Map = () => {
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""
+      })
 
     const [map, setMap] = useState(null)
 
@@ -27,15 +31,18 @@ const Map = () => {
     
     return (
         <div>
-            <GoogleMap
-                mapContainerStyle={containerStyle}
-                center={center}
-                zoom={50}
-                onLoad={onLoad}
-                onUnmount={onUnmount}
-            >
+            {isLoaded && (
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={center}
+                    zoom={50}
+                    onLoad={onLoad}
+                    onUnmount={onUnmount}
+                >
 
-            </GoogleMap>
+                </GoogleMap>
+            )}
+            
         </div>
     )
 }
