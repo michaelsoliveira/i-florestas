@@ -81,7 +81,7 @@ function Login() {
                       id="emailLogin" 
                       name="email" 
                       type="email" 
-                      className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600" 
+                      className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-custom-green" 
                       placeholder="user@email.com" />
                       <label htmlFor="email" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Email</label>
                 </div>
@@ -92,7 +92,7 @@ function Login() {
                       id="passwordLogin" 
                       name="password" 
                       type="password" 
-                      className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-green-600" placeholder="michaelsoliveira@gmail.com" />
+                      className="peer h-10 w-full border-b border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-custom-green" placeholder="michaelsoliveira@gmail.com" />
                       <label htmlFor="password" className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm">Senha</label>
                 </div>
               

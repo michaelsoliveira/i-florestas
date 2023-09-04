@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import arvoreService from "../services/ArvoreService";
 import { prismaClient } from "../database/prismaClient";
-import path from "path";
 
 export class ArvoreController {
     async store(request : Request, response: Response) : Promise<Response> { 

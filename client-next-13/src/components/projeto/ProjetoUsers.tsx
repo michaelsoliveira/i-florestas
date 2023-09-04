@@ -12,7 +12,7 @@ import { UserType } from "@/types/IUserType"
 import { LoadingContext } from "@/context/LoadingContext"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
-const ProjetoUsers = ({ roles }: { roles: any }) => {
+const ProjetoUsers = () => {
 
     const { client } = useAuthContext()
     const { loading, setLoading } = useContext(LoadingContext)
@@ -26,6 +26,18 @@ const ProjetoUsers = ({ roles }: { roles: any }) => {
     const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
     const pathname = usePathname()
+    const [roles, setRoles] = useState<any>()
+
+    const getRoles = useCallback(async () => {
+        const { roles } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/role`, {
+            method: 'GET',
+            //cache: 'no-store'
+        }).then((result: any) => {
+            return result.json()
+        })
+    
+        setRoles(roles)
+    }, [])
     
     const loadUsers = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
@@ -40,7 +52,10 @@ const ProjetoUsers = ({ roles }: { roles: any }) => {
 
     useEffect(() => {  
         let isLoaded = false
-        if (!isLoaded) loadUsers(itemsPerPage)
+        if (!isLoaded) {
+            loadUsers(itemsPerPage)
+            getRoles()
+        }
 
         return () => {
             isLoaded = true

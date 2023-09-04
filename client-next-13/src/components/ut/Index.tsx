@@ -268,12 +268,12 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
 
     return (
         <div>
-            <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Unidades de Trabalho</h1>
+            <div className="flex flex-row items-center justify-between p-6">
+                <h1 className="text-custom-green text-2xl font-bold">Unidades de Trabalho</h1>
                 { upa?.tipo === 0 && (
                     <div
                         onClick={addAutomatico}
-                        className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                        className="px-4 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                     >
                         <div className="flex flex-row justify-around w-full space-x-2">
                             <div>
@@ -288,17 +288,17 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     
                 <Link
                     href='/ut/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-col px-4 w-auto">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-white dark:text-gray-400">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -312,7 +312,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4 text-white">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
                                 <Select
@@ -346,7 +346,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 />
                             </div>
                         </div>
-                        <div className="w-full px-4">
+                        <div className="w-full px-4 text-white">
                             <label htmlFor="procurar_ut">Pesquisar UT:</label>
                             <Input
                                 label="Pesquisar UT"
@@ -373,7 +373,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-50 bg-gray-normal">
                         <tr>
                             <th className="w-1/12">
                                 <div className="flex justify-center">
@@ -388,7 +388,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 className="w-1/12"
                                 onClick={(e) => sortUts()}
                             >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider cursor-pointer">
                                     Número UT
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -401,7 +401,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                     <>
                                         <th
                                             scope="col"
-                                            className="w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            className="w-2/12 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider"
                                         >
                                             Coordenadas
                                         </th>
@@ -411,13 +411,13 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                             
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider"
                             >
                                 Área Útil
                             </th>
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider"
                             >
                                 Área Total
                             </th>           

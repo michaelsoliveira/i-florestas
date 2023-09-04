@@ -4,4 +4,11 @@ import Users from "@/components/projeto/Users"
 
 import withAuthentication from "@/components/withAuthentication"
 
-export default withAuthentication(Users)
+const IndexUsers = () => {
+
+    return (
+        <Users />
+    )
+}
+
+export default withAuthentication(IndexUsers)

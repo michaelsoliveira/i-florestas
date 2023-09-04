@@ -2,7 +2,7 @@
 
 import { FormInput } from '../FormInput'
 import { useContext, useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '../../context/AuthContext'
@@ -156,7 +156,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         <div>
             <div className="text-sm py-4 justify-center sm:py-12 bg-gray-50">                
                 <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto">
-                    <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row bg-custom-green border-x-2 border-t-2 text-white items-center justify-between shadow-lg py-4 sm:rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/ut" className="flex flex-col relative left-0 ml-4" />
@@ -170,7 +170,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
+                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="relative border border-gray-400 p-4 rounded-md">
@@ -330,8 +330,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                             </div>
                             </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/ut" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
-                                <button className="w-1/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                <Link href="/ut" className="text-center bg-gray-light w-1/5 text-gray-dark border p-3 rounded-md">Voltar</Link>
+                                <button className="w-1/5 bg-custom-green text-white p-3 rounded-md font-medium">Salvar</button>
                             </div>
                         </form>
                     </div>

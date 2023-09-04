@@ -34,6 +34,8 @@ const Index = () => {
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
     const [uts, setUts] = useState<any>()
+    const [especies, setEspecies] = useState<any>()
+    const [arvores, setArvores] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
     const upa = useAppSelector((state: RootState) => state.upa)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
@@ -120,11 +122,43 @@ const Index = () => {
             setUts(uts)
     }, [client, upa?.id])
 
+    const getArvores = useCallback(async() => {
+        const response = await client.get(`/arvore/get-all`)
+        const { arvores } = response.data
+        setArvores(arvores)
+    }, [])
+
+    const getEspecies = useCallback(async () => {
+    
+            const response = await client.get(`/especie?order=asc&orderBy=especie.nome`)
+            const { especies } = response.data
+            setEspecies(especies) 
+    }, [client])
+
     useEffect(() => {
         defaultUmfsOptions()
         defaultUpasOptions()
         getUts()
-    }, [defaultUmfsOptions, defaultUpasOptions, getUts])
+        getEspecies()
+        getArvores()
+    }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores])
+    
+    const nomeEspecies = especies?.length > 0 
+        ? especies.map((especie: any) => especie.nome)
+        : [];
+    
+    const numArvores = arvores?.length > 0 
+        ? arvores.map((arv: any) => arv.numero_arvore)
+        : []
+
+    const arvoresUploaded: any = rowData.length > 0 
+        ? rowData
+        : []
+    const especiesErrors = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie))
+    
+    const numArvoresDuplicates = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
+    
+    const semUt = arvoresUploaded?.filter((arvore: any) => "".includes(String(arvore?.ut)))
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -190,6 +224,9 @@ const Index = () => {
             if (data?.count === 0 || poa.id === '') {
                 return alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
             } else {
+                if (semUt.length > 0) return alertService.error('Existem árvores que não foi informado a UT')
+                if (especiesErrors.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
+                if (numArvoresDuplicates.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                     columns: columnData,
@@ -233,10 +270,13 @@ const Index = () => {
             }
         })
 
-        const rows = result.data.slice(1).map((row: any) => {
+        const rows = result.data.slice(1).map((row: any, idx: number) => {
             return row.reduce((acc: any, curr: any, index: any) => {
                 acc[columns[index].accessor] = curr;
-                return acc;
+                return {
+                    linha: idx + 1,
+                    ...acc
+                };
             }, {})
         })
         
@@ -375,6 +415,9 @@ const Index = () => {
                         </div>
      
                     </div>
+                    {/* <div>
+                        { JSON.stringify(especiesErrors, null, 2) }
+                    </div> */}
             <div className="mt-6">
                 <Table columns={columns} data={data} />
             </div>

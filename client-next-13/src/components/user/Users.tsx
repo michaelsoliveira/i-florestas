@@ -62,7 +62,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     
     const deleteMultModal = () => showModal({ title: 'Deletar Usuários', onConfirm: deleteUsers, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os usuário(s) selecionado(s)' })
 
-    async function deleteUser(id?: string) {
+    const deleteUser = async (id?: string) => {
         try {
             await client.delete(`/users/${id}`)
                 .then((response: any) => {
@@ -139,7 +139,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     return (
         <div>
             
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-row items-center justify-between p-6 bg-gray-100 text-custom-green">
                 <div>
                     <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
                 </div>
