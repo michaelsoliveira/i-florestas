@@ -11,7 +11,7 @@ export default function useWindowDimensions() {
       width,
       height,
     };
-  }, [])
+  }, [hasWindow])
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
