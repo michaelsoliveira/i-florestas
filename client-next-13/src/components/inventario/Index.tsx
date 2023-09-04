@@ -126,7 +126,7 @@ const Index = () => {
         const response = await client.get(`/arvore/get-all`)
         const { arvores } = response.data
         setArvores(arvores)
-    }, [])
+    }, [client])
 
     const getEspecies = useCallback(async () => {
     

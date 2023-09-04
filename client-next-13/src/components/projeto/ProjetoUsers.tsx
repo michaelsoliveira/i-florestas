@@ -60,7 +60,7 @@ const ProjetoUsers = () => {
         return () => {
             isLoaded = true
         }
-    }, [itemsPerPage, loadUsers])
+    }, [itemsPerPage, loadUsers, getRoles])
 
     const onPageChanged = async (paginatedData: any) => {
         

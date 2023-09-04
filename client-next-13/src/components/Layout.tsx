@@ -142,7 +142,7 @@ const Layout = ({ children }: props) => {
                     <div>
                         <Menu.Button className="rounded-full flex items-center hover:cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
                             <div
-                                className="px-2 bg-brown-normal hover:opacity-75 p-1 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                                className="px-3 py-1 bg-brown-normal hover:opacity-75 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
                             >
                                 <FontAwesomeIcon size="2x" icon={faQuestion} />
                             </div>

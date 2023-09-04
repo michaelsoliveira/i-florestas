@@ -25,11 +25,11 @@ const SigupPage = () => {
   return (
     <>
       <div className="min-h-full flex items-center justify-center my-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md flex flex-col justify-center items-center w-full space-y-4 px-8 py-4 border rounded-md shadow-2xl">
-          <div className='flex bg-gray-50 border absolute top-20 border-green-700 justify-center items-center rounded-full shadow-lg w-36 h-36'>
-          <div className='relative flex flex-col items-center justify-center'>
-            <Logo width='w-16' height='h-16' />
-            <h1 className='font-roboto text-md font-semibold text-green-700'>BOManejoWeb</h1>
+        <div className="relative max-w-md flex flex-col justify-center items-center w-full space-y-4 px-8 py-4 border rounded-md shadow-2xl">
+          <div className='flex bg-gray-50 border absolute -top-16 border-custom-green justify-center items-center rounded-full shadow-lg w-36 h-36'>
+          <div className='flex flex-col items-center justify-center'>
+            <Logo width={35} height={35} />
+            <h1 className='font-roboto text-md font-semibold text-custom-green'>BOManejoWeb</h1>
             </div>
           </div>
           <div className='w-full pt-20'>

@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export default function useWindowDimensions() {
 
   const hasWindow = typeof window !== 'undefined';
 
-  function getWindowDimensions() {
+  const getWindowDimensions = useCallback(() => {
     const width = hasWindow ? window.innerWidth : 0;
     const height = hasWindow ? window.innerHeight : 0;
     return {
       width,
       height,
     };
-  }
+  }, [])
 
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
 
@@ -24,7 +24,7 @@ export default function useWindowDimensions() {
         setWindowDimensions(getWindowDimensions());
       });
     }
-  }, [hasWindow]);
+  }, [hasWindow, getWindowDimensions]);
 
   return windowDimensions;
 }
