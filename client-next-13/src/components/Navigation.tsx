@@ -16,6 +16,9 @@ import { useModalContext } from '@/context/ModalContext'
 import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
 import { styles } from './utils/styles'
+import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
+import { useAppSelector } from '@/redux/hooks'
+import { RootState } from '@/redux/store'
 
 type SubMenuType = {
         name?: string,
@@ -34,6 +37,8 @@ type SubMenuType = {
         subMenuItems?: SubMenuType[]
     }
 
+    const NOT_DISPLAY_OPTIONS = ['change_projeto', 'change_poa']
+
 export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     const pathname = usePathname()
@@ -41,6 +46,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const formRefProjeto = createRef<any>()
     const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
+    const poa = useAppSelector((state: RootState) => state.poa)
     const [ menuOpened, setMenuOpened ] = useState(false)
     const animation = true
     const withIcons = false
@@ -413,49 +419,17 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             {session && (<div className="hidden md:block">
                 <div className="ml-4 flex items-center md:ml-6">
 
-                    {/* Profile dropdown */}
-                    <Menu as="div" className="ml-3 relative">
-                    <div>
-                        <Menu.Button className="rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
-                            <div
-                                className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700"
-                            >
-                                <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
-                            </div>
-                        </Menu.Button>
-                    </div>
-                    <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                    >
-                        <Menu.Items className="origin-top-right absolute z-20 right-0 mt-2 w-48 shadow-lg py-1 bg-white focus:outline-none rounded-md">
-                        {["Mudar Projeto Ativo", "Mudar Poa Ativo"].map((item: any, key: any) => (
-                            <Menu.Item key={key}>
-                            {({ active }) => (
-                                <Disclosure.Button
-                                    as='a'
-                                    href='#'
-                                    className={classNames(
-                                        active ? 'bg-gray-100' : '',
-                                        'block px-4 py-2 text-sm text-gray-700'
-                                    )}
-                                        onClick={() => { key === 0 ? changeProjetoModal() : changePoaModal() }}
-                                        aria-hidden="true"
-                                >
-                                    {item}
-                                </Disclosure.Button>
-                            )}
-                            </Menu.Item>
-                        ))}
-                        </Menu.Items>
+                    {
+                        // Projeto e POA Vigente
                         
-                    </Transition>
-                    </Menu>
+                            
+                                <div className='flex flex-col text-xs w-36 text-gray-700'>
+                                    <div>Projeto: <span className='font-bold'> { projeto?.nome }</span></div>
+                                    <div>Poa: <span className='font-bold'> { poa?.descricao }</span></div>
+                                </div>
+                            
+                        
+                    }
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="ml-3 relative">
@@ -576,8 +550,8 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                             leaveTo="transform opacity-0 scale-95"
                         >
                         <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none">
-                            {item.subMenuItems?.map((subMenu: any, subkey) => (
-                                !(subMenu.name === 'change_projeto') && (
+                            {item.subMenuItems?.filter((i: any) => !NOT_DISPLAY_OPTIONS.includes(i.name)).map((subMenu: any, subkey) => (
+                                
                             <div className='px-2 py-2' key={subkey} aria-hidden="true">
                                 { 
                                     !subMenu.subMenuItems ? (
@@ -672,7 +646,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     )
                                 }
                                 
-                            </div>)))}
+                            </div>))}
                         </Popover.Panel>
                     </Transition>
                 </>
@@ -686,7 +660,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             {
             //Mobile
             session ? (
-                <div className="pt-4 pb-3 border-t border-gray-700">
+                <div className="pt-4 pb-3 border-y border-gray-300 shadow-lg rounded-b-lg">
                     <div className="flex items-center px-5">
                         <div className="flex-shrink-0">
                             {session && session.user?.image ? (
@@ -705,9 +679,9 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                     <div>
                         <Menu.Button className="rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
                             <div
-                                className="bg-gray-200 p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                                className="bg-gray-light hover:bg-gray-normal transition transition-all duration-200 ease-in-out p-1 rounded-full text-gray-400 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
                             >
-                                <svg className='fill-gray-800' xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 12l-4.463 4.969-4.537-4.969h3c0-4.97 4.03-9 9-9 2.395 0 4.565.942 6.179 2.468l-2.004 2.231c-1.081-1.05-2.553-1.699-4.175-1.699-3.309 0-6 2.691-6 6h3zm10.463-4.969l-4.463 4.969h3c0 3.309-2.691 6-6 6-1.623 0-3.094-.65-4.175-1.699l-2.004 2.231c1.613 1.526 3.784 2.468 6.179 2.468 4.97 0 9-4.03 9-9h3l-4.537-4.969z"/></svg>
+                                <ArrowsRightLeftIcon className='w-6 h-6 text-custom-green' />
                             </div>
                         </Menu.Button>
                     </div>
