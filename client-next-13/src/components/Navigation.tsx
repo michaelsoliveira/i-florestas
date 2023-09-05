@@ -423,7 +423,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                         // Projeto e POA Vigente
                         
                             
-                                <div className='flex flex-col text-xs w-36 text-gray-700'>
+                                <div className='flex flex-col text-xs w-36 text-gray-700 border p-1 border-gray-400 rounded-lg'>
                                     <div>Projeto: <span className='font-bold'> { projeto?.nome }</span></div>
                                     <div>Poa: <span className='font-bold'> { poa?.descricao }</span></div>
                                 </div>
