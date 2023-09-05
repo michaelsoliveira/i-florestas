@@ -576,99 +576,103 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                             leaveTo="transform opacity-0 scale-95"
                         >
                         <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none">
-                            {item.subMenuItems?.map((subMenu, subkey) => (
+                            {item.subMenuItems?.map((subMenu: any, subkey) => (
+                                !(subMenu.name === 'change_projeto') && (
                             <div className='px-2 py-2' key={subkey} aria-hidden="true">
-                                {!subMenu.subMenuItems ? (
-                                    <Disclosure.Button
-                                        as={Link}
-                                        href={subMenu.href}
-                                        className={classNames(
-                                            'hover:bg-gray-100',
-                                            'group flex rounded-md items-center w-full px-2 py-2 text-sm'
-                                        )}
-                                        aria-hidden="true"
-                                    >
-                                        {subMenu?.icon && (
-                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
-                                        )}
-                                        <div className="ml-4">
-                                            <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
-                                            {subMenu?.description && (
-                                                <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
+                                { 
+                                    !subMenu.subMenuItems ? (
+                                        <Disclosure.Button
+                                            as={Link}
+                                            href={subMenu.href}
+                                            className={classNames(
+                                                'hover:bg-gray-100',
+                                                'group flex rounded-md items-center w-full px-2 py-2 text-sm'
                                             )}
-                                        </div>
-                                    </Disclosure.Button>
-                                ) : (
-                                <Popover as="div" className="w-full" key={subkey}>
-                                {({ open }) => (
-                                    <>
-                                    <div>
-                                        <Popover.Button className="inline-flex w-full rounded-md px-2 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200">
+                                            aria-hidden="true"
+                                        >
                                             {subMenu?.icon && (
                                                 <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
                                             )}
-                                                <div className="ml-4">
-                                                    <span className="text-base font-medium text-gray-900">{subMenu.name}</span>
-                                                </div>
-                                            {open ? (
-                                                <ChevronUpIcon
-                                                    className={classNames(
-                                                        open ? 'text-gray-400' : 'text-gray-400',
-                                                        'w-5 h-5 ml-4 -mr-1'
-                                                    )}
-                                                    aria-hidden="true"
-                                                />                    
-                                                ) : (
-                                                    <ChevronDownIcon
-                                                    className={classNames(
-                                                        open ? 'text-gray-400' : 'text-gray-400',
-                                                        'w-5 h-5 ml-4 -mr-1'
-                                                    )}
-                                                    aria-hidden="true"
-                                                />                    
-                                            )}
-                                        
-                                        </Popover.Button>
-                                    </div>
-                                    <Transition
-                                        as={Fragment}
-                                        enter="transition ease-out duration-100"
-                                        enterFrom="transform opacity-0 scale-95"
-                                        enterTo="transform opacity-100 scale-100"
-                                        leave="transition ease-in duration-75"
-                                        leaveFrom="transform opacity-100 scale-100"
-                                        leaveTo="transform opacity-0 scale-95"
-                                    >
-                                        <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none">
-                                            {subMenu.subMenuItems?.map((subsubMenu, subsubKey) => (
-                                                <Disclosure.Button
-                                                    as={Link}
-                                                    key={subsubKey}
-                                                    href={subsubMenu.href}
-                                                    className={classNames(
-                                                        !subsubMenu?.icon && 'pl-10',
-                                                        'hover:bg-gray-100 pl-4',
-                                                        'group flex rounded-md items-center w-full px-2 py-2 text-sm'
-                                                    )}
-                                                    aria-hidden="true"
-                                                >
-                                                    {subsubMenu?.icon && (
-                                                        <subsubMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
-                                                    )}
+                                            <div className="ml-4">
+                                                <p className="text-base font-medium text-gray-900">{subMenu.name}</p>
+                                                {subMenu?.description && (
+                                                    <p className="mt-1 text-sm text-gray-500">{subMenu?.description}</p>
+                                                )}
+                                            </div>
+                                        </Disclosure.Button>
+                                    ) : (
+                                    <Popover as="div" className="w-full" key={subkey}>
+                                    {({ open }) => (
+                                        <>
+                                        <div>
+                                            <Popover.Button className="inline-flex w-full rounded-md px-2 py-2 font-medium text-gray-700 hover:text-white transition duration-500 ease-in-out hover:bg-gray-200">
+                                                {subMenu?.icon && (
+                                                    <subMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                                )}
                                                     <div className="ml-4">
-                                                        <p className="text-base font-medium text-gray-900">{subsubMenu.name}</p>
-                                                        {subsubMenu?.description && (
-                                                            <p className="mt-1 text-sm text-gray-500">{subsubMenu?.description}</p>
-                                                        )}
+                                                        <span className="text-base font-medium text-gray-900">{subMenu.name}</span>
                                                     </div>
-                                                </Disclosure.Button>))}
-                                            </Popover.Panel>
-                                        </Transition>
-                                            </>
-                                        )}
-                                    </Popover>
-                                )}
-                            </div>))}
+                                                {open ? (
+                                                    <ChevronUpIcon
+                                                        className={classNames(
+                                                            open ? 'text-gray-400' : 'text-gray-400',
+                                                            'w-5 h-5 ml-4 -mr-1'
+                                                        )}
+                                                        aria-hidden="true"
+                                                    />                    
+                                                    ) : (
+                                                        <ChevronDownIcon
+                                                        className={classNames(
+                                                            open ? 'text-gray-400' : 'text-gray-400',
+                                                            'w-5 h-5 ml-4 -mr-1'
+                                                        )}
+                                                        aria-hidden="true"
+                                                    />                    
+                                                )}
+                                            
+                                            </Popover.Button>
+                                        </div>
+                                        <Transition
+                                            as={Fragment}
+                                            enter="transition ease-out duration-100"
+                                            enterFrom="transform opacity-0 scale-95"
+                                            enterTo="transform opacity-100 scale-100"
+                                            leave="transition ease-in duration-75"
+                                            leaveFrom="transform opacity-100 scale-100"
+                                            leaveTo="transform opacity-0 scale-95"
+                                        >
+                                            <Popover.Panel className="z-30 relative lg:right-0 w-full mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg focus:outline-none">
+                                                {subMenu.subMenuItems?.map((subsubMenu: any, subsubKey: any) => (
+                                                    <Disclosure.Button
+                                                        as={Link}
+                                                        key={subsubKey}
+                                                        href={subsubMenu.href}
+                                                        className={classNames(
+                                                            !subsubMenu?.icon && 'pl-10',
+                                                            'hover:bg-gray-100 pl-4',
+                                                            'group flex rounded-md items-center w-full px-2 py-2 text-sm'
+                                                        )}
+                                                        aria-hidden="true"
+                                                    >
+                                                        {subsubMenu?.icon && (
+                                                            <subsubMenu.icon className="flex-shrink-0 h-6 w-6 text-green-700" aria-hidden="true" />
+                                                        )}
+                                                        <div className="ml-4">
+                                                            <p className="text-base font-medium text-gray-900">{subsubMenu.name}</p>
+                                                            {subsubMenu?.description && (
+                                                                <p className="mt-1 text-sm text-gray-500">{subsubMenu?.description}</p>
+                                                            )}
+                                                        </div>
+                                                    </Disclosure.Button>))}
+                                                </Popover.Panel>
+                                            </Transition>
+                                                </>
+                                            )}
+                                        </Popover>
+                                    )
+                                }
+                                
+                            </div>)))}
                         </Popover.Panel>
                     </Transition>
                 </>

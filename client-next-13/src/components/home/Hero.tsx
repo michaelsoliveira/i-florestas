@@ -28,16 +28,16 @@ const Hero = ({ session }: any) => {
                 </p>
             </div>
             {!session && (
-                <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                    <div className="">
+                <div className="mt-5 mt-4 flex items-center justify-center lg:justify-start">
+                  
                     <a
                         href="#"
-                        className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-custom-green transition transition-all duration-500 hover:opacity-75 md:py-4 md:text-lg md:px-10"
+                        className="w-36 flex items-center justify-center px-4 py-2 md:py-1 border border-transparent text-base font-medium rounded-lg text-white bg-custom-green transition transition-all duration-500 hover:opacity-75 md:py-4 md:text-lg md:px-10"
                         onClick={showLogin}
                     >
                         Iniciar
                     </a>
-                    </div>
+               
                 
                 </div>
             )}
