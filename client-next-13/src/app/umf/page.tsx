@@ -101,7 +101,7 @@ const UmfIndex = () => {
     }
 
     return (
-    <div>
+    <div className="h-[40.8em] overflow-y-auto">
         <Index
             currentUmfs={currentUmfs}
             loading={loading}

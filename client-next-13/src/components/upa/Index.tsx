@@ -5,7 +5,6 @@ import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
-import Modal from "../Modal"
 import { AuthContext } from "@/context/AuthContext"
 import { OptionType, Select } from '../Select'
 import { setUmf } from "@/redux/features/umfSlice"
@@ -174,21 +173,21 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     return (
         <div>
-            <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Unidade de Produção Anual</h1>
+            <div className="flex flex-row items-center justify-between p-6">
+                <h1 className="font-medium text-2xl font-roboto text-custom-green">Unidade de Produção Anual</h1>
                 <Link
                     href='/upa/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg text-white">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -204,7 +203,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                         </div>
                         <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
                             <div className="w-3/12 flex items-center">UMF: </div>
-                            <div className="w-9/12">
+                            <div className="w-9/12 text-black">
                                 <Select
 
                                     placeholder='Selecione UMF...'
@@ -245,7 +244,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-normal">
                         <tr>
                             <th className="w-1/12">
                                 <div className="flex justify-center">
@@ -260,7 +259,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 className="w-1/12"
                                 onClick={() => sortUpas()}
                             >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs text-gray-500 font-bold uppercase tracking-wider cursor-pointer">
                                     Ano
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -270,19 +269,19 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </th>
                             <th
                                 scope="col"
-                                className="w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-4/12 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Descrição
                             </th>
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Tipo de Coordenada
                             </th>
                             <th
                                 scope="col"
-                                className="w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Modelo de Equação
                             </th>           

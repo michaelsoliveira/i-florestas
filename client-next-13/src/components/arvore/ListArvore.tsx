@@ -10,6 +10,7 @@ import { useModalContext } from '@/context/ModalContext'
 import { Link } from "../Link"
 import { LoadingContext } from '@/context/LoadingContext'
 import classNames from 'classnames'
+import { isEven } from '../utils/Functions'
 
 type ListArvoreType = {
     currentArvores: any, 
@@ -118,40 +119,26 @@ const ListArvore = ({
                         </button>
                     </div>
                 )}
+                <div className={`${!planejar && 'w-full h-[21.3em] overflow-y-auto'}`}>
                 <table className="min-w-full divide-y divide-gray-200">
-                <thead className={classNames(
-                    "bg-gray-50 w-full",
-                    planejar && "sticky top-0"
-                )}>
+                    <thead className={classNames(
+                        "bg-gray-50 w-full sticky top-0"
+                    )}>
                     <tr>
-                        { planejar ? (
-                            <>
-                                <th>
-                                    <div className="flex justify-center">
-                                    <input  
-                                        checked={checkedArvores?.length === currentArvores?.length}
-                                        onChange={handleSelectAllArvore}                
-                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                    />
-                                    </div>
-                                </th>
-                            </>
-                        ) : (
-                            <>
-                                <th>
-                                    <div className="flex justify-center">
-                                    <input  
-                                        checked={checkedArvores?.length === currentArvores?.length}
-                                        onChange={handleSelectAllArvore}                
-                                        className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
-                                    />
-                                    </div>
-                                </th>
-                            </>
-                        )}
+                        
+                        <th>
+                            <div className="flex justify-center">
+                            <input  
+                                checked={checkedArvores?.length === currentArvores?.length}
+                                onChange={handleSelectAllArvore}                
+                                className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+                            />
+                            </div>
+                        </th>
+                       
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                         onClick={() => sortArvores('ut.numero_ut')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -164,7 +151,7 @@ const ListArvore = ({
                     </th>
                     <th
                         scope="col"
-                        className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('numero_arvore')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -177,7 +164,7 @@ const ListArvore = ({
                     </th>
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('especie.nome')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -192,7 +179,7 @@ const ListArvore = ({
                         <>
                             <th
                             scope="row"
-                            className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="justify-between px-2 py-2 text-left text-xs font-bold text-gray-500 cursor-pointer"
                             onClick={() => sortArvores('faixa')}
                         >
                             <div className="flex flex-row w-full justify-between">
@@ -205,7 +192,7 @@ const ListArvore = ({
                         </th>
                         <th
                             scope="col"
-                            className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="justify-between items-center px-2 py-2 text-left text-xs font-bold text-gray-500 cursor-pointer"
                             onClick={() => sortArvores('orient_x')}
                         >
                             <div className="flex flex-row w-full justify-between">
@@ -220,7 +207,7 @@ const ListArvore = ({
                     )}
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('dap')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -233,7 +220,7 @@ const ListArvore = ({
                     </th>
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('dap')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -246,7 +233,7 @@ const ListArvore = ({
                     </th>
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('altura')}
                     >
                         <div className="flex flex-row w-full justify-between">
@@ -259,7 +246,7 @@ const ListArvore = ({
                     </th>
                     <th
                         scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                         onClick={() => sortArvores('volume')}
                     >
                         <div className="flex flex-row w-full">
@@ -274,7 +261,7 @@ const ListArvore = ({
                         <>
                             <th
                                 scope="col"
-                                className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                                 onClick={() => sortArvores('fuste')}
                             >
                                 <div className="flex flex-row w-full justify-between">
@@ -287,7 +274,7 @@ const ListArvore = ({
                             </th>
                             <th
                                 scope="col"
-                                className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                                 onClick={() => sortArvores('area_basal')}
                             >
                                 <div className="flex flex-row w-full justify-between">
@@ -304,7 +291,7 @@ const ListArvore = ({
                         <>
                             <th
                                 scope="col"
-                                className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
                                 onClick={() => sortArvores('situacao_arvore.nome')}
                             >
                                 <div className="flex flex-row w-full justify-between">
@@ -323,8 +310,9 @@ const ListArvore = ({
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {currentArvores?.map((arvore: any) => (
-                        <tr key={arvore.id}>
+                    {currentArvores?.map((arvore: any, idx: number) => (
+                        <tr key={arvore.id}
+                        className={classNames(isEven(idx) ? "bg-green-50/75" : "bg-white")}>
                         <td className="flex justify-center">
                         <input                 
                                 value={arvore?.id}
@@ -418,6 +406,7 @@ const ListArvore = ({
                     ))}
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
     )

@@ -415,9 +415,6 @@ const Index = () => {
                         </div>
      
                     </div>
-                    {/* <div>
-                        { JSON.stringify(especiesErrors, null, 2) }
-                    </div> */}
             <div className="mt-6">
                 <Table columns={columns} data={data} />
             </div>

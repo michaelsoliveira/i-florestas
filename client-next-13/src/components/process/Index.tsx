@@ -118,25 +118,6 @@ const Index = () => {
             </div>
             
                 <div className="flex flex-col p-6 mx-auto">
-                    
-                    {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
-                        <div className="lg:flex lg:flex-wrap lg:w-6/12 px-4">
-                            <span className="w-3/12 flex items-center">POA: </span>
-                            <div className="w-3/4">
-                                <Select
-
-                                    placeholder='Selecione o POA...'
-                                    selectedValue={selectedPoa}
-                                    defaultOptions={getPoasDefaultOptions()}
-                                    options={loadPoas}
-                                    callback={selectPoa}
-                                    initialData={{
-                                        label: 'Entre com as iniciais do POA ...', value: ''
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>      */}
                     {categorias && (
                         <div className="overflow-x-auto border border-gray-300 rounded-md">
                             <CriterioPoa 

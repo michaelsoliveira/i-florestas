@@ -100,7 +100,7 @@ const UpaIndex = () => {
     }
 
     return (
-    <div>
+    <div className="h-[40.8em] overflow-y-auto">
         <Index
             currentUpas={currentUpas}
             loading={loading}

@@ -459,7 +459,7 @@ class ArvoreService {
                         }
                     }
             }
-
+            
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
                 include: {

@@ -3,6 +3,7 @@
 import React, { Component, useCallback, useContext, useEffect, useState } from 'react';
 
 import AsyncSelect from 'react-select/async';
+import classNames from './utils/classNames';
 
 interface State {
     readonly inputValue: string;
@@ -21,13 +22,14 @@ export type SelectType = {
   selectedValue?: any;
   options?: any;
   isMulti?: boolean;
-  initialData?: any
+  initialData?: any;
+  styleLabel?: string;
 }
 
-export const Select = ({ label, callback, options, defaultOptions, placeholder, selectedValue, isMulti = false , initialData }: SelectType) => {
+export const Select = ({ label, callback, options, defaultOptions, placeholder, styleLabel, selectedValue, isMulti = false , initialData }: SelectType) => {
     return (
       <div>
-        <label className="text-sm" htmlFor="">{ label }</label>
+        <label className={classNames("text-sm", styleLabel)} htmlFor="">{ label }</label>
         <AsyncSelect
             isMulti={isMulti}
             loadOptions={options}

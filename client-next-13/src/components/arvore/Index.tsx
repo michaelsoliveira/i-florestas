@@ -115,8 +115,8 @@ const Index = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search.toLowerCase()}`)
-            
+            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${Number(search)}`)
+            console.log(data)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -393,12 +393,12 @@ const Index = () => {
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100 items-center">
-                <h1 className="font-medium text-2xl font-roboto">Árvores</h1>
+            <div className="flex flex-row items-center justify-between p-6 items-center">
+                <h1 className="font-medium text-2xl text-custom-green">Árvores</h1>
                 <div className="flex flex-row space-x-2">
                     <div
                         onClick={exportCsv}
-                        className="px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                        className="px-4 py-2 text-white bg-brown-normal hover:bg-brown-normal/50 rounded-md hover:cursor-pointer"
                     >
                         <div className="flex flex-row justify-around w-full space-x-2">
                             <div>
@@ -411,7 +411,7 @@ const Index = () => {
                     </div>
                     <div
                         onClick={goToAddForm}
-                        className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                        className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/50 rounded-md hover:cursor-pointer"
                     >
                         <div className="flex flex-row justify-around w-full space-x-2">
                             <div>
@@ -425,16 +425,16 @@ const Index = () => {
                 </div>
             </div>
             <div className="flex flex-col p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                     <div className="flex flex-col px-4 w-auto">
                         <div className="w-full">
-                            <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                            <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium w-24 white-white">por Página</label>
                         </div>
                         <select
                             value={itemsPerPage}
                             onChange={(evt: any) => changeItemsPerPage(evt)}
                             id="perPage" 
-                            className="w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            className="text-gray-900 w-20 bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option value="10">10</option>
                             <option value="20">20</option>
@@ -446,8 +446,9 @@ const Index = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full px-4">
                         {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
-                        <div>
+                        <div className="text-gray-900">
                             <Select
+                                styleLabel="text-white"
                                 initialData={
                                     {
                                         label: 'Selecione UMF...',
@@ -463,6 +464,7 @@ const Index = () => {
                         </div>
                         <div>
                             <Select
+                                styleLabel="text-white"
                                 initialData={
                                     {
                                         label: 'Selecione UPA...',
@@ -478,6 +480,7 @@ const Index = () => {
                         </div>
                         <div>
                             <Select
+                                styleLabel="text-white"
                                 initialData={
                                     {
                                         label: 'Selecione UT...',
@@ -493,7 +496,7 @@ const Index = () => {
                         </div>
                     </div>
                     <div className="w-full px-4 pt-4 lg:pt-0">
-                        <label htmlFor="procurar_ut">Pesquisar Árvore:</label>
+                        <label htmlFor="procurar_ut" className="text-white">Pesquisar Árvore:</label>
                         <Input
                             label="Pesquisar UT"
                             id="search"
