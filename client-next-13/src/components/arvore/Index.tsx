@@ -115,8 +115,8 @@ const Index = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${Number(search)}`)
-            console.log(data)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${parseInt(search)}`)
+
             paginatedData = {
                 name,
                 ...paginatedData,
