@@ -1,7 +1,7 @@
 'use client'
 
 import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
-import { useCallback, useContext, useEffect, useState, forwardRef } from 'react'
+import { useCallback, useContext, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useModalContext } from '@/context/ModalContext'
 import { OptionType, Select } from '../Select'
@@ -83,6 +83,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         }
 
         async function handleSubmit(dataRequest: any) {
+            callback(dataRequest)
             await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
             const response = await client.get(`/projeto/${dataRequest?.projeto.value}/default-data`)
             const { data } = response.data
@@ -150,7 +151,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     }}
                 >
                     {({ errors, touched, isSubmitting, setFieldValue, setFieldTouched, setTouched }) => {
-
+                        
                         return (
                             <div className="relative py-3 w-full max-w-xl mx-auto h-full">
                                 <div className='pb-4'>

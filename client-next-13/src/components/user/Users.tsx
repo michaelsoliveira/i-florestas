@@ -139,7 +139,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     return (
         <div>
             
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100 text-custom-green">
+            <div className="flex flex-row items-center justify-between p-6 text-custom-green">
                 <div>
                     <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
                 </div>
@@ -148,21 +148,21 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                 <button
                 // disabled={formState.isSubmitting}
                 type="submit"
-                className="flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                className="flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-bold rounded-md text-white bg-custom-green hover:bg-custom-green/75 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 onClick={addUser}
               >
                 <span className="flex items-center">
-                  <UserCircleIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
+                  <UserCircleIcon className="h-5 w-5 text-white group-hover:text-gray-200" aria-hidden="true" />
                 </span>
                 <div>Novo</div>
               </button>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 mb-2 text-sm text-white">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -176,7 +176,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4 text-sm">Pesquisar Usuário:</div>
+                        <div className="w-60 px-4 text-sm text-white">Pesquisar Usuário:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Usuários"
@@ -203,7 +203,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-light">
                         <tr>
                         <th>
                             <div className="flex justify-center">

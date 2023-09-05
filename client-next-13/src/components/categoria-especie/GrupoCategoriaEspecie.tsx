@@ -107,12 +107,12 @@ const GrupoCategoriaEspecie = () => {
     return (
         <div className="py-6 flex flex-col justify-center sm:py-4 bg-gray-50 px-4">
             <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto">
-                <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl '>
+                <div className='flex flex-row border-x border-t border-custom-green text-white items-center justify-between shadow-lg bg-gradient-to-r from-custom-green to-custom-green/75 py-4 sm:rounded-t-xl '>
                     <div className="px-4">
                         Grupo de Categoria de Espécies
                     </div>
                 </div>
-                <div className="grid grid-cols-4 lg:grid-cols-4 gap-4 w-full px-4 py-2 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
+                <div className="grid grid-cols-4 lg:grid-cols-4 gap-4 w-full px-4 py-2 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
                     <div className="col-span-4 lg:col-span-2">
                         <label className="flex items-center ">Categoria atual das Espécies: </label>
                         <div className="col-span-2 lg:col-span-2">
@@ -129,13 +129,12 @@ const GrupoCategoriaEspecie = () => {
                             />
                         </div>
                         <div className="grid grid-cols-6 gap-6 w-full items-center justify-center mt-4">
-                        <div className="relative col-span-5">
-                            <SelectableRowList 
-                                data={especies ? especies.map((especie: any) => { return { id: especie.id, label: especie.nome } }) : []} 
-                                callBack={callBackEspecies}    
-                            />
-                        </div>
-                        
+                            <div className="relative col-span-5">
+                                <SelectableRowList 
+                                    data={especies ? especies.map((especie: any) => { return { id: especie.id, label: especie.nome } }) : []} 
+                                    callBack={callBackEspecies}    
+                                />
+                            </div>
                             <div 
                                 className="flex items-center justify-center bg-gray-300 rounded-full hover:cursor-pointer h-8 w-8 focus:ring-green-200"
                                 onClick={setCategoriaEspecies}    

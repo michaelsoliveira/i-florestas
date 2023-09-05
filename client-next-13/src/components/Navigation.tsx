@@ -50,14 +50,6 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const [ menuOpened, setMenuOpened ] = useState(false)
     const animation = true
     const withIcons = false
-
-    // eslint-disable-next-line react/display-name
-    const CustomMenuButton = forwardRef<any, HTMLButtonElement>(({ children }: any, ref) => (
-        <button onClick={() => setMenuOpened(!menuOpened)} ref={ref}>
-            {children}
-        </button>
-    ));
-
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
     const [sticky, setSticky] = useState(false)
 
