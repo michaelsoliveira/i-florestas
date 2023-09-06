@@ -115,13 +115,13 @@ const Index = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${utId}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${parseInt(search)}`)
+            var filterData = filteredArvores.filter((arv: any) => arv?.numero_arvore.includes(search))
 
             paginatedData = {
                 name,
                 ...paginatedData,
-                totalPages: Math.ceil(data?.count / perPage),
-                totalItems: data?.count
+                totalPages: Math.ceil(filterData?.length / perPage),
+                totalItems: filterData?.length
             }
         } else {
             var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)

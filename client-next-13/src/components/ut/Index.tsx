@@ -312,10 +312,11 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4 text-white">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4">
                             {/* <div className="w-3/12 flex items-center px-2">UMF: </div> */}
                             <div>
                                 <Select
+                                    styleLabel="text-white"
                                     initialData={
                                         {
                                             label: 'Selecione UMF...',
@@ -332,6 +333,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                             {/* <div className="w-3/12 flex items-center px-2">UPA: </div> */}
                             <div>
                                 <Select
+                                    styleLabel="text-white"
                                     initialData={
                                         {
                                             label: 'Selecione UPA...',
@@ -373,7 +375,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50 bg-gray-normal">
+                    <thead className="bg-gray-normal">
                         <tr>
                             <th className="w-1/12">
                                 <div className="flex justify-center">

@@ -121,7 +121,7 @@ const ListArvore = ({
                 )}
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className={classNames(
-                        "bg-gray-50 w-full sticky top-0"
+                        "bg-gray-normal w-full sticky top-0"
                     )}>
                     <tr>
                         
@@ -311,7 +311,7 @@ const ListArvore = ({
                 <tbody className="bg-white divide-y divide-gray-200">
                     {currentArvores?.map((arvore: any, idx: number) => (
                         <tr key={arvore.id}
-                        className={classNames(isEven(idx) ? "bg-green-50/75" : "bg-white")}>
+                        className={classNames(isEven(idx) ? "bg-gray-light/25" : "bg-white")}>
                         <td className="flex justify-center">
                         <input                 
                                 value={arvore?.id}
