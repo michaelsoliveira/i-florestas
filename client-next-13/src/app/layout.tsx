@@ -9,8 +9,8 @@ import { LoadingProvider } from "@/context/LoadingContext"
 import { StepProvider } from "@/context/StepContext"
 import { store } from '@/redux/store'
 import { saveState } from '@/redux/browser-storage'
-import Layout from '@/components/Layout'
-import Modal from "@/components/Modal"
+import Layout from '@/components/utils/Layout'
+import Modal from "@/components/utils/Modal"
 import NextNProgress from 'nextjs-progressbar'
 import React from 'react'
 import { Providers } from "@/redux/provider";
@@ -41,6 +41,12 @@ function RootLayout({
   
   return (
     <html lang="en">
+      <head>
+          <link
+              rel="manifest"
+              href="/manifest.json"
+          />
+      </head>
       <body className={poppins.className}>
           <Providers>
             <NextAuthProvider>

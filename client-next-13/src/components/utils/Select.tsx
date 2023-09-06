@@ -3,7 +3,7 @@
 import React, { Component, useCallback, useContext, useEffect, useState } from 'react';
 
 import AsyncSelect from 'react-select/async';
-import classNames from './utils/classNames';
+import classNames from '@/components/utils/classNames';
 
 interface State {
     readonly inputValue: string;

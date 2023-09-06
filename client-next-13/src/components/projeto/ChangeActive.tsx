@@ -4,7 +4,7 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import { useCallback, useContext, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useModalContext } from '@/context/ModalContext'
-import { OptionType, Select } from '../Select'
+import { OptionType, Select } from '@/components/utils/Select'
 import { useSession } from 'next-auth/react'
 import { ProjetoContext } from '@/context/ProjetoContext'
 import { setUmf } from '@/redux/features/umfSlice';

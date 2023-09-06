@@ -26,7 +26,7 @@ const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias,
     return (
         <div id='criterios'>
             <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-gray-light">
                     <tr>
                         {checkedCategorias ? (
                             <th className="w-1/12">
@@ -47,43 +47,43 @@ const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias,
                         <th
                             className="w-4/12"
                         >
-                            <span className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                            <span className="flex flex-row items-center px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
                                 Nome
                             </span>        
                         </th>
                         <th
                             scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                         >
                             Fuste
                         </th>
                         <th
                             scope="col"
-                            className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            className="w-1/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                         >
                             Diametro Mínimo
                         </th>
                         <th
                             scope="col"
-                            className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            className="w-1/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                         >
                             Diametro Máximo
                         </th>
                         <th
                             scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                         >
                             Altura
                         </th>
                         <th
                             scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                         >
                             Volume
                         </th>
                         <th
                             scope="col"
-                            className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                         >
                             Preservada
                         </th>

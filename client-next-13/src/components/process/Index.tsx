@@ -113,7 +113,7 @@ const Index = () => {
 
     return (
         <>
-            <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
+            <div className="flex flex-row items-center bg-gradient-to-r from-custom-green to-custom-green/50 justify-between p-6 bg-gray-100">
                 <h1 className="font-medium text-2xl font-roboto text-white">Processamento do POA</h1>
             </div>
             
@@ -133,7 +133,7 @@ const Index = () => {
                                 disabled={!poa?.id}
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
-                                className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center w-1/2 lg:w-1/6",
+                                className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md hover:cursor-pointer text-white items-center text-center w-1/2 lg:w-56",
                                     !poa?.id && ("hover:cursor-not-allowed opacity-50")
                                 )}
                             >
@@ -145,7 +145,7 @@ const Index = () => {
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Definir ajustes</span>
                         <div className='flex flex-col md:flex-row space-x-2 w-full overflow-x-auto'>
                         <table className="min-w-full divide-y divide-gray-200 w-full">
-                            <thead className="bg-gray-50 w-full">
+                            <thead className="bg-gray-light w-full">
                                 <tr>
                                     <th 
                                     scope="col"></th>
@@ -153,7 +153,7 @@ const Index = () => {
                                         scope="col"
                                         className="justify-between items-center px-2 py-2 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row justify-between">
+                                        <div className="flex flex-row justify-between font-bold">
                                             UPA
                                         </div>                 
                                     </th>
@@ -161,7 +161,7 @@ const Index = () => {
                                         scope="col"
                                         className="justify-between px-2 py-2 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row justify-between">
+                                        <div className="flex flex-row justify-between font-bold">
                                             UT
                                         </div>   
                                     </th>
@@ -169,7 +169,7 @@ const Index = () => {
                                         scope="col"
                                         className="px-3 py-3 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row justify-between">
+                                        <div className="flex flex-row justify-between font-bold">
                                             Volume Total
                                         </div>   
                                     </th>
@@ -177,7 +177,7 @@ const Index = () => {
                                         scope="col"
                                         className="py-3 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row justify-between">
+                                        <div className="flex flex-row justify-between font-bold">
                                             Volume Explorar
                                         </div>   
                                     </th>
@@ -185,7 +185,7 @@ const Index = () => {
                                         scope="col"
                                         className="px-3 py-3 text-left text-xs font-medium text-gray-500"
                                     >
-                                        <div className="flex flex-row w-full justify-between">Volume Explorar/Area Util</div>
+                                        <div className="flex flex-row w-full justify-between font-bold">Volume Explorar/Area Util</div>
                                     </th>
                                 </tr>
                             </thead>

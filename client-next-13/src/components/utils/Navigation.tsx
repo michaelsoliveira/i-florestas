@@ -13,13 +13,14 @@ import { usePathname } from 'next/navigation'
 import classNames from 'classnames'
 import { ProjetoContext } from '@/context/ProjetoContext'
 import { useModalContext } from '@/context/ModalContext'
-import { ChangeActive as ChangeActiveProjeto } from './projeto/ChangeActive'
-import { ChangeActive as ChangeActivePoa } from './poa/ChangeActive'
-import { styles } from './utils/styles'
+import { ChangeActive as ChangeActiveProjeto } from '@/components/projeto/ChangeActive'
+import { ChangeActive as ChangeActivePoa } from '@/components/poa/ChangeActive'
+import { styles } from '@/components/utils/styles'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
-import SubMenuNavigation from './home/SubMenuNavigation'
+import SubMenuNavigation from './SubMenuNavigation'
+import Tabs from './Tabs'
 
 type SubMenuType = {
         name?: string,
@@ -71,6 +72,12 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
         console.log('show modal poa')
         showModal({ title: 'Alterar Poa Ativo', onConfirm: changePoaAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Poa', 
         content: <ChangeActivePoa ref={formRefPoa} /> })
+    }
+
+    const showLogin = (index: number) => {
+        showModal({
+            type: 'submit', hookForm: 'hook-form', options: false, content: <Tabs index={index} />
+        })
     }
 
     const handleScroll = () => {
@@ -353,16 +360,20 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
             <div className='hidden lg:flex lg:flex-row'>
                 {!session && (
                 <div className="px-2 lg:space-x-2">
-                    <Link href="/login" className="bg-custom-green shadow text-sm px-6 py-3 
-                    text-white rounded-lg hover:text-white transition duration-500 ease-in-out hover:opacity-75
-                    transform hover:-translate-y-1 hover:scale-105">
+                    <button className="bg-custom-green shadow text-sm px-6 py-3 
+                        text-white rounded-lg hover:text-white transition duration-500 ease-in-out hover:opacity-75
+                        transform hover:-translate-y-1 hover:scale-105"
+                        onClick={() => showLogin(0)}
+                    >
                         Fazer login
-                    </Link>  
-                    <Link href="/signup" className="bg-gray-light shadow text-sm px-6 py-3
-                    text-custom-green rounded-lg hover:text-custom-green transition duration-500 ease-in-out hover:bg-gray-100
-                    transform hover:-translate-y-1 hover:scale-105">
+                    </button>  
+                    <button className="bg-gray-light shadow text-sm px-6 py-3
+                        text-custom-green rounded-lg hover:text-custom-green transition duration-500 ease-in-out hover:bg-gray-100
+                        transform hover:-translate-y-1 hover:scale-105"
+                        onClick={() => showLogin(1)}
+                    >
                         Cadastre-se
-                    </Link>           
+                    </button>           
                 </div>            
             )}
         </div>

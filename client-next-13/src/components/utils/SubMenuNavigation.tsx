@@ -2,7 +2,7 @@ import { useModalContext } from "@/context/ModalContext"
 import { createRef } from "react"
 import { ChangeActive as ChangeActiveProjeto } from '../projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from '../poa/ChangeActive'
-import { styles } from "../utils/styles"
+import { styles } from "./styles"
 
 
 const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
