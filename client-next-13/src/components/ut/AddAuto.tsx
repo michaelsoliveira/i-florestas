@@ -127,7 +127,6 @@ const AddAuto = forwardRef<any, any>(
             columns={columns}
             data={data}
             setData={setData}
-            handleButtonClick={handleButtonClick}
           />
 
           <span

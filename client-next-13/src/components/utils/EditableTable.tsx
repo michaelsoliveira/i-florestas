@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { SortIcon, SortUpIcon, SortDownIcon } from './Icons'
 const { useTable, useFilters, useGlobalFilter, useAsyncDebounce, useSortBy, usePagination } = require('react-table')
 
-const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort }: any) => {
+const EditableTable = ({ columns, data, setData, disabledSort }: any) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
@@ -34,9 +34,12 @@ const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort
       <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
         <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
           <thead>
-            {headerGroups.map((headerGroup: any, key: any) => (
-              <tr {...headerGroup.getHeaderGroupProps()} key={key}>
-                {headerGroup.headers.map((column: any, idx: any) => (
+            {headerGroups.map((headerGroup: any, key: number) => (
+              <tr 
+                {...headerGroup.getHeaderGroupProps()} 
+                key={key}
+              >
+                {headerGroup.headers.map((column: any, idx: number) => (
                   <th
                     key={idx}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
@@ -61,16 +64,17 @@ const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort
             ))}
           </thead>
           <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-300 w-full">
-            {rows.map((row: any, idx: number) => {
+            {rows.map((row: any) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} 
-                    key={idx}
-                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(idx) ? 'bg-gray-200 bg-opacity-25' : '')}>
-                    {row.cells.map((cell: any, index: any) => {
+                <tr 
+                  key={row?.id}
+                    {...row.getRowProps()} 
+                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(row?.id) ? 'bg-gray-200 bg-opacity-25' : '')}>
+                    {row.cells.map((cell: any, cellIdx: any) => {
                     return (
                       <td
-                        key={index}
+                        key={cellIdx}
                         {...cell.getCellProps()}
                         className="px-6 py-4 whitespace-nowrap"
                       >

@@ -11,7 +11,6 @@ import InvoiceThankYouMsg from './InvoiceThankYouMsg'
 import Roboto from '@/fonts/Roboto-Regular.ttf';
 import RobotoItalic from '@/fonts/Roboto-Italic.ttf';
 import RobotoBold from '@/fonts/Roboto-Bold.ttf';
-import RobotoBoldItalic from '@/fonts/Roboto-BoldItalic.ttf';
 
 Font.register({
     family: 'Roboto',
