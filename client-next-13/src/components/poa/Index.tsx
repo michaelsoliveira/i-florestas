@@ -179,21 +179,21 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
 
     return (
         <div>
-            <div className="flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto text-white">Plano Operacional Anual</h1>
+            <div className="flex flex-row items-center justify-between p-6">
+                <h1 className="font-medium text-2xl font-roboto text-custom-green">Plano Operacional Anual</h1>
                 <Link
                     href='/poa/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6 lg:px-16">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-white">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -208,15 +208,14 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                             </select>
                         </div>
                         <div className="lg:flex lg:flex-wrap lg:w-5/12 px-4">
-                            <div className="w-3/12 flex items-center">UMF: </div>
+                            <div className="w-3/12 flex items-center text-white">UMF: </div>
                             <div className="w-9/12">
                                 <Select
-
+                                    styleLabel="text-white"
                                     placeholder='Selecione UMF...'
                                     selectedValue={selectedUmf}
                                     defaultOptions={getUmfsDefaultOptions()}
                                     options={loadUmfs}
-                                    // label="Volume da Árvore"
                                     callback={selectUmf}
                                     initialData={{
                                         label: 'Entre com as iniciais da UMF...', value: 'Entre com as iniciais da UMF...'
@@ -224,7 +223,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 />
                             </div>
                         </div>
-                        <div className="w-60 px-4">Pesquisar POA:</div>
+                        <div className="w-72 px-4 text-white">Pesquisar POA:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Poa"
@@ -250,7 +249,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-light">
                             <tr>
                                 <th className="w-1/12">
                                     <div className="flex justify-center">

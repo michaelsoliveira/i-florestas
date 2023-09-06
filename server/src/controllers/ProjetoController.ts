@@ -61,9 +61,8 @@ export class ProjetoController {
     }
 
     async getDefaultData(request: Request, response: Response) : Promise<Response> {
-        const { projetoId } = request.params
         try {
-            const data = await projetoService.getDefaultData(projetoId, request.user?.id)
+            const data = await projetoService.getDefaultData(request.user?.id)
         
             return response.json({
                 error: false,

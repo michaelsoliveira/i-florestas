@@ -83,54 +83,50 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         }
 
         async function handleSubmit(dataRequest: any) {
-            callback(dataRequest)
-            await client.post(`/projeto/active/${dataRequest?.projeto.value}`)
-            const response = await client.get(`/projeto/${dataRequest?.projeto.value}/default-data`)
-            const { data } = response.data
-            const { projeto } = data
+            await client.post(`/projeto/active/${dataRequest?.projeto.value}`).then(async (res: any) => {
+                const { projeto } = res.data
+                const response = await client.get(`/projeto/default-data`)
+                const { data } = response.data
 
-            dispatch(setUmf({
-                id: data?.id,
-                nome: data?.nome
-            }))
+                dispatch(setUmf({
+                    id: data?.umf?.id,
+                    nome: data?.umf?.nome
+                }))
 
-            if (data?.upa.length > 0) {
-                dispatch(setUpa({
-                    id: data?.upa[0].id,
-                    descricao: data?.upa[0].descricao,
-                    tipo: data?.upa[0].tipo
-                }))
-            } else {
-                dispatch(setUpa({
-                    id: '',
-                    descricao: 'NEHUMA UPA CADASTRADA',
-                    tipo: 0
-                }))
+                if (data?.upa.length > 0) {
+                    dispatch(setUpa({
+                        id: data?.umf?.upa[0].id,
+                        descricao: data?.umf?.upa[0].descricao,
+                        tipo: data?.umf?.upa[0].tipo
+                    }))
+                } else {
+                    dispatch(setUpa({
+                        id: '',
+                        descricao: 'NEHUMA UPA CADASTRADA',
+                        tipo: 0
+                    }))
+                }
+
+                if (data?.poa_ativo) {
+                    dispatch(setPoa({
+                        id: projeto?.poa_ativo?.id,
+                        descricao: projeto?.poa_ativo?.descricao,
+                        data_ultimo_plan: projeto?.poa_ativo?.data_ultimo_plan,
+                        pmfs: projeto?.poa_ativo?.pmfs
+                    }))
+                } else {
+                    dispatch(setPoa({
+                        id: '',
+                        descricao: 'Padrão',
+                        data_ultimo_plan: new Date(),
+                        pmfs: ''
+                    }))
+                }
+                    
+                setProjeto(projeto)
+                hideModal()
+                })
             }
-
-            if (projeto?.poa_ativo) {
-                dispatch(setPoa({
-                    id: projeto?.poa_ativo?.id,
-                    descricao: projeto?.poa_ativo?.descricao,
-                    data_ultimo_plan: projeto?.poa_ativo?.data_ultimo_plan,
-                    pmfs: projeto?.poa_ativo?.pmfs
-                }))
-            } else {
-                dispatch(setPoa({
-                    id: '',
-                    descricao: 'Padrão',
-                    data_ultimo_plan: new Date(),
-                    pmfs: ''
-                }))
-            }
-                
-            setProjeto(projeto)
-            hideModal()
-        }
-
-        const validationSchema = Yup.object().shape({
-            projeto: Yup.array().nullable()
-        })
 
         interface Values {
             projeto: any
@@ -142,7 +138,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     initialValues={{
                         projeto: {}
                     }}
-                    validationSchema={validationSchema}
+
                     onSubmit={ (
                         values: Values,
                         { setSubmitting }: FormikHelpers<Values>

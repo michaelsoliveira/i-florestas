@@ -106,21 +106,21 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
                 <div className="relative py-3 w-11/12 max-w-none lg:max-w-2xl mx-auto">
-                    <div className='flex flex-row items-center justify-between border border-gray-400 shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row items-center justify-between border border-custom-green text-white shadow-lg bg-custom-green py-4 sm:rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/umf" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
                             {isAddMode ? (
-                                <h1 className='text-xl text-gray-800'>Cadastrar UMF</h1>
+                                <h1 className='text-xl'>Cadastrar UMF</h1>
                             ): (
-                                <h1 className='text-xl text-gray-800'>Editar UMF</h1>
+                                <h1 className='text-xl'>Editar UMF</h1>
                             )}
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-gray-400">
+                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='w-full'>
                                 <FormInput
@@ -172,8 +172,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                 </div>
                             </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/umf" className="text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                                <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                <Link href="/umf" className="text-center w-2/5 bg-gray-light text-gray-700 p-3 rounded-md">Voltar</Link>
+                                <button className="w-2/5 bg-custom-green text-white p-3 rounded-md">Salvar</button>
                             </div>
                         </form>
                     </div>

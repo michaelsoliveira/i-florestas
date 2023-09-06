@@ -428,7 +428,7 @@ const Index = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                     <div className="flex flex-col px-4 w-auto">
                         <div className="w-full">
-                            <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium w-24 white-white">por Página</label>
+                            <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium w-24 text-white">por Página</label>
                         </div>
                         <select
                             value={itemsPerPage}

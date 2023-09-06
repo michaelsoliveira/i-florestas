@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 /* This example requires Tailwind CSS v2.0+ */
-import { createRef, Fragment, SVGProps, useCallback, useContext, useEffect, useState, forwardRef, } from 'react'
+import { createRef, Fragment, SVGProps, useCallback, useContext, useEffect, useState, forwardRef, useRef, } from 'react'
 import { Disclosure, Menu, Transition, Popover } from '@headlessui/react'
 import { Link } from './Link'
 import Logo from './Logo'
@@ -43,7 +43,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     const pathname = usePathname()
     const { showModal, hideModal } = useModalContext()
-    const formRefProjeto = createRef<any>()
+    const formRefProjeto = useRef<any>()
     const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const poa = useAppSelector((state: RootState) => state.poa)

@@ -36,9 +36,9 @@ const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort
           <thead>
             {headerGroups.map((headerGroup: any, key: any) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={key}>
-                {headerGroup.headers.map((column: any, i: any) => (
+                {headerGroup.headers.map((column: any, idx: any) => (
                   <th
-                    key={i}
+                    key={idx}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     className="group px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
@@ -61,16 +61,16 @@ const EditableTable = ({ columns, data, setData, handleButtonClick, disabledSort
             ))}
           </thead>
           <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-300 w-full">
-            {rows.map((row: any, i: number) => {
+            {rows.map((row: any, idx: number) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} 
-                    key={i}
-                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(i) ? 'bg-gray-200 bg-opacity-25' : '')}>
-                    {row.cells.map((cell: any, i: any) => {
+                    key={idx}
+                    className={classNames('hover:bg-indigo-200 hover:bg-opacity-10', isEven(idx) ? 'bg-gray-200 bg-opacity-25' : '')}>
+                    {row.cells.map((cell: any, index: any) => {
                     return (
                       <td
-                        key={i}
+                        key={index}
                         {...cell.getCellProps()}
                         className="px-6 py-4 whitespace-nowrap"
                       >

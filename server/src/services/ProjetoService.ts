@@ -140,28 +140,24 @@ class ProjetoService {
         return user?.projeto
     }
 
-    async getDefaultData(projetoId: string | any, userId: string) : Promise<any> {
-        const data = await prismaClient.umf.findFirst({
+    async getDefaultData(userId: string) : Promise<any> {
+        const user = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        })
+
+        const data = await prismaClient.projeto.findUnique({
             include: {
-                projeto: {
+                poa_ativo: true,
+                umf: {
                     include: {
-                        poa_ativo: true
+                        upa: true
                     }
                 },
-                upa: true
             },
             where: {
-                projeto: {
-                    id: projetoId,
-                    excluido: false,
-                    users_roles: {
-                        some: {
-                            users: {
-                                id: userId
-                            }
-                        }
-                    }
-                }
+                id: user?.id_projeto_ativo
             }
         })
 

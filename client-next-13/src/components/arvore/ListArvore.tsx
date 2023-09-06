@@ -119,7 +119,6 @@ const ListArvore = ({
                         </button>
                     </div>
                 )}
-                <div className={`${!planejar && 'w-full h-[21.3em] overflow-y-auto'}`}>
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className={classNames(
                         "bg-gray-50 w-full sticky top-0"
@@ -406,7 +405,6 @@ const ListArvore = ({
                     ))}
                 </tbody>
             </table>
-            </div>
         </div>
     </div>
     )

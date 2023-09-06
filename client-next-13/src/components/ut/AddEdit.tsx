@@ -156,7 +156,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         <div>
             <div className="text-sm py-4 justify-center sm:py-12 bg-gray-50">                
                 <div className="relative py-3 w-full max-w-none lg:max-w-5xl mx-auto">
-                    <div className='flex flex-row bg-custom-green border-x-2 border-t-2 text-white items-center justify-between shadow-lg py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row items-center justify-between border border-custom-green text-white shadow-lg bg-custom-green py-4 sm:rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/ut" className="flex flex-col relative left-0 ml-4" />
@@ -170,7 +170,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2">
+                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="relative border border-gray-400 p-4 rounded-md">

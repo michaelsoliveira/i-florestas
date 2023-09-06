@@ -129,10 +129,6 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
             hideModal()
         }
 
-        const validationSchema = Yup.object().shape({
-            poa: Yup.array().nullable()
-        })
-
         interface Values {
             poa: any
         }
@@ -143,7 +139,6 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     initialValues={{
                         poa: {}
                     }}
-                    validationSchema={validationSchema}
                     onSubmit={ (
                         values: Values,
                         { setSubmitting }: FormikHelpers<Values>

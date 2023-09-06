@@ -205,7 +205,7 @@ const AddEdit = ({ params }: UpaProps) => {
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
                 <div className="relative py-3 w-11/12 max-w-none lg:max-w-5xl mx-auto">
-                    <div className='flex flex-row border-x-2 border-t-2 border-green-600 text-white items-center justify-between shadow-lg bg-gradient-to-r from-green-700 to-green-500 py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row border-x- border-t border-custom-green text-white items-center justify-between shadow-lg bg-custom-green py-4 sm:rounded-t-xl'>
                         
                         <div>
                             <LinkBack href="/upa" className="flex flex-col relative left-0 ml-4" />
@@ -219,7 +219,7 @@ const AddEdit = ({ params }: UpaProps) => {
                         </div>
                         <div></div>
                     </div>
-                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600">
+                    <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className='flex flex-col lg:flex-row md:flex-row space-x-0 md:space-x-4'>
                                 <div className='w-3/12'>
@@ -304,8 +304,8 @@ const AddEdit = ({ params }: UpaProps) => {
                                     </div>
                                 </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/upa" className="text-center w-1/5 bg-gradient-to-r from-orange-600 to-orange-400 text-white p-3 rounded-md">Voltar</Link>
-                                <button className="w-1/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                <Link href="/upa" className="text-center w-1/5 bg-gray-light text-gray-700 p-3 rounded-md">Voltar</Link>
+                                <button className="w-1/5 bg-custom-green text-white p-3 rounded-md">Salvar</button>
                             </div>
                         </form>
                     </div>
