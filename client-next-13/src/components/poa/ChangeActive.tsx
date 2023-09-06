@@ -4,7 +4,7 @@ import { Formik, Field, Form, FormikHelpers, ErrorMessage } from 'formik';
 import { useCallback, useContext, useEffect, useState, forwardRef } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useModalContext } from '@/context/ModalContext'
-import { OptionType, Select } from '../Select'
+import { OptionType, Select } from '@/components/utils/Select'
 import { useSession } from 'next-auth/react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import * as Yup from 'yup'

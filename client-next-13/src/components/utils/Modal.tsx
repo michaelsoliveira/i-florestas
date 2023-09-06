@@ -3,7 +3,7 @@
 import { Fragment, ReactNode, useCallback, useEffect, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import classNames from './utils/classNames'
+import classNames from '@/components/utils/classNames'
 import { useModalContext } from '@/context/ModalContext'
 
 interface ModaType {

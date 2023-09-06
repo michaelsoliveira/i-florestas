@@ -10,7 +10,7 @@ import alertService from '@/services/alert'
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/context/AuthContext';
-import { Select, OptionType } from '../Select';
+import { Select, OptionType } from '@/components/utils/Select';
 import RadioGroup from '../form/RadioGroup';
 import Option from '../form/Option';
 import FocusError from '../form/FocusError';

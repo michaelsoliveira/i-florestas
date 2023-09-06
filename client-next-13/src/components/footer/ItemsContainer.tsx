@@ -1,5 +1,5 @@
 import Item from "./Item";
-import { resources, planejamento, estatistica, inventario } from "../Menus";
+import { resources, planejamento, estatistica, inventario } from "@/components/utils/Menus";
 const ItemsContainer = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 text-sm">

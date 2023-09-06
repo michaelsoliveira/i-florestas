@@ -2,22 +2,22 @@
 
 import { Fragment, ReactNode, useCallback, useContext, useEffect } from "react"
 import Navigation from './Navigation'
-import Footer from './footer'
+import Footer from '../footer'
 import { useSession, signOut } from "next-auth/react"
 import { custodia, estatistica, inventario, planejamento, reports, resources, solutions } from "./Menus"
 import { Loading } from "./Loading"
-import { LoadingContext } from "../context/LoadingContext"
-import { ProjetoContext } from "../context/ProjetoContext"
-import { AuthContext } from "../context/AuthContext"
+import { LoadingContext } from "@/context/LoadingContext"
+import { ProjetoContext } from "@/context/ProjetoContext"
+import { AuthContext } from "@/context/AuthContext"
 import { CogIcon, UserGroupIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { usePathname } from 'next/navigation'
-import { useAppSelector } from "../redux/hooks"
-import { RootState } from "../redux/store"
+import { useAppSelector } from "@/redux/hooks"
+import { RootState } from "@/redux/store"
 import Script from 'next/script'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { Menu, Transition } from "@headlessui/react"
-import classNames from "./utils/classNames"
+import classNames from "../utils/classNames"
 import alertService from "@/services/alert"
 export type props = {
     children: ReactNode

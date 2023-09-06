@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tab } from '@headlessui/react'
 import classNames from 'classnames';
 import Login from './Login'
-import { AddEdit } from './user/AddEdit'
+import { AddEdit } from '@/components/user/AddEdit'
 import React, { createRef } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 
@@ -17,18 +17,24 @@ const styles = {
   errorMsg: 'text-red-500 text-sm',
 }
 
-const Tabs = () => {
+const Tabs = ({ index }: { index?: number }) => {
   const formRef = createRef<any>()
 
   const submitForm = () => {
     if (formRef.current) {
         formRef.current.handleSubmit()
     }
-  } 
+  }
+
+  useEffect(() => {
+      index && setSelectedIndex(index)
+  }, [index])
+  
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
     <div className="w-full py-4">
-      <Tab.Group>
+      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
         <Tab.List className="flex p-1 space-x-2 bg-custom-green/50 rounded-lg">
             <Tab
               className={({ selected }) =>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useModalContext } from "@/context/ModalContext"
-import Tabs from "../Tabs"
+import Tabs from "../utils/Tabs"
 
 const Hero = ({ session }: any) => {
     const { showModal } = useModalContext()
@@ -32,7 +32,7 @@ const Hero = ({ session }: any) => {
                   
                     <a
                         href="#"
-                        className="w-36 flex items-center justify-center px-4 py-2 md:py-1 border border-transparent text-base font-medium rounded-lg text-white bg-custom-green transition transition-all duration-500 hover:opacity-75 md:py-4 md:text-lg md:px-10"
+                        className="w-36 flex py-1 md:py-2 items-center justify-center px-4 border border-transparent text-base font-medium rounded-lg text-white bg-custom-green transition transition-all duration-500 hover:opacity-75 md:text-lg md:px-10"
                         onClick={showLogin}
                     >
                         Iniciar
