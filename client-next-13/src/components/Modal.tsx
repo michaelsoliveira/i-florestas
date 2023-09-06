@@ -61,7 +61,7 @@ export default function Modal(props: ModaType) {
       return () => {
         document.removeEventListener('keydown', onKeyDown, false);
       };
-    }, [hideModal, onKeyDown]);
+    }, [onKeyDown]);
 
 
     const cancelButtonRef = useRef(null)

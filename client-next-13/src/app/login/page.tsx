@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import Login from '@/components/Login'
 import Logo from '@/components/Logo'
 import { useSession } from 'next-auth/react'
@@ -8,12 +8,10 @@ import Link from 'next/link';
 
 const Pagelogin = () => {
 
-  const router = useRouter()
-
   const { data: session } = useSession()
 
   if (session) {
-      router.push('/')
+      redirect('/')
   }
   
   return (

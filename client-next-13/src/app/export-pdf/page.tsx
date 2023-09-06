@@ -1,7 +1,4 @@
 'use client'
-
-import React, { Component, Fragment } from 'react';
-import {PDFViewer} from '@react-pdf/renderer'
 import invoice from '@/services/invoice'
 import dynamic from 'next/dynamic'
 

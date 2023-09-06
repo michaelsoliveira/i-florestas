@@ -32,7 +32,7 @@ const ProjetoEquacoesIndex = () => {
         const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
         const { data } = await client.get(`/projeto/${projeto?.id}/eq-volume?page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage}&orderBy=${orderBy}&order=${order}`)
-        console.log(data)
+        
         setTotalItems(data?.count)
         setCurrentEquacoes(data?.equacoes)
         setLoading(false)

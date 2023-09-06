@@ -51,8 +51,8 @@ function RootLayout({
                           <StepProvider>
                             <Layout>    
                               <NextNProgress />
-                              <Modal />
                               <ToastContainer />   
+                              <Modal />
                                 { children }
                             </Layout>
                           </StepProvider>

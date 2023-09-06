@@ -9,7 +9,7 @@ import { useModalContext } from "@/context/ModalContext"
 import { LinkBack } from "../LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
-import { PlusIcon } from "@heroicons/react/24/outline"
+import { PlusIcon } from "@heroicons/react/24/solid"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadEquacoes }: any) => {
@@ -154,30 +154,30 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
         <div>
             {/* {visible && type === 'updateEquacao' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
             
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <div>
+            <div className="flex flex-row items-center justify-between p-6">
+                <div className="text-custom-green">
                     <LinkBack href="/" className="flex flex-col relative left-0 ml-4" />
                 </div>
-                <h1 className="font-medium text-2xl font-roboto">Equações de Volume</h1>
+                <h1 className="font-medium text-2xl font-roboto text-custom-green">Equações de Volume</h1>
                 
                 <button
                 // disabled={formState.isSubmitting}
                 type="submit"
-                className="flex flex-row justify-between group relative w-32 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                 onClick={addEquacao}
               >
-                <span className="flex items-center">
-                  <PlusIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
+                <span className="flex flex-row justify-between items-center">
+                  Adicionar
                 </span>
-                <div>Novo</div>
+                
               </button>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-row w-2/12 px-2 items-center justify-between">
                             <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm text-gray-900 dark:text-gray-400">por Página</label>
+                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm text-white">por Página</label>
                             </div>
                             <select
                                 value={perPage}
@@ -191,7 +191,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4 text-sm">Pesquisar Equação:</div>
+                        <div className="w-60 px-4 text-sm text-white">Pesquisar Equação:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Equações"
@@ -217,7 +217,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-light">
                         <tr>
                         <th>
                             <div className="flex justify-center">
@@ -230,7 +230,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                         </th>
                         <th
                             scope="col"
-                            className="w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEquacoes('nome')}
                         >
                             <div className="flex flex-row items-center">
@@ -243,7 +243,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                         </th>
                         <th
                             scope="col"
-                            className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortEquacoes('expressao')}
                         >
                             <div className="flex flex-row items-center">

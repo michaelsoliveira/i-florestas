@@ -19,6 +19,7 @@ import { styles } from './utils/styles'
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline'
 import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
+import SubMenuNavigation from './home/SubMenuNavigation'
 
 type SubMenuType = {
         name?: string,
@@ -42,12 +43,11 @@ type SubMenuType = {
 export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { data: session } = useSession() as any
     const pathname = usePathname()
-    const { showModal, hideModal } = useModalContext()
-    const formRefProjeto = useRef<any>()
+    const { showModal } = useModalContext()
+    const formRefProjeto = createRef<any>()
     const formRefPoa = createRef<any>()
     const { projeto } = useContext(ProjetoContext)
     const poa = useAppSelector((state: RootState) => state.poa)
-    const [ menuOpened, setMenuOpened ] = useState(false)
     const animation = true
     const withIcons = false
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
@@ -62,11 +62,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     }
 
     const changeProjetoModal = () => {
-        showModal({ title: 'Alterar Projeto Ativo', onConfirm: changeProjetoAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Projeto', 
+        console.log('show modal projeto')
+        showModal({ title: 'Alterar Projeto Ativo', onConfirm: changeProjetoAtivo, styleButton: styles.greenButton, confirmBtn: 'Ativar Projeto', 
         content: <ChangeActiveProjeto ref={formRefProjeto} /> })
     }
 
     const changePoaModal = () => {
+        console.log('show modal poa')
         showModal({ title: 'Alterar Poa Ativo', onConfirm: changePoaAtivo ,styleButton: styles.greenButton, confirmBtn: 'Ativar Poa', 
         content: <ChangeActivePoa ref={formRefPoa} /> })
     }
@@ -264,49 +266,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                     )}
                                                     
                                                     <div className="flex flex-col justify-center ml-4" aria-hidden="true">
-                                                        { subMenu.name === 'change_projeto' ? (
-                                                            <>
-                                                                <span
-                                                                    className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
-                                                                    onClick={changeProjetoModal}
-                                                                >
-                                                                    <div>
-                                                                        {subMenu?.icon && (
-                                                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-custom-green" aria-hidden="true" />
-                                                                        )}
-                                                                    </div>
-                                                                    <div>
-                                                                        Mudar projeto ativo
-                                                                    </div>
-                                                                </span>
-                                                            </>
-                                                        ) :  subMenu.name === 'change_poa' ? (
-                                                            <>
-                                                                <span
-                                                                    className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
-                                                                    onClick={changePoaModal}
-                                                                >
-                                                                    <div>
-                                                                        {subMenu?.icon && (
-                                                                            <subMenu.icon className="flex-shrink-0 h-6 w-6 text-custom-green" aria-hidden="true" />
-                                                                        )}
-                                                                    </div>
-                                                                    <div>
-                                                                        Mudar POA ativo
-                                                                    </div>
-                                                                </span>
-                                                            </>
-                                                        ) :
-                                                        
-                                                        (
-                                                            <>
-                                                                <p className="font-bold text-gray-dark">{subMenu.name}</p>
-                                                                {subMenu?.description && (
-                                                                    <p className="text-sm text-gray-dark/75">{subMenu?.description}</p>
-                                                                )}
-                                                            </>
-                                                        ) }
-                                                        
+                                                        <SubMenuNavigation subMenu={subMenu} />
                                                     </div>
                                                 </Popover.Button>
                                         </div>  
