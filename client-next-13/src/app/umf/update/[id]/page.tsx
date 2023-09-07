@@ -24,10 +24,14 @@ const getData = async (id: string) => {
 }
 
 const pageUmf = async ({ params }: pageProps) => {
-    const umf = await getData(params.id)
-    return (
-            <AddEdit umf={umf} />
-    )
+    try {
+        const umf = await getData(params.id)
+        return <AddEdit umf={umf} />
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+    
 }
 
 export default pageUmf;
