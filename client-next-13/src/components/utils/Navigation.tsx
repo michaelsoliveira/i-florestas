@@ -21,6 +21,7 @@ import { useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 import SubMenuNavigation from './SubMenuNavigation'
 import Tabs from './Tabs'
+import Image from 'next/image'
 
 type SubMenuType = {
         name?: string,
@@ -183,13 +184,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                     as={Link}
                                     href="/"
                                 >
-                                    <Logo width={30} height={30} />
+                                    <Image src='/imgs/logo_bomanejo.png' alt="Logo" width="30" height="30"/>
                                 </Disclosure.Button>
                             ) : (
                                 <Link
                                     href="/"
                                 >
-                                    <Logo width={30} height={30} />
+                                    <Image src='/imgs/logo_bomanejo.png' alt="Logo" width="35" height="35"/>
                                 </Link>
                             )
                         }

@@ -15,6 +15,9 @@ import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
 const AddEdit = ({ id }: any) => {
+    useEffect(() => {
+        console.log(id)
+    }, [id])
     // const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     // const [estado, setEstado] = useState<OptionType>()
     // const { client } = useContext(AuthContext)

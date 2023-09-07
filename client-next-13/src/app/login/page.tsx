@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import Login from '@/components/utils/Login'
-import Logo from '@/components/utils/Logo'
+import Image from 'next/image';
 import { useSession } from 'next-auth/react'
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ const Pagelogin = () => {
         <div className='absolute top-10'>
         <div className='bg-gray-50 border border-custom-green rounded-full shadow-lg w-36 h-36'>
         <div className='relative h-full flex flex-col items-center justify-center'>
-          <Logo width={50} height={50} />
+          <Image src='/imgs/logo_bomanejo.png' alt="" width="35" height="35"/>
           <h1 className='font-roboto text-md font-semibold text-custom-green'>BOManejoWeb</h1>
           </div>
         </div>
