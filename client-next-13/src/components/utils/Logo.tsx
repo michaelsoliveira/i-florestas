@@ -13,7 +13,7 @@ function classNames(...classes: any[]) {
 
 const Logo = ({ width, height }: props) => {
     return (
-        <Image src='/imgs/logo_bomanejo.png' alt="" width={width} height={height}/>
+        <Image src='imgs/logo_bomanejo.png' alt="" width={width} height={height}/>
         // <svg className={ classNames(width, height) } viewBox="0 0 512 512">
 
         //     <path className="fill-green-500" d=" M 240.12 34.99 C 241.08 22.04 249.66 11.35 257.93 1.99 C 261.59 11.36 265.11 20.78 268.82 30.12 C 271.22 35.32 273.46 41.17 271.93 46.94 C 269.70 54.04 263.92 59.74 257.02 62.37 C 259.40 57.62 261.93 52.49 261.42 47.03 C 260.48 40.78 257.77 34.98 255.00 29.37 C 256.24 35.53 257.87 41.70 257.81 48.04 C 257.54 52.95 255.94 57.78 253.31 61.93 C 246.80 54.31 240.70 45.28 240.12 34.99 Z" />

@@ -10,7 +10,7 @@ interface pageProps {
 const pageUmf = ({ params }: pageProps) => {
     
     return (
-            <AddEdit />
+            <AddEdit id={params.id} />
     )
 }
 
