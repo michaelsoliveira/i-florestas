@@ -11,7 +11,7 @@ import {
 } from 'react-hook-form';
 const lodash: any = require('lodash');
 import { ErrorMessage } from '@hookform/error-message';
-import { FormErrorMessage } from './atoms/form-error-message';
+import { FormErrorMessage } from '@/components/atoms/form-error-message';
 
 export type FormTextareaProps<TFormValues> = {
   id: string;

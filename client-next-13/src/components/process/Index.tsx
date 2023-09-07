@@ -1,11 +1,9 @@
 'use client'
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import alertService from '@/services/alert'
-import { AuthContext } from "../../context/AuthContext"
-import { OptionType, Select } from '../Select'
-import { setPoa } from "@/redux/features/poaSlice"
-import { useAppDispatch, useAppSelector } from "@/redux/hooks"
+import { AuthContext } from "@/context/AuthContext"
+import { useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 
 import { LoadingContext } from "@/context/LoadingContext"
@@ -13,52 +11,24 @@ import { ProjetoContext } from "@/context/ProjetoContext"
 import classNames from "classnames"
 import { PencilIcon } from "@heroicons/react/24/solid"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../utils/styles"
+import { styles } from "@/components/utils/styles"
 import Exploracao from "../poa/exploracao/Index"
 import CriterioPoa from "../categoria-especie/CriterioPoa"
 
 const Index = () => {
     
     const { client } = useContext(AuthContext)
-    const [poas, setPoas] = useState<any>()
     const [categorias, setCategorias] = useState<any>()
     const poa = useAppSelector((state: RootState) => state.poa)
-    const [selectedPoa, setSelectedPoa] = useState<OptionType>()
-    const dispatch = useAppDispatch()
     const { projeto } = useContext(ProjetoContext)
     const { setLoading } = useContext(LoadingContext)
     const [uts, setUts] = useState<any[]>([])
     const { showModal } = useModalContext()
 
-    const loadPoas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/poa/search/q?nome=${inputValue}`)
-        const data = response.data
-        
-        callback(data?.map((poa: any) => ({
-            value: poa.id,
-            label: poa.nome
-        })))
-    }
-
     const loadUts = useCallback(async () => {
         const { data } = await client.get('/planejo/uts')
         setUts(data?.uts)
     }, [client, setUts])
-
-    const poaExists = poas?.length
-
-    const loadPoa = useCallback(() => {
-        
-        if (poa && poaExists > 0) {
-            setSelectedPoa({
-                value: poa?.id,
-                label: poa?.descricao
-            })
-        } else {
-            setSelectedPoa({} as any)
-        }
-        
-    }, [poa, poaExists])
 
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
@@ -67,18 +37,9 @@ const Index = () => {
     }, [client, poa?.id, projeto?.id])
 
     useEffect(() => {
-        async function defaultOptions() {
-            const response = await client.get(`/poa?orderBy=descricao&order=asc`)
-            const { poas } = response.data
-            setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
-        }
-
-        loadPoa()
         loadUts()
         loadCategorias()
-        defaultOptions()
-
-    }, [client, loadUts, loadCategorias, loadPoa])
+    }, [client, loadUts, loadCategorias])
 
     async function PlanejarPOA(event: any): Promise<any> {
         setLoading(true)
