@@ -1,12 +1,12 @@
-import { Link } from "src/components/Link"
+import { Link } from "@/components/utils/Link"
 import alertService from '@/services/alert'
 import { TrashIcon, PencilIcon } from '@heroicons/react/24/solid'
 import { useContext } from "react"
 import { useModalContext } from "@/context/ModalContext"
 import { EmpresaType } from "@/types/IEmpresa"
 import { AuthContext } from "@/context/AuthContext"
-import { styles } from "../utils/styles"
-import { LinkBack } from "../LinkBack"
+import { styles } from "@/components/utils/styles"
+import { LinkBack } from "@/components/utils/LinkBack"
 
 
 const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) => {
