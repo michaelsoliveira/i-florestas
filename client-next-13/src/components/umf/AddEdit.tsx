@@ -11,6 +11,7 @@ import { Link } from '@/components/utils/Link'
 import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 
 interface pageProps {
     params: {
