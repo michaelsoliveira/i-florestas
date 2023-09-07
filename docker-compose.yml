@@ -49,14 +49,13 @@ services:
     ports:
       - '3000:3000'
     build:
-      context: client-next-13
+      context: client
       dockerfile: ./Dockerfile
     env_file:
-      - ./client-next-13/.env
+      - ./client/.env
     environment:
       BACKEND_URL: ${BACKEND_URL}
     volumes:
-    #  - /client-next-13:/
      - /app/node_modules
     #  - /app/.next
 
