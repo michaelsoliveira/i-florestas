@@ -2,7 +2,7 @@
 
 import { OptionType } from '@/components/utils/Select'
 import { FormInput } from '@/components/utils/FormInput'
-import { FC, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
@@ -13,9 +13,8 @@ import { Link } from '@/components/utils/Link'
 import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 
-const AddEdit = ({ id }: any) => {
+const AddEdit = (id: string) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
