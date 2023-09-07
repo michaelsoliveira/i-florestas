@@ -1,6 +1,17 @@
-'use client'
-
 import AddEdit from "@/components/umf/AddEdit";
 import withAuthentication from "@/components/utils/withAuthentication";
 
-export default withAuthentication(AddEdit);
+interface pageProps {
+    params: {
+        id: string
+    }
+}
+
+const pageUmf = ({ params }: pageProps) => {
+    
+    return (
+            <AddEdit id={params?.id} />
+    )
+}
+
+export default pageUmf;
