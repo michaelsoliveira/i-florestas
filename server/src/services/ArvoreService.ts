@@ -390,13 +390,13 @@ class ArvoreService {
             })
     }
 
-    async getAll(userId: string, query?: any, utId?: string): Promise<any> {
+    async getAll(userId: string, query?: any): Promise<any> {
         const user = await prismaClient.user.findUnique({
             where: {
                 id: userId
             }
         })
-        const { perPage, page, search, orderBy, order } = query
+        const { perPage, page, search, orderBy, order, utId } = query
         const skip = perPage && (page - 1) * perPage
         let orderByTerm = {}
         

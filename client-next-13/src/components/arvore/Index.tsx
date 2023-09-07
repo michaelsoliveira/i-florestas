@@ -12,7 +12,7 @@ import { setUmf, UmfType } from "@/redux/features/umfSlice"
 import { setUpa } from "@/redux/features/upaSlice"
 import { setUt } from "@/redux/features/utSlice"
 import ListArvore from "./ListArvore"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileExport, faPlus } from "@fortawesome/free-solid-svg-icons"
 import { LoadingContext } from "@/context/LoadingContext"
@@ -108,22 +108,21 @@ const Index = () => {
             totalPages,
             orderBy,
             order,
-            search,
-            utId
+            search
         } = paginatedData
 
         if (search) {
             
-            var filterData = filteredArvores.filter((arv: any) => arv?.numero_arvore.includes(search))
+            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`)
 
             paginatedData = {
                 name,
                 ...paginatedData,
-                totalPages: Math.ceil(filterData?.length / perPage),
-                totalItems: filterData?.length
+                totalPages: Math.ceil(data?.count / perPage),
+                totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
@@ -343,7 +342,7 @@ const Index = () => {
         if (ut.numero_ut.toString() === 'Todos' || typeof ut === undefined) {
             alertService.warn('Selecione uma UT para iniciar o cadastro de uma árvore')
         } else {
-            router.push('/arvore/add')
+            redirect('/arvore/add')
         }
     }
         
