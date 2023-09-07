@@ -1,4 +1,4 @@
-import AddEdit from "@/components/umf/AddEdit";
+// import AddEdit from "@/components/umf/AddEdit";
 import withAuthentication from "@/components/utils/withAuthentication";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
@@ -8,6 +8,12 @@ interface pageProps {
         id: string
     }
 }
+
+import dynamic from 'next/dynamic'
+
+const AddEdit = dynamic(() => import('@/components/umf/AddEdit'), {
+    ssr: false
+})
 
 const getData = async (id: string) => {
     const session = await getServerSession(authOptions);
@@ -26,7 +32,7 @@ const getData = async (id: string) => {
 const pageUmf = async ({ params }: pageProps) => {
     try {
         const umf = await getData(params.id)
-        return <AddEdit />
+        return (<AddEdit umf={umf}/>)
     } catch (error) {
         console.log(error)
         throw error
