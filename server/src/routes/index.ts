@@ -84,8 +84,8 @@ routes.delete('/obs-arvore/:id', Authentication(), new ObservacaoArvoreControlle
 
 //Umf
 routes.post('/umf/', Authentication(), new UmfController().store)
+routes.get('/umf/', Authentication(), new UmfController().findAll)
 routes.get('/umf/:id', Authentication(), new UmfController().findOne)
-routes.get('/umf/find-by-projeto/:projetoId', Authentication(), new UmfController().findAll)
 routes.get('/umf/get/', Authentication(), new UmfController().getUmf)
 routes.get('/umf/search/q', Authentication(), new UmfController().search)
 routes.put('/umf/:id', Authentication(), new UmfController().update)

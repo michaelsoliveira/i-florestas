@@ -1,6 +1,7 @@
 import AddEdit from "@/components/umf/AddEdit";
 import withAuthentication from "@/components/utils/withAuthentication";
 import { authOptions } from "@/lib/authOptions";
+import axios from "axios";
 import { getServerSession } from "next-auth";
 // import Form from "@/components/umf/Form"
 
@@ -10,27 +11,28 @@ interface pageProps {
     }
 }
 
-
-const getData = async (id: string) => {
+async function getData(id: string) {
     const session = await getServerSession(authOptions);
     
     const url = `${process.env.NEXT_PUBLIC_API_URL}/umf/${id}`
 
-    const data = await fetch(url, {
+    const { data } = await axios.get(url, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${session?.accessToken}`
         }
-    }).then(response => response.json())
+    })
 
     return data
 }
 
 const pageUmf = async ({ params }: pageProps) => {
-    try {
-        const umf = await getData(params.id)
+    const { id } = params
+    const umf = await getData(id)
 
-        return (<AddEdit umf={umf} />)
+    try {
+
+        return <AddEdit umf={umf} />
 
     } catch (error: any) {
         console.log(error?.message)

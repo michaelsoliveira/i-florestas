@@ -60,9 +60,9 @@ export class UmfController {
     }
 
     async findAll(request: Request, response: Response) {
-        const { projetoId } = request.params
+
         try {
-            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.user?.id, projetoId, request.query)
+            const { data, perPage, page, orderBy, order, skip, count } = await umfService.getAll(request.user?.id, request.query)
             
             return response.json({
                 error: false,

@@ -11,7 +11,6 @@ import { RootState } from "@/redux/store"
 import Index from "src/components/umf/Index"
 import { UmfType } from "@/types/IUMFType"
 import { LoadingContext } from "@/context/LoadingContext"
-import { ProjetoContext } from "@/context/ProjetoContext"
 
 const UmfIndex = () => {
     const { client } = useContext(AuthContext)
@@ -26,25 +25,24 @@ const UmfIndex = () => {
     const pagination = useAppSelector((state: RootState) => state.pagination)
     const dispatch = useAppDispatch()
     const pathname = usePathname()
-    const { projeto } = useContext(ProjetoContext)
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadUmfs = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
         setLoading(true)
         const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         setCurrentPage(currentPagePagination)
-        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/umf?page=${currentPage ? currentPage : currentPagePagination}&perPage=${pagination.perPage}&orderBy=${orderBy}&order=${order}`
         
         const { data } = await client.get(url)
         
         setTotalItems(data?.count)
         setCurrentUmfs(data?.umfs)
         setLoading(false)
-    }, [client, order, orderBy, pagination.currentPage, pathname, pagination.name, pagination.perPage, projeto?.id, setLoading])
+    }, [client, order, orderBy, pagination.currentPage, pathname, pagination.name, pagination.perPage, setLoading])
 
     useEffect(() => {  
         loadUmfs(itemsPerPage)
-    }, [itemsPerPage, projeto, loadUmfs])
+    }, [itemsPerPage, loadUmfs])
 
     const onPageChanged = async (paginatedData: any) => {
         
@@ -57,7 +55,7 @@ const UmfIndex = () => {
             order,
             search
         } = paginatedData
-        const url = `/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`
+        const url = `/umf?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`
 
         if (search) {
             
@@ -70,7 +68,7 @@ const UmfIndex = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/umf/find-by-projeto/${projeto?.id}?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/umf?page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,
