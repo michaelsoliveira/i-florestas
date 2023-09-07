@@ -1,6 +1,6 @@
 import { OptionType } from '@/components/utils/Select'
 import { FormInput } from '@/components/utils/FormInput'
-import { useContext, useEffect, useState } from 'react'
+import { FC, useContext, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
@@ -12,10 +12,13 @@ import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
-import { useParams } from 'next/navigation'
+interface pageProps {
+    params: {
+        id: string
+    }
+}
 
-const AddEdit = () => {
-    const params = useParams()
+const AddEdit: FC<pageProps> = ({ params }) => {
     const id = params?.id as string
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
