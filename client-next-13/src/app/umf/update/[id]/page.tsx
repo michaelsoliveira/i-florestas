@@ -2,6 +2,7 @@
 import withAuthentication from "@/components/utils/withAuthentication";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
+import Form from "@/components/umf/Form"
 
 interface pageProps {
     params: {
@@ -32,7 +33,7 @@ const getData = async (id: string) => {
 const pageUmf = async ({ params }: pageProps) => {
     try {
         const umf = await getData(params.id)
-        return (<AddEdit umf={umf}/>)
+        return (<AddEdit umf={umf}><Form umf={umf}/></AddEdit>)
     } catch (error) {
         console.log(error)
         throw error
