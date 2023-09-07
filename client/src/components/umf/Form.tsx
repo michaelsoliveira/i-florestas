@@ -13,28 +13,28 @@ import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
-const Form = ({ umf }: { umf? : any}) => {
+const Form = ({ id }: { id? : string}) => {
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
     // const { data: session } = useSession()
     const router = useRouter()
-    const isAddMode = !umf
+    const isAddMode = !id
     const dispatch = useAppDispatch()
 
     useEffect(() => {        
         async function loadUmf() {
-        
+            const { data } = await client.get(`/umf/${id}`)
             if (!isAddMode) {
                 setEstado({
-                    label: umf?.estado?.nome,
-                    value: umf?.estado?.id
+                    label: data?.estado?.nome,
+                    value: data?.estado?.id
                 })
                
-                for (const [key, value] of Object.entries(umf)) {
+                for (const [key, value] of Object.entries(data)) {
                     if (key === 'estado') {
-                        setValue('estado', umf.estado?.id)
+                        setValue('estado', data.estado?.id)
                     } else {
                         setValue(key, value, {
                             shouldValidate: true,
@@ -47,7 +47,7 @@ const Form = ({ umf }: { umf? : any}) => {
         
         loadUmf()
 
-    }, [isAddMode, client, setValue, setEstado, umf])
+    }, [isAddMode, client, setValue, setEstado, id])
 
     const selectedEstado = (data: any) => {
         setEstado(data)
@@ -58,7 +58,7 @@ const Form = ({ umf }: { umf? : any}) => {
         try {
             return isAddMode
                 ? createUmf(data)
-                : updateUmf(umf?.id, data)
+                : updateUmf(id, data)
         } catch (error: any) {
             alertService.error(error.message);
         }
