@@ -1,4 +1,4 @@
-// 'use client'
+'use client'
 
 // import { OptionType } from '@/components/utils/Select'
 // import { FormInput } from '@/components/utils/FormInput'
@@ -14,9 +14,9 @@
 // import { setUmf } from '@/redux/features/umfSlice'
 // import SelectEstado from '@/components/utils/SelectEstado'
 
-const AddEdit = ({ umf }: any) => {
+const AddEdit = ({ umf }: { umf? : any}) => {
     return (<>
-        <div>{JSON.stringify(umf, null, 2)}</div>
+        <div>{JSON.stringify(umf ? umf : [], null, 2)}</div>
     </>)
     // const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     // const [estado, setEstado] = useState<OptionType>()
