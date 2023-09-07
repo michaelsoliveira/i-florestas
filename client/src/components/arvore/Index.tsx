@@ -7,7 +7,6 @@ import { useAuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 import { OptionType, Select } from "@/components/utils/Select"
-import { ProjetoContext } from "@/context/ProjetoContext"
 import { setUmf, UmfType } from "@/redux/features/umfSlice"
 import { setUpa } from "@/redux/features/upaSlice"
 import { setUt } from "@/redux/features/utSlice"
@@ -35,7 +34,6 @@ const Index = () => {
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
     const [selectedUt, setSelectedUt] = useState<OptionType>()
-    const { projeto } = useContext(ProjetoContext)
     const { loading, setLoading } = useContext(LoadingContext)
     const [currentPage, setCurrentPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(10)
@@ -206,7 +204,7 @@ const Index = () => {
                     label: 'Nenhuma UMF Cadastrada'
                 })
             } 
-    }, [client, projeto?.id, umf.id, umf?.nome])
+    }, [client, umf.id, umf?.nome])
 
     const defaultUpasOptions = useCallback(async () => {
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
