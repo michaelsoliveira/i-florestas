@@ -2,22 +2,22 @@
 
 import PropTypes from 'prop-types'
 import { useSession } from 'next-auth/react'
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const withAuthentication = (WrappedComponent: any) => {
   const RequiresAuthentication = (props: any) => {
-      
+      const router = useRouter()
       const { data: session, status } = useSession()
       
         if (typeof session !== typeof undefined) {
             if (status !== 'authenticated') {
-              redirect('/login')
+              router.push('/login')
             }
         }
       
 
      // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator
-      return session ? <WrappedComponent {...props} />  : <div></div>
+      return session && <WrappedComponent {...props} />
 
   };
 

@@ -3,7 +3,7 @@
 import { OptionType } from '@/components/utils/Select'
 import { FormInput } from '@/components/utils/FormInput'
 import { useContext, useEffect, useState } from 'react'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '@/context/AuthContext'
@@ -19,6 +19,7 @@ const Form = ({ umf }: { umf? : any}) => {
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
     // const { data: session } = useSession()
+    const router = useRouter()
     const isAddMode = !umf
     const dispatch = useAppDispatch()
 
@@ -26,9 +27,6 @@ const Form = ({ umf }: { umf? : any}) => {
         async function loadUmf() {
         
             if (!isAddMode) {
-                
-                // const { data: umf } = await client.get(`/umf/${id}`)
-
                 setEstado({
                     label: umf?.estado?.nome,
                     value: umf?.estado?.id
@@ -78,7 +76,7 @@ const Form = ({ umf }: { umf? : any}) => {
 
                 if (!error) {
                     alertService.success(message);
-                    redirect('/umf')
+                    router.push('/umf')
                 } else {
                     alertService.error(message)
                 }
@@ -92,7 +90,7 @@ const Form = ({ umf }: { umf? : any}) => {
                 const { error, message, umf } = response.data
                 if (!error) {
                     alertService.success(message);
-                    redirect('/umf')
+                    router.push('/umf')
                 } else {
                     alertService.error(message)
                 }

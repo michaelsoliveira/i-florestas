@@ -56,7 +56,7 @@ services:
     environment:
       BACKEND_URL: ${BACKEND_URL}
     volumes:
-     - /client-next-13
+    #  - /client-next-13:/
      - /app/node_modules
     #  - /app/.next
 

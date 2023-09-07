@@ -1,19 +1,7 @@
-// import { OptionType } from '@/components/utils/Select'
-// import { FormInput } from '@/components/utils/FormInput'
-// import { useContext, useEffect, useState } from 'react'
-// import { useRouter } from 'next/navigation'
-// import { useForm } from 'react-hook-form'
-// import alertService from '@/services/alert'
-// import { AuthContext } from '@/context/AuthContext'
-// import { useSession } from 'next-auth/react'
 import { LinkBack } from '@/components/utils/LinkBack'
-import { ReactNode } from 'react'
-// import { Link } from '@/components/utils/Link'
-// import { useAppDispatch } from '@/redux/hooks'
-// import { setUmf } from '@/redux/features/umfSlice'
-// import SelectEstado from '@/components/utils/SelectEstado'
+import Form from './Form'
 
-const AddEdit = ({ umf, children }: { umf? : any, children?: ReactNode}) => {
+const AddEdit = ({ umf }: { umf? : any}) => {
 
     return (
         <>
@@ -36,7 +24,7 @@ const AddEdit = ({ umf, children }: { umf? : any, children?: ReactNode}) => {
                             <div></div>
                         </div>
                         <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
-                            { children }
+                            <Form umf={umf} />
                         </div>
                     </div>
                 </div>
