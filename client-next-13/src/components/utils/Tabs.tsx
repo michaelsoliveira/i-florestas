@@ -66,14 +66,14 @@ const Tabs = ({ index }: { index?: number }) => {
         <Tab.Panels>
             <Tab.Panel
               className={classNames(
-                'px-4 py-2 text-left mx-auto flex flex-wrap justify-center items-center'
+                'px-4 py-2 text-left justify-center items-center'
               )}
-          >
+            >
             <Login /> 
           </Tab.Panel>
           <Tab.Panel
               className={classNames(
-                'px-4 py-2 text-left mx-auto flex flex-wrap justify-center items-center'
+                'px-4 py-2 text-left justify-center items-center'
               )}
             >
               <div className="flex flex-col items-center justify-between w-full">
