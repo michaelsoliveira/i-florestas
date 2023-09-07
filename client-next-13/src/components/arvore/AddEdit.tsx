@@ -58,7 +58,6 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: arvore } = await client.get(`/arvore/${id}`)
-                console.log(arvore)
                 if(arvore?.observacao_arvore) {
                     setObservances({
                         label: arvore?.observacao_arvore?.nome,
