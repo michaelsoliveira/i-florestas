@@ -26,7 +26,11 @@ const getData = async (id: string) => {
 const pageUmf = async ({ params }: pageProps) => {
     try {
         const umf = await getData(params.id)
-        return <AddEdit umf={umf} />
+        return (
+            <div>
+                {JSON.stringify(umf, null, 2)}
+            </div>
+        )
     } catch (error) {
         console.log(error)
         throw error
