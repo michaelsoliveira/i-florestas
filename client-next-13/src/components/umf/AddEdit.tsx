@@ -14,100 +14,97 @@ import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
-const AddEdit = ({ id }: any) => {
-    useEffect(() => {
-        console.log(id)
-    }, [id])
-    // const { register, handleSubmit, formState: { errors }, setValue } = useForm()
-    // const [estado, setEstado] = useState<OptionType>()
-    // const { client } = useContext(AuthContext)
+const AddEdit = ({ umf }: any) => {
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm()
+    const [estado, setEstado] = useState<OptionType>()
+    const { client } = useContext(AuthContext)
     // const { data: session } = useSession()
-    // const router = useRouter()
-    // const isAddMode = !id
-    // const dispatch = useAppDispatch()
+    const router = useRouter()
+    const isAddMode = !umf
+    const dispatch = useAppDispatch()
 
-    // useEffect(() => {        
-    //     async function loadUmf() {
+    useEffect(() => {        
+        async function loadUmf() {
         
-    //         if (!isAddMode && typeof session !== typeof undefined) {
+            if (!isAddMode) {
                 
-    //             const { data: umf } = await client.get(`/umf/${id}`)
+                // const { data: umf } = await client.get(`/umf/${id}`)
 
-    //             setEstado({
-    //                 label: umf?.estado?.nome,
-    //                 value: umf?.estado?.id
-    //             })
+                setEstado({
+                    label: umf?.estado?.nome,
+                    value: umf?.estado?.id
+                })
                
-    //             for (const [key, value] of Object.entries(umf)) {
-    //                 if (key === 'estado') {
-    //                     setValue('estado', umf.estado?.id)
-    //                 } else {
-    //                     setValue(key, value, {
-    //                         shouldValidate: true,
-    //                         shouldDirty: true
-    //                     })
-    //                 }
-    //             }
-    //         }
-    //     }
+                for (const [key, value] of Object.entries(umf)) {
+                    if (key === 'estado') {
+                        setValue('estado', umf.estado?.id)
+                    } else {
+                        setValue(key, value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        })
+                    }
+                }
+            }
+        }
         
-    //     loadUmf()
+        loadUmf()
 
-    // }, [session, isAddMode, client, id, setValue, setEstado])
+    }, [isAddMode, client, setValue, setEstado])
 
-    // const selectedEstado = (data: any) => {
-    //     setEstado(data)
-    //     setValue('estado', data?.value)
-    // }
+    const selectedEstado = (data: any) => {
+        setEstado(data)
+        setValue('estado', data?.value)
+    }
 
-    // async function onSubmit(data: any) {
-    //     try {
-    //         return isAddMode
-    //             ? createUmf(data)
-    //             : updateUmf(id, data)
-    //     } catch (error: any) {
-    //         alertService.error(error.message);
-    //     }
+    async function onSubmit(data: any) {
+        try {
+            return isAddMode
+                ? createUmf(data)
+                : updateUmf(umf?.id, data)
+        } catch (error: any) {
+            alertService.error(error.message);
+        }
         
-    // }
+    }
 
-    // async function createUmf(data: any) {
-    //     await client.post('umf', data)
-    //         .then((response: any) => {
-    //             const { error, message, umf } = response.data
-    //             dispatch(setUmf({
-    //                 id: umf.id,
-    //                 nome: umf.nome
-    //             }))
+    async function createUmf(data: any) {
+        await client.post('umf', data)
+            .then((response: any) => {
+                const { error, message, umf } = response.data
+                dispatch(setUmf({
+                    id: umf.id,
+                    nome: umf.nome
+                }))
 
-    //             if (!error) {
-    //                 alertService.success(message);
-    //                 router.push('/umf')
-    //             } else {
-    //                 alertService.error(message)
-    //             }
-    //         }) 
-    // }
+                if (!error) {
+                    alertService.success(message);
+                    router.push('/umf')
+                } else {
+                    alertService.error(message)
+                }
+            }) 
+    }
 
-    // async function updateUmf(id: string, data: any) {
+    async function updateUmf(id: string, data: any) {
         
-    //     await client.put(`/umf/${id}`, data)
-    //         .then((response: any) => {
-    //             const { error, message, umf } = response.data
-    //             if (!error) {
-    //                 alertService.success(message);
-    //                 router.push('/umf')
-    //             } else {
-    //                 alertService.error(message)
-    //             }
-    //         })
-    // }
+        await client.put(`/umf/${id}`, data)
+            .then((response: any) => {
+                const { error, message, umf } = response.data
+                if (!error) {
+                    alertService.success(message);
+                    router.push('/umf')
+                } else {
+                    alertService.error(message)
+                }
+            })
+    }
 
     return (
         <div>
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
-                {/* <div className="relative py-3 w-11/12 max-w-none lg:max-w-2xl mx-auto">
+                <div className="relative py-3 w-11/12 max-w-none lg:max-w-2xl mx-auto">
                     <div className='flex flex-row items-center justify-between border border-custom-green text-white shadow-lg bg-custom-green py-4 sm:rounded-t-xl'>
                         
                         <div>
@@ -179,8 +176,7 @@ const AddEdit = ({ id }: any) => {
                             </div>
                         </form>
                     </div>
-                </div> */}
-                {id}
+                </div>
             </div>
         </div>
     )
