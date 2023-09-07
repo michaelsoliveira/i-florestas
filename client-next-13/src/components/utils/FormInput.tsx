@@ -13,8 +13,8 @@ import {
   FieldValues,
 } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
-import { Input, InputProps } from './atoms/input';
-import { FormErrorMessage } from './atoms/form-error-message';
+import { Input, InputProps } from '@/components/atoms/input';
+import { FormErrorMessage } from '@/components/atoms/form-error-message';
 
 export type FormInputProps<TFormValues extends FieldValues> = {
     label?: string;

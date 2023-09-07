@@ -1,5 +1,5 @@
 import { CSSProperties, ChangeEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
-import { Link } from "../Link"
+import { Link } from "@/components/utils/Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
@@ -10,11 +10,10 @@ import { LoadingContext } from "@/context/LoadingContext"
 import { CsvDataService } from "@/services/create-csv"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import ImportModal from "./ImportModal"
-import { styles as stylesButton } from '../utils/styles'
+import { styles as stylesButton } from '@/components/utils/styles'
 import { StepContext } from "@/context/StepContext"
 import { useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
-import ExportPDF from "./ExportPDF"
 
 const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loadEspecies }: any) => {
     

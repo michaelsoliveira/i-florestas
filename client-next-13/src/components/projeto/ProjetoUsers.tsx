@@ -7,7 +7,7 @@ import { paginate, setCurrentPagePagination } from "@/redux/features/paginationS
 import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import Users from "@/components/user/Users"
-import { Pagination } from "src/components/Pagination"
+import { Pagination } from "@/components/utils/Pagination"
 import { UserType } from "@/types/IUserType"
 import { LoadingContext } from "@/context/LoadingContext"
 import { ProjetoContext } from "@/context/ProjetoContext"

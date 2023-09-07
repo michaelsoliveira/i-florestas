@@ -1,7 +1,7 @@
 'use client'
 
 import { AddEdit } from '@/components/user/AddEdit'
-import Logo from '@/components/Logo'
+import Logo from '@/components/utils/Logo'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link';
 import React, { createRef } from 'react';

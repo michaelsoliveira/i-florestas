@@ -1,7 +1,7 @@
 'use client'
 
 import { ChangePassword } from "src/components/user/ChangePassword"
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 
 const ChangePasswordPage = () => {
     return (

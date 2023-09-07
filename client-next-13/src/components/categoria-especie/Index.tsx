@@ -1,16 +1,16 @@
 'use client'
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../Link"
+import { useCallback, useContext, useEffect, useState } from "react"
+import { Link } from "@/components/utils/Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
 import { CategoriaEspecieType } from "@/types/ICategoriaEspecieType"
-import { styles } from "../utils/styles"
+import { styles } from "@/components/utils/styles"
 
 import { useModalContext } from "@/context/ModalContext"
-import { OptionType, Select } from "../Select"
+import { OptionType, Select } from "@/components/utils/Select"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 

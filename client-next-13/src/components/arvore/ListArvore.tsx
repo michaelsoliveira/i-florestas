@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store'
 import { useAppSelector } from '@/redux/hooks'
 import alertService from '@/services/alert'
 import { useModalContext } from '@/context/ModalContext'
-import { Link } from "../Link"
+import { Link } from "@/components/utils/Link"
 import { LoadingContext } from '@/context/LoadingContext'
 import classNames from 'classnames'
 import { isEven } from '../utils/Functions'

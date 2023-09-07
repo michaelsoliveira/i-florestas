@@ -1,19 +1,19 @@
 'use client'
 
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../Link"
+import { Link } from "@/components/utils/Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
-import { OptionType, Select } from '../Select'
+import { OptionType, Select } from '@/components/utils/Select'
 import { setUmf } from "@/redux/features/umfSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 import { UpaType } from "@/types/IUpaType"
 
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../utils/styles"
+import { styles } from "@/components/utils/styles"
 import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUpas }: any) => {

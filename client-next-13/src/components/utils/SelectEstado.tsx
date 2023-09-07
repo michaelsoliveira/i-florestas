@@ -3,7 +3,7 @@
 import { AuthContext } from "@/context/AuthContext"
 import { useSession } from "next-auth/react"
 import { useCallback, useContext, useEffect, useState } from "react"
-import { OptionType, Select } from "../Select"
+import { OptionType, Select } from "@/components/utils/Select"
 
 type SelectEstado = {
     callback: (data?: any) => void;

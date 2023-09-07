@@ -1,6 +1,6 @@
 'use client'
 
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { AuthContext } from "@/context/AuthContext"
@@ -8,7 +8,7 @@ import { paginate, setCurrentPagePagination } from "@/redux/features/paginationS
 import { useRouter } from "next/router"
 import { RootState } from "@/redux/store"
 import Users from "@/components/user/Users"
-import { Pagination } from "@/components/Pagination"
+import { Pagination } from "@/components/utils/Pagination"
 import { UserType } from "@/types/IUserType"
 
 type EmpresaUserType = {

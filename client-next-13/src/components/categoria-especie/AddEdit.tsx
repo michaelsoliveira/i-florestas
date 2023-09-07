@@ -1,6 +1,6 @@
 'use client'
 
-import { LinkBack } from '../LinkBack'
+import { LinkBack } from '@/components/utils/LinkBack'
 import CategoriaEspecie from './CategoriaEspecie'
 
 import { useParams } from 'next/navigation'

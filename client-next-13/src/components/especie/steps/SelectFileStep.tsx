@@ -1,4 +1,4 @@
-import Table from "src/components/Table";
+import Table from "@/components/utils/Table";
 
 const SelectFileStep = ({columns, data}: any) => {
 

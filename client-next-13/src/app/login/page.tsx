@@ -1,8 +1,8 @@
 'use client'
 
 import { redirect } from 'next/navigation';
-import Login from '@/components/Login'
-import Logo from '@/components/Logo'
+import Login from '@/components/utils/Login'
+import Logo from '@/components/utils/Logo'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link';
 

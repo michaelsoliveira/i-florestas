@@ -1,21 +1,19 @@
 'use client'
 
-import { OptionType, Select } from '../Select'
-import { FormInput } from '../FormInput'
+import { OptionType, Select } from '@/components/utils/Select'
+import { FormInput } from '@/components/utils/FormInput'
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
-import { AuthContext } from '../../context/AuthContext'
+import { AuthContext } from '@/context/AuthContext'
 import { useSession } from 'next-auth/react'
-import { LinkBack } from '../LinkBack'
-import { Link } from '../Link'
+import { LinkBack } from '@/components/utils/LinkBack'
+import { Link } from '@/components/utils/Link'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 import { setUpa } from "@/redux/features/upaSlice"
 import { ProjetoContext } from '@/context/ProjetoContext'
-
-import { useParams } from 'next/navigation'
 
 interface UpaProps {
     params: {

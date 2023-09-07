@@ -2,7 +2,7 @@
 
 import Users from "@/components/projeto/Users"
 
-import withAuthentication from "@/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 
 const IndexUsers = () => {
 

@@ -2,7 +2,7 @@
 
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
-import { FormInput } from '../FormInput'
+import { FormInput } from '@/components/utils/FormInput'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { AuthContext } from '@/context/AuthContext'

@@ -1,7 +1,7 @@
 'use client'
 
 import { AddEdit } from "src/components/user/AddEdit"
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 import { AuthContext } from '@/context/AuthContext';
 import { use, useCallback, useContext, useEffect, useState } from "react";
 

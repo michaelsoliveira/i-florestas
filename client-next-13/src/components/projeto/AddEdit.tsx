@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-import { FormInput } from 'src/components/FormInput'
+import { FormInput } from '@/components/utils/FormInput'
 import { useCallback, useContext, useEffect } from 'react'
 import alertService from '@/services/alert'
 import { AuthContext } from '@/context/AuthContext'

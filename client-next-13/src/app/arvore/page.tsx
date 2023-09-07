@@ -1,6 +1,6 @@
 'use client'
 
-import withAuthentication from "@/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 import ArvoreIndex from "@/components/arvore/Index"
 const Page = () => {
     return (

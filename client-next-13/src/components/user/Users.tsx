@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useContext, useEffect, useState } from "react"
-import { Link } from "../Link"
+import { useContext, useEffect, useState } from "react"
+import { Link } from "@/components/utils/Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
@@ -9,7 +9,7 @@ import { useAuthContext } from "@/context/AuthContext"
 import { UserType } from "@/types/IUserType"
 import { styles, stylesForm } from "../utils/styles"
 import { useModalContext } from "@/context/ModalContext"
-import { LinkBack } from "../LinkBack"
+import { LinkBack } from "@/components/utils/LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'

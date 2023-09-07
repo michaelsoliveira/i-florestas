@@ -8,7 +8,7 @@ import { AuthContext } from "../../context/AuthContext";
 import PessoaFisica from "../form/PessoaFisica";
 import Endereco from "../endereco";
 import { ProjetoContext } from "@/context/ProjetoContext";
-import { FormInput } from "../FormInput";
+import { FormInput } from "@/components/utils/FormInput";
 import { useModalContext } from '@/context/ModalContext'
 
 const AddResponsavel =  forwardRef<any, any>(

@@ -1,4 +1,4 @@
-import Table from "src/components/Table"
+import Table from "@/components/utils/Table"
 import { StepContext } from "@/context/StepContext"
 import { useContext, useEffect } from "react"
 

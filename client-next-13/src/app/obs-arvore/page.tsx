@@ -1,6 +1,6 @@
 'use client'
 
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { AuthContext } from "@/context/AuthContext"
@@ -8,9 +8,8 @@ import { paginate, setCurrentPagePagination } from "@/redux/features/paginationS
 import { usePathname } from "next/navigation"
 import { RootState } from "@/redux/store"
 import Observacoes from "src/components/obs-arvore/Index"
-import { Pagination } from "src/components/Pagination"
+import { Pagination } from "@/components/utils/Pagination"
 import { LoadingContext } from "@/context/LoadingContext"
-import { ProjetoContext } from "@/context/ProjetoContext"
 
 const ObservacoesIndex = () => {
 

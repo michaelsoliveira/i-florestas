@@ -1,6 +1,6 @@
 'use client'
 
-import { OptionType, Select } from '@/components/Select';
+import { OptionType, Select } from '@/components/utils/Select';
 import ListArvore from '@/components/arvore/ListArvore';
 import classNames from 'classnames';
 import { AuthContext } from '@/context/AuthContext';

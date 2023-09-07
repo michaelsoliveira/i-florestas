@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../Link"
+import { Link } from "@/components/utils/Link"
 import { Input } from "../atoms/input"
 import { TrashIcon, PencilIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
 import { UmfType } from "@/types/IUMFType"
 import { useModalContext } from "@/context/ModalContext"
-import { styles } from "../utils/styles"
+import { styles } from "@/components/utils/styles"
 
 const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, currentPage, perPage, loading, loadUmfs }: any) => {
     

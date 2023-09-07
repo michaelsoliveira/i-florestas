@@ -1,13 +1,12 @@
 'use client'
 
 import { ChangeEvent, useCallback, useContext, useEffect, useRef, useState } from "react"
-import { Link } from "../Link"
 import { Input } from "../atoms/input"
 import alertService from '@/services/alert'
 import { useAuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
-import { OptionType, Select } from "../Select"
+import { OptionType, Select } from "@/components/utils/Select"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import { setUmf, UmfType } from "@/redux/features/umfSlice"
 import { setUpa } from "@/redux/features/upaSlice"
@@ -20,7 +19,7 @@ import { LoadingContext } from "@/context/LoadingContext"
 import { usePathname } from "next/navigation"
 import { exportToCSV } from "@/components/utils/ExportData"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"
-import { Pagination } from "../Pagination"
+import { Pagination } from "@/components/utils/Pagination"
 
 const Index = () => {
     

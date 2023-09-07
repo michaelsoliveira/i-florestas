@@ -1,6 +1,6 @@
 'use client'
 
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 
 const EmpresaUpdateUser = () => {
     return (

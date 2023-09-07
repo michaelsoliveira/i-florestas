@@ -1,14 +1,14 @@
 'use client'
 
-import { FormInput } from '../FormInput'
+import { FormInput } from '@/components/utils/FormInput'
 import { useContext, useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
-import { AuthContext } from '../../context/AuthContext'
+import { AuthContext } from '@/context/AuthContext'
 import { useSession } from 'next-auth/react'
-import { LinkBack } from '../LinkBack'
-import { Link } from '../Link'
+import { LinkBack } from '@/components/utils/LinkBack'
+import { Link } from '@/components/utils/Link'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 import { setUt } from "@/redux/features/utSlice"

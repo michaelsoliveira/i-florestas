@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { FormInput } from "../FormInput"
-import { OptionType } from "../Select"
+import { FormInput } from "@/components/utils/FormInput"
+import { OptionType } from "@/components/utils/Select"
 import SelectEstado from "../utils/SelectEstado"
 
 const Endereco = ({register, value, setValue, errors}: any) => {

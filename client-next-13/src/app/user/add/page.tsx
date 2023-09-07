@@ -1,7 +1,7 @@
 'use client'
 
 import { AddEdit } from "src/components/user/AddEdit"
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 
 const styles = {
   label: 'block text-gray-700 text-sm font-bold pt-2 pb-1',

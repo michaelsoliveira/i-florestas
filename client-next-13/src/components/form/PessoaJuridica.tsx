@@ -1,4 +1,4 @@
-import { FormInput } from "../FormInput"
+import { FormInput } from "@/components/utils/FormInput"
 
 const PessoaJuridica = ({register, errors}: any) => {
     return (<div className="grid grid-cols-6 gap-4">

@@ -5,14 +5,13 @@ import { ProjetoContext } from "@/context/ProjetoContext"
 import { CSSProperties, forwardRef, useContext, useEffect, useMemo, useState } from "react"
 import { useCSVReader } from "react-papaparse"
 import alertService from '@/services/alert'
-import { Button } from "../utils/Button"
-import Table from "../Table"
+import { Button } from "@/components/utils/Button"
 import { StepContext } from "@/context/StepContext"
 import SelectFileStep from "./steps/SelectFileStep"
 import Errors from "./steps/Errors"
 import Finalizar from "./steps/Finalizar"
-import Stepper from "../Stepper"
-import StepperControl from "../StepperControl"
+import Stepper from "@/components/utils/Stepper"
+import StepperControl from "@/components/utils/StepperControl"
 
 type ImportModalType = {
     loadEspecies?: any;

@@ -1,7 +1,7 @@
 'use client'
 
 import GrupoCategoriaEspecie from "@/components/categoria-especie/GrupoCategoriaEspecie";
-import withAuthentication from "@/components/withAuthentication";
+import withAuthentication from "@/components/utils/withAuthentication";
 
 function CategoriaGrupoPage() {
     

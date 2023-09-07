@@ -1,9 +1,9 @@
 'use client'
 
 import { ChangeEvent, useCallback, useContext, useEffect, useState } from "react"
-import withAuthentication from "src/components/withAuthentication"
+import withAuthentication from "@/components/utils/withAuthentication"
 import Index from "src/components/especie/Index"
-import { Pagination } from "src/components/Pagination"
+import { Pagination } from "@/components/utils/Pagination"
 import { AuthContext } from "@/context/AuthContext"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { paginate, setCurrentPagePagination } from "@/redux/features/paginationSlice"

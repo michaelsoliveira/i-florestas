@@ -6,14 +6,14 @@ import { LoadingContext } from "@/context/LoadingContext"
 import { CsvDataService } from "@/services/create-csv"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
-import { OptionType, Select } from "../Select"
+import { OptionType, Select } from "@/components/utils/Select"
 import { ProjetoContext } from "@/context/ProjetoContext"
 import { setUmf } from "@/redux/features/umfSlice"
 import { setUpa } from "@/redux/features/upaSlice"
 import alertService from '@/services/alert'
 import { useCSVReader } from 'react-papaparse'
-import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "../Table"
-import { Button } from "../utils/Button"
+import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "@/components/utils/Table"
+import { Button } from "@/components/utils/Button"
 
 const styles = {
     csvReader: {

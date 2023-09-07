@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import alertService from "@/services/alert";
 import { useSession } from "next-auth/react";
 import { AuthContext } from "../../context/AuthContext";
-import { Link } from "../Link";
+import { Link } from "@/components/utils/Link";
 import RadioGroup from "../form/RadioGroup";
 import Option from '../form/Option'
 import PessoaFisica from "../form/PessoaFisica";
