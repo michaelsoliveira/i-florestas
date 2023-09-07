@@ -13,8 +13,9 @@ import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
 import { useParams } from 'next/navigation'
+import { UUID } from 'crypto'
 
-const AddEdit = ({ params } : { params: { id: string } }) => {
+const AddEdit = ({ params } : { params: { id: UUID } }) => {
     const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
