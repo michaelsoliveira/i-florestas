@@ -1,7 +1,7 @@
 import { OptionType } from '@/components/utils/Select'
 import { FormInput } from '@/components/utils/FormInput'
 import { useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '@/context/AuthContext'
@@ -13,10 +13,10 @@ import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
 import { useParams } from 'next/navigation'
-import { UUID } from 'crypto'
 
-const AddEdit = ({ params } : { params: { id: UUID } }) => {
-    const { id } = params
+const AddEdit = () => {
+    const params = useParams()
+    const id = params?.id as string
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
