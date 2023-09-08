@@ -51,7 +51,7 @@ const pageUmf = async ({ params }: any) => {
 
             return (
               <AddEdit>
-                <Form umf={umf} />
+                <Form />
               </AddEdit>
             )            
         }
