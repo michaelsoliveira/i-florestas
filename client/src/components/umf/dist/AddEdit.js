@@ -49,7 +49,8 @@ var umfSlice_1 = require("@/redux/features/umfSlice");
 var SelectEstado_1 = require("@/components/utils/SelectEstado");
 var LinkBack_1 = require("../utils/LinkBack");
 var AddEdit = function (_a) {
-    var id = _a.id;
+    var params = _a.params;
+    var id = params.id;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
     var _c = react_1.useState(), estado = _c[0], setEstado = _c[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
@@ -64,28 +65,29 @@ var AddEdit = function (_a) {
                 var data, _i, _d, _e, key, value;
                 return __generator(this, function (_f) {
                     switch (_f.label) {
-                        case 0: return [4 /*yield*/, client.get("/umf/" + id)];
+                        case 0:
+                            if (!!isAddMode) return [3 /*break*/, 2];
+                            return [4 /*yield*/, client.get("/umf/" + id)];
                         case 1:
-                            data = _f.sent();
-                            if (!isAddMode) {
-                                setEstado({
-                                    label: (_a = data === null || data === void 0 ? void 0 : data.estado) === null || _a === void 0 ? void 0 : _a.nome,
-                                    value: (_b = data === null || data === void 0 ? void 0 : data.estado) === null || _b === void 0 ? void 0 : _b.id
-                                });
-                                for (_i = 0, _d = Object.entries(data); _i < _d.length; _i++) {
-                                    _e = _d[_i], key = _e[0], value = _e[1];
-                                    if (key === 'estado') {
-                                        setValue('estado', (_c = data.estado) === null || _c === void 0 ? void 0 : _c.id);
-                                    }
-                                    else {
-                                        setValue(key, value, {
-                                            shouldValidate: true,
-                                            shouldDirty: true
-                                        });
-                                    }
+                            data = (_f.sent()).data;
+                            setEstado({
+                                label: (_a = data === null || data === void 0 ? void 0 : data.estado) === null || _a === void 0 ? void 0 : _a.nome,
+                                value: (_b = data === null || data === void 0 ? void 0 : data.estado) === null || _b === void 0 ? void 0 : _b.id
+                            });
+                            for (_i = 0, _d = Object.entries(data); _i < _d.length; _i++) {
+                                _e = _d[_i], key = _e[0], value = _e[1];
+                                if (key === 'estado') {
+                                    setValue('estado', (_c = data.estado) === null || _c === void 0 ? void 0 : _c.id);
+                                }
+                                else {
+                                    setValue(key, value, {
+                                        shouldValidate: true,
+                                        shouldDirty: true
+                                    });
                                 }
                             }
-                            return [2 /*return*/];
+                            _f.label = 2;
+                        case 2: return [2 /*return*/];
                     }
                 });
             });

@@ -15,7 +15,8 @@ import { LinkBack } from '../utils/LinkBack'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 
-const AddEdit = ({ id }: {  id?: string }) => {
+const AddEdit = ({ params }: {  params: {id: string} }) => {
+    const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
@@ -26,8 +27,9 @@ const AddEdit = ({ id }: {  id?: string }) => {
 
     useEffect(() => {        
         async function loadUmf() {
-            const data = await client.get(`/umf/${id}`)
+            
             if (!isAddMode) {
+                const { data } = await client.get(`/umf/${id}`)
                 setEstado({
                     label: data?.estado?.nome,
                     value: data?.estado?.id
