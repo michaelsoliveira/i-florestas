@@ -13,28 +13,28 @@ import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 
-const Form = ({ id }: { id? : string}) => {
+const Form = ({ umf }: { umf? : any}) => {
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
     // const { data: session } = useSession()
     const router = useRouter()
-    const isAddMode = !id
+    const isAddMode = !umf
     const dispatch = useAppDispatch()
 
     useEffect(() => {        
         async function loadUmf() {
-            const { data } = await client.get(`/umf/${id}`)
+
             if (!isAddMode) {
                 setEstado({
-                    label: data?.estado?.nome,
-                    value: data?.estado?.id
+                    label: umf?.estado?.nome,
+                    value: umf?.estado?.id
                 })
                
-                for (const [key, value] of Object.entries(data)) {
+                for (const [key, value] of Object.entries(umf)) {
                     if (key === 'estado') {
-                        setValue('estado', data.estado?.id)
+                        setValue('estado', umf.estado?.id)
                     } else {
                         setValue(key, value, {
                             shouldValidate: true,
@@ -47,7 +47,7 @@ const Form = ({ id }: { id? : string}) => {
         
         loadUmf()
 
-    }, [isAddMode, client, setValue, setEstado, id])
+    }, [isAddMode, client, setValue, setEstado, umf])
 
     const selectedEstado = (data: any) => {
         setEstado(data)
@@ -58,7 +58,7 @@ const Form = ({ id }: { id? : string}) => {
         try {
             return isAddMode
                 ? createUmf(data)
-                : updateUmf(id, data)
+                : updateUmf(umf?.id, data)
         } catch (error: any) {
             alertService.error(error.message);
         }

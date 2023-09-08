@@ -1,7 +1,7 @@
 import { LinkBack } from '@/components/utils/LinkBack'
 import Form from './Form'
 
-const AddEdit = ({ id }: { id? : string}) => {
+const AddEdit = ({ umf }: { umf? : any}) => {
 
     return (
         <>
@@ -15,7 +15,7 @@ const AddEdit = ({ id }: { id? : string}) => {
                                 <LinkBack href="/umf" className="flex flex-col relative left-0 ml-4" />
                             </div>
                             <div>
-                                {!id ? (
+                                {!umf ? (
                                     <h1 className='text-xl'>Cadastrar UMF</h1>
                                 ): (
                                     <h1 className='text-xl'>Editar UMF</h1>
@@ -24,7 +24,7 @@ const AddEdit = ({ id }: { id? : string}) => {
                             <div></div>
                         </div>
                         <div className="relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x border-b border-custom-green">
-                            <Form id={id} />
+                            <Form umf={umf} />
                         </div>
                     </div>
                 </div>
