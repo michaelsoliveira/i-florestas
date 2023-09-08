@@ -24,31 +24,31 @@ const Form = ({ umf }: { umf? : any}) => {
     const isAddMode = !umf
     const dispatch = useAppDispatch()
 
-    useEffect(() => {        
-        async function loadUmf() {
+    // useEffect(() => {        
+    //     async function loadUmf() {
 
-            if (!isAddMode) {
-                setEstado({
-                    label: umf?.estado?.nome,
-                    value: umf?.estado?.id
-                })
+    //         if (!isAddMode) {
+    //             setEstado({
+    //                 label: umf?.estado?.nome,
+    //                 value: umf?.estado?.id
+    //             })
                
-                for (const [key, value] of Object.entries(umf)) {
-                    if (key === 'estado') {
-                        setValue('estado', umf.estado?.id)
-                    } else {
-                        setValue(key, value, {
-                            shouldValidate: true,
-                            shouldDirty: true
-                        })
-                    }
-                }
-            }
-        }
+    //             for (const [key, value] of Object.entries(umf)) {
+    //                 if (key === 'estado') {
+    //                     setValue('estado', umf.estado?.id)
+    //                 } else {
+    //                     setValue(key, value, {
+    //                         shouldValidate: true,
+    //                         shouldDirty: true
+    //                     })
+    //                 }
+    //             }
+    //         }
+    //     }
         
-        loadUmf()
+    //     loadUmf()
 
-    }, [isAddMode, client, setValue, setEstado, umf])
+    // }, [isAddMode, client, setValue, setEstado, umf])
 
     const selectedEstado = (data: any) => {
         setEstado(data)
