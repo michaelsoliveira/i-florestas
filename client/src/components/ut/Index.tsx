@@ -61,7 +61,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf/search/q?nome=${inputValue}`)
+        const response = await client.get(`/umf?search=${inputValue}`)
         const data = response.data
         
         callback(data?.map((umf: any) => ({
@@ -71,7 +71,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     }
 
     const defaultUmfsOptions = useCallback(async() => {
-        const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
+        const response = await client.get(`/umf?orderBy=nome&order=asc`)
         
             const { umfs } = response.data
             setUmfs(umfs)
