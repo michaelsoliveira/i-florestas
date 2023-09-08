@@ -20,12 +20,16 @@ const AddEdit = ({ params }: {  params: {id: string} }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
-    // const { data: session } = useSession()
+    const { data: session } = useSession()
     const router = useRouter()
     const isAddMode = !id
     const dispatch = useAppDispatch()
 
-    useEffect(() => {        
+    useEffect(() => {     
+        if (typeof session === undefined) {
+            router.push('/login')
+        }   
+        
         async function loadUmf() {
             
             if (!isAddMode) {

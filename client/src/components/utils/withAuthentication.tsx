@@ -2,16 +2,16 @@
 
 import PropTypes from 'prop-types'
 import { useSession } from 'next-auth/react'
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const withAuthentication = (WrappedComponent: any) => {
   const RequiresAuthentication = (props: any) => {
-      const router = useRouter()
+      // const router = useRouter()
       const { data: session, status } = useSession()
       
         if (typeof session !== typeof undefined) {
             if (status !== 'authenticated') {
-              router.push('/login')
+              return redirect(`/login?callbackUrl=${window.location.pathname}`)
             }
         }
       
