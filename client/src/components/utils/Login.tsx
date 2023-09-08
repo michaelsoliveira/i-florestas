@@ -17,7 +17,7 @@ function Login() {
   const { hideModal } = useModalContext()
     const router = useRouter();
     const callback = useSearchParams().get('callbackUrl')
-    const callbackUrl = callback ?? "/"
+    // const callbackUrl = callback ?? "/"
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -47,10 +47,10 @@ function Login() {
       try {
 
           await signIn('credentials', {
-            redirect: true,
+            redirect: false,
             email,
             password,
-            callbackUrl,
+            // callbackUrl,
           }).then((res: any) => {
             if (res?.error === null) {
               alertService.success('Login realizado com sucesso')

@@ -11,11 +11,10 @@ const withAuthentication = (WrappedComponent: any) => {
       
         if (typeof session !== typeof undefined) {
             if (status !== 'authenticated') {
-              return redirect(`/login?callbackUrl=${window.location.pathname}`)
+              return redirect(`/login?callbackUrl=${encodeURI(window.location.pathname)}`)
             }
         }
       
-
      // if there's a loggedInUser, show the wrapped page, otherwise show a loading indicator
       return session && <WrappedComponent {...props} />
 
