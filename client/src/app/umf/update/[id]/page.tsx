@@ -32,11 +32,29 @@ import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps, ResolvingMetad
 
 const pageUmf = async ({ params }: any) => {
     try {
-          return (
-            <AddEdit>
-              <Form />
-            </AddEdit>
-          )            
+        const { id } = params
+        const session = await getSession()
+
+        if (session && session?.accessToken) {
+            const url = `${process.env.NEXT_PUBLIC_API_URL}/umf/${id}`
+
+            const umf = await fetch(url, {
+                next: {
+                    revalidate: 0
+                },
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + session?.accessToken,
+                    'Content-Type': 'application/json'
+                }
+            }).then((response) => response.json())
+
+            return (
+              <AddEdit>
+                <Form umf={umf}/>
+              </AddEdit>
+            )            
+        }
     } catch (error: any) {
         console.log(error?.message)
         throw new Error(error?.message)
