@@ -1,4 +1,5 @@
-"use client";
+"use client"
+
 import { OptionType } from '@/components/utils/Select'
 import { FormInput } from '@/components/utils/FormInput'
 import { useContext, useEffect, useState } from 'react'
@@ -6,7 +7,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
 import { AuthContext } from '@/context/AuthContext'
-import { useSession } from 'next-auth/react'
 import { Link } from '@/components/utils/Link'
 import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
@@ -15,33 +15,26 @@ import { LinkBack } from '../utils/LinkBack'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 
-const AddEdit = ({ params }: {  params: {id: string} }) => {
-    const { id } = params
+const AddEdit = ({ umf }: {  umf: Umf }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
-    const { data: session } = useSession()
     const router = useRouter()
-    const isAddMode = !id
+    const isAddMode = !umf.id
     const dispatch = useAppDispatch()
 
     useEffect(() => {     
-        if (typeof session === undefined) {
-            router.push('/login')
-        }   
-        
         async function loadUmf() {
-            
             if (!isAddMode) {
-                const { data } = await client.get(`/umf/${id}`)
+                // const { data } = await client.get(`/umf/${id}`)
                 setEstado({
-                    label: data?.estado?.nome,
-                    value: data?.estado?.id
+                    label: umf?.estado?.nome,
+                    value: umf?.estado?.id
                 })
                
-                for (const [key, value] of Object.entries(data)) {
+                for (const [key, value] of Object.entries(umf)) {
                     if (key === 'estado') {
-                        setValue('estado', data.estado?.id)
+                        setValue('estado', umf.estado?.id)
                     } else {
                         setValue(key, value, {
                             shouldValidate: true,
@@ -54,7 +47,7 @@ const AddEdit = ({ params }: {  params: {id: string} }) => {
         
         loadUmf()
 
-    }, [isAddMode, client, setValue, setEstado, id])
+    }, [isAddMode, client, setValue, setEstado, umf.id])
 
     const selectedEstado = (data: any) => {
         setEstado(data)
@@ -65,7 +58,7 @@ const AddEdit = ({ params }: {  params: {id: string} }) => {
         try {
             return isAddMode
                 ? createUmf(data)
-                : updateUmf(id, data)
+                : updateUmf(umf.id, data)
         } catch (error: any) {
             alertService.error(error.message);
         }
@@ -113,7 +106,7 @@ const AddEdit = ({ params }: {  params: {id: string} }) => {
                             <LinkBack href="/umf" className="flex flex-col relative left-0 ml-4" />
                         </div>
                         <div>
-                            {!id ? (
+                            {isAddMode ? (
                                 <h1 className='text-xl'>Cadastrar UMF</h1>
                             ): (
                                 <h1 className='text-xl'>Editar UMF</h1>

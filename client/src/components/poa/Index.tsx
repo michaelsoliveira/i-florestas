@@ -39,8 +39,8 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf?search=${inputValue}`)
-        const data = response.data
+        
+        const data = umfs.filter((umf: any) => umf.nome.toLowerCase().includes(inputValue) || umf.nome.includes(inputValue))
         
         callback(data?.map((umf: any) => ({
             value: umf.id,
