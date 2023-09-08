@@ -50,9 +50,9 @@ const pageUmf = async ({ params }: any) => {
             }).then((response) => response.json())
 
             return (
-              // <AddEdit>
-                <Form />
-              // </AddEdit>
+              <AddEdit>
+                <Form umf={umf}/>
+              </AddEdit>
             )            
         }
     } catch (error: any) {

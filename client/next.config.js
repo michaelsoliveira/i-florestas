@@ -10,7 +10,7 @@ const nextConfig = withPWA({
   images: {
     domains: ['images.unsplash.com', 'placeimg.com', 'www.revixpert.ch'],
   },
-  output: 'standalone',
+  // output: 'standalone',
 })
 
 module.exports = withFonts(nextConfig)
