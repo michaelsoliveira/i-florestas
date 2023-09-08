@@ -52,7 +52,7 @@ services:
       context: client
       dockerfile: ./Dockerfile
     env_file:
-      - ./client/.env
+      - ./client/.env.local
     environment:
       BACKEND_URL: ${BACKEND_URL}
     volumes:
