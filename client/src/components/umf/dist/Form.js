@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+exports.getStaticProps = exports.getStaticPaths = void 0;
 var FormInput_1 = require("@/components/utils/FormInput");
 var react_1 = require("react");
 var navigation_1 = require("next/navigation");
@@ -48,6 +49,72 @@ var hooks_1 = require("@/redux/hooks");
 var umfSlice_1 = require("@/redux/features/umfSlice");
 var SelectEstado_1 = require("@/components/utils/SelectEstado");
 var LinkBack_1 = require("../utils/LinkBack");
+var next_auth_1 = require("next-auth");
+var authOptions_1 = require("@/lib/authOptions");
+var getSession = function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, next_auth_1.getServerSession(authOptions_1.authOptions)];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+var getData = function (id) { return __awaiter(void 0, void 0, void 0, function () {
+    var session, url, data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getSession()];
+            case 1:
+                session = _a.sent();
+                url = process.env.NEXT_PUBLIC_API_URL + "/umf/" + id;
+                return [4 /*yield*/, fetch(url, {
+                        next: {
+                            revalidate: 0
+                        },
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + (session === null || session === void 0 ? void 0 : session.accessToken),
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) { return response.json(); })];
+            case 2:
+                data = _a.sent();
+                return [2 /*return*/, data];
+        }
+    });
+}); };
+function getStaticPaths(_a) {
+    var params = _a.params;
+    return __awaiter(this, void 0, void 0, function () {
+        var data;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, getData(params.id)];
+                case 1:
+                    data = _b.sent();
+                    return [2 /*return*/, data.map(function (umf) { return ({
+                            id: umf.id
+                        }); })];
+            }
+        });
+    });
+}
+exports.getStaticPaths = getStaticPaths;
+function getStaticProps(_a) {
+    var params = _a.params;
+    return __awaiter(this, void 0, void 0, function () {
+        var umf;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, getData(params.id)];
+                case 1:
+                    umf = _b.sent();
+                    return [2 /*return*/, { props: { umf: umf } }];
+            }
+        });
+    });
+}
+exports.getStaticProps = getStaticProps;
 var Form = function (_a) {
     var umf = _a.umf;
     var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;

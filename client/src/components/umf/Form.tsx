@@ -12,6 +12,45 @@ import { useAppDispatch } from '@/redux/hooks'
 import { setUmf } from '@/redux/features/umfSlice'
 import SelectEstado from '@/components/utils/SelectEstado'
 import { LinkBack } from '../utils/LinkBack'
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+
+const getSession: any = async () => {
+    return await getServerSession(authOptions)
+  }
+
+const getData = async (id: string) => {
+    const session = await getSession()
+
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/umf/${id}`
+
+        const data = await fetch(url, {
+            next: {
+                revalidate: 0
+            },
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + session?.accessToken,
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => response.json())
+
+        return data
+  }
+
+  export async function getStaticPaths({ params }: any) {
+    const data = await getData(params.id)
+
+    return data.map((umf: any) => ({
+        id: umf.id
+    }))
+  }
+  
+  export async function getStaticProps({ params }: any) {
+    const umf = await getData(params.id)    
+
+    return { props: { umf } }
+  }
 
 const Form = ({ umf }: { umf? : any}) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
