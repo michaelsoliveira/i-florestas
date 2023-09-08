@@ -23,7 +23,7 @@ import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps, ResolvingMetad
     const id = params.id
     const session = await getSession()
     // fetch data
-    const umf = await fetch(`http://localhost:3333/umf/${id}`, { headers: { 'Authorization': `Bearer ${session?.accessToken}` } }).then((res) => res.json())
+    const umf = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/umf/${id}`, { headers: { 'Authorization': `Bearer ${session?.accessToken}` } }).then((res) => res.json())
    
     return {
       title: umf.nome
