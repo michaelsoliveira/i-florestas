@@ -1,9 +1,10 @@
+'use client'
+
 import AddEdit from "@/components/umf/AddEdit";
-import Form from '@/components/umf/Form'
 import withAuthentication from "@/components/utils/withAuthentication";
 import { authOptions } from "@/lib/authOptions";
 import { getServerSession } from "next-auth";
-import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps, ResolvingMetadata, Metadata } from 'next'
+import { ResolvingMetadata, Metadata } from 'next'
 // import Form from "@/components/umf/Form"
 
 
@@ -30,34 +31,16 @@ import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps, ResolvingMetad
     }
   }
 
-const pageUmf = async ({ params }: any) => {
+const pageUmf = ({ params }: any) => {
     try {
         const { id } = params
-        const session = await getSession()
 
-        if (session && session?.accessToken) {
-            const url = `${process.env.NEXT_PUBLIC_API_URL}/umf/${id}`
-
-            const umf = await fetch(url, {
-                next: {
-                    revalidate: 0
-                },
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + session?.accessToken,
-                    'Content-Type': 'application/json'
-                }
-            }).then((response) => response.json())
-
-            return (
-              <AddEdit>
-                <Form umf={umf}/>
-              </AddEdit>
-            )            
-        }
+        return (
+          <AddEdit id={id} />
+        )            
+        
     } catch (error: any) {
         console.log(error?.message)
-        throw new Error(error?.message)
     }
     
 }
