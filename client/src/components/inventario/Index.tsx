@@ -286,7 +286,7 @@ const Index = () => {
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-col md:flex-row items-center justify-between p-4 w-full">
                     <CSVReader 
                         config={
                             {
@@ -303,26 +303,29 @@ const Index = () => {
                         getRemoveFileProps,
                     }: any) => (
                         <>
-                        <div className="lg:grid lg:grid-cols-4">
-                            <div className="px-2 w-36">
-                                <select
-                                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1"
-                                    value={encoding}
-                                    onChange={e => {
-                                        setEncoding(String(e.target.value))
-                                    }}
-                                >
-                                    {["iso-8859-1", "utf-8"].map(pageSize => (
-                                    <option key={pageSize} value={pageSize}>
-                                        {pageSize}
-                                    </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="">
+                        <div className="flex flex-col md:flex-row text-sm items-center justify-center align-middle space-x-2">
+                            
+                            <select
+                                className="p-1 w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                value={encoding}
+                                onChange={e => {
+                                    setEncoding(String(e.target.value))
+                                }}
+                            >
+                                
+                                {["iso-8859-1", "utf-8"].map(pageSize => (
+                                <option key={pageSize} value={pageSize}>
+                                    {pageSize}
+                                </option>
+                                
+                                ))}
+                                
+                            </select>
+                            
+                            <div className="w-full py-2">
                                 <a 
                                     {...getRootProps()} 
-                                    className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold px-4 inline-flex align-middle hover:cursor-pointer"
+                                    className="bg-indigo w-40 hover:bg-indigo-dark text-green-700 font-bold py-1 border rounded-lg px-4 inline-flex align-middle hover:cursor-pointer"
                                 >
                                     <svg className="fill-green-700 w-6 h-6" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M0 0h24v24H0z" fill="none"/>
@@ -331,11 +334,11 @@ const Index = () => {
                                     <span className="ml-2">{uploading ? "Abrindo..." : "Abrir Planilha"}</span>
                                 </a>
                                 </div>
-                                <div className="lg:grid lg:grid-cols-2 lg:gap-2">
+                                <div className="flex flex-row w-full space-x-2 items-center justify-center align-middle">
                                    
                                     { acceptedFile && (
                                         <>
-                                            <div className="inline-block align-baseline">{acceptedFile.name}</div>
+                                            <div className="inline-block">{acceptedFile.name}</div>
                                             <Button {...getRemoveFileProps()}
                                                 className="text-red-700 hover:cursor-pointer justify-center w-24"
                                             >
@@ -353,7 +356,7 @@ const Index = () => {
                     )}
                 </CSVReader>        
 
-                <div>
+                <div className="flex flex-row">
                     <a
                         onClick={handleImportTemplate}
                         className="bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer"
@@ -362,28 +365,29 @@ const Index = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                         </svg>
 
-                    <span className="ml-2">Modelo</span>
+                        <span className="ml-2">Modelo</span>
                     </a>
+                    {
+                        (data.length > 0) && (
+                            <a
+                                onClick={handleImportInventario}
+                                className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                            >
+                                Importar
+                            </a>
+                        )
+                    }
                 </div>
-                {
-                    (data.length > 0) && (
-                        <a
-                            onClick={handleImportInventario}
-                            className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                        >
-                            Importar
-                        </a>
-                    )
-                }
             </div>
                 <div className="flex flex-col p-6">
                     <div className="pb-2">
-                        <h1 className="text-xl font-semibold">Importação do Inventário</h1>
+                        <h1 className="text-xl font-semibold text-custom-green">Importação do Inventário</h1>
                     </div>
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
                             <div>
                                 <Select
+                                    styleLabel="text-white"
                                     initialData={
                                         {
                                             label: 'Selecione UMF...',
@@ -399,6 +403,7 @@ const Index = () => {
                             </div>
                             <div>
                                 <Select
+                                    styleLabel="text-white"
                                     initialData={
                                         {
                                             label: 'Selecione UPA...',

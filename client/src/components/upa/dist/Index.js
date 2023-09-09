@@ -56,16 +56,16 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var Link_1 = require("../Link");
+var Link_1 = require("@/components/utils/Link");
 var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
-var Select_1 = require("../Select");
+var Select_1 = require("@/components/utils/Select");
 var umfSlice_1 = require("@/redux/features/umfSlice");
 var hooks_1 = require("@/redux/hooks");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../utils/styles");
+var styles_1 = require("@/components/utils/styles");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var Index = function (_a) {
     var currentUpas = _a.currentUpas, onPageChanged = _a.onPageChanged, changeItemsPerPage = _a.changeItemsPerPage, orderBy = _a.orderBy, order = _a.order, currentPage = _a.currentPage, perPage = _a.perPage, loading = _a.loading, loadUpas = _a.loadUpas;
@@ -86,19 +86,14 @@ var Index = function (_a) {
     var deleteSingleModal = function (id) { var _a; return showModal({ title: 'Deletar UPA', onConfirm: function () { deleteUpa(id); }, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: "Tem Certeza que deseja excluir a UPA " + ((_a = upaById(id)) === null || _a === void 0 ? void 0 : _a.descricao) + " ?" }); };
     var deleteMultModal = function () { return showModal({ title: 'Deletar UPAs', onConfirm: deleteUpas, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UPAs selecionadas' }); };
     var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var data;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/umf/search/q?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
-                        value: umf.id,
-                        label: umf.nome
-                    }); }));
-                    return [2 /*return*/];
-            }
+            data = umfs.filter(function (umf) { return umf.nome.toLowerCase().includes(inputValue.toLowerCase()); });
+            callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
+                value: umf.id,
+                label: umf.nome
+            }); }));
+            return [2 /*return*/];
         });
     }); };
     var umfExits = umfs === null || umfs === void 0 ? void 0 : umfs.length;
@@ -119,7 +114,7 @@ var Index = function (_a) {
                 var response, umfs;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
+                        case 0: return [4 /*yield*/, client.get("/umf?orderBy=nome&order=asc")];
                         case 1:
                             response = _a.sent();
                             umfs = response.data.umfs;
@@ -256,14 +251,14 @@ var Index = function (_a) {
         });
     }); };
     return (React.createElement("div", null,
-        React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
-            React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidade de Produ\u00E7\u00E3o Anual"),
-            React.createElement(Link_1.Link, { href: '/upa/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
+        React.createElement("div", { className: "flex flex-row items-center justify-between p-6" },
+            React.createElement("h1", { className: "font-medium text-2xl font-roboto text-custom-green" }, "Unidade de Produ\u00E7\u00E3o Anual"),
+            React.createElement(Link_1.Link, { href: '/upa/add', className: "px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer" }, "Adicionar")),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
-            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
+            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg text-white" },
                 React.createElement("div", { className: "flex flex-row w-2/12 px-2 items-center justify-between" },
                     React.createElement("div", { className: "w-full" },
-                        React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
+                        React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium" }, "por P\u00E1gina")),
                     React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
                         React.createElement("option", { value: "10" }, "10"),
                         React.createElement("option", { value: "20" }, "20"),
@@ -271,7 +266,7 @@ var Index = function (_a) {
                         React.createElement("option", { value: "100" }, "100"))),
                 React.createElement("div", { className: "lg:flex lg:flex-wrap lg:w-5/12 px-4" },
                     React.createElement("div", { className: "w-3/12 flex items-center" }, "UMF: "),
-                    React.createElement("div", { className: "w-9/12" },
+                    React.createElement("div", { className: "w-9/12 text-black" },
                         React.createElement(Select_1.Select, { placeholder: 'Selecione UMF...', selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, 
                             // label="Volume da Árvore"
                             callback: selectUmf, initialData: {
@@ -285,20 +280,20 @@ var Index = function (_a) {
                     checkedUpas.length > 0 && (React.createElement("div", { className: "py-4" },
                         React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
-                        React.createElement("thead", { className: "bg-gray-50" },
+                        React.createElement("thead", { className: "bg-gray-normal" },
                             React.createElement("tr", null,
                                 React.createElement("th", { className: "w-1/12" },
                                     React.createElement("div", { className: "flex justify-center" },
                                         React.createElement("input", { checked: (checkedUpas === null || checkedUpas === void 0 ? void 0 : checkedUpas.length) === (currentUpas === null || currentUpas === void 0 ? void 0 : currentUpas.length), onChange: handleSelectAllUpas, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
                                 React.createElement("th", { className: "w-1/12", onClick: function () { return sortUpas(); } },
-                                    React.createElement("div", { className: "flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" },
+                                    React.createElement("div", { className: "flex flex-row items-center px-3 py-3 text-left text-xs text-gray-500 font-bold uppercase tracking-wider cursor-pointer" },
                                         "Ano",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
-                                React.createElement("th", { scope: "col", className: "w-4/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Descri\u00E7\u00E3o"),
-                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Tipo de Coordenada"),
-                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Modelo de Equa\u00E7\u00E3o"),
+                                React.createElement("th", { scope: "col", className: "w-4/12 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider" }, "Descri\u00E7\u00E3o"),
+                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider" }, "Tipo de Coordenada"),
+                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider" }, "Modelo de Equa\u00E7\u00E3o"),
                                 React.createElement("th", { scope: "col", className: "relative w-1/12 px-6 py-3" },
                                     React.createElement("span", { className: "sr-only" }, "Edit")))),
                         React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredUpa === null || filteredUpa === void 0 ? void 0 : filteredUpa.map(function (upa) {

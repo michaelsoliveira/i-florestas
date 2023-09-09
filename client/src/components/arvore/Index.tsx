@@ -389,19 +389,21 @@ const Index = () => {
             <div className="flex flex-row items-center justify-between p-6 items-center">
                 <h1 className="font-medium text-2xl text-custom-green">Árvores</h1>
                 <div className="flex flex-row space-x-2">
-                    <div
-                        onClick={exportCsv}
-                        className="px-4 py-2 text-white bg-brown-normal hover:bg-brown-normal/50 rounded-md hover:cursor-pointer"
-                    >
-                        <div className="flex flex-row justify-around w-full space-x-2">
-                            <div>
-                                <FontAwesomeIcon icon={faFileExport} />
+                    { filteredArvores.length > 0 && (
+                        <div
+                            onClick={exportCsv}
+                            className="px-4 py-2 text-white bg-brown-normal hover:bg-brown-normal/50 rounded-md hover:cursor-pointer"
+                        >
+                            <div className="flex flex-row justify-around w-full space-x-2">
+                                <div>
+                                    <FontAwesomeIcon icon={faFileExport} />
+                                </div>
+                                <span>
+                                    Exportar
+                                </span>
                             </div>
-                            <span>
-                                Exportar
-                            </span>
                         </div>
-                    </div>
+                    ) }
                     <div
                         onClick={goToAddForm}
                         className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/50 rounded-md hover:cursor-pointer"

@@ -53,14 +53,14 @@ var AuthContext_1 = require("@/context/AuthContext");
 var LoadingContext_1 = require("@/context/LoadingContext");
 var create_csv_1 = require("@/services/create-csv");
 var hooks_1 = require("@/redux/hooks");
-var Select_1 = require("../Select");
+var Select_1 = require("@/components/utils/Select");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var umfSlice_1 = require("@/redux/features/umfSlice");
 var upaSlice_1 = require("@/redux/features/upaSlice");
 var alert_1 = require("@/services/alert");
 var react_papaparse_1 = require("react-papaparse");
-var Table_1 = require("../Table");
-var Button_1 = require("../utils/Button");
+var Table_1 = require("@/components/utils/Table");
+var Button_1 = require("@/components/utils/Button");
 var styles = {
     csvReader: {
         display: 'flex',
@@ -78,14 +78,16 @@ var Index = function () {
     var _b = react_1.useState(), umfs = _b[0], setUmfs = _b[1];
     var _c = react_1.useState(), upas = _c[0], setUpas = _c[1];
     var _d = react_1.useState(), uts = _d[0], setUts = _d[1];
+    var _e = react_1.useState(), especies = _e[0], setEspecies = _e[1];
+    var _f = react_1.useState(), arvores = _f[0], setArvores = _f[1];
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
-    var _e = react_1.useState(), selectedUmf = _e[0], setSelectedUmf = _e[1];
-    var _f = react_1.useState(), selectedUpa = _f[0], setSelectedUpa = _f[1];
+    var _g = react_1.useState(), selectedUmf = _g[0], setSelectedUmf = _g[1];
+    var _h = react_1.useState(), selectedUpa = _h[0], setSelectedUpa = _h[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
-    var _g = react_1.useState([]), columnData = _g[0], setColumnData = _g[1];
-    var _h = react_1.useState([]), rowData = _h[0], setRowData = _h[1];
-    var _j = react_1.useState('iso-8859-1'), encoding = _j[0], setEncoding = _j[1];
+    var _j = react_1.useState([]), columnData = _j[0], setColumnData = _j[1];
+    var _k = react_1.useState([]), rowData = _k[0], setRowData = _k[1];
+    var _l = react_1.useState('iso-8859-1'), encoding = _l[0], setEncoding = _l[1];
     var CSVReader = react_papaparse_1.useCSVReader().CSVReader;
     var poa = hooks_1.useAppSelector(function (state) { return state.poa; });
     var dispatch = hooks_1.useAppDispatch();
@@ -117,7 +119,7 @@ var Index = function () {
         var response, umfs, compareUmf;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
+                case 0: return [4 /*yield*/, client.get("/umf?orderBy=nome&order=asc")];
                 case 1:
                     response = _a.sent();
                     umfs = response.data.umfs;
@@ -178,11 +180,51 @@ var Index = function () {
             }
         });
     }); }, [client, upa === null || upa === void 0 ? void 0 : upa.id]);
+    var getArvores = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, arvores;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/arvore/get-all")];
+                case 1:
+                    response = _a.sent();
+                    arvores = response.data.arvores;
+                    setArvores(arvores);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client]);
+    var getEspecies = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, especies;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, client.get("/especie?order=asc&orderBy=especie.nome")];
+                case 1:
+                    response = _a.sent();
+                    especies = response.data.especies;
+                    setEspecies(especies);
+                    return [2 /*return*/];
+            }
+        });
+    }); }, [client]);
     react_1.useEffect(function () {
         defaultUmfsOptions();
         defaultUpasOptions();
         getUts();
-    }, [defaultUmfsOptions, defaultUpasOptions, getUts]);
+        getEspecies();
+        getArvores();
+    }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores]);
+    var nomeEspecies = (especies === null || especies === void 0 ? void 0 : especies.length) > 0
+        ? especies.map(function (especie) { return especie.nome; })
+        : [];
+    var numArvores = (arvores === null || arvores === void 0 ? void 0 : arvores.length) > 0
+        ? arvores.map(function (arv) { return arv.numero_arvore; })
+        : [];
+    var arvoresUploaded = rowData.length > 0
+        ? rowData
+        : [];
+    var especiesErrors = arvoresUploaded.filter(function (arvore) { return !nomeEspecies.includes(arvore.especie); });
+    var numArvoresDuplicates = arvoresUploaded.filter(function (arvore) { return String(numArvores).includes(String(arvore.numero_arvore)); });
+    var semUt = arvoresUploaded === null || arvoresUploaded === void 0 ? void 0 : arvoresUploaded.filter(function (arvore) { return "".includes(String(arvore === null || arvore === void 0 ? void 0 : arvore.ut)); });
     var selectUmf = function (umf) { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas;
         return __generator(this, function (_a) {
@@ -261,6 +303,12 @@ var Index = function () {
                     if (!((data_1 === null || data_1 === void 0 ? void 0 : data_1.count) === 0 || poa.id === '')) return [3 /*break*/, 2];
                     return [2 /*return*/, alert_1["default"].warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')];
                 case 2:
+                    if (semUt.length > 0)
+                        return [2 /*return*/, alert_1["default"].error('Existem árvores que não foi informado a UT')];
+                    if (especiesErrors.length > 0)
+                        return [2 /*return*/, alert_1["default"].error('Existem espécies na planilha que não foram cadastras')];
+                    if (numArvoresDuplicates.length > 0)
+                        return [2 /*return*/, alert_1["default"].error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')];
                     setLoading(true);
                     return [4 /*yield*/, client.post("/arvore/import-inventario?upaId=" + (upa === null || upa === void 0 ? void 0 : upa.id), {
                             columns: columnData,
@@ -308,58 +356,57 @@ var Index = function () {
                 };
             }
         });
-        var rows = result.data.slice(1).map(function (row) {
+        var rows = result.data.slice(1).map(function (row, idx) {
             return row.reduce(function (acc, curr, index) {
                 acc[columns[index].accessor] = curr;
-                return acc;
+                return __assign({ linha: idx + 1 }, acc);
             }, {});
         });
         setColumnData(columns);
         setRowData(rows);
     };
     return (React.createElement("div", null,
-        React.createElement("div", { className: "flex flex-row items-center justify-between p-6 bg-gray-100" },
+        React.createElement("div", { className: "flex flex-col md:flex-row items-center justify-between p-4 w-full" },
             React.createElement(CSVReader, { config: {
                     skipEmptyLines: true,
                     encoding: encoding
                 }, onUploadAccepted: onUploadAccepted }, function (_a) {
                 var getRootProps = _a.getRootProps, acceptedFile = _a.acceptedFile, ProgressBar = _a.ProgressBar, getRemoveFileProps = _a.getRemoveFileProps;
                 return (React.createElement(React.Fragment, null,
-                    React.createElement("div", { className: "lg:grid lg:grid-cols-4" },
-                        React.createElement("div", { className: "px-2 w-36" },
-                            React.createElement("select", { className: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-1", value: encoding, onChange: function (e) {
-                                    setEncoding(String(e.target.value));
-                                } }, ["iso-8859-1", "utf-8"].map(function (pageSize) { return (React.createElement("option", { key: pageSize, value: pageSize }, pageSize)); }))),
-                        React.createElement("div", { className: "" },
-                            React.createElement("a", __assign({}, getRootProps(), { className: "bg-indigo hover:bg-indigo-dark text-green-700 font-bold px-4 inline-flex align-middle hover:cursor-pointer" }),
+                    React.createElement("div", { className: "flex flex-col md:flex-row text-sm items-center justify-center align-middle space-x-2" },
+                        React.createElement("select", { className: "p-1 w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50", value: encoding, onChange: function (e) {
+                                setEncoding(String(e.target.value));
+                            } }, ["iso-8859-1", "utf-8"].map(function (pageSize) { return (React.createElement("option", { key: pageSize, value: pageSize }, pageSize)); })),
+                        React.createElement("div", { className: "w-full py-2" },
+                            React.createElement("a", __assign({}, getRootProps(), { className: "bg-indigo w-40 hover:bg-indigo-dark text-green-700 font-bold py-1 border rounded-lg px-4 inline-flex align-middle hover:cursor-pointer" }),
                                 React.createElement("svg", { className: "fill-green-700 w-6 h-6", viewBox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg" },
                                     React.createElement("path", { d: "M0 0h24v24H0z", fill: "none" }),
                                     React.createElement("path", { d: "M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z" })),
                                 React.createElement("span", { className: "ml-2" }, uploading ? "Abrindo..." : "Abrir Planilha"))),
-                        React.createElement("div", { className: "lg:grid lg:grid-cols-2 lg:gap-2" }, acceptedFile && (React.createElement(React.Fragment, null,
-                            React.createElement("div", { className: "inline-block align-baseline" }, acceptedFile.name),
+                        React.createElement("div", { className: "flex flex-row w-full space-x-2 items-center justify-center align-middle" }, acceptedFile && (React.createElement(React.Fragment, null,
+                            React.createElement("div", { className: "inline-block" }, acceptedFile.name),
                             React.createElement(Button_1.Button, __assign({}, getRemoveFileProps(), { className: "text-red-700 hover:cursor-pointer justify-center w-24" }), "Remove")))),
                         React.createElement("div", { className: "col-span-4 pt-1" },
                             React.createElement(ProgressBar, { style: styles.progressBarBackgroundColor })))));
             }),
-            React.createElement("div", null,
+            React.createElement("div", { className: "flex flex-row" },
                 React.createElement("a", { onClick: handleImportTemplate, className: "bg-indigo hover:bg-indigo-dark text-green-700 font-bold py-2 px-4 w-full inline-flex items-center hover:cursor-pointer" },
                     React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", fill: "none", viewBox: "0 0 24 24", strokeWidth: "1.5", stroke: "currentColor", className: "w-6 h-6" },
                         React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", d: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" })),
-                    React.createElement("span", { className: "ml-2" }, "Modelo"))),
-            (data.length > 0) && (React.createElement("a", { onClick: handleImportInventario, className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Importar"))),
+                    React.createElement("span", { className: "ml-2" }, "Modelo")),
+                (data.length > 0) && (React.createElement("a", { onClick: handleImportInventario, className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Importar")))),
         React.createElement("div", { className: "flex flex-col p-6" },
             React.createElement("div", { className: "pb-2" },
-                React.createElement("h1", { className: "text-xl font-semibold" }, "Importa\u00E7\u00E3o do Invent\u00E1rio")),
-            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
+                React.createElement("h1", { className: "text-xl font-semibold text-custom-green" }, "Importa\u00E7\u00E3o do Invent\u00E1rio")),
+            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg" },
                 React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4" },
                     React.createElement("div", null,
-                        React.createElement(Select_1.Select, { initialData: {
+                        React.createElement(Select_1.Select, { styleLabel: "text-white", initialData: {
                                 label: 'Selecione UMF...',
                                 value: ''
                             }, selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, label: "UMF:", callback: selectUmf })),
                     React.createElement("div", null,
-                        React.createElement(Select_1.Select, { initialData: {
+                        React.createElement(Select_1.Select, { styleLabel: "text-white", initialData: {
                                 label: 'Selecione UPA...',
                                 value: ''
                             }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } })))),

@@ -56,17 +56,17 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 exports.__esModule = true;
 var react_1 = require("react");
-var Link_1 = require("../Link");
+var Link_1 = require("@/components/utils/Link");
 var input_1 = require("../atoms/input");
 var solid_1 = require("@heroicons/react/24/solid");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
-var Select_1 = require("../Select");
+var Select_1 = require("@/components/utils/Select");
 var umfSlice_1 = require("@/redux/features/umfSlice");
 var upaSlice_1 = require("@/redux/features/upaSlice");
 var hooks_1 = require("@/redux/hooks");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../utils/styles");
+var styles_1 = require("@/components/utils/styles");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var AddAuto_1 = require("./AddAuto");
 var react_fontawesome_1 = require("@fortawesome/react-fontawesome");
@@ -97,42 +97,32 @@ var Index = function (_a) {
     var deleteSingleModal = function (id) { var _a; return showModal({ title: 'Deletar UT', onConfirm: function () { deleteUt(id); }, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: "Tem Certeza que deseja excluir a UT " + ((_a = utById(id)) === null || _a === void 0 ? void 0 : _a.numero_ut) + " ?" }); };
     var deleteMultModal = function () { return showModal({ type: 'delete.ut', title: 'Deletar UTs', onConfirm: deleteUts, styleButton: styles_1.styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir as UT selecionadas' }); };
     var loadUpas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var data;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/upa/search/q?descricao=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (upa) { return ({
-                        value: upa.id,
-                        label: upa.descricao
-                    }); }));
-                    return [2 /*return*/];
-            }
+            data = upas.filter(function (upa) { return upa === null || upa === void 0 ? void 0 : upa.descricao.toLowerCase().includes(inputValue.toLowerCase()); });
+            callback(data === null || data === void 0 ? void 0 : data.map(function (upa) { return ({
+                value: upa.id,
+                label: upa.descricao
+            }); }));
+            return [2 /*return*/];
         });
     }); };
     var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var data;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/umf/search/q?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
-                        value: umf.id,
-                        label: umf.nome
-                    }); }));
-                    return [2 /*return*/];
-            }
+            data = umfs.filter(function (umf) { return umf === null || umf === void 0 ? void 0 : umf.nome.toLowerCase().includes(inputValue.toLowerCase()); });
+            callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
+                value: umf.id,
+                label: umf.nome
+            }); }));
+            return [2 /*return*/];
         });
     }); };
     var defaultUmfsOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, umfs, compareUmf;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/umf/find-by-projeto/" + (projeto === null || projeto === void 0 ? void 0 : projeto.id) + "?orderBy=nome&order=asc")];
+                case 0: return [4 /*yield*/, client.get("/umf?orderBy=nome&order=asc")];
                 case 1:
                     response = _a.sent();
                     umfs = response.data.umfs;
@@ -153,7 +143,7 @@ var Index = function (_a) {
                     return [2 /*return*/];
             }
         });
-    }); }, [client, projeto === null || projeto === void 0 ? void 0 : projeto.id, umf.id, umf === null || umf === void 0 ? void 0 : umf.nome]);
+    }); }, [client, umf.id, umf === null || umf === void 0 ? void 0 : umf.nome]);
     var defaultUpasOptions = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
         var response, upas, compareUpa;
         return __generator(this, function (_a) {
@@ -357,19 +347,19 @@ var Index = function (_a) {
         });
     }); };
     return (React.createElement("div", null,
-        React.createElement("div", { className: "flex flex-row items-center bg-gradient-to-r from-green-600 to-green-400  border-b-2 border-green-600 justify-between p-6 bg-gray-100" },
-            React.createElement("h1", { className: "font-medium text-2xl font-roboto text-white" }, "Unidades de Trabalho"),
-            (upa === null || upa === void 0 ? void 0 : upa.tipo) === 0 && (React.createElement("div", { onClick: addAutomatico, className: "px-4 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" },
+        React.createElement("div", { className: "flex flex-row items-center justify-between p-6" },
+            React.createElement("h1", { className: "text-custom-green text-2xl font-bold" }, "Unidades de Trabalho"),
+            (upa === null || upa === void 0 ? void 0 : upa.tipo) === 0 && (React.createElement("div", { onClick: addAutomatico, className: "px-4 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer" },
                 React.createElement("div", { className: "flex flex-row justify-around w-full space-x-2" },
                     React.createElement("div", null,
                         React.createElement(react_fontawesome_1.FontAwesomeIcon, { icon: free_solid_svg_icons_1.faPlus })),
                     React.createElement("span", null, "Add Auto")))),
-            React.createElement(Link_1.Link, { href: '/ut/add', className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer" }, "Adicionar")),
+            React.createElement(Link_1.Link, { href: '/ut/add', className: "px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer" }, "Adicionar")),
         loading ? (React.createElement("div", { className: "flex flex-row items-center justify-center h-56" }, "Loading...")) : (React.createElement("div", { className: "flex flex-col p-6" },
-            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg" },
+            React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg" },
                 React.createElement("div", { className: "flex flex-col px-4 w-auto" },
                     React.createElement("div", { className: "w-full" },
-                        React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400" }, "por P\u00E1gina")),
+                        React.createElement("label", { htmlFor: "perPage", className: "px-1 block mb-2 text-sm font-medium text-white dark:text-gray-400" }, "por P\u00E1gina")),
                     React.createElement("select", { value: perPage, onChange: function (evt) { return changeItemsPerPage(evt.target.value); }, id: "perPage", className: "w-20 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" },
                         React.createElement("option", { value: "10" }, "10"),
                         React.createElement("option", { value: "20" }, "20"),
@@ -377,16 +367,16 @@ var Index = function (_a) {
                         React.createElement("option", { value: "100" }, "100"))),
                 React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4 w-full px-4" },
                     React.createElement("div", null,
-                        React.createElement(Select_1.Select, { initialData: {
+                        React.createElement(Select_1.Select, { styleLabel: "text-white", initialData: {
                                 label: 'Selecione UMF...',
                                 value: ''
                             }, selectedValue: selectedUmf, defaultOptions: getUmfsDefaultOptions(), options: loadUmfs, label: "UMF:", callback: selectUmf })),
                     React.createElement("div", null,
-                        React.createElement(Select_1.Select, { initialData: {
+                        React.createElement(Select_1.Select, { styleLabel: "text-white", initialData: {
                                 label: 'Selecione UPA...',
                                 value: ''
                             }, selectedValue: selectedUpa, defaultOptions: getUpasDefaultOptions(), options: loadUpas, label: "UPA:", callback: function (e) { selectUpa(e); } }))),
-                React.createElement("div", { className: "w-full px-4" },
+                React.createElement("div", { className: "w-full px-4 text-white" },
                     React.createElement("label", { htmlFor: "procurar_ut" }, "Pesquisar UT:"),
                     React.createElement(input_1.Input, { label: "Pesquisar UT", id: "search", name: "search", value: searchInput, onChange: handleSearch, className: 'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50' }))),
             React.createElement("div", { className: "flex flex-row items-center justify-between overflow-x-auto mt-2" },
@@ -394,21 +384,21 @@ var Index = function (_a) {
                     checkedUts.length > 0 && (React.createElement("div", { className: "py-4" },
                         React.createElement("button", { className: "px-4 py-2 bg-red-600 text-white rounded-md", onClick: deleteMultModal }, "Deletar"))),
                     React.createElement("table", { className: "min-w-full divide-y divide-gray-200" },
-                        React.createElement("thead", { className: "bg-gray-50" },
+                        React.createElement("thead", { className: "bg-gray-normal" },
                             React.createElement("tr", null,
                                 React.createElement("th", { className: "w-1/12" },
                                     React.createElement("div", { className: "flex justify-center" },
                                         React.createElement("input", { checked: (checkedUts === null || checkedUts === void 0 ? void 0 : checkedUts.length) === (currentUts === null || currentUts === void 0 ? void 0 : currentUts.length), onChange: handleSelectAllUts, className: "form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer", type: "checkbox", value: "", id: "flexCheckDefault" }))),
                                 React.createElement("th", { className: "w-1/12", onClick: function (e) { return sortUts(); } },
-                                    React.createElement("div", { className: "flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" },
+                                    React.createElement("div", { className: "flex flex-row items-center px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider cursor-pointer" },
                                         "N\u00FAmero UT",
                                         sorted
                                             ? (React.createElement(solid_1.ChevronUpIcon, { className: "w-5 h-5" }))
                                             : (React.createElement(solid_1.ChevronDownIcon, { className: "w-5 h-5" })))),
                                 (upa === null || upa === void 0 ? void 0 : upa.tipo) === 1 && (React.createElement(React.Fragment, null,
-                                    React.createElement("th", { scope: "col", className: "w-2/12 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "Coordenadas"))),
-                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "\u00C1rea \u00DAtil"),
-                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" }, "\u00C1rea Total"),
+                                    React.createElement("th", { scope: "col", className: "w-2/12 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider" }, "Coordenadas"))),
+                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider" }, "\u00C1rea \u00DAtil"),
+                                React.createElement("th", { scope: "col", className: "w-3/12 px-3 py-3 text-left text-xs font-bold text-gray-dark uppercase tracking-wider" }, "\u00C1rea Total"),
                                 React.createElement("th", { scope: "col", className: "relative w-1/12 px-6 py-3" },
                                     React.createElement("span", { className: "sr-only" }, "Edit")))),
                         React.createElement("tbody", { className: "bg-white divide-y divide-gray-200" }, filteredUts === null || filteredUts === void 0 ? void 0 : filteredUts.map(function (ut) { return (React.createElement("tr", { key: ut.id },

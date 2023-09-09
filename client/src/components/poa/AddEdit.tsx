@@ -117,18 +117,16 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
     }, [client])
 
     const loadUpasOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
-        const data = response.data
+        const data = upas.filter((upa: any) => upa?.descricao.toLowerCase().includes(inputValue.toLowerCase()))
         
-        callback(data?.map((upa: any) => ({
+        callback(upas?.map((upa: any) => ({
             value: upa.id,
             label: upa.descricao
         })))
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf/search/q?nome=${inputValue}`)
-        const data = response.data
+        const data = umfs.filter((umf: any) => umf?.nome.toLowerCase().includes(inputValue.toLowerCase()))
         
         callback(data?.map((umf: any) => ({
             value: umf.id,

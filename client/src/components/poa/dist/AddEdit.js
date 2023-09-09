@@ -55,53 +55,53 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-var Select_1 = require("../Select");
-var FormInput_1 = require("../formInput");
+var Select_1 = require("@/components/utils/Select");
+var FormInput_1 = require("@/components/utils/FormInput");
 var react_1 = require("react");
-var router_1 = require("next/router");
+var navigation_1 = require("next/navigation");
 var react_hook_form_1 = require("react-hook-form");
 var alert_1 = require("@/services/alert");
 var AuthContext_1 = require("@/context/AuthContext");
 var react_2 = require("next-auth/react");
-var LinkBack_1 = require("../LinkBack");
-var Link_1 = require("../Link");
+var LinkBack_1 = require("@/components/utils/LinkBack");
+var Link_1 = require("@/components/utils/Link");
 var hooks_1 = require("@/redux/hooks");
 var poaSlice_1 = require("@/redux/features/poaSlice");
 var ProjetoContext_1 = require("@/context/ProjetoContext");
 var ModalContext_1 = require("@/context/ModalContext");
-var styles_1 = require("../utils/styles");
-var navigation_1 = require("next/navigation");
+var styles_1 = require("@/components/utils/styles");
 var CriterioPoa_1 = require("../categoria-especie/CriterioPoa");
 var AddResponsavel_1 = require("../responsavel/AddResponsavel");
-var AddEdit = function () {
-    var params = navigation_1.useParams();
-    var id = params === null || params === void 0 ? void 0 : params.id;
-    var _a = react_hook_form_1.useForm(), register = _a.register, handleSubmit = _a.handleSubmit, errors = _a.formState.errors, setValue = _a.setValue;
-    var _b = react_1.useState(), resp_elab = _b[0], setRespElab = _b[1];
-    var _c = react_1.useState(), resp_exec = _c[0], setRespExec = _c[1];
-    var _d = react_1.useState(), respElabs = _d[0], setRespElabs = _d[1];
-    var _e = react_1.useState(), respExecs = _e[0], setRespExecs = _e[1];
-    var _f = react_1.useState(false), includeCategories = _f[0], setIncludeCategories = _f[1];
+var solid_1 = require("@heroicons/react/24/solid");
+var AddEdit = function (_a) {
+    var params = _a.params;
+    var id = params.id;
+    var _b = react_hook_form_1.useForm(), register = _b.register, handleSubmit = _b.handleSubmit, errors = _b.formState.errors, setValue = _b.setValue;
+    var _c = react_1.useState(), resp_elab = _c[0], setRespElab = _c[1];
+    var _d = react_1.useState(), resp_exec = _d[0], setRespExec = _d[1];
+    var _e = react_1.useState(), respElabs = _e[0], setRespElabs = _e[1];
+    var _f = react_1.useState(), respExecs = _f[0], setRespExecs = _f[1];
+    var _g = react_1.useState(false), includeCategories = _g[0], setIncludeCategories = _g[1];
     var client = react_1.useContext(AuthContext_1.AuthContext).client;
     var dispatch = hooks_1.useAppDispatch();
     var session = react_2.useSession().data;
-    var router = router_1.useRouter();
+    var router = navigation_1.useRouter();
     var isAddMode = !id;
     var showModal = ModalContext_1.useModalContext().showModal;
-    var _g = react_1.useState(), umfs = _g[0], setUmfs = _g[1];
-    var _h = react_1.useState(), upas = _h[0], setUpas = _h[1];
-    var _j = react_1.useState(), uts = _j[0], setUts = _j[1];
-    var _k = react_1.useState(), categorias = _k[0], setCategorias = _k[1];
+    var _h = react_1.useState(), umfs = _h[0], setUmfs = _h[1];
+    var _j = react_1.useState(), upas = _j[0], setUpas = _j[1];
+    var _k = react_1.useState(), uts = _k[0], setUts = _k[1];
+    var _l = react_1.useState(), categorias = _l[0], setCategorias = _l[1];
     var umf = hooks_1.useAppSelector(function (state) { return state.umf; });
     var upa = hooks_1.useAppSelector(function (state) { return state.upa; });
-    var _l = react_1.useState(), selectedUmf = _l[0], setSelectedUmf = _l[1];
-    var _m = react_1.useState(), selectedUpa = _m[0], setSelectedUpa = _m[1];
-    var _o = react_1.useState([]), checkedUts = _o[0], setCheckedUts = _o[1];
-    var _p = react_1.useState([]), checkedCategorias = _p[0], setCheckedCategorias = _p[1];
+    var _m = react_1.useState(), selectedUmf = _m[0], setSelectedUmf = _m[1];
+    var _o = react_1.useState(), selectedUpa = _o[0], setSelectedUpa = _o[1];
+    var _p = react_1.useState([]), checkedUts = _p[0], setCheckedUts = _p[1];
+    var _q = react_1.useState([]), checkedCategorias = _q[0], setCheckedCategorias = _q[1];
     var projeto = react_1.useContext(ProjetoContext_1.ProjetoContext).projeto;
-    var _q = react_1.useState(), poas = _q[0], setPoas = _q[1];
+    var _r = react_1.useState(), poas = _r[0], setPoas = _r[1];
     var poa = hooks_1.useAppSelector(function (state) { return state.poa; });
-    var _r = react_1.useState(), selectedPoa = _r[0], setSelectedPoa = _r[1];
+    var _s = react_1.useState(), selectedPoa = _s[0], setSelectedPoa = _s[1];
     var loadPoas = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
         var response, data;
         return __generator(this, function (_a) {
@@ -140,7 +140,7 @@ var AddEdit = function () {
                 case 1:
                     response = _a.sent();
                     categorias = response.data.categorias;
-                    setCategorias(categorias);
+                    setCategorias(categorias.filter(function (categoria) { return categoria.nome !== 'Não definida'; }));
                     return [2 /*return*/];
             }
         });
@@ -185,35 +185,25 @@ var AddEdit = function () {
         });
     }); }, [client]);
     var loadUpasOptions = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var data;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/upa/search/q?descricao=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (upa) { return ({
-                        value: upa.id,
-                        label: upa.descricao
-                    }); }));
-                    return [2 /*return*/];
-            }
+            data = upas.filter(function (upa) { return upa === null || upa === void 0 ? void 0 : upa.descricao.toLowerCase().includes(inputValue.toLowerCase()); });
+            callback(upas === null || upas === void 0 ? void 0 : upas.map(function (upa) { return ({
+                value: upa.id,
+                label: upa.descricao
+            }); }));
+            return [2 /*return*/];
         });
     }); };
     var loadUmfs = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
-        var response, data;
+        var data;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, client.get("/umf/search/q?nome=" + inputValue)];
-                case 1:
-                    response = _a.sent();
-                    data = response.data;
-                    callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
-                        value: umf.id,
-                        label: umf.nome
-                    }); }));
-                    return [2 /*return*/];
-            }
+            data = umfs.filter(function (umf) { return umf === null || umf === void 0 ? void 0 : umf.nome.toLowerCase().includes(inputValue.toLowerCase()); });
+            callback(data === null || data === void 0 ? void 0 : data.map(function (umf) { return ({
+                value: umf.id,
+                label: umf.nome
+            }); }));
+            return [2 /*return*/];
         });
     }); };
     var loadData = react_1.useCallback(function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -224,6 +214,7 @@ var AddEdit = function () {
                 case 0: return [4 /*yield*/, client.get("/poa/" + id)];
                 case 1:
                     poa = (_l.sent()).data;
+                    console.log(poa);
                     if (!isAddMode && typeof session !== typeof undefined) {
                         setRespElab({
                             label: (_e = (_d = (_c = poa.resp_elab) === null || _c === void 0 ? void 0 : _c.pessoa) === null || _d === void 0 ? void 0 : _d.pessoaFisica) === null || _e === void 0 ? void 0 : _e.nome,
@@ -264,8 +255,8 @@ var AddEdit = function () {
                 case 2:
                     response = _l.sent();
                     uts = response.data.uts;
-                    utsUncheked = uts.filter(function (ut) { return ut.id_poa === null; });
-                    filteredUts = uts.filter(function (ut) {
+                    utsUncheked = uts === null || uts === void 0 ? void 0 : uts.filter(function (ut) { return ut.id_poa === null; });
+                    filteredUts = uts === null || uts === void 0 ? void 0 : uts.filter(function (ut) {
                         var _a, _b;
                         if (((_a = poa.ut) === null || _a === void 0 ? void 0 : _a.length) > 0) {
                             return (_b = poa.ut) === null || _b === void 0 ? void 0 : _b.map(function (u) { return u.id; }).includes(ut.id);
@@ -461,13 +452,40 @@ var AddEdit = function () {
             value: data === null || data === void 0 ? void 0 : data.id
         });
     };
-    var addResponsavel = function () {
+    var addRespElab = function () {
         showModal({
             title: 'Novo Responsável Técnico',
             size: 'max-w-4xl',
             type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
             content: React.createElement("div", null,
                 React.createElement(AddResponsavel_1["default"], { responseData: responseTecElab }))
+        });
+    };
+    var updateRespElab = function () {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement("div", null,
+                React.createElement(AddResponsavel_1["default"], { id: resp_elab === null || resp_elab === void 0 ? void 0 : resp_elab.value, responseData: responseTecElab }))
+        });
+    };
+    var addRespExec = function () {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement("div", null,
+                React.createElement(AddResponsavel_1["default"], { responseData: responseTecExec }))
+        });
+    };
+    var updateRespExec = function () {
+        showModal({
+            title: 'Novo Responsável Técnico',
+            size: 'max-w-4xl',
+            type: 'submit', hookForm: 'hook-form', styleButton: styles_1.styles.greenButton, confirmBtn: 'Salvar',
+            content: React.createElement("div", null,
+                React.createElement(AddResponsavel_1["default"], { id: resp_exec === null || resp_exec === void 0 ? void 0 : resp_exec.value, responseData: responseTecExec }))
         });
     };
     var loadRespElab = function (inputValue, callback) { return __awaiter(void 0, void 0, void 0, function () {
@@ -657,8 +675,8 @@ var AddEdit = function () {
                     React.createElement("div", null)),
                 React.createElement("div", { className: "relative p-8 bg-white shadow-sm sm:rounded-b-xl border-x-2 border-b-2 border-green-600" },
                     React.createElement("form", { onSubmit: handleSubmit(onSubmit) },
-                        React.createElement("div", { className: 'grid grid-cols-1 md:grid-cols-6 md:flex-row gap-4' },
-                            React.createElement("div", { className: 'col-span-6 md:col-span-3' },
+                        React.createElement("div", { className: 'grid grid-cols-2 md:grid-cols-6 gap-4' },
+                            React.createElement("div", { className: 'col-span-5 md:col-span-3' },
                                 React.createElement(FormInput_1.FormInput, { name: "descricao", label: "Descricao", register: register, errors: errors, rules: {
                                         required: 'O campo nome é obrigatório',
                                         minLength: {
@@ -666,20 +684,34 @@ var AddEdit = function () {
                                             message: 'Por favor, preencha o campo com no mínimo 3 caracteres'
                                         }
                                     }, id: "descricao" })),
-                            React.createElement("div", { className: 'col-span-2' },
-                                React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors })),
                             React.createElement("div", { className: 'col-span-1' },
+                                React.createElement(FormInput_1.FormInput, { id: "pmfs", name: "pmfs", label: "Protocolo PMFS", type: "text", register: register, errors: errors })),
+                            React.createElement("div", { className: 'col-span-5 md:col-span-1' },
+                                React.createElement(FormInput_1.FormInput, { id: "protocolo_poa", name: "protocolo_poa", label: "Protocolo POA", type: "text", register: register, errors: errors })),
+                            React.createElement("div", null,
                                 React.createElement(FormInput_1.FormInput, { id: "corte_maximo", name: "corte_maximo", label: "Corte M\u00E1ximo", type: "text", register: register, errors: errors })),
                             React.createElement("div", { className: "border border-gray-200 p-4 rounded-md col-span-6 relative w-full" },
                                 React.createElement("span", { className: "text-gray-700 absolute -top-3 bg-white px-2 text-sm" }, "Respons\u00E1veis T\u00E9cnicos"),
-                                React.createElement("div", { className: 'flex flex-col md:flex-row space-x-2 items-center w-full justify-around' },
-                                    React.createElement("div", { className: "flex flex-row items-center" },
-                                        React.createElement("div", { className: 'w-[21rem] md:w-[15rem] lg:w-[18rem]' },
-                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_elab, defaultOptions: getRespTecElabOptions(), options: loadRespElab, label: "pela Elabora\u00E7\u00E3o", callback: selectedRespTecElab }))),
-                                    React.createElement("div", { className: "flex flex-row items-center" },
-                                        React.createElement("div", { className: 'w-[21rem] md:w-[15rem] lg:w-[18rem]' },
-                                            React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_exec, defaultOptions: getRespTecExecOptions(), options: loadRespExec, label: "pela Execu\u00E7\u00E3o", callback: selectedRespTecExec }))),
-                                    React.createElement("span", { id: 'btn-resp', onClick: addResponsavel, className: "px-6 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center w-full  lg:w-1/5" }, "Novo Respons\u00E1vel")))),
+                                React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 bg-gray-100 px-4 py-2" },
+                                    React.createElement("div", { className: 'md:mt-[6px]' },
+                                        React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_elab, defaultOptions: getRespTecElabOptions(), options: loadRespElab, label: "Elabora\u00E7\u00E3o", callback: selectedRespTecElab })),
+                                    React.createElement("div", { className: 'mb-[6px] md:px-4 w-48' },
+                                        React.createElement(FormInput_1.FormInput, { id: "num_art_resp_elab", name: "num_art_resp_elab", label: "N\u00FAmero ART", type: "text", register: register, errors: errors })),
+                                    React.createElement("div", { className: 'flex flex-row items-center space-x-2' },
+                                        React.createElement("span", { onClick: addRespElab, className: "text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full" },
+                                            React.createElement(solid_1.PlusSmallIcon, { className: 'w-8 h-8' })),
+                                        resp_elab && (React.createElement("span", { onClick: updateRespElab, className: "px-2 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full" },
+                                            React.createElement(solid_1.PencilIcon, { className: 'w-4 h-4' }))))),
+                                React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 bg-gray-100 px-4 py-2" },
+                                    React.createElement("div", { className: 'md:mt-[6px]' },
+                                        React.createElement(Select_1.Select, { placeholder: 'CPF ou iniciais do nome', selectedValue: resp_exec, defaultOptions: getRespTecExecOptions(), options: loadRespExec, label: "Execu\u00E7\u00E3o", callback: selectedRespTecExec })),
+                                    React.createElement("div", { className: 'mb-[6px] md:px-4 w-48' },
+                                        React.createElement(FormInput_1.FormInput, { id: "num_art_resp_exec", name: "num_art_resp_exec", label: "N\u00FAmero ART", type: "text", register: register, errors: errors })),
+                                    React.createElement("div", { className: 'flex flex-row items-center space-x-2' },
+                                        React.createElement("span", { onClick: addRespExec, className: "text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full" },
+                                            React.createElement(solid_1.PlusSmallIcon, { className: 'w-8 h-8' })),
+                                        resp_elab && (React.createElement("span", { onClick: updateRespExec, className: "px-2 py-2 text-white bg-green-700 hover:bg-green-800 hover:cursor-pointer items-center text-center rounded-full" },
+                                            React.createElement(solid_1.PencilIcon, { className: 'w-4 h-4' }))))))),
                         isAddMode && (React.createElement("div", { className: 'flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4' },
                             React.createElement("div", { className: 'grid border border-gray-200 rounded-lg p-4 w-full justify-around' },
                                 React.createElement("div", { className: "flex items-center" },
@@ -687,9 +719,9 @@ var AddEdit = function () {
                                     React.createElement("label", { htmlFor: "import-criterios", className: "ml-2 block text-sm text-gray-900" }, "Deseja importar crit\u00E9rios de outro POA?")),
                                 includeCategories && (React.createElement("div", null,
                                     React.createElement("div", { className: "flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2" },
-                                        React.createElement("div", { className: "lg:flex lg:flex-wrap lg:w-5/12 px-4" },
-                                            React.createElement("span", { className: "w-3/12 flex items-center" }, "POA: "),
-                                            React.createElement("div", { className: "w-9/12" },
+                                        React.createElement("div", { className: "lg:flex lg:flex-wrap px-4" },
+                                            React.createElement("span", { className: "flex items-center" }, "POA: "),
+                                            React.createElement("div", { className: "w-full" },
                                                 React.createElement(Select_1.Select, { placeholder: 'Selecione o POA...', selectedValue: selectedPoa, defaultOptions: getPoasDefaultOptions(), options: loadPoas, callback: selectPoa, initialData: {
                                                         label: 'Entre com as iniciais do POA ...', value: ''
                                                     } })))),
