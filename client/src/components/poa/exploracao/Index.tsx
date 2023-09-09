@@ -209,8 +209,8 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     </thead>
                     
                     <tbody className="bg-white divide-y divide-gray-300 w-full h-48 overflow-y-auto" style={{height: '50vh'}}>
-                        {data?.map((especie: any) => (
-                            <tr key={especie.id_especie}
+                        {data?.map((especie: any, idx: number) => (
+                            <tr key={idx}
                             >
                                 <td className="px-3 whitespace-nowrap">
                                     <div className="text-sm">{especie?.especie}</div>
@@ -300,17 +300,7 @@ const Exploracao = ({ ut, loadUts }:any) => {
                         <option value="3">3</option>
                     </select>
                 </div>
-                <div className='flex flex-row w-full items-center justify-center'>
-                    <button
-                        disabled={checkedArvores.length === 0}
-                        onClick={ajustarInventario}
-                        className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center",
-                            checkedArvores.length === 0 && "hover:cursor-not-allowed opacity-50"
-                        )}
-                    >
-                        Executar Operação
-                    </button>
-                </div>
+                
             </div>
             <div>
                 <ListArvore 
@@ -320,7 +310,18 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     planejar
                     callBack={callBack}
                 />
-            </div>            
+            </div>     
+            <div className='flex flex-row w-full items-center justify-center mt-2'>
+                    <button
+                        disabled={checkedArvores.length === 0}
+                        onClick={ajustarInventario}
+                        className={classNames("px-6 py-2 bg-green-700 hover:bg-green-800 hover:cursor-pointer text-white items-center text-center",
+                            checkedArvores.length === 0 && "hover:cursor-not-allowed opacity-50"
+                        )}
+                    >
+                        Executar Operação
+                    </button>
+                </div>       
         </div>
         { volumePreservado && (
             <div className='mt-2'>

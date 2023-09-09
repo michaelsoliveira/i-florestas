@@ -31,7 +31,7 @@ const Index = () => {
     }, [client, setUts])
 
     const loadCategorias = useCallback(async () => {
-        const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome`)
+        const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
         setCategorias(categorias)   
     }, [client, poa?.id, projeto?.id])
@@ -151,8 +151,8 @@ const Index = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-300">
-                                {uts?.map((ut: any) => (
-                                    <tr key={ut.numero_ut}
+                                {uts?.map((ut: any, idx: number) => (
+                                    <tr key={idx}
                                     >
                                         <td className="w-full py-2 whitespace-nowrap text-sm flex flex-row items-center justify-center">
                                         <button onClick={() => ajusteExploracao(ut?.id_ut)}>

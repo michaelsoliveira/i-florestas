@@ -293,7 +293,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
-                <div className="flex flex-col p-6">
+                <div className="flex flex-col px-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
                         <div className="flex flex-col px-4 w-auto">
                             <div className="w-full">

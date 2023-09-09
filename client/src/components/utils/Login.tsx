@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 function Login() {
   const { hideModal } = useModalContext()
     const router = useRouter();
-    const callback = useSearchParams().get('callbackUrl')
+    const callbackUrl = useSearchParams().get('callbackUrl') as any
     // const callbackUrl = callback ?? "/"
 
     // form validation rules 
@@ -50,12 +50,12 @@ function Login() {
             redirect: false,
             email,
             password,
-            // callbackUrl,
+            // callbackUrl
           }).then((res: any) => {
             if (res?.error === null) {
               alertService.success('Login realizado com sucesso')
               hideModal()
-              // router.push('/')
+              // callbackUrl && router.push(callbackUrl)
             } else {
               alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
             }

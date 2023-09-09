@@ -104,7 +104,7 @@ const ListArvore = ({
     }, [arvoreById, showModal, deleteArvore])
 
     return (
-        <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
+        <div className="flex flex-row items-center justify-between overflow-x-auto mt-2 pb-4">
             <div className={classNames(
                 "shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg",
                 planejar && 'h-64'
@@ -125,8 +125,8 @@ const ListArvore = ({
                     )}>
                     <tr>
                         
-                        <th>
-                            <div className="flex justify-center">
+                    <th className="w-20 pl-4 md:pl-0">
+                        <div className="flex flex-row items-center justify-center">
                             <input  
                                 checked={checkedArvores?.length === currentArvores?.length}
                                 onChange={handleSelectAllArvore}                
@@ -134,20 +134,22 @@ const ListArvore = ({
                             />
                             </div>
                         </th>
-                       
-                    <th
-                        scope="col"
-                        className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
-                        onClick={() => sortArvores('ut.numero_ut')}
-                    >
-                        <div className="flex flex-row w-full justify-between">
-                            UT
-                            {sorted
-                                ? (<ChevronUpIcon className="w-5 h-5" />)
-                                : (<ChevronDownIcon className="w-5 h-5" />)
-                            }
-                        </div>   
-                    </th>
+                    { !planejar && (
+                        <th
+                            scope="col"
+                            className="items-center w-auto px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
+                            onClick={() => sortArvores('ut.numero_ut')}
+                        >
+                            <div className="flex flex-row w-full justify-between">
+                                UT
+                                {sorted
+                                    ? (<ChevronUpIcon className="w-5 h-5" />)
+                                    : (<ChevronDownIcon className="w-5 h-5" />)
+                                }
+                            </div>   
+                        </th>
+                    ) }   
+                    
                     <th
                         scope="col"
                         className="px-3 py-3 text-left text-xs font-bold text-gray-500 cursor-pointer"
@@ -312,7 +314,7 @@ const ListArvore = ({
                     {currentArvores?.map((arvore: any, idx: number) => (
                         <tr key={arvore.id}
                         className={classNames(isEven(idx) ? "bg-gray-light/25" : "bg-white")}>
-                        <td className="flex justify-center">
+                        <td className="flex flex-row items-center justify-end md:justify-center">
                         <input                 
                                 value={arvore?.id}
                                 checked={checkedArvores.includes(arvore?.id)}
@@ -322,15 +324,18 @@ const ListArvore = ({
                                 className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                             />    
                         </td>
+                        {!planejar && (
+                            <td className="px-3 py-2 whitespace-nowrap">
+                                <div className="flex flex-col items-starter">
+                                    <div className="text-sm font-medium text-gray-900">{arvore?.ut?.numero_ut}</div>
+                                </div>
+                            </td>
+                        )}
+                        
                         <td className="px-3 py-2 whitespace-nowrap">
                             <div className="flex flex-col items-starter">
-                                <div className="text-sm font-medium text-gray-900">{arvore?.ut?.numero_ut}</div>
+                                <div className="text-sm font-medium text-gray-900">{arvore?.numero_arvore}</div>
                             </div>
-                        </td>
-                        <td className="px-3 py-2 whitespace-nowrap">
-                        <div className="flex flex-col items-starter">
-                            <div className="text-sm font-medium text-gray-900">{arvore?.numero_arvore}</div>
-                        </div>
                         </td>                        
                         <td className="px-3 py-2 whitespace-nowrap">
                             <span className="text-sm font-medium text-gray-900">

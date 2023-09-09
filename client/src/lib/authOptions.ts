@@ -235,7 +235,7 @@ export const authOptions: NextAuthOptions = {
     // pages is not specified for that route.
     // https://next-auth.js.org/configuration/pages
     pages: {
-      signIn: '/login?csrf=true',
+      signIn: '/login',
       // signOut: '/auth/signout', // Displays form with sign out button
       // error: '/auth/login', // Error code passed in query string as ?error=
       // verifyRequest: '/auth/verify-request', // Used for check email page
@@ -249,7 +249,15 @@ export const authOptions: NextAuthOptions = {
       // async signIn({ user, account, profile, email, credentials }) {
       //   return true
       // },
-      // async redirect({ url, baseUrl }) { return baseUrl },
+
+        // async redirect({ url, baseUrl }) {
+        //   // Allows relative callback URLs
+        //   if (url.startsWith("/")) return `${baseUrl}${url}`
+        //   // Allows callback URLs on the same origin
+        //   else if (new URL(url).origin === baseUrl) return url
+        //   return baseUrl
+        // },
+      
       async jwt({ token, account, user }: any) {    
         
         if (user?.local) {

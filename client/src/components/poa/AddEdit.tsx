@@ -136,7 +136,7 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
 
     const loadData = useCallback(async () => {
         const { data: poa } = await client.get(`/poa/${id}`)
-        console.log(poa)
+
         if (!isAddMode && typeof session !== typeof undefined) {
 
             setRespElab({
@@ -192,8 +192,8 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
     }, [client, poa.id, projeto?.id])
 
     const defaultUmfsOptions = useCallback(async() => {
-        const response = await client.get(`/umf/find-by-projeto/${projeto?.id}?orderBy=nome&order=asc`)
-        
+        const response = await client.get(`/umf?orderBy=nome&order=asc`)
+
             const { umfs } = response.data
             setUmfs(umfs)
 
