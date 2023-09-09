@@ -15,18 +15,18 @@ import { LinkBack } from '../utils/LinkBack'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 
-const AddEdit = ({ umf }: {  umf: Umf }) => {
+const AddEdit = ({ id }: {  id: string }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm()
     const [estado, setEstado] = useState<OptionType>()
     const { client } = useContext(AuthContext)
     const router = useRouter()
-    const isAddMode = !umf.id
+    const isAddMode = !id
     const dispatch = useAppDispatch()
 
     useEffect(() => {     
         async function loadUmf() {
             if (!isAddMode) {
-                // const { data } = await client.get(`/umf/${id}`)
+                const { data: umf } = await client.get(`/umf/${id}`)
                 setEstado({
                     label: umf?.estado?.nome,
                     value: umf?.estado?.id
@@ -47,7 +47,7 @@ const AddEdit = ({ umf }: {  umf: Umf }) => {
         
         loadUmf()
 
-    }, [isAddMode, client, setValue, setEstado, umf.id])
+    }, [isAddMode, client, setValue, setEstado, id])
 
     const selectedEstado = (data: any) => {
         setEstado(data)
@@ -58,7 +58,7 @@ const AddEdit = ({ umf }: {  umf: Umf }) => {
         try {
             return isAddMode
                 ? createUmf(data)
-                : updateUmf(umf.id, data)
+                : updateUmf(id, data)
         } catch (error: any) {
             alertService.error(error.message);
         }
