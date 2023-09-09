@@ -154,8 +154,7 @@ const Index = () => {
     const router = useRouter()
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/upa/search/q?descricao=${inputValue}`)
-        const data = response.data
+        const data = upas.filter((upa: any) => upa?.descricao.includes(inputValue) || upa?.descricao.toLowerCase().includes(inputValue))
         
         callback(data?.map((upa: any) => ({
             value: upa.id,
@@ -164,8 +163,7 @@ const Index = () => {
     }
 
     const loadUts = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/ut/search/q?numero_ut=${inputValue}`)
-        const data = response.data
+        const data = uts.filter((ut: any) => ut?.numero_ut.toString().includes(inputValue))
         
         callback(data?.map((ut: any) => ({
             value: ut.id,
@@ -174,8 +172,7 @@ const Index = () => {
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf?search=${inputValue}`)
-        const data = response.data
+        const data = umfs.filter((umf: any) => umf?.nome.includes(inputValue) || umf?.nome.toLowerCase().includes(inputValue))
         
         callback(data?.map((umf: any) => ({
             value: umf.id,

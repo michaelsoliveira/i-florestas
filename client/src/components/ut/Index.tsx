@@ -61,10 +61,10 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf?search=${inputValue}`)
-        const data = response.data
+        const { data } = await client.get(`/umf?search=${inputValue}`)
+        const { umfs } = data
         
-        callback(data?.map((umf: any) => ({
+        callback(umfs?.map((umf: any) => ({
             value: umf.id,
             label: umf.nome
         })))
@@ -91,7 +91,7 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
                     label: 'Nenhuma UMF Cadastrada'
                 })
             } 
-    }, [client, projeto?.id, umf.id, umf?.nome])
+    }, [client, umf.id, umf?.nome])
 
     const defaultUpasOptions = useCallback(async () => {
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)

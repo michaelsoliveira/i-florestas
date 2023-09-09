@@ -40,10 +40,10 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
     
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/umf?search=${inputValue}`)
-        const data = response.data
+        const { data } = await client.get(`/umf?search=${inputValue}`)
+        const { umfs } = data
         
-        callback(data?.map((umf: any) => ({
+        callback(umfs?.map((umf: any) => ({
             value: umf.id,
             label: umf.nome
         })))
