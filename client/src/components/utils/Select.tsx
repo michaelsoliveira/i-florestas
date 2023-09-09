@@ -53,10 +53,10 @@ export const Select = ({ label, callback, options, defaultOptions, placeholder, 
                 // borderRadius: 0,
                 colors: {
                     ...theme.colors,
-                    primary: 'rgb(21 128 61)',
-                    primary75: 'rgb(22 163 74)',
-                    primary50: 'rgb(21 128 61)',
-                    primary25: 'rgb(229 231 235)',
+                    primary: 'rgb(83 114 53)', //rgb(67 83 5)
+                    primary75: 'rgb(109 128 58)',
+                    primary50: 'rgb(158 179 132)',
+                    primary25: 'rgb(206 222 189)',
                     },
                 })
             }

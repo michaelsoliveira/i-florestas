@@ -130,6 +130,8 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         const { upas } = response.data
         
         setUpas(upas)
+
+        if (upas.length === 0) setFilteredUts([])   
     }
 
     const selectUpa = async (upa: any) => {

@@ -150,7 +150,7 @@ const AddEdit = ({ id }: {  id: string }) => {
                             
                         </div>  
                         <div className='flex flex-col md:flex-row space-x-0 md:space-x-4'>
-                            <div className='w-8/12'>
+                            <div className='md:w-8/12'>
                                     <FormInput
                                         id="municipio"
                                         name="municipio"
@@ -161,7 +161,7 @@ const AddEdit = ({ id }: {  id: string }) => {
                                         className="pb-4"
                                     />
                                 </div>
-                                <div className='w-4/12 pt-1'>
+                                <div className='md:w-4/12 mt-1'>
                                     <SelectEstado value={estado?.value && estado} callback={selectedEstado} />
                                 </div>
                             </div>

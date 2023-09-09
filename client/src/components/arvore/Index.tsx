@@ -106,12 +106,13 @@ const Index = () => {
             totalPages,
             orderBy,
             order,
-            search
+            search,
+            utId
         } = paginatedData
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`)
 
             paginatedData = {
                 name,
@@ -154,7 +155,7 @@ const Index = () => {
     const router = useRouter()
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = upas.filter((upa: any) => upa?.descricao.includes(inputValue) || upa?.descricao.toLowerCase().includes(inputValue))
+        const data = upas.filter((upa: any) => upa?.descricao.toLowerCase().includes(inputValue.toLowerCase()))
         
         callback(data?.map((upa: any) => ({
             value: upa.id,
@@ -172,7 +173,7 @@ const Index = () => {
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = umfs.filter((umf: any) => umf?.nome.includes(inputValue) || umf?.nome.toLowerCase().includes(inputValue))
+        const data = umfs.filter((umf: any) => umf?.nome.toLowerCase().includes(inputValue.toLowerCase()))
         
         callback(data?.map((umf: any) => ({
             value: umf.id,
@@ -260,6 +261,8 @@ const Index = () => {
         const { upas } = response.data
         
         setUpas(upas)
+
+        if (upas.length === 0) setFilteredArvores([])   
     }
 
     const selectUpa = async (upa: any) => {
@@ -281,7 +284,6 @@ const Index = () => {
         }))
         
         setUts(uts)
-        
     }
 
     const selectUt = async (ut: any) => {
@@ -389,7 +391,7 @@ const Index = () => {
             <div className="flex flex-row items-center justify-between p-6 items-center">
                 <h1 className="font-medium text-2xl text-custom-green">Árvores</h1>
                 <div className="flex flex-row space-x-2">
-                    { filteredArvores.length > 0 && (
+                    { filteredArvores?.length > 0 && (
                         <div
                             onClick={exportCsv}
                             className="px-4 py-2 text-white bg-brown-normal hover:bg-brown-normal/50 rounded-md hover:cursor-pointer"
