@@ -140,6 +140,24 @@ export class PoaController {
         }
     }
 
+    async changeSituacao(request: Request, response: Response) : Promise<Response> {
+        const { poaId, situacao }: any = request.body
+        try {
+            const poa = await poaService.changeSituacao(situacao, poaId)
+            return response.json({
+                error: false,
+                poa,
+                message: 'Poa alterado com sucesso!'
+            })
+        } catch (error) {
+            return response.json({
+                error: true,
+                poa: null,
+                message: error.message
+            })
+        }
+    }
+
     async findAll(request: Request, response: Response) {
         try {
             const { data, perPage, page, orderBy, order, skip, count } = await poaService.getAll(request.user?.id, request.query)

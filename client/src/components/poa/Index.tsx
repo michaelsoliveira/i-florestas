@@ -35,7 +35,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
     }
 
     const deleteSingleModal = (id?: string) => showModal({ title: 'Deletar POA', onConfirm: () => { deletePoa(id) }, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja excluir o POA ${poaById(id)?.descricao} ?` })
-    const changeSituacaoPoaModal = (id?: string) => showModal({ title: 'Reabrir POA', onConfirm: () => { changeSituacaoPoa(id) }, styleButton: styles.greenButton, iconType: 'warn', confirmBtn: 'Deletar', content: `Tem Certeza que deseja reabrir o ${poaById(id)?.descricao} ?` })
+    const changeSituacaoPoaModal = (id?: string) => showModal({ title: 'Reabrir POA', onConfirm: () => { changeSituacaoPoa(id) }, styleButton: styles.greenButton, iconType: 'info', confirmBtn: 'Sim', content: `Tem Certeza que deseja reabrir o ${poaById(id)?.descricao} ?` })
     const deleteMultModal = () => showModal({ title: 'Deletar POAs', onConfirm: deletePoas, styleButton: styles.redButton, iconType: 'warn', confirmBtn: 'Deletar', content: 'Tem certeza que deseja excluir os POAs selecionados' })
     
 
@@ -70,7 +70,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                 const { umfs } = response.data
                 setUmfs(umfs)
         }
-
+        
         loadUmf()
         
         defaultOptions()
@@ -349,11 +349,11 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                                             <PencilIcon className="w-5 h-5 ml-4 -mr-1 text-green-600 hover:text-green-700" />
                                         </Link>
                                         {
-                                            poa?.situacao_poa?.nome.toLowerCase() === 'processado' 
+                                            poa?.situacao_poa?.nome.toLowerCase().includes('finalizado')
                                             && (
                                                 <>
                                                     <Link href="#" onClick={() => changeSituacaoPoaModal(poa.id)}>
-                                                        <ArrowUturnLeftIcon className="w-5 h-5 ml-4 -mr-1 text-gray-normal hover:text-red-700" />
+                                                        <ArrowUturnLeftIcon className="w-5 h-5 ml-4 -mr-1 text-custom-green hover:text-custom-green/50" />
                                                     </Link>
                                                 </>
                                             )

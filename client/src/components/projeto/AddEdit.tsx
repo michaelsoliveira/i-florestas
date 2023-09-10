@@ -66,7 +66,11 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
                         id: '',
                         descricao: 'Padrão',
                         data_ultimo_plan: new Date(),
-                        pmfs: ''
+                        pmfs: '',
+                        situacao_poa: {
+                            id: '',
+                            nome: ''
+                        }
                     }))
                 } else {
                     alertService.error(message)

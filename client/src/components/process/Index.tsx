@@ -23,7 +23,7 @@ const Index = () => {
     const { projeto } = useContext(ProjetoContext)
     const { setLoading } = useContext(LoadingContext)
     const [uts, setUts] = useState<any[]>([])
-    const { showModal } = useModalContext()
+    const { showModal, hideModal } = useModalContext()
 
     const loadUts = useCallback(async () => {
         const { data } = await client.get('/planejo/uts')
@@ -39,7 +39,26 @@ const Index = () => {
     useEffect(() => {
         loadUts()
         loadCategorias()
+        console.log(poa)
     }, [client, loadUts, loadCategorias])
+
+    async function changeSituacaoPoa(id?: string) {
+        try {
+            await client.post(`/poa/change-situacao`, {
+                poaId: id,
+                situacao: 'finalizado'
+            })
+                .then(() => {
+                    alertService.success('O POA foi finalizado com SUCESSO!!!')
+                    
+                    hideModal()
+                })
+        } catch (error) {
+            console.log(error)
+        }       
+    }
+
+    const changeSituacaoPoaModal = () => showModal({ title: 'Reabrir POA', onConfirm: () => { changeSituacaoPoa(poa?.id) }, styleButton: styles.greenButton, iconType: 'info', confirmBtn: 'Sim', content: `Tem Certeza que deseja Finalizar o ${poa?.descricao} ?` })
 
     async function PlanejarPOA(event: any): Promise<any> {
         setLoading(true)
@@ -89,16 +108,28 @@ const Index = () => {
                     )}
                     <div className="border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
-                        <div className='flex flex-col md:flex-row space-x-2 items-center w-full'>
+                        <div className='flex flex-col md:flex-row space-x-2 items-center justify-between w-full'>
                             <button
-                                disabled={!poa?.id}
+                                disabled={!poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
-                                className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md hover:cursor-pointer text-white items-center text-center w-1/2 lg:w-56",
-                                    !poa?.id && ("hover:cursor-not-allowed opacity-50")
+                                className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
+                                    !poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
                                 )}
                             >
                                 Planejar POA
+                            </button>
+                            <button
+                                disabled={!poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
+                                id='btn-resp'
+                                onClick={changeSituacaoPoaModal}
+                                className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
+                                    !poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
+                                )}
+                            >
+                                Finalizar
                             </button>
                         </div>
                     </div>

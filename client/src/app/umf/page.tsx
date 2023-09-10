@@ -124,4 +124,4 @@ const UmfIndex = () => {
     )
 }
 
-export default UmfIndex
+export default withAuthentication(UmfIndex)

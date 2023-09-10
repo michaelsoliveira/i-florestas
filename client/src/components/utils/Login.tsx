@@ -16,8 +16,7 @@ import { useEffect } from 'react';
 function Login() {
   const { hideModal } = useModalContext()
     const router = useRouter();
-    const callbackUrl = useSearchParams().get('callbackUrl') as any
-    // const callbackUrl = callback ?? "/"
+    const callbackUrl = useSearchParams().get('callbackUrl') || "/"
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
@@ -41,21 +40,21 @@ function Login() {
 
     useEffect(() => {
       setFocus('email')
-    }, [setFocus])
+    }, [setFocus, callbackUrl])
 
     async function onSubmit({ email, password }: any) {
       try {
 
           await signIn('credentials', {
-            redirect: false,
+            // redirect: false,
             email,
             password,
-            // callbackUrl
+            callbackUrl
           }).then((res: any) => {
-            if (res?.error === null) {
+            if (!res?.error) {
               alertService.success('Login realizado com sucesso')
               hideModal()
-              // callbackUrl && router.push(callbackUrl)
+              // router.push(callbackUrl)
             } else {
               alertService.warn('Email ou senha inválidos, verifique os dados e tente novamente!')
             }

@@ -495,7 +495,11 @@ class PoaService {
     async changeActive(poaAtivo: string, userId: string): Promise<Poa | null> {
         const user = await prismaClient.user.update({
             include: {
-                poa_ativo: true
+                poa_ativo: {
+                    include: {
+                        situacao_poa: true
+                    }
+                }
             },
             data: {
                 id_poa_ativo: poaAtivo ? poaAtivo : null
@@ -506,6 +510,32 @@ class PoaService {
         })
 
         return user.poa_ativo
+    }
+
+    async changeSituacao(data: string, poaId: string) {
+        const situacaoPoa = await prismaClient.situacaoPoa.findFirst({
+            where: {
+                nome: {
+                    mode: 'insensitive',
+                    contains: data.toLocaleLowerCase()
+                }
+            }
+        })
+
+        const poa = await prismaClient.poa.update({
+            data: {
+                situacao_poa: {
+                    connect: {
+                        id: situacaoPoa?.id
+                    }
+                }
+            },
+            where: {
+                id: poaId
+            }
+        })
+
+        return poa
     }
 
     async search(userId: string, q: any) : Promise<Poa[]> {
@@ -567,7 +597,11 @@ class PoaService {
     async getActive(id: string): Promise<any> {
         const user: any = await prismaClient.user.findUnique({
             include: {
-                poa_ativo: true
+                poa_ativo: {
+                    include: {
+                        situacao_poa: true
+                    }
+                }
             },
             where: { id }
         })

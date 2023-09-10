@@ -32,14 +32,18 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 const { poas, error, message } = response.data
                 
                 const { data: { poa } } = await client.get('/poa/active/get')
-                
+
                 if (poa) {
                     dispath(
                         setPoa({
                             id: poa?.id,
                             descricao: poa?.descricao,
                             data_ultimo_plan: poa?.data_ultimo_plan,
-                            pmfs: poa?.pmfs
+                            pmfs: poa?.pmfs,
+                            situacao_poa: {
+                                id: poa?.situacao_poa?.id,
+                                nome: poa?.situacao_poa?.nome
+                            }
                         })
                     )
                 } else {
@@ -48,7 +52,11 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                             id: '',
                             descricao: 'Padrão',
                             data_ultimo_plan: null,
-                            pmfs: ''
+                            pmfs: '',
+                            situacao_poa: {
+                                id: '',
+                                nome: ''
+                            }
                         })
                     )
                 }
@@ -115,14 +123,22 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     id: poa?.id,
                     descricao: poa?.descricao,
                     data_ultimo_plan: poa?.data_ultimo_plan,
-                    pmfs: poa?.pmfs
+                    pmfs: poa?.pmfs,
+                    situacao_poa: {
+                        id: poa?.situacao_poa?.id,
+                        nome: poa?.situacao_poa?.nome
+                    }
                 }))
             } else {
                 dispath(setPoa({
                     id: '',
                     descricao: 'Padrão',
                     data_ultimo_plan: null,
-                    pmfs: ''
+                    pmfs: '',
+                    situacao_poa: {
+                        id: '',
+                        nome: ''
+                    }
                 }))
             }
 

@@ -11,7 +11,11 @@ const initialState = {
     id: '',
     descricao: '',
     data_ultimo_plan: null,
-    pmfs: ''
+    pmfs: '',
+    situacao_poa: {
+      id: '',
+      nome: ''
+    }
 };
 
 export interface PoaType {
@@ -19,6 +23,10 @@ export interface PoaType {
     descricao: string;
     data_ultimo_plan: Date | null;
     pmfs: '';
+    situacao_poa: {
+      id: string;
+      nome: string;
+    }
 }
 
 const poaSlice = createSlice({
@@ -26,11 +34,13 @@ const poaSlice = createSlice({
   initialState,
   reducers: {
       setPoa: (state, action: PayloadAction<PoaType>) => {
-        const { id, descricao, data_ultimo_plan, pmfs }: any = action.payload
+        const { id, descricao, data_ultimo_plan, pmfs, situacao_poa }: any = action.payload
         state.id = id;  
         state.descricao = descricao;
         state.data_ultimo_plan = data_ultimo_plan;
         state.pmfs = pmfs;
+        state.situacao_poa.id = situacao_poa?.id;
+        state.situacao_poa.nome = situacao_poa?.nome;
       }
   },
   

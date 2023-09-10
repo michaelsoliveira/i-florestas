@@ -173,8 +173,8 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
 
         const response = await client.get(`/ut?orderBy=numero_ut&order=asc&upa=${upa.id}`)
         const { uts } = response.data
-        const utsUncheked = uts?.filter((ut: any) => ut.id_poa === null)
-        const filteredUts = uts?.filter((ut: any) => {
+        const utsUncheked = uts?.length > 0 && uts?.filter((ut: any) => ut.id_poa === null)
+        const filteredUts = uts?.length > 0 && uts?.filter((ut: any) => {
             
             if (poa.ut?.length > 0) {
                 return poa.ut?.map((u: any) => u.id).includes(ut.id)
@@ -182,7 +182,7 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
             
         })
         
-        setUts([...filteredUts, ...utsUncheked]) 
+        uts?.length > 0 ? setUts([...filteredUts, ...utsUncheked]) : setUts([])
     }, [client, session, isAddMode, id, setCheckedUts, upa.id, setValue])
 
     const loadCategorias = useCallback(async () => {
@@ -253,7 +253,7 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
         const utsUncheked = uts.filter((ut: any) => ut.id_poa === null)
         const filteredUts = uts.filter((ut: any) => {
             
-            if (poaSelected.ut?.length > 0) {
+            if (poaSelected?.ut?.length > 0) {
                 return poaSelected.ut?.map((u: any) => u.id).includes(ut.id)
             }
             
@@ -473,7 +473,11 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
                         id: poa.id,
                         descricao: poa.descricao,
                         data_ultimo_plan:poa.data_ultimo_plan,
-                        pmfs: poa.pmfs
+                        pmfs: poa.pmfs,
+                        situacao_poa: {
+                            id: poa.situacao_poa?.id,
+                            nome: poa.situacao_poa?.nome
+                        }
                     }))
                     alertService.success(message);
                     router.push('/poa')
@@ -495,7 +499,11 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
                         id: poa.id,
                         descricao: poa.descricao,
                         data_ultimo_plan: poa.data_ultimo_plan,
-                        pmfs: poa.pmfs
+                        pmfs: poa.pmfs,
+                        situacao_poa: {
+                            id: poa.situacao_poa?.id,
+                            nome: poa.situacao_poa?.nome
+                        }
                     }))
                     alertService.success(message);
                     router.push('/poa')

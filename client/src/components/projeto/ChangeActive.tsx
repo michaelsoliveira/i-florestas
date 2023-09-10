@@ -112,14 +112,22 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                         id: projeto?.poa_ativo?.id,
                         descricao: projeto?.poa_ativo?.descricao,
                         data_ultimo_plan: projeto?.poa_ativo?.data_ultimo_plan,
-                        pmfs: projeto?.poa_ativo?.pmfs
+                        pmfs: projeto?.poa_ativo?.pmfs,
+                        situacao_poa: {
+                            id: projeto?.poa_ativo?.situacao_poa?.id,
+                            nome: projeto?.poa_ativo?.situacao_poa?.nome
+                        }
                     }))
                 } else {
                     dispatch(setPoa({
                         id: '',
                         descricao: 'Padrão',
                         data_ultimo_plan: new Date(),
-                        pmfs: ''
+                        pmfs: '',
+                        situacao_poa: {
+                            id: '',
+                            nome: ''
+                        }
                     }))
                 }
                     
