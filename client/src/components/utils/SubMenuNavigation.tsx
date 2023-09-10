@@ -58,7 +58,7 @@ const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
                         )}
                     </div>
                     <span>
-                        Mudar projeto ativo
+                        Mudar poa ativo
                     </span>
                 </div>
             </>)

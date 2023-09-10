@@ -3,7 +3,7 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import alertService from '@/services/alert'
 import { AuthContext } from "@/context/AuthContext"
-import { useAppSelector } from "@/redux/hooks"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { RootState } from "@/redux/store"
 
 import { LoadingContext } from "@/context/LoadingContext"
@@ -14,6 +14,7 @@ import { useModalContext } from "@/context/ModalContext"
 import { styles } from "@/components/utils/styles"
 import Exploracao from "../poa/exploracao/Index"
 import CriterioPoa from "../categoria-especie/CriterioPoa"
+// import { setPoa } from "@/redux/features/poaSlice"
 
 const Index = () => {
     
@@ -24,11 +25,27 @@ const Index = () => {
     const { setLoading } = useContext(LoadingContext)
     const [uts, setUts] = useState<any[]>([])
     const { showModal, hideModal } = useModalContext()
+    const dispath = useAppDispatch()
+    const [poaLocal, setPoaLocal] = useState<any>() 
 
     const loadUts = useCallback(async () => {
         const { data } = await client.get('/planejo/uts')
         setUts(data?.uts)
     }, [client, setUts])
+
+    const loadPoa = useCallback(async () => {
+        const { data: { poa } } = await client.get('/poa/active/get')
+            setPoaLocal({
+                id: poa?.id,
+                descricao: poa?.descricao,
+                data_ultimo_plan: poa?.data_ultimo_plan,
+                pmfs: poa?.pmfs,
+                situacao_poa: {
+                    id: poa?.situacao_poa?.id,
+                    nome: poa?.situacao_poa?.nome
+                }
+            })
+    }, [client, setPoaLocal])
 
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
@@ -39,7 +56,7 @@ const Index = () => {
     useEffect(() => {
         loadUts()
         loadCategorias()
-        console.log(poa)
+        loadPoa()
     }, [client, loadUts, loadCategorias])
 
     async function changeSituacaoPoa(id?: string) {
@@ -50,7 +67,7 @@ const Index = () => {
             })
                 .then(() => {
                     alertService.success('O POA foi finalizado com SUCESSO!!!')
-                    
+                    loadPoa()
                     hideModal()
                 })
         } catch (error) {
@@ -58,7 +75,7 @@ const Index = () => {
         }       
     }
 
-    const changeSituacaoPoaModal = () => showModal({ title: 'Reabrir POA', onConfirm: () => { changeSituacaoPoa(poa?.id) }, styleButton: styles.greenButton, iconType: 'info', confirmBtn: 'Sim', content: `Tem Certeza que deseja Finalizar o ${poa?.descricao} ?` })
+    const changeSituacaoPoaModal = () => showModal({ title: 'Reabrir POA', onConfirm: () => { changeSituacaoPoa(poaLocal?.id) }, styleButton: styles.greenButton, iconType: 'info', confirmBtn: 'Sim', content: `Tem Certeza que deseja Finalizar o ${poaLocal?.descricao} ?` })
 
     async function PlanejarPOA(event: any): Promise<any> {
         setLoading(true)
@@ -110,23 +127,23 @@ const Index = () => {
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
                         <div className='flex flex-col md:flex-row space-x-2 items-center justify-between w-full'>
                             <button
-                                disabled={!poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
+                                disabled={poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
                                 className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
-                                    !poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
-                                    !poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
+                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
                                 )}
                             >
                                 Planejar POA
                             </button>
                             <button
-                                disabled={!poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
+                                disabled={!poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
                                 id='btn-resp'
                                 onClick={changeSituacaoPoaModal}
                                 className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
-                                    !poa?.id || poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
-                                    !poa?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
+                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
                                 )}
                             >
                                 Finalizar
