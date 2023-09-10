@@ -473,7 +473,7 @@ class PoaService {
                 AND t2.id_poa = p.id
                 AND t1.id_ut = u.id
                 AND t2.id_ut = u.id
-                AND cat.id_poa = ${user?.id_poa_ativo}
+                AND p.id = ${user?.id_poa_ativo}
                 AND e.id_projeto = ${user?.id_projeto_ativo}
                 AND u.id = ${ut}
             GROUP BY e.id, e.nome, t1.total_especie, t2.volume_corte, u.area_util

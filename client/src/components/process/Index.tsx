@@ -50,8 +50,9 @@ const Index = () => {
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
+        console.log(poa)
         setCategorias(categorias)   
-    }, [client, poa?.id, projeto?.id])
+    }, [client, poa?.id])
 
     useEffect(() => {
         loadUts()
@@ -127,7 +128,7 @@ const Index = () => {
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
                         <div className='flex flex-col md:flex-row space-x-2 items-center justify-between w-full'>
                             <button
-                                disabled={poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
+                                disabled={!poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
                                 className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
