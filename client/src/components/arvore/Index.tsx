@@ -339,7 +339,7 @@ const Index = () => {
         if (ut.numero_ut.toString() === 'Todos' || typeof ut === undefined) {
             alertService.warn('Selecione uma UT para iniciar o cadastro de uma árvore')
         } else {
-            redirect('/arvore/add')
+            router.push('/arvore/add')
         }
     }
         
@@ -390,7 +390,7 @@ const Index = () => {
         <div>
             <div className="flex flex-row items-center justify-between p-6 items-center">
                 <h1 className="font-medium text-2xl text-custom-green">Árvores</h1>
-                <div className="flex flex-row space-x-2">
+                <div className="flex md:flex-row flex-col space-y-2 md:space-y-0 space-x-2">
                     { filteredArvores?.length > 0 && (
                         <div
                             onClick={exportCsv}
