@@ -27,10 +27,9 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const poa = useAppSelector((state: RootState) => state.poa)
 
     const loadOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const response = await client.get(`/categoria?poa=${poa?.id}&projetoId=${projeto?.id}&order=asc&orderBy=nome&search=${inputValue}`)
-        const json = response.data
+        const data = categorias.filter((categoria: any) => categoria.nome.toLowerCase().includes(inputValue.toLocaleLowerCase()))
         
-        callback(json?.map((category: any) => ({
+        callback(data?.map((category: any) => ({
             value: category.id,
             label: category.nome
         })))
