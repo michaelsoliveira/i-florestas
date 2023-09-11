@@ -50,7 +50,7 @@ const Index = () => {
     const loadCategorias = useCallback(async () => {
         const response = await client.get(`/categoria?poa=${poa?.id}&order=asc&orderBy=nome`)
         const { categorias } = response.data
-        console.log(poa)
+
         setCategorias(categorias)   
     }, [client, poa?.id])
 
@@ -58,7 +58,7 @@ const Index = () => {
         loadUts()
         loadCategorias()
         loadPoa()
-    }, [client, loadUts, loadCategorias])
+    }, [loadUts, loadCategorias, loadPoa])
 
     async function changeSituacaoPoa(id?: string) {
         try {

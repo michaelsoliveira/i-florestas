@@ -212,7 +212,7 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
                     label: 'Nenhuma UMF Cadastrada'
                 })
             } 
-    }, [client, projeto?.id, umf.id, umf?.nome])
+    }, [client, umf.id, umf?.nome])
 
     const defaultUpasOptions = useCallback(async () => {
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)

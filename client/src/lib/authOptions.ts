@@ -192,7 +192,8 @@ export const authOptions: NextAuthOptions = {
                   
               return null
             } catch (error: any) {
-              const errorMessage = error.response.data.message
+              console.log(error)
+              const errorMessage = error?.response?.data.message
               throw new Error(`${errorMessage} &email=${credentials?.email}`)
             }
           
@@ -202,7 +203,7 @@ export const authOptions: NextAuthOptions = {
     // The secret should be set to a reasonably long random string.
     // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
     // a separate secret is defined explicitly for encrypting the JWT.
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
 
     session: {
       // Use JSON Web Tokens for session instead of database sessions.

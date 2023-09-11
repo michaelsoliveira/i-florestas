@@ -54,7 +54,7 @@ const Index = () => {
     const data = useMemo(() => rowData, [rowData])
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = upas.filter((upa: any) => upa?.descricao.includes(inputValue) || upa?.descricao.toLowerCase().includes(inputValue))
+        const data = upas.filter((upa: any) => upa?.descricao.toLowerCase().includes(inputValue.toLowerCase()))
 
         
         callback(data?.map((upa: any) => ({
@@ -64,7 +64,7 @@ const Index = () => {
     }
 
     const loadUmfs = async (inputValue: string, callback: (options: OptionType[]) => void) => {
-        const data = umfs.filter((umf: any) => umf?.nome.includes(inputValue) || umf?.nome.toLowerCase().includes(inputValue))
+        const data = umfs.filter((umf: any) => umf?.nome.toLowerCase().includes(inputValue.toLowerCase()))
         
         callback(data?.map((umf: any) => ({
             value: umf.id,
@@ -93,7 +93,7 @@ const Index = () => {
                     label: 'Nenhuma UMF Cadastrada'
                 })
             } 
-    }, [client, projeto?.id, umf.id, umf?.nome])
+    }, [client, umf.id, umf?.nome])
 
     const defaultUpasOptions = useCallback(async () => {
         const response = await client.get(`/upa?orderBy=descricao&order=asc&umf=${umf?.id}`)
