@@ -108,16 +108,15 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     }))
                 }
 
-                if (data?.poa_ativo !== null) {
-                    console.log(data?.poa_ativo)
+                if (data?.poa_ativo) {
                     dispatch(setPoa({
-                        id: projeto?.poa_ativo?.id,
-                        descricao: projeto?.poa_ativo?.descricao,
-                        data_ultimo_plan: projeto?.poa_ativo?.data_ultimo_plan,
-                        pmfs: projeto?.poa_ativo?.pmfs,
+                        id: data?.poa_ativo?.id,
+                        descricao: data?.poa_ativo?.descricao,
+                        data_ultimo_plan: data?.poa_ativo?.data_ultimo_plan,
+                        pmfs: data?.poa_ativo?.pmfs,
                         situacao_poa: {
-                            id: projeto?.poa_ativo?.situacao_poa?.id,
-                            nome: projeto?.poa_ativo?.situacao_poa?.nome
+                            id: data?.poa_ativo?.situacao_poa?.id,
+                            nome: data?.poa_ativo?.situacao_poa?.nome
                         }
                     }))
                 } else {
