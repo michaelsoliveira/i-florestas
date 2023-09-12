@@ -85,7 +85,8 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         async function handleSubmit(dataRequest: any) {
             await client.post(`/projeto/active/${dataRequest?.projeto.value}`).then(async (res: any) => {
                 const { projeto } = res.data
-                const response = await client.get(`/projeto/default-data`)
+                
+                const response = await client.get(`/projeto/${dataRequest?.projeto.value}/default-data`)
                 const { data } = response.data
 
                 dispatch(setUmf({
@@ -93,7 +94,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     nome: data?.umf?.nome
                 }))
 
-                if (data?.upa.length > 0) {
+                if (data?.umf?.upa?.length > 0) {
                     dispatch(setUpa({
                         id: data?.umf?.upa[0].id,
                         descricao: data?.umf?.upa[0].descricao,
@@ -107,7 +108,8 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     }))
                 }
 
-                if (data?.poa_ativo) {
+                if (data?.poa_ativo !== null) {
+                    console.log(data?.poa_ativo)
                     dispatch(setPoa({
                         id: projeto?.poa_ativo?.id,
                         descricao: projeto?.poa_ativo?.descricao,

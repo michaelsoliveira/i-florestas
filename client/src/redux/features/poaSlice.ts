@@ -39,8 +39,10 @@ const poaSlice = createSlice({
         state.descricao = descricao;
         state.data_ultimo_plan = data_ultimo_plan;
         state.pmfs = pmfs;
-        state.situacao_poa.id = situacao_poa?.id;
-        state.situacao_poa.nome = situacao_poa?.nome;
+        state.situacao_poa = {
+          id: situacao_poa?.id,
+          nome: situacao_poa?.nome
+        }
       }
   },
   
