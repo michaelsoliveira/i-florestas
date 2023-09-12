@@ -186,7 +186,7 @@ class DetentorService {
         return data;
     }
 
-    async findOne(id: string): Promise<Pessoa> {
+    async findOne(id: string): Promise<Pessoa | null> {
         const detentor = await prismaClient.pessoa.findFirst({
             include: {
                 pessoaFisica: true,
@@ -202,7 +202,7 @@ class DetentorService {
                 id_projeto: id
             }
         })
-        if (!detentor) throw new Error("Detentor não encontrada"); 
+        // if (!detentor) throw new Error("Detentor não encontrada"); 
 
         return detentor
     }

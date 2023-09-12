@@ -142,6 +142,10 @@ async function refreshAccessToken(token: any) {
 }
 
 export const authOptions: NextAuthOptions = {
+    // The secret should be set to a reasonably long random string.
+    // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
+    // a separate secret is defined explicitly for encrypting the JWT.
+    secret: process.env.SECRET || process.env.NEXT_PUBLIC_SECRET || process.env.NEXTAUTH_SECRET,
     // https://next-auth.js.org/configuration/providers
     providers: [
       GoogleProvider({
@@ -192,18 +196,13 @@ export const authOptions: NextAuthOptions = {
                   
               return null
             } catch (error: any) {
-              console.log(error)
-              const errorMessage = error?.response?.data.message
-              throw new Error(`${errorMessage} &email=${credentials?.email}`)
+              const errorMessage = error
+              throw new Error(`${errorMessage}&email=${credentials?.email}`)
             }
           
           }
       })
     ],
-    // The secret should be set to a reasonably long random string.
-    // It is used to sign cookies and to sign and encrypt JSON Web Tokens, unless
-    // a separate secret is defined explicitly for encrypting the JWT.
-    secret: process.env.NEXTAUTH_SECRET,
 
     session: {
       // Use JSON Web Tokens for session instead of database sessions.
@@ -236,7 +235,7 @@ export const authOptions: NextAuthOptions = {
     // pages is not specified for that route.
     // https://next-auth.js.org/configuration/pages
     pages: {
-      signIn: '/login',
+      signIn: '/login?csrf=true',
       // signOut: '/auth/signout', // Displays form with sign out button
       // error: '/auth/login', // Error code passed in query string as ?error=
       // verifyRequest: '/auth/verify-request', // Used for check email page

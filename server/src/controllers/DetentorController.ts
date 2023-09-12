@@ -7,7 +7,7 @@ export class DetentorController {
             const detentor = await detentorService.create(request.body)
             return response.json({
                 error: false,
-                detentor,
+                detentor: { ...detentor },
                 message: null
             })
 
@@ -83,8 +83,15 @@ export class DetentorController {
         const { id } = request.params
         try {
             const detentor = await detentorService.findOne(id)
-
-            return response.json(detentor)
+            if (detentor) {
+                return response.json({
+                    type: 'update',
+                    detentor
+                })
+            }
+            return response.json({
+                type: 'add'
+            })
         } catch(error) {
             return response.json(error.message)
         }

@@ -25,7 +25,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const [ detentor, setDetentor ] = useState<any>()
     const { projeto } = useContext(ProjetoContext)
     const [estado, setEstado] = useState<any>()
-    const isAddMode = !projeto?.pessoa
+    const isAddMode = projeto?.pessoa.length === 0
 
     const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm()
 
@@ -35,38 +35,42 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
 
     const loadDetentor = useCallback(async () => {
             const { data } = await client.get(`/detentor/${projeto?.id}`)
-            setDetentor(data)
-            if (data?.tipo === 'J') { 
-                setTipoPessoa(1) 
-            } else {
-                setTipoPessoa(0)
-            }
 
-            setEstado({
-                label: data?.endereco?.estado?.nome,
-                value: data?.endereco?.estado?.id
-            })
-
-            for (const [key, value] of Object.entries(data)) {
-                if (key === 'tipo' && value === 'F')
-                {
-                    setValue("pessoaFisica".concat(key), value, {
-                        shouldValidate: true,
-                        shouldDirty: true
-                    })                     
-                } else if (key === 'tipo' && value === 'J') {
-                    setValue("pessoaJuridica".concat(key), value, {
-                        shouldValidate: true,
-                        shouldDirty: true
-                    })                     
+            if (data?.type === 'update') {
+                setDetentor(data?.detentor)
+                if (data?.detentor?.tipo === 'J') { 
+                    setTipoPessoa(1) 
                 } else {
-                    setValue(key, value, {
-                        shouldValidate: true,
-                        shouldDirty: true
-                    }) 
+                    setTipoPessoa(0)
                 }
-                
+
+                setEstado({
+                    label: data?.detentor?.endereco?.estado?.nome,
+                    value: data?.detentor?.endereco?.estado?.id
+                })
+
+                for (const [key, value] of Object.entries(data?.detentor)) {
+                    if (key === 'tipo' && value === 'F')
+                    {
+                        setValue("pessoaFisica".concat(key), value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        })                     
+                    } else if (key === 'tipo' && value === 'J') {
+                        setValue("pessoaJuridica".concat(key), value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        })                     
+                    } else {
+                        setValue(key, value, {
+                            shouldValidate: true,
+                            shouldDirty: true
+                        }) 
+                    }
+                    
+                }
             }
+            
         
     }, [projeto, client, setValue])
     
@@ -85,8 +89,10 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     }
 
     async function createDetentor(data: any) {
+
         await client.post('/detentor', data)
             .then((response: any) => {
+                console.log(response)
                 const { error, detentor, message } = response.data
                 if (error) {
                     alertService.error(message)

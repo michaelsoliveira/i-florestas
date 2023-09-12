@@ -40,7 +40,7 @@ function Login() {
 
     useEffect(() => {
       setFocus('email')
-    }, [setFocus, callbackUrl])
+    }, [setFocus])
 
     async function onSubmit({ email, password }: any) {
       try {
