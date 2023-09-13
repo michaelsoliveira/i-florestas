@@ -99,7 +99,7 @@ const Layout = ({ children }: props) => {
     const userNavigation = [
         { name: `Perfil (${user?.username})`, href: '#' },
         { name: 'Alterar Senha', href: '/user/change-password' },
-        { name: 'Logout', href: '#', click: () => signOut({ callbackUrl: "/" }) },
+        { name: 'Logout', href: '#', click: () => signOut({ redirect: true, callbackUrl: "/" }) },
     ]
 
     const processPath = usePathname() === 'process'

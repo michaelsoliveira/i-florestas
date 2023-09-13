@@ -17,7 +17,7 @@ const Pagelogin = () => {
   return (
     <div className="min-h-full flex items-center justify-center mt-28 mb-16 px-4">
       <div className="max-w-md flex flex-col justify-center items-center w-full space-y-4 py-4 border rounded-md shadow-2xl">
-        <div className='absolute top-10'>
+        <div className='absolute top-28'>
         <div className='bg-gray-50 border border-custom-green rounded-full shadow-lg w-36 h-36'>
         <div className='relative h-full flex flex-col items-center justify-center'>
           <Image src='/imgs/logo_bomanejo.png' alt="" width={35} height={35}/>
