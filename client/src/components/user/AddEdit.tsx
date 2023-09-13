@@ -264,10 +264,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             if (!isAddMode) {
                                 await client.get(`/users/${projeto?.id}/${userId}`)
                                     .then(({ data }: any) => {
-                                        console.log(data?.users_roles)
                                         if (data?.users_roles?.length > 0) {
-
-                                           
                                                 setSelectedRoles(data?.users_roles.map((role: any) => {
                                                     return {
                                                         label: role.name,
