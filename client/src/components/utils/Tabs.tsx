@@ -78,7 +78,7 @@ const Tabs = ({ index }: { index?: number }) => {
             >
               <div className="flex flex-col items-center justify-between w-full">
               
-              <AddEdit ref={formRef} styles={styles} projetoId="" redirect/>
+              <AddEdit ref={formRef} styles={styles} redirect/>
               
                 <button
                   onClick={submitForm}
