@@ -121,7 +121,7 @@ const Index = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all?utId=${ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,

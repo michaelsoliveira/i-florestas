@@ -47,11 +47,11 @@ const SelectableRowList = ({ data, callBack }: any) => {
             onClick={() => handleRowClick(row.id)}
             className={
               classNames(
-                selectedRows.includes(row.id) && (idx === 0 ? 'rounded-t-lg text-white bg-sky-500' : 'text-white bg-sky-500'),
+                selectedRows.includes(row.id) && (idx === 0 ? 'rounded-t-lg text-gray-800 bg-custom-green/25' : 'text-gray-800 bg-custom-green/25'),
                 (idx === 0 && 'border-t-lg'),
                 (idx === data.length -1 && 'rounded-b-lg border-b-lg'),
                 (idx < data.length-1 && 'border-b'),
-                (!selectedRows.includes(row.id) && 'hover:bg-gray-50 hover:text-custom-green'),
+                (!selectedRows.includes(row.id) && 'hover:bg-gray-50'),
                 'block w-full px-4 py-2 border-gray-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-custom-green'
               )
             }

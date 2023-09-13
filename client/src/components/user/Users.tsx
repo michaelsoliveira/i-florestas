@@ -13,7 +13,6 @@ import { LinkBack } from "@/components/utils/LinkBack"
 import { AddEdit } from "./AddEdit"
 import React, { createRef } from 'react'
 import { UserCircleIcon } from '@heroicons/react/24/solid'
-import { ProjetoContext } from "@/context/ProjetoContext"
 
 const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage, currentPage, perPage, loading, loadUsers, roles }: any) => {
     
@@ -23,7 +22,6 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     const [checkedUsers, setCheckedUsers] = useState<any>([])
     const { showModal, hideModal, store } = useModalContext()
     const formRef = createRef<any>()
-    const { projeto } = useContext(ProjetoContext)
 
     useEffect(() => {
         setFilteredUsers(currentUsers)
@@ -34,6 +32,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     }
 
     const formSubmit = () => {
+        console.log(formRef.current)
         formRef.current.handleSubmit()
     }
 
@@ -50,13 +49,13 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
 
     const updateUser = (id?: string) => {
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Editar Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projeto?.id} userId={id} styles={stylesForm} redirect={false} />
+            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} userId={id} styles={stylesForm} redirect={false} />
         })    
     }
 
     const addUser = () => {
             showModal({ size: 'sm:max-w-2xl', hookForm: 'hook-form', type: 'submit', title: 'Novo Usuário', onConfirm: formSubmit, styleButton: styles.greenButton, confirmBtn: 'Salvar',
-            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} projetoId={projeto?.id} styles={stylesForm} redirect={false} />
+            content: <AddEdit roles={roles} sendForm={() => { loadUsers(10) }} ref={formRef} styles={stylesForm} redirect={false} />
         })    
     }
     
@@ -252,8 +251,8 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredUsers?.map((user: any) => (
-                            <tr key={user.id}>
+                        {filteredUsers?.map((user: any, index: number) => (
+                            <tr key={index}>
                             <td className="flex justify-center">
                             <input                 
                                     value={user?.id}

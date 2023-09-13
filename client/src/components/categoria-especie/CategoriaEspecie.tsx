@@ -110,7 +110,7 @@ const CategoriaEspecie = forwardRef<any, any>(
     return (
         <div className={
             classNames(
-                !isModal && 'shadow-sm border border-gray-400 rounded-b-xl',
+                !isModal && 'shadow-sm rounded-b-xl',
                 'relative p-8 bg-white'
             )}>
             <form onSubmit={handleSubmit(onSubmit)} ref={ref}>
@@ -278,8 +278,8 @@ const CategoriaEspecie = forwardRef<any, any>(
                 </div>
                 { (!isModal) && (
                     <div className='flex items-center justify-between pt-4'>
-                        <Link href="/categoria-especie" className="text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                        <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                        <Link href="/categoria-especie" className="text-center w-2/5 bg-gray-light text-gray-800 p-3 rounded-md font-bold">Voltar</Link>
+                        <button className="w-2/5 bg-custom-green text-white p-3 rounded-md">Salvar</button>
                     </div>
                 ) }
             </form>

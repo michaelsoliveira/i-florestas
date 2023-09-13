@@ -296,27 +296,28 @@ class ProjetoService {
                         }
                     },
                     {
-                        projeto: {
-                            id: projetoId
+                        users_roles: {
+                            some: {
+                                id_projeto: projetoId
+                            }
                         }
                     }
                 ]
             } : {
-                projeto: {
-                    id: projetoId
+                users_roles: {
+                    some: {
+                        id_projeto: projetoId
+                    }
                 }
             }
 
-        const [usersRoles, total] = await prismaClient.$transaction([
-            prismaClient.userRole.findMany({
+        const userRoles: any = await prismaClient.user.findMany({
                 include: {
-                    users: true,
-                    roles: {
-                        select: {
-                            id: true,
-                            name: true
-                        }    
-                    }
+                    users_roles: {
+                        include: {
+                            roles: true
+                        }
+                    },
                 },
                 where,
                 take: perPage ? parseInt(perPage) : 50,
@@ -324,22 +325,24 @@ class ProjetoService {
                 orderBy: {
                     ...orderByTerm
                 }
-            }),
-            prismaClient.userRole.count({
-                where
             })
-        ])
 
-        const data = usersRoles.map((userRole) => {
+        const data = userRoles.map((user: any) => {
+            const { id, username, email, image, email_verified } = user
+
             return {
-                id: userRole?.users.id,
-                username: userRole?.users.username,
-                email: userRole?.users.email,
-                image: userRole?.users.image,
-                email_verified: userRole?.users.email_verified,
-                roles: [{
-                    ...userRole.roles
-                }]
+                id: id,
+                username: username,
+                email: email,
+                image: image,
+                email_verified: email_verified,
+                roles: user?.users_roles?.filter((role: any) => role?.id_projeto === projetoId).map((role: any) => {
+                    const { id, name } = role?.roles
+                    return {
+                        id,
+                        name 
+                    }
+                })
             }
         })
 
@@ -349,8 +352,7 @@ class ProjetoService {
             data,
             perPage,
             page,
-            skip,
-            count: total
+            skip
         }
     }
 
@@ -380,7 +382,7 @@ class ProjetoService {
         const user = await prismaClient.user.findUnique({
             where: { id }
         })
-
+        
         const projetoAtivo = await prismaClient.projeto.findFirst({
             include: {
                 pessoa: true

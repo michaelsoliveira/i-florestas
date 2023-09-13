@@ -64,12 +64,6 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
 
     const selectPoa = async (poa: any) => {
 
-        // dispatch(setPoa({
-        //     id: poa.value,
-        //     descricao: poa.label,
-        //     data_ultimo_plan: new Date('2000-01-01'),
-        //     pmfs: ''
-        // }))
         setSelectedPoa(poa)
 
         const response = await client.get(`/categoria?orderBy=nome&order=asc&poa=${poa.value}`)
@@ -182,27 +176,27 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
 
     return (
         <div>
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
-                <h1 className="font-medium text-2xl font-roboto">Categoria de Espécies</h1>
+            <div className="flex flex-row items-center justify-between p-6">
+                <h1 className="font-bold text-2xl font-roboto text-custom-green">Categoria de Espécies</h1>
                 <Link
                     href='/categoria-especie/add'
-                    className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
+                    className="px-6 py-2 text-white bg-custom-green hover:bg-custom-green/75 rounded-md hover:cursor-pointer"
                 >
                     Adicionar
                 </Link>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
-                <div className="flex flex-col p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        <div className="flex flex-row w-2/12 px-2 items-center justify-between">
-                            <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">por Página</label>
-                            </div>
+                <div className="flex flex-col p-6 text-sm">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
+                        <div className="flex flex-row w-2/5 md:w-2/6 lg:w-1/6 px-2 items-center justify-between">
+                    
+                            <label htmlFor="perPage" className="px-1 block mb-2 font-medium text-white">por Página</label>
+                       
                             <select
                                 value={perPage}
                                 onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
                                 id="perPage" 
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
                                 <option value="10">10</option>
                                 <option value="20">20</option>
@@ -211,13 +205,12 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                             </select>
                         </div>
 
-                        <div className="flex flex-row w-4/12 lg:flex-col lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg px-4">
+                        <div className="flex flex-row w-4/12 lg:flex-col lg:items-center lg:justify-items-center py-4 px-4">
                         
                             <div className="lg:flex lg:flex-wrap">
-                                <div className="flex items-center pr-4">POA: </div>
+                                <div className="flex items-center pr-4 text-white">POA: </div>
                                 <div className="w-60">
                                     <Select
-
                                         placeholder='Selecione o POA...'
                                         selectedValue={selectedPoa}
                                         defaultOptions={getPoasDefaultOptions()}
@@ -230,7 +223,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                                 </div>
                             </div>
                         </div>
-                        <div className="w-60 px-4">Pesquisar Categoria:</div>
+                        <div className="w-72 px-4 text-white">Pesquisar Categoria:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Espécie"
@@ -256,7 +249,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-light">
                         <tr>
                             <th>
                                 <div className="flex justify-center">
@@ -271,7 +264,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                                 className="w-4/12"
                                 onClick={() => sortCategorias()}
                             >
-                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer">
+                                <div className="flex flex-row items-center px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer">
                                     Nome
                                     {sorted
                                         ? (<ChevronUpIcon className="w-5 h-5" />)
@@ -281,37 +274,37 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                             </th>
                             <th
                                 scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Fuste
                             </th>
                             <th
                                 scope="col"
-                                className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-1/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Diametro Mínimo
                             </th>
                             <th
                                 scope="col"
-                                className="w-1/12 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="w-1/12 px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider"
                             >
                                 Diametro Máximo
                             </th>
                             <th
                                 scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                             >
                                 Altura
                             </th>
                             <th
                                 scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                             >
                                 Volume
                             </th>
                             <th
                                 scope="col"
-                                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                className="px-3 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider cursor-pointer"
                             >
                                 Preservada
                             </th>            

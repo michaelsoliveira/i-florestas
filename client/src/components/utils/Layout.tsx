@@ -119,7 +119,7 @@ const Layout = ({ children }: props) => {
             }
         </Script> 
     
-            <div className="flex flex-col">
+            <div className="flex flex-col relative min-f-full">
                 <div className="lg:mb-16">
                     <Navigation
                         defaultNavigation={defaultNavigation}
@@ -135,19 +135,25 @@ const Layout = ({ children }: props) => {
                         </div>
                     )}
                 
-                <div className="relative">
+                <div className="lg:pb-[42vh]">
                     {loading && (<Loading />)}
-
-                    <Menu as="div" className="fixed float-right right-10 bottom-10 z-50">
-                    <div>
-                        <Menu.Button className="rounded-full flex items-center hover:cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
-                            <div
-                                className="px-3 py-1 bg-brown-normal hover:opacity-75 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
-                            >
-                                <FontAwesomeIcon size="2x" icon={faQuestion} />
-                            </div>
-                        </Menu.Button>
-                    </div>
+                    {children}
+                </div>
+                <div className="lg:absolute w-full lg:bottom-0">
+                    <Footer />
+                </div>
+            </div>
+            <div>
+            <Menu as="div" className="fixed float-right right-5 bottom-5 md:right-8 md:bottom-8 z-50">
+                <div>
+                    <Menu.Button className="rounded-full flex items-center hover:cursor-pointer text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-700 focus:ring-white">
+                        <div
+                            className="px-3 py-1 bg-brown-normal hover:opacity-75 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-800 focus:ring-white"
+                        >
+                            <FontAwesomeIcon size="2x" icon={faQuestion} />
+                        </div>
+                    </Menu.Button>
+                </div>
                     <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"
@@ -184,13 +190,7 @@ const Layout = ({ children }: props) => {
                         </Menu.Items>
                         
                     </Transition>
-                    </Menu>
-                    {children}
-                </div>
-                <div>
-                    <Footer />
-                </div>
-                
+                </Menu>
             </div>
         </>
     )

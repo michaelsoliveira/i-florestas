@@ -9,6 +9,7 @@ export interface UserRequest {
 }
 import { google } from 'googleapis'
 import { handleCreateDefault } from "./DefaultData"
+import { getProjeto } from "./ProjetoService"
 
 const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
 client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
@@ -283,46 +284,47 @@ class UserService {
                 id
             }
          })
+         return user
     }
 
     async findOne(id: string, projetoId?: string | undefined): Promise<any> {
+        const projeto: any = getProjeto(id)
         const where = {
             AND: [
                 {
-                    users: {
-                        id
-                    },
+                    id
                 },
                 {
-                    projeto: {
-                        id: projetoId
+                    users_roles: {
+                        some: {
+                            id_projeto: projetoId ? projetoId : projeto?.id
+                        }
                     }
                 }
             ]
         }
 
-        const userRole = await prismaClient.userRole.findFirst({ 
+        const user = await prismaClient.user.findFirst({ 
             where,
             include: {
-                users: true,
-                roles: {
-                    select: {
-                        id: true,
-                        name: true
-                    }    
-                }
-                    
+                users_roles: {
+                    include: {
+                        roles: true
+                    }
+                },      
             },
         })
 
         const data = {
-            id: userRole?.users?.id,
-            email: userRole?.users?.email,
-            username: userRole?.users?.username,
-            roles: [userRole?.roles]
+            id: user?.id,
+            email: user?.email,
+            username: user?.username,
+            users_roles: user?.users_roles.filter((role: any) => role?.id_projeto === projetoId ? projetoId : projeto?.id).map((role => {
+                return role.roles
+            }))
         }
 
-        if (!userRole?.users) throw new Error("User not Found 0")
+        if (!user) throw new Error("User not Found 0")
 
         return data
     }

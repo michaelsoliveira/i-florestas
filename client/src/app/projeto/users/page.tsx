@@ -1,13 +1,13 @@
 'use client'
 
-import Users from "@/components/projeto/Users"
+import ProjetoUsers from "@/components/projeto/ProjetoUsers"
 
 import withAuthentication from "@/components/utils/withAuthentication"
 
 const IndexUsers = () => {
 
     return (
-        <Users />
+        <ProjetoUsers />
     )
 }
 

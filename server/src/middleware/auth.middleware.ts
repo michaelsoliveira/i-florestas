@@ -63,7 +63,7 @@ export const Authentication = () => {
                                 email: user?.email,
                                 username: user?.username,
                                 provider: 'github',
-                                roles: user.user_roles?.map((userRoles: any) => userRoles.roles)
+                                roles: user.users_roles?.map((userRoles: any) => userRoles.roles)
                             }
                         })
                 }

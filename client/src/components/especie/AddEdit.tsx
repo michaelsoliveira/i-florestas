@@ -137,16 +137,16 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             <div className="py-6 flex flex-col justify-center sm:py-12 bg-gray-50">
                 
                 <div className="relative py-3 w-11/12 max-w-xl mx-auto">
-                    <div className='flex flex-row items-center justify-between shadow-lg bg-gray-100 py-4 sm:rounded-t-xl'>
+                    <div className='flex flex-row items-center justify-between shadow-lg bg-custom-green py-4 sm:rounded-t-xl'>
                         
                         <div>
-                            <LinkBack href="/especie" className="flex flex-col relative left-0 ml-4" />
+                            <LinkBack href="/especie" className="flex flex-col relative left-0 ml-4 text-white" />
                         </div>
                         <div>
                             {isAddMode ? (
-                                <h1 className='text-xl text-gray-800'>Cadastro de Espécie</h1>
+                                <h1 className='text-xl text-white'>Cadastro de Espécie</h1>
                             ): (
-                                <h1 className='text-xl text-gray-800'>Editar Espécie</h1>
+                                <h1 className='text-xl text-white'>Editar Espécie</h1>
                             )}
                         </div>
                         <div></div>
@@ -210,8 +210,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                 />
                             </div>
                             <div className='flex items-center justify-between pt-4'>
-                                <Link href="/especie" className="text-center w-2/5 bg-gray-200 text-gray-800 p-3 rounded-md">Voltar</Link>
-                                <button className="w-2/5 bg-green-600 text-white p-3 rounded-md">Salvar</button>
+                                <Link href="/especie" className="text-center w-2/5 bg-gray-light text-gray-800 p-3 rounded-md font-bold">Voltar</Link>
+                                <button className="w-2/5 bg-custom-green text-white p-3 rounded-md">Salvar</button>
                             </div>
                         </form>
                     </div>

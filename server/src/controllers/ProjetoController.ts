@@ -165,7 +165,7 @@ export class ProjetoController {
     async findUsers(request: Request, response: Response) {
         try {
             const { projetoId } = request.params
-            const { data, perPage, orderBy, order, page, skip, count } = await projetoService.getUsers(projetoId, request.query)
+            const { data, perPage, orderBy, order, page, skip } = await projetoService.getUsers(projetoId, request.query)
 
             return response.json({
                 error: false,
@@ -175,7 +175,7 @@ export class ProjetoController {
                 perPage,
                 page,
                 skip,
-                count,
+                count: data.length,
                 message: 'Usuários carregados com sucesso!'
             })
         } catch (error) {

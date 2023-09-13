@@ -15,19 +15,19 @@ import RadioGroup from '../form/RadioGroup';
 import Option from '../form/Option';
 import FocusError from '../form/FocusError';
 import { useModalContext } from '@/context/ModalContext';
+import { ProjetoContext } from '@/context/ProjetoContext';
 
 type AddEditType = {
     styles?: any;
     userId?: string;
     redirect?: boolean
-    projetoId?: string;
     sendForm?: any;
     roles?: any[]
 }
 
 export const AddEdit = forwardRef<any, AddEditType>(
     function AddEdit(
-      { styles, userId, sendForm, redirect, projetoId, roles}, 
+      { styles, userId, sendForm, redirect, roles}, 
       ref
     ) {
         const dispatch = useAppDispatch()
@@ -39,6 +39,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
         const [option, setOption] = useState<number | undefined>(0)
         const { data: session } = useSession()
         const [ users, setUsers ] = useState<any>()
+        const { projeto } = useContext(ProjetoContext)
 
         const { hideModal } = useModalContext()
 
@@ -55,7 +56,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
         useEffect(() => {
             let isLoaded = false
-
+            
             if (!isLoaded) loadUsers()
             return () => {
                 isLoaded = true
@@ -132,36 +133,36 @@ export const AddEdit = forwardRef<any, AddEditType>(
                             .email("Este não é um email válido.")
                             .required("Campo obrigatório!")
                     }),
-                    password:
-                        string()
-                        .when('option', {
-                            is: (option:any) => option===0,
+                password:
+                    string()
+                    .when('option', {
+                        is: (option:any) => option===0,
+                        then: () => string()
+                        .when('isAddMode', {
+                            is: true,
                             then: () => string()
-                            .when('isAddMode', {
-                                is: true,
-                                then: () => string()
-                                    .required('Senha é obrigatória')
-                                    .min(6, 'A senha deve possuir no mínimo 6 caracteres')
-                            })
-                        }),
-                    confirmPassword: string()
-                        .when('option', {
-                            is: (option:any) => option===0,
-                            then: () => string()
-                            .when('password', (password: any, schema: any) => {
-                                if (password || isAddMode) return schema.required('A confirmação de senha é obrigatória')
-                            })
-                            .oneOf([refYup('password')], 'As senhas informadas não coincidem')
-                        }),
-                    id_user: string()
-                        .when('option', {
-                            is: (option:any) => option===1,
-                            then: () => string()
-                            .when('isAddMode', {
-                                is: true,
-                                then: () => string().required('É necessário selecionar um usuário')
-                            }) 
+                                .required('Senha é obrigatória')
+                                .min(6, 'A senha deve possuir no mínimo 6 caracteres')
                         })
+                    }),
+                confirmPassword: string()
+                    .when('option', {
+                        is: (option:any) => option===0,
+                        then: () => string()
+                        .when('password', (password: any, schema: any) => {
+                            if (password || isAddMode) return schema.required('A confirmação de senha é obrigatória')
+                        })
+                        .oneOf([refYup('password')], 'As senhas informadas não coincidem')
+                    }),
+                id_user: string()
+                    .when('option', {
+                        is: (option:any) => option===1,
+                        then: () => string()
+                        .when('isAddMode', {
+                            is: true,
+                            then: () => string().required('É necessário selecionar um usuário')
+                        }) 
+                    })
             });
 
         async function handleRegister(data: any) {
@@ -261,22 +262,25 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         const loadUser = useCallback(async () => {
                             if (!isAddMode) {
-                                await client.get(`/users/${projetoId}/${userId}`)
+                                await client.get(`/users/${projeto?.id}/${userId}`)
                                     .then(({ data }: any) => {
-                                        if (data?.roles?.length > 0) {
+                                        console.log(data?.users_roles)
+                                        if (data?.users_roles?.length > 0) {
 
-                                            data?.roles.map((role: any) => {
-                                                setSelectedRoles((old: any) => [...old, {
-                                                    label: role.name,
-                                                    value: role.id
-                                                }])    
-                                            })
+                                           
+                                                setSelectedRoles(data?.users_roles.map((role: any) => {
+                                                    return {
+                                                        label: role.name,
+                                                        value: role.id
+                                                    }
+                                                }))    
+                                            
                                             setFieldValue('roles', data?.roles)
                                         }
                                         
                                         const fields = ['username', 'email'];
                                         setFieldValue('id_user', data?.id)
-                                        
+                                        setFieldValue('option', 1)
                                         fields.forEach(field => setFieldValue(field, data[field], false));
                                     });
                             }
@@ -284,7 +288,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
 
                         // eslint-disable-next-line react-hooks/rules-of-hooks
                         useEffect(() => {
-                            setFieldValue('id_projeto', projetoId)
+                            setFieldValue('id_projeto', projeto?.id)
                             loadUser()
                         }, [loadUser, setFieldValue]);
                         
@@ -315,7 +319,7 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                         )}
                             {(option === 0) ? (
                                  <div className={session ? 'lg:grid lg:grid-cols-2 lg:gap-4' : 'flex flex-col'}>
-                                    {!projetoId && (
+                                    {!projeto?.id && (
                                         <div>
                                             <label className={styles.label} htmlFor="projeto">Projeto</label>
                                             <Field

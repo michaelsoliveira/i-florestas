@@ -143,20 +143,30 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
         <div>
             {/* {visible && type === 'updateObservacao' ? (<Modal><RegisterForm projetoId={projetoId} userId={userId} styles={stylesButton} redirect={false} /></Modal>) : (<Modal />)} */}
             
-            <div className="flex flex-row items-center justify-between p-6 bg-gray-100">
+            <div className="flex flex-row items-center justify-between p-6 mx-auto max-w-5xl">
                 <div>
-                    <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4" />
+                    <LinkBack href="/projeto" className="flex flex-col relative left-0 ml-4 text-custom-green" />
                 </div>
-                <h1 className="font-medium text-2xl font-roboto">Obserções de árvores</h1>
-                <div></div>
+                <h1 className="font-bold text-2xl font-roboto text-custom-green">Obserções de árvores</h1>
+                <div>
+                <button
+                    // disabled={formState.isSubmitting}
+                    type="submit"
+                    className="flex flex-row justify-between group relative w-24 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-custom-green hover:bg-custom-green/75 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custome-green"
+                    onClick={addObs}
+                >
+                    <span className="flex items-center">
+                    <PlusIcon className="h-5 w-5 text-white" aria-hidden="true" />
+                    </span>
+                    <div>Novo</div>
+                </button>
+                </div>
             </div>
             {loading ? (<div className="flex flex-row items-center justify-center h-56">Loading...</div>) : (
                 <div className="flex flex-col p-6 mx-auto max-w-5xl">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 rounded-lg">
-                        <div className="flex flex-row w-2/12 px-2 items-center justify-between">
-                            <div className="w-full">
-                                <label htmlFor="perPage" className="px-1 block mb-2 text-sm text-gray-900 dark:text-gray-400">por Página</label>
-                            </div>
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
+                        <div className="flex flex-row w-48 lg:w-2/5 items-center justify-between px-4">
+                            <label htmlFor="perPage" className="block mb-2 text-sm text-gray-900 dark:text-gray-400 text-white">por Página</label>
                             <select
                                 value={perPage}
                                 onChange={(evt: any) => changeItemsPerPage(evt.target.value)}
@@ -169,7 +179,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                                 <option value="100">100</option>
                             </select>
                         </div>
-                        <div className="w-60 px-4 text-sm">Pesquisar Observação:</div>
+                        <div className="w-2/5 px-4 text-sm flex flex-row text-white justify-end">Pesquisar Observação:</div>
                         <div className="w-full px-4">
                             <Input
                                 label="Pesquisar Observações"
@@ -181,19 +191,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                                 autoFocus
                             />
                         </div>
-                        <div className="flex items-center justify-center w-full lg:mr-4 pt-2 lg:w-32 lg:pt-0">
-                        <button
-                            // disabled={formState.isSubmitting}
-                            type="submit"
-                            className="flex flex-row justify-between group relative w-24 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                            onClick={addObs}
-                        >
-                            <span className="flex items-center">
-                            <PlusIcon className="h-5 w-5 text-green-200 group-hover:text-green-100" aria-hidden="true" />
-                            </span>
-                            <div>Novo</div>
-                        </button>
-                        </div>
+
                     </div>
                     <div className="flex flex-row items-center justify-between overflow-x-auto mt-2">
                         <div className="shadow overflow-y-auto border-b border-gray-200 w-full sm:rounded-lg">
@@ -208,7 +206,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                                 </div>
                             )}
                     <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-light">
                         <tr>
                         <th className="w-24">
                             <div className="flex justify-center">
@@ -224,7 +222,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                             className="w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                             onClick={() => sortObservacoes('nome')}
                         >
-                            <div className="flex flex-row items-center">
+                            <div className="flex flex-row items-center font-bold">
                                 Nome
                                 {sorted
                                     ? (<ChevronUpIcon className="w-5 h-5" />)
