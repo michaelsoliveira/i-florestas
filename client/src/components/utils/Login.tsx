@@ -46,7 +46,7 @@ function Login() {
       try {
 
           await signIn('credentials', {
-            redirect: true,
+            redirect: false,
             email,
             password,
             callbackUrl
