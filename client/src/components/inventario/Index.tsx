@@ -14,6 +14,11 @@ import alertService from '@/services/alert'
 import { useCSVReader } from 'react-papaparse'
 import Table, { AvatarCell, SelectColumnFilter, StatusPill } from "@/components/utils/Table"
 import { Button } from "@/components/utils/Button"
+import { StepContext } from "@/context/StepContext"
+import classNames from "classnames"
+import SelectFileStep from "./steps/SelectFileStep"
+import Finalizar from "./steps/Finalizar"
+import Stepper from "../utils/Stepper"
 
 const styles = {
     csvReader: {
@@ -46,6 +51,13 @@ const Index = () => {
     const [encoding, setEncoding] = useState('iso-8859-1')
     const { CSVReader } = useCSVReader()
     const poa = useAppSelector((state: RootState) => state.poa)
+    const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
+    
+    const steps = [
+        "Arquivo",
+        "Erros",
+        "Finalizar"
+    ]
 
     const dispatch = useAppDispatch()
       
@@ -142,10 +154,49 @@ const Index = () => {
         getEspecies()
         getArvores()
     }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores])
+
+    const getData = (data: any) => {
+        const columns = data?.length > 0 ? Object.keys(data[0]).map((col: any, index: any) => {
+            const accessor = col.normalize("NFD").replace(" - ", " ").replace(/[^0-9a-zA-Z\s_]/g, "").split(" ").join("_").toLowerCase()
+            if (accessor === 'ut' || accessor === 'especie') {
+                return {
+                    Header: col,
+                    accessor,
+                    Filter: SelectColumnFilter
+                }
+            } else {
+                return {
+                    Header: col,
+                    accessor
+                }
+            }
+        }) : []
+
+        const rows = data?.length > 0 ? data.slice(1).map((row: any, idx: number) => {
+            return row.reduce((acc: any, curr: any, index: any) => {
+                acc[columns[index].accessor] = curr;
+                return {
+                    linha: idx + 1,
+                    ...acc
+                };
+            }, {})
+        }): []
+
+        console.log(rows)
+
+        return {
+            columns,
+            rows
+        }
+    }
     
     const nomeEspecies = especies?.length > 0 
         ? especies.map((especie: any) => especie.nome)
         : [];
+
+    const numUts = uts?.length > 0
+        ? uts.map((ut: any) => ut?.numero_ut.toString())
+        : []
     
     const numArvores = arvores?.length > 0 
         ? arvores.map((arv: any) => arv.numero_arvore)
@@ -154,11 +205,14 @@ const Index = () => {
     const arvoresUploaded: any = rowData.length > 0 
         ? rowData
         : []
-    const especiesErrors = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie))
+    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie))
     
     const numArvoresDuplicates = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
     
-    const semUt = arvoresUploaded?.filter((arvore: any) => "".includes(String(arvore?.ut)))
+    const utsNotFound = arvoresUploaded?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
+
+    const utsData = utsNotFound?.length > 0 ? getData(utsNotFound) : []
+    
 
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -224,8 +278,9 @@ const Index = () => {
             if (data?.count === 0 || poa.id === '') {
                 return alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
             } else {
-                if (semUt.length > 0) return alertService.error('Existem árvores que não foi informado a UT')
-                if (especiesErrors.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
+                console.log(utsNotFound, especiesNotFound)
+                if (utsNotFound.length > 0) return alertService.error('Existem árvores que não foi informado a UT ou não cadastrada')
+                if (especiesNotFound.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
                 if (numArvoresDuplicates.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
@@ -282,6 +337,22 @@ const Index = () => {
         
         setColumnData(columns)
         setRowData(rows)
+    }
+
+    const displayStep = () => {
+        const renderStep = () => {
+            switch (step) {
+              case 1:
+                return <SelectFileStep columns={columns} data={data} />;
+              case 2:
+                return <div>Errors</div>
+              case 3:
+                return <Finalizar />;
+              default: <>Importação do Inventário</>
+            }
+        }
+        
+        return renderStep()
     }
 
     return (
@@ -420,9 +491,34 @@ const Index = () => {
                         </div>
      
                     </div>
-            <div className="mt-6">
-                <Table columns={columns} data={data} />
+            <Stepper
+                steps= { steps }
+                currentStep={step}
+            />
+            <div>
+                { displayStep() }
             </div>
+ 
+            <div className="flex justify-between mt-4">
+                <div>
+                    <button
+                        onClick={() => prevStep()}
+                        className={classNames("bg-white text-gray-dark uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
+                        step === 1 && "hidden")}
+                    >
+                        Voltar
+                    </button>
+                </div>
+                <button
+                    onClick={() => nextStep()}
+                    className={classNames(
+                        "bg-custom-green text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
+                        )}
+                >
+                    { step === steps.length? "Finalizar Importação" : "Prosseguir" }
+                </button>
+            </div>
+    
         </div>    
     </div>
     )
