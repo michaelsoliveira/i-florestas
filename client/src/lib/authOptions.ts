@@ -257,18 +257,18 @@ export const authOptions: NextAuthOptions = {
       //  else if (new URL(url).origin === baseUrl) return url
       //  return baseUrl
       // },
-      async redirect(params: { url: string }) {
-        const { url } = params
+      // async redirect(params: { url: string }) {
+      //   const { url } = params
   
-        // url is just a path, e.g.: /videos/pets
-        if (!url.startsWith('http')) return url
+      //   // url is just a path, e.g.: /videos/pets
+      //   if (!url.startsWith('http')) return url
   
-        // If we have a callback use only its relative path
-        const callbackUrl = new URL(url).searchParams.get('callbackUrl')
-        if (!callbackUrl) return url
+      //   // If we have a callback use only its relative path
+      //   const callbackUrl = new URL(url).searchParams.get('callbackUrl')
+      //   if (!callbackUrl) return url
   
-        return new URL(callbackUrl as string).pathname
-      },
+      //   return new URL(callbackUrl as string).pathname
+      // },
       
       async jwt({ token, account, user }: any) {    
         
