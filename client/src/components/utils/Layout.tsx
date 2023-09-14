@@ -119,7 +119,7 @@ const Layout = ({ children }: props) => {
             }
         </Script> 
     
-            <div className="flex flex-col relative min-f-full">
+            <div className="flex flex-col">
                 <div className="lg:mb-16">
                     <Navigation
                         defaultNavigation={defaultNavigation}
@@ -135,11 +135,11 @@ const Layout = ({ children }: props) => {
                         </div>
                     )}
                 
-                <div className="lg:pb-[42vh]">
+                <div>
                     {loading && (<Loading />)}
                     {children}
                 </div>
-                <div className="lg:absolute w-full lg:bottom-0">
+                <div>
                     <Footer />
                 </div>
             </div>
