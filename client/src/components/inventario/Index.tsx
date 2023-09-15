@@ -342,7 +342,7 @@ const Index = () => {
               case 3:
                 return <>
                 <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
-                    Clique no botão "Finalizar Importação" para realizar a importação inventário
+                    Clique no botão &quot;Finalizar Importação&quot; para realizar a importação inventário
                 </div>
                 </>;
               default: <>Importação do Inventário</>

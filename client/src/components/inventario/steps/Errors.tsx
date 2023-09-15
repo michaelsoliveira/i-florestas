@@ -65,7 +65,7 @@ const Errors = ( { errors, index }: { errors: any, index?: number } ) => {
                                             <Table columns={utsData?.columns} data={utsData?.data} />
                                         </div>
                                     </>
-                                ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna "UT"</div></>
+                                ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna &quot;UT&quot;</div></>
                                 }
                         </Tab.Panel>
                     <Tab.Panel
@@ -81,7 +81,7 @@ const Errors = ( { errors, index }: { errors: any, index?: number } ) => {
                                         <Table columns={especiesData?.columns} data={especiesData?.data} />
                                     </div>
                                 </div>
-                            ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna "Espécie"</div></>
+                            ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna &quot;Espécie&quot;</div></>
                         }
                     </Tab.Panel>
                     <Tab.Panel
@@ -97,7 +97,7 @@ const Errors = ( { errors, index }: { errors: any, index?: number } ) => {
                                         <Table columns={numArvoresData?.columns} data={numArvoresData?.data} />
                                     </div>
                                 </div>
-                            ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna "Número Árvore"</div></>
+                            ) : <><div className="flex flex-items items-center justify-center pt-6 text-gray-dark">Nenhum erro encontrado na coluna &quot;Número Árvore&quot;</div></>
                         }
                     </Tab.Panel>
                 </Tab.Panels>
