@@ -381,13 +381,13 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                 
         </div>
             {session && (<div className="hidden md:block">
-                <div className="ml-4 flex items-center md:ml-6">
+                <div className="ml-4 flex items-center md:ml-2">
 
                     {
                         // Projeto e POA Vigente
                         
                             
-                                <div className='flex flex-col text-xs w-36 text-gray-700 border p-1 border-gray-400 rounded-lg'>
+                                <div className='flex flex-col text-xs w-44 text-gray-700 border p-1 border-gray-400 rounded-lg'>
                                     <div>Projeto: <span className='font-bold'> { projeto?.nome }</span></div>
                                     <div>Poa: <span className='font-bold'> { poa?.descricao }</span></div>
                                 </div>

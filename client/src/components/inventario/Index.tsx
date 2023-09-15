@@ -19,6 +19,7 @@ import classNames from "classnames"
 import SelectFileStep from "./steps/SelectFileStep"
 import Finalizar from "./steps/Finalizar"
 import Stepper from "../utils/Stepper"
+import Errors from "./steps/Errors"
 
 const styles = {
     csvReader: {
@@ -156,6 +157,7 @@ const Index = () => {
     }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores])
 
     const getData = (data: any) => {
+        
         const columns = data?.length > 0 ? Object.keys(data[0]).map((col: any, index: any) => {
             const accessor = col.normalize("NFD").replace(" - ", " ").replace(/[^0-9a-zA-Z\s_]/g, "").split(" ").join("_").toLowerCase()
             if (accessor === 'ut' || accessor === 'especie') {
@@ -172,21 +174,9 @@ const Index = () => {
             }
         }) : []
 
-        const rows = data?.length > 0 ? data.slice(1).map((row: any, idx: number) => {
-            return row.reduce((acc: any, curr: any, index: any) => {
-                acc[columns[index].accessor] = curr;
-                return {
-                    linha: idx + 1,
-                    ...acc
-                };
-            }, {})
-        }): []
-
-        console.log(rows)
-
         return {
             columns,
-            rows
+            data
         }
     }
     
@@ -207,13 +197,16 @@ const Index = () => {
         : []
     const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie))
     
-    const numArvoresDuplicates = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
+    const numArvoreExists = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
     
     const utsNotFound = arvoresUploaded?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
 
-    const utsData = utsNotFound?.length > 0 ? getData(utsNotFound) : []
-    
+    const utsData: any = utsNotFound?.length > 0 ? getData(utsNotFound) : []
 
+    const especiesData: any = especiesNotFound?.length > 0 ? getData(especiesNotFound) : []
+
+    const numArvoresData: any = numArvoreExists?.length > 0 ? getData(numArvoreExists) : []
+    
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
             id: umf.value,
@@ -281,7 +274,7 @@ const Index = () => {
                 console.log(utsNotFound, especiesNotFound)
                 if (utsNotFound.length > 0) return alertService.error('Existem árvores que não foi informado a UT ou não cadastrada')
                 if (especiesNotFound.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
-                if (numArvoresDuplicates.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
+                if (numArvoreExists.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                     columns: columnData,
@@ -345,14 +338,35 @@ const Index = () => {
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <div>Errors</div>
+                return <div><Errors errors={{utsData, especiesData, numArvoresData}} /></div>
               case 3:
-                return <Finalizar />;
+                return <>
+                <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
+                    Clique no botão "Finalizar Importação" para realizar a importação inventário
+                </div>
+                </>;
               default: <>Importação do Inventário</>
             }
         }
         
         return renderStep()
+    }
+
+    function handleNext(): void {
+        if (step === 2) {
+            if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
+            if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
+            if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
+
+            nextStep()
+        } else {
+            nextStep()
+        }
+
+        if (step === 3) {
+            handleImportInventario()
+            resetData()
+        }
     }
 
     return (
@@ -438,16 +452,6 @@ const Index = () => {
 
                         <span className="ml-2">Modelo</span>
                     </a>
-                    {
-                        (data.length > 0) && (
-                            <a
-                                onClick={handleImportInventario}
-                                className="px-6 py-2 text-white bg-green-700 hover:bg-green-800 rounded-md hover:cursor-pointer"
-                            >
-                                Importar
-                            </a>
-                        )
-                    }
                 </div>
             </div>
                 <div className="flex flex-col p-6">
@@ -510,7 +514,7 @@ const Index = () => {
                     </button>
                 </div>
                 <button
-                    onClick={() => nextStep()}
+                    onClick={() => handleNext()}
                     className={classNames(
                         "bg-custom-green text-white uppercase py-2 px-4 rounded-xl font-semibold cursor-pointer border-2 border-slate-200 hover:bg-slate-700 hover:text-white transition duration-200 ease-in-out",
                         )}
