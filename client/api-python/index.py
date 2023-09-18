@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
-import psycopg2
 from distutils.log import debug
 from flask import Flask, request, jsonify, Response, render_template, send_file
 from dotenv import load_dotenv
@@ -16,7 +15,7 @@ import sklearn
 from sklearn.neural_network import MLPClassifier
 from sklearn.neural_network import MLPRegressor
 from .config import settings
-from psycopg_pool import AsyncConnectionPool
+from psycopg_pool import ConnectionPool, AsyncConnectionPool
 
 # Import necessary modules
 from sklearn.model_selection import train_test_split
