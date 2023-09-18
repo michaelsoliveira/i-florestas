@@ -3,9 +3,40 @@ from typing import Union
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
+import psycopg2
+from distutils.log import debug
+from flask import Flask, request, jsonify, Response, render_template, send_file
+from dotenv import load_dotenv
+# Import required libraries
+import pandas as pd
+import numpy as np 
+import matplotlib.pyplot as plt
+import sklearn
+from sklearn.neural_network import MLPClassifier
+from sklearn.neural_network import MLPRegressor
+from .config import settings
+from psycopg_pool import AsyncConnectionPool
+
+# Import necessary modules
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+from sklearn.metrics import r2_score
 
 app = FastAPI(docs_url="/api-python/docs", openapi_url="/api-python/openapi.json")
 
+load_dotenv
+
+url = os.getenv("DATABASE_URL")
+connection = psycopg2.connect(settings.DATABASE_URL)
+
+@app.get("/api-python/vars")
+async def info():
+    return {
+        "default variable": settings.DATABASE_URL,
+        "app max integer": settings.APP_MAX,
+    }
 
 @app.get("/api-python/healthchecker")
 def healthchecker():
@@ -19,6 +50,28 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.nome as situacao FROM arvore a 
+    INNER JOIN ut u ON u.id = a.id_ut
+    INNER JOIN poa p on p.id = u.id_poa
+    INNER JOIN situacao_arvore s ON s.id = a.id_situacao
+    WHERE p.id = %s
+    ORDER BY a.numero_arvore;"""
+
+@app.get('/api-python/get-inventario/{poa}')
+def inventario_poa(poa: str):
+    # args = request.args
+    # poa = args.get('poa')
+    print(poa)
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(ALL_INVENTARIO_BY_POA, (poa, ))
+            data = cursor.fetchall()
+
+    if data is not None:
+        return jsonify(data)
+    else:
+        return "Nenhum poa encontrado"
 
 
 class TodoCreate(BaseModel):

@@ -52,7 +52,7 @@ services:
       context: client
       dockerfile: ./Dockerfile
     env_file:
-      - ./client/.env.local
+      - ./client/.env
     environment:
       BACKEND_URL: ${BACKEND_URL}
       NEXTAUTH_URL: ${FRONTEND_URL}
