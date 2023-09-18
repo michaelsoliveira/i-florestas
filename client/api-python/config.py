@@ -1,9 +1,9 @@
 # config.py
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    DATABASE_URL: str="postgresql://postgres:postgres@localhost:5433/bomanejo?options=-csearch_path%3Dpublic"   # default value if env variable does not exist
-    APP_MAX: int=100 # default value if env variable does not exist
+    model_config = SettingsConfigDict(env_file='.env', env_file_encoding='utf-8', extra='ignore')
+
 
 # global instance
 settings = Settings()

@@ -15,20 +15,22 @@ import sklearn
 from sklearn.neural_network import MLPClassifier
 from sklearn.neural_network import MLPRegressor
 from .config import settings
-from psycopg_pool import ConnectionPool, AsyncConnectionPool
+# from psycopg_pool import ConnectionPool, AsyncConnectionPool
 
 # Import necessary modules
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from math import sqrt
 from sklearn.metrics import r2_score
+import psycopg2
 
 app = FastAPI(docs_url="/api-python/docs", openapi_url="/api-python/openapi.json")
 
-load_dotenv
+load_dotenv()
 
 url = os.getenv("DATABASE_URL")
-connection = psycopg2.connect(settings.DATABASE_URL)
+print(url)
+connection = psycopg2.connect(url)
 
 @app.get("/api-python/vars")
 async def info():
