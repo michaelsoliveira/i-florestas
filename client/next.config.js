@@ -9,11 +9,11 @@ const nextConfig = withPWA({
   rewrites: async () => {
     return [
       {
-        source: "/api-python/:path*",
+        source: "/ia/:path*",
         destination:
           process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api-python/:path*"
-            : "/api-python/",
+            ? "http://127.0.0.1:8000/ia/:path*"
+            : "/ia/",
       },
     ];
   },

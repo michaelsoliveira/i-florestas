@@ -1,7 +1,9 @@
+from contextlib import asynccontextmanager
 from typing import Union
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg_pool import AsyncConnectionPool
 from pydantic import BaseModel
 import os
 from distutils.log import debug
@@ -24,22 +26,51 @@ from math import sqrt
 from sklearn.metrics import r2_score
 import psycopg2
 
-app = FastAPI(docs_url="/api-python/docs", openapi_url="/api-python/openapi.json")
+app = FastAPI(docs_url="/app/docs", openapi_url="/app/openapi.json")
+
+origins = [
+    settings.CLIENT_ORIGIN,
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 
+def get_conn_str():
+    return f"""
+    dbname={os.getenv('POSTGRES_DB')}
+    user={os.getenv('POSTGRES_USER')}
+    password={os.getenv('POSTGRES_PASSWORD')}
+    host={os.getenv('POSTGRES_HOST')}
+    port={os.getenv('POSTGRES_PORT')}
+    """
+
 url = os.getenv("DATABASE_URL")
 print(url)
-connection = psycopg2.connect(url)
+connection = psycopg2.connect(settings.DATABASE_URL)
 
-@app.get("/api-python/vars")
+@app.get("/ia/vars")
 async def info():
     return {
-        "default variable": settings.DATABASE_URL,
-        "app max integer": settings.APP_MAX,
+        "default variable": settings.DATABASE_URL
     }
+    
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.async_pool = AsyncConnectionPool(conninfo=get_conn_str())
+    yield
+    await app.async_pool.close()
 
-@app.get("/api-python/healthchecker")
+
+app = FastAPI(lifespan=lifespan)
+
+@app.get("/ia/healthchecker")
 def healthchecker():
     return {"status": "success", "message": "Integrate FastAPI Framework with Next.js"}
 
@@ -59,8 +90,8 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
     WHERE p.id = %s
     ORDER BY a.numero_arvore;"""
 
-@app.get('/api-python/get-inventario/{poa}')
-def inventario_poa(poa: str):
+@app.get('/ia/get-inventario/{poa}')
+async def inventario_poa(poa: str):
     # args = request.args
     # poa = args.get('poa')
     print(poa)
@@ -103,7 +134,7 @@ todos = []
 # Route to create a new todo item
 
 
-@app.post("/api-python/todos")
+@app.post("/ia/todos")
 def create_todo_item(todo: TodoCreate):
     new_todo = TodoItem(id=len(todos) + 1, title=todo.title, completed=False)
     todos.append(new_todo)
@@ -112,14 +143,14 @@ def create_todo_item(todo: TodoCreate):
 # Route to get all todo items
 
 
-@app.get("/api-python/todos")
+@app.get("/ia/todos")
 def get_all_todo_items():
     return todos
 
 # Route to get a specific todo item by ID
 
 
-@app.get("/api-python/todos/{todo_id}")
+@app.get("/ia/todos/{todo_id}")
 def get_todo_item(todo_id: int):
     for todo in todos:
         if todo.id == todo_id:
@@ -129,7 +160,7 @@ def get_todo_item(todo_id: int):
 # Route to update a specific todo item by ID
 
 
-@app.patch("/api-python/todos/{todo_id}")
+@app.patch("/ia/todos/{todo_id}")
 def update_todo_item(todo_id: int, todo: TodoUpdate):
     for todo_item in todos:
         if todo_item.id == todo_id:
@@ -141,7 +172,7 @@ def update_todo_item(todo_id: int, todo: TodoUpdate):
 # Route to delete a specific todo item by ID
 
 
-@app.delete("/api-python/todos/{todo_id}")
+@app.delete("/ia/todos/{todo_id}")
 def delete_todo_item(todo_id: int):
     for i, todo_item in enumerate(todos):
         if todo_item.id == todo_id:
