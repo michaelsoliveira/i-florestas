@@ -1,13 +1,12 @@
-from contextlib import asynccontextmanager
-from typing import Union
+from typing import Union, List, Annotated
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from psycopg_pool import AsyncConnectionPool
+# from psycopg_pool import AsyncConnectionPool
 from pydantic import BaseModel
 import os
 from distutils.log import debug
-from flask import Flask, request, jsonify, Response, render_template, send_file
+
 from dotenv import load_dotenv
 # Import required libraries
 import pandas as pd
@@ -26,7 +25,17 @@ from math import sqrt
 from sklearn.metrics import r2_score
 import psycopg2
 
-app = FastAPI(docs_url="/app/docs", openapi_url="/app/openapi.json")
+import ia.models as models
+from .database import engine, SessionLocal
+from sqlalchemy.orm import Session
+
+models.Base.metadata.create_all(bind=engine)
+
+class Poa(BaseModel):
+    id: str
+    descricao: str
+
+app = FastAPI(docs_url="/ia/docs", openapi_url="/ia/openapi.json")
 
 origins = [
     settings.CLIENT_ORIGIN,
@@ -52,28 +61,37 @@ def get_conn_str():
     """
 
 url = os.getenv("DATABASE_URL")
-print(url)
-connection = psycopg2.connect(settings.DATABASE_URL)
 
-@app.get("/ia/vars")
-async def info():
-    return {
-        "default variable": settings.DATABASE_URL
-    }
+# connection = psycopg2.connect(settings.DATABASE_URL)
     
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    app.async_pool = AsyncConnectionPool(conninfo=get_conn_str())
-    yield
-    await app.async_pool.close()
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     app.async_pool = AsyncConnectionPool(conninfo=get_conn_str())
+#     yield
+#     await app.async_pool.close()
 
 
-app = FastAPI(lifespan=lifespan)
+# app = FastAPI(lifespan=lifespan)
+app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        
+db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.get("/ia/healthchecker")
 def healthchecker():
     return {"status": "success", "message": "Integrate FastAPI Framework with Next.js"}
 
+@app.get("/ia/vars")
+def info():
+    return {
+        "default variable": url
+    }
 
 app.add_middleware(
     CORSMiddleware,
@@ -90,20 +108,13 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
     WHERE p.id = %s
     ORDER BY a.numero_arvore;"""
 
-@app.get('/ia/get-inventario/{poa}')
-async def inventario_poa(poa: str):
-    # args = request.args
-    # poa = args.get('poa')
-    print(poa)
-    with connection:
-        with connection.cursor() as cursor:
-            cursor.execute(ALL_INVENTARIO_BY_POA, (poa, ))
-            data = cursor.fetchall()
-
-    if data is not None:
-        return jsonify(data)
-    else:
-        return "Nenhum poa encontrado"
+@app.get('/ia/get-poa/{poa_id}')
+async def inventario_poa(poa_id: str, db: db_dependency):
+    result = db.query(models.Poa).filter(models.Poa.id == poa_id).first()
+    
+    if not result:
+        raise HTTPException(status_code=404, detail='Poa is not found')
+    return result
 
 
 class TodoCreate(BaseModel):
