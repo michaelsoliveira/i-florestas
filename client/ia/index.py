@@ -28,6 +28,9 @@ import psycopg2
 import ia.models as models
 from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from sqlalchemy import select, join, and_
+import json
+import re
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -110,8 +113,18 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
 
 @app.get('/ia/get-poa/{poa_id}')
 async def inventario_poa(poa_id: str, db: db_dependency):
-    result = db.query(models.Poa).filter(models.Poa.id == poa_id).first()
+    result = db.query(models.Ut).all()
     
+    if hasattr(result, '__dict__'):
+        print(vars(result))
+    else:
+        print("obj1 doesn't have a __dict__ attribute")
+    # result = db.execute(select(models.Ut))
+    # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
+
+    # for row in db.execute(stmt):
+    #     print(row)
+    # result = db.execute(select(models.Poa)).first()
     if not result:
         raise HTTPException(status_code=404, detail='Poa is not found')
     return result

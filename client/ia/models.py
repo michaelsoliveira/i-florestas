@@ -561,10 +561,10 @@ class Ut(Base):
     latitude = Column(Float(53))
     longitude = Column(Float(53))
     shapefile = Column(LargeBinary)
-    origem = Column(Geometry)
+    origem = Column(Geometry("POINT"))
     id_upa = Column(ForeignKey('public.upa.id', onupdate='CASCADE'))
     id_poa = Column(ForeignKey('public.poa.id', onupdate='CASCADE'))
-    polygon_path = Column(Geometry)
+    polygon_path = Column(Geometry('MULTIPOLYGON'))
 
     poa = relationship('Poa')
     upa = relationship('Upa')
