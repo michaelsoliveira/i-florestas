@@ -25,14 +25,16 @@ from math import sqrt
 from sklearn.metrics import r2_score
 import psycopg2
 
-import ia.models as models
+from ia.models import Ut, Poa, Arvore
 from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
-from sqlalchemy import select, join, and_
+from sqlalchemy import select, join, and_, func, column
 import json
 import re
+from geoalchemy2.shape import from_shape, to_shape
+from shapely import Point, to_wkb, to_wkt, to_geojson
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 class Poa(BaseModel):
     id: str
@@ -113,13 +115,30 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
 
 @app.get('/ia/get-poa/{poa_id}')
 async def inventario_poa(poa_id: str, db: db_dependency):
-    result = db.query(models.Ut).all()
-    
-    if hasattr(result, '__dict__'):
-        print(vars(result))
-    else:
-        print("obj1 doesn't have a __dict__ attribute")
-    # result = db.execute(select(models.Ut))
+    # query = select(func.ST_AsText(Ut.polygon_path), Ut.id)
+    # print(query)
+    # data = db.query(Arvore).join(Ut).filter(
+    #     Ut.id == Arvore.id_ut
+    # )
+
+    # Convert the SQLAlchemy objects to a list of dictionaries
+    # locations_json = [{'numero_arvore': arvore.numero_arvore, 'ponto_arvore': arvore.id } for arvore in data]
+
+    # Convert to JSON
+    # locations_json_string = json.dumps(locations_json, indent=4)
+
+    # print(locations_json)
+    # result['ponto_arvore'] = func.ST_AsGeoJSON(result['ponto_arvore'])
+    # print(result['id'])
+    # result = []
+    # for row in data:
+    #     result.append([func.ST_AsGeoJSON(row.ponto_arvore)])
+        
+    # if hasattr(result, '__dict__'):
+    #     print(vars(result))
+    # else:
+    #     print("obj1 doesn't have a __dict__ attribute")
+    result = db.execute(select(func.ST_AsGeoJSON(func.ST_Transform(Arvore.ponto_arvore,4326)))).scalars().all()
     # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
 
     # for row in db.execute(stmt):
