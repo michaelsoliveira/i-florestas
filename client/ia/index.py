@@ -138,7 +138,8 @@ async def inventario_poa(poa_id: str, db: db_dependency):
     #     print(vars(result))
     # else:
     #     print("obj1 doesn't have a __dict__ attribute")
-    result = db.execute(select(func.ST_AsGeoJSON(func.ST_Transform(Arvore.ponto_arvore,4326)))).scalars().all()
+    #result = db.execute(select(Arvore.id, func.ST_AsText(func.ST_Transform(Arvore.ponto_arvore,4326)))).scalars().all()
+    result = db.query(Arvore).order_by(Arvore.numero_arvore).all()
     # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
 
     # for row in db.execute(stmt):
