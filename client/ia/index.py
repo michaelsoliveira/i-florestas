@@ -33,6 +33,7 @@ import json
 import re
 from geoalchemy2.shape import from_shape, to_shape
 from shapely import Point, to_wkb, to_wkt, to_geojson
+import geopandas as gpd
 
 # models.Base.metadata.create_all(bind=engine)
 
@@ -130,7 +131,7 @@ async def inventario_poa(poa_id: str, db: db_dependency):
     # print(locations_json)
     # result['ponto_arvore'] = func.ST_AsGeoJSON(result['ponto_arvore'])
     # print(result['id'])
-    # result = []
+    arvores = []
     # for row in data:
     #     result.append([func.ST_AsGeoJSON(row.ponto_arvore)])
         
@@ -142,12 +143,21 @@ async def inventario_poa(poa_id: str, db: db_dependency):
     result = db.query(Arvore).order_by(Arvore.numero_arvore).all()
     # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
 
-    # for row in db.execute(stmt):
-    #     print(row)
+    for row in result:
+        point = 'POINT({} {})'.format(row.lng, row.lat)
+        arvores.append({
+            'id': row.id,
+            'numero_arvore': row.numero_arvore,
+            'dap': row.dap,
+            'lat': row.lat,
+            'lng': row.lng,
+            'ponto_arvore': point
+            #Point(func.ST_AsText(func.ST_Transform(row.ponto_arvore, 4326))) if row.ponto_arvore else ''
+        })
     # result = db.execute(select(models.Poa)).first()
-    if not result:
+    if not arvores:
         raise HTTPException(status_code=404, detail='Poa is not found')
-    return result
+    return arvores
 
 
 class TodoCreate(BaseModel):

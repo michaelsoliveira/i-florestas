@@ -591,7 +591,7 @@ class Arvore(Base):
     faixa = Column(Integer)
     derrubada = Column(Boolean, nullable=False, server_default=text("false"))
     secoes = Column(Integer)
-    ponto_arvore = Column(Geometry)
+    ponto_arvore = Column(Geometry("POINT"))
     ponto_gps = Column(Integer)
     lat = Column(Float(53))
     lng = Column(Float(53))
