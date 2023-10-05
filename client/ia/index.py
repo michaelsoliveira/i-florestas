@@ -116,30 +116,8 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
 
 @app.get('/ia/get-poa/{poa_id}')
 async def inventario_poa(poa_id: str, db: db_dependency):
-    # query = select(func.ST_AsText(Ut.polygon_path), Ut.id)
-    # print(query)
-    # data = db.query(Arvore).join(Ut).filter(
-    #     Ut.id == Arvore.id_ut
-    # )
-
-    # Convert the SQLAlchemy objects to a list of dictionaries
-    # locations_json = [{'numero_arvore': arvore.numero_arvore, 'ponto_arvore': arvore.id } for arvore in data]
-
-    # Convert to JSON
-    # locations_json_string = json.dumps(locations_json, indent=4)
-
-    # print(locations_json)
-    # result['ponto_arvore'] = func.ST_AsGeoJSON(result['ponto_arvore'])
-    # print(result['id'])
     arvores = []
-    # for row in data:
-    #     result.append([func.ST_AsGeoJSON(row.ponto_arvore)])
-        
-    # if hasattr(result, '__dict__'):
-    #     print(vars(result))
-    # else:
-    #     print("obj1 doesn't have a __dict__ attribute")
-    #result = db.execute(select(Arvore.id, func.ST_AsText(func.ST_Transform(Arvore.ponto_arvore,4326)))).scalars().all()
+
     result = db.query(Arvore).order_by(Arvore.numero_arvore).all()
     # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
 
@@ -148,7 +126,10 @@ async def inventario_poa(poa_id: str, db: db_dependency):
         arvores.append({
             'id': row.id,
             'numero_arvore': row.numero_arvore,
+            'altura': row.altura,
             'dap': row.dap,
+            'volume': row.volume,
+            'area_basal': row.area_basal,
             'lat': row.lat,
             'lng': row.lng,
             'ponto_arvore': point
