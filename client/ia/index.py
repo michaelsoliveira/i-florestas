@@ -33,7 +33,6 @@ import json
 import re
 from geoalchemy2.shape import from_shape, to_shape
 from shapely import Point, to_wkb, to_wkt, to_geojson
-import geopandas as gpd
 
 # models.Base.metadata.create_all(bind=engine)
 

@@ -26,14 +26,14 @@ export default function Dashboard() {
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-16">
             <div className="flex flex-col lg:flex-row border shadow-lg h-72 md:h-[26em] object-cover object-center" 
               style={{
-                backgroundImage: `url("/imgs/Hero.png")`,
+                backgroundImage: `url("/imgs/hero_bomanejo.jpeg")`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: `${windowWidth > 800 ? '100%' : '140%'} `,
                 backgroundPosition: 'center'             
               }}
             >
-            <div className='flex flex-row mx-auto'>
-              <Hero session={session}/>
+            <div className='flex flex-row mx-auto bg-white/75 rounded-lg my-auto h-32 md:h-56 mt-4 items-center'>
+              <Hero session={session}   />
             </div>
             
           </div>
