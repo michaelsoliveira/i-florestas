@@ -40,6 +40,7 @@ const Index = () => {
     const [umfs, setUmfs] = useState<any>()
     const [upas, setUpas] = useState<any>()
     const [uts, setUts] = useState<any>()
+    const [ observacoes, setObservacoes] = useState<any>()
     const [especies, setEspecies] = useState<any>()
     const [arvores, setArvores] = useState<any>()
     const umf = useAppSelector((state: RootState) => state.umf)
@@ -135,6 +136,12 @@ const Index = () => {
             setUts(uts)
     }, [client, upa?.id])
 
+    const getObservacoes = useCallback(async () => {
+        const response = await client.get('/obs-arvore')
+        const { error, observacoes } = response.data
+        setObservacoes(observacoes)
+    }, [client])
+
     const getArvores = useCallback(async() => {
         const response = await client.get(`/arvore/get-all`)
         const { arvores } = response.data
@@ -148,18 +155,19 @@ const Index = () => {
             setEspecies(especies) 
     }, [client])
 
+    const loadData = useCallback(async () => {
+        return await Promise.all([defaultUmfsOptions(), defaultUpasOptions(), getUts(), getEspecies(), getArvores(), getObservacoes()])
+    }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores, getObservacoes])
+
     useEffect(() => {
-        defaultUmfsOptions()
-        defaultUpasOptions()
-        getUts()
-        getEspecies()
-        getArvores()
-    }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores])
+        loadData()
+    }, [loadData])
 
     const getData = (data: any) => {
-        
         const columns = data?.length > 0 ? Object.keys(data[0]).map((col: any, index: any) => {
+
             const accessor = col.normalize("NFD").replace(" - ", " ").replace(/[^0-9a-zA-Z\s_]/g, "").split(" ").join("_").toLowerCase()
+
             if (accessor === 'ut' || accessor === 'especie') {
                 return {
                     Header: col,
@@ -181,7 +189,11 @@ const Index = () => {
     }
     
     const nomeEspecies = especies?.length > 0 
-        ? especies.map((especie: any) => especie.nome)
+        ? especies.map((especie: any) => especie.nome.toLowerCase())
+        : [];
+
+    const obsArvores = observacoes?.length > 0
+        ? observacoes.map((observacao: any) => observacao?.nome.toLowerCase())
         : [];
 
     const numUts = uts?.length > 0
@@ -194,12 +206,17 @@ const Index = () => {
 
     const arvoresUploaded: any = rowData.length > 0 
         ? rowData
-        : []
-    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie))
+        : [];
+
+    const obsExists = arvoresUploaded.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs.toLowerCase()))
+
+    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie.toLowerCase()))
     
     const numArvoreExists = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
     
     const utsNotFound = arvoresUploaded?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
+
+    const obsData: any = obsExists?.length > 0 ? getData(obsExists) : []
 
     const utsData: any = utsNotFound?.length > 0 ? getData(utsNotFound) : []
 
@@ -271,10 +288,12 @@ const Index = () => {
             if (data?.count === 0 || poa.id === '') {
                 return alertService.warn('Por favor, crie ou selecione um POA para iniciar a importação do inventário')
             } else {
-                console.log(utsNotFound, especiesNotFound)
+
                 if (utsNotFound.length > 0) return alertService.error('Existem árvores que não foi informado a UT ou não cadastrada')
                 if (especiesNotFound.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
                 if (numArvoreExists.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
+                if (obsExists.length > 0) return alertService.error('Existe árvore com observação não cadastrada!');
+
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                     columns: columnData,
@@ -327,7 +346,7 @@ const Index = () => {
                 };
             }, {})
         })
-        
+
         setColumnData(columns)
         setRowData(rows)
     }
@@ -338,7 +357,7 @@ const Index = () => {
               case 1:
                 return <SelectFileStep columns={columns} data={data} />;
               case 2:
-                return <div><Errors errors={{utsData, especiesData, numArvoresData}} /></div>
+                return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
               case 3:
                 return <>
                 <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
@@ -357,7 +376,7 @@ const Index = () => {
             if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
             if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
             if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
-
+            if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
             nextStep()
         } else {
             nextStep()

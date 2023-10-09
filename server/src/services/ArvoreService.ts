@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Arvore } from "@prisma/client";
+import { Arvore, Prisma } from "@prisma/client";
 
 const math = require('mathjs')
 
@@ -197,6 +197,20 @@ class ArvoreService {
                     }
                 })
 
+                const observacao: any = arv?.obs && await prismaClient.observacaoArvore.findFirst({
+                    where: {
+                        AND: [
+                                { nome: 
+                                    {
+                                        mode: Prisma.QueryMode.insensitive,
+                                        contains: arv?.obs
+                                    } 
+                                },
+                                { id_projeto: user?.id_projeto_ativo }
+                            ]
+                    }
+                })
+
                 const preparedData = upa?.tipo === 1 ? {
                     faixa: parseInt(arv?.faixa),
                     orient_x: arv?.orient_x,
@@ -204,9 +218,9 @@ class ArvoreService {
                     ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
                     lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
                     long_x: parseFloat(arv?.longitude?.replace(",", ".")),
-                }
+                }                
 
-                const result = arv?.numero_arvore !== '' && {
+                const data = arv?.numero_arvore !== '' && {
                     numero_arvore: parseInt(arv?.numero_arvore),
                     dap,
                     altura: parseFloat(arv?.altura),
@@ -215,10 +229,11 @@ class ArvoreService {
                     area_basal: areaBasal,
                     ...preparedData,
                     id_ut: ut?.id,
-                    id_especie: especie?.id_especie
+                    id_especie: especie?.id_especie,
+                    id_observacao: arv?.obs && observacao?.id
                 }
 
-                return result
+                return data
             }))
         }
             getData().then(async (data: any) => {

@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react'
 import Team from 'src/components/home/Team'
 import useWindowDimensions from '@/components/utils/useWindowDimensions'
 import { useEffect, useState } from 'react'
+import classNames from '@/components/utils/classNames'
 
 export default function Dashboard() {
   
@@ -21,10 +22,10 @@ export default function Dashboard() {
   return (
 
     <div className="w-full items-center justify-center mx-auto max-w-7xl">
-      <div className="mx-auto relative flex flex-row lg:flex-col lg:overflow-hidden ">
+      <div className="mx-auto relative flex flex-row lg:flex-col lg:overflow-hidden">
         <div className="w-full mt-10 px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-12">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-16">
-            <div className="flex flex-col lg:flex-row border shadow-lg h-72 md:h-[26em] object-cover object-center" 
+            <div className="flex flex-col lg:flex-row border shadow-lg h-72 md:h-[26em] object-cover object-center items-center justify-center" 
               style={{
                 backgroundImage: `url("/imgs/hero_bomanejo.jpeg")`,
                 backgroundRepeat: 'no-repeat',
@@ -32,7 +33,11 @@ export default function Dashboard() {
                 backgroundPosition: 'center'             
               }}
             >
-            <div className='flex flex-row mx-auto bg-white/75 rounded-lg my-auto h-32 md:h-56 mt-4 items-center'>
+            <div className={classNames(
+              'flex flex-row mx-auto bg-white/75 rounded-lg mt-4 items-center',
+              session ? 'h-32 md:h-56' : 'h-48 md:h-[20rem] lg:h-64'
+              )}
+            >
               <Hero session={session}   />
             </div>
             
@@ -65,14 +70,6 @@ export default function Dashboard() {
             </div>
               
           </div>
-          
-          {/* {!session && 
-              (<div>
-                <div className="text-center lg:flex lg:flex-col py-4">
-                  <Team />
-                </div>
-            </div>
-           )}  */}
         </div>
       </div>
     </div>
