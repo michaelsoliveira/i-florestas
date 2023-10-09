@@ -16,7 +16,7 @@ import { useEffect } from 'react';
 function Login() {
   const { hideModal } = useModalContext()
     const router = useRouter();
-    const callbackUrl = useSearchParams().get('callbackUrl') || "/"
+    const callbackUrl = useSearchParams().get('callbackUrl') || process.env.NEXTAUTH_URL
 
     // form validation rules 
     const validationSchema = Yup.object().shape({
