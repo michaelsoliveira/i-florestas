@@ -18,7 +18,7 @@ const Hero = ({ session }: any) => {
                 <div className="flex items-center justify-center text-center">
                 <h1 className="flex flex-col text-2xl tracking-tight font-bold text-gray-900 sm:text-2xl md:text-3xl lg:text-4xl xl:text-3xl">
                     <span className="block text-custom-green xl:inline">BOManejo Web</span>{' '}
-                    <span className="block text-xl text-gray-dark xl:inline">Inventário Florestal Sustentável</span>
+                    <span className="block text-xl text-gray-dark xl:inline">Manejo Florestal Sustentável</span>
                 </h1>
                 </div>
                 <p className="hidden md:flex roboto mt-2 text-justify text-base text-gray-dark sm:mt-5 max-w-lg lg:max-w-3xl md:mt-3 mb-4">
