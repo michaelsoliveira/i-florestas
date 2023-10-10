@@ -3,4 +3,4 @@
 .env.test.local
 .env.production.local
 /nbproject/private/
-.env
+*.env
