@@ -58,7 +58,7 @@ services:
       NEXTAUTH_URL: ${FRONTEND_URL}
       NEXT_PUBLIC_API_URL: ${BACKEND_URL}
     volumes:
-    # - ./client:/app
+     #- ./client:/app/.next/standalone
      - /app/node_modules
      - /app/.next
 

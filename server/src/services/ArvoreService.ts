@@ -148,92 +148,93 @@ class ArvoreService {
 
             const getData: any = async () => { 
                 return await Promise.all(dados?.map(async (arv: any) =>  {
-                const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
+                    const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
 
-                let scope = {
-                    dap,
-                    altura: parseFloat(arv?.altura)
-                }
-
-                const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
-                const expressao = eqVolume?.expressao.toLowerCase().replaceAll("ln(", "log(")
-                const volume = math.evaluate(expressao, scope)
-
-                const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
-                
-                const especie: any = nome_especie && await prismaClient.categoriaEspeciePoa.findFirst({
-                    distinct: ['id_especie'],
-                    include: {
-                        especie: true
-                    },
-                    where: {
-                        AND: 
-                        [
-                            {
-                                especie: {
-                                    nome: nome_especie,
-                                    projeto: {
-                                        id: user?.id_projeto_ativo
-                                    }
-                                } 
-                            },
-                            {
-                                categoria: {
-                                    poa: {
-                                        id: user?.id_poa_ativo
-                                    }
-                                }
-                            }
-                        ]
+                    let scope = {
+                        dap,
+                        altura: parseFloat(arv?.altura)
                     }
-                })
 
-                const ut: any = arv?.ut && await prismaClient.ut.findFirst({
-                    where: {
-                        AND: [
-                                { numero_ut: parseInt(arv?.ut) },
-                                { id_upa: upa?.id }
-                            ]
-                    }
-                })
+                    const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
+                    const expressao = eqVolume?.expressao.toLowerCase().replaceAll("ln(", "log(")
+                    const volume = math.evaluate(expressao, scope)
 
-                const observacao: any = arv?.obs && await prismaClient.observacaoArvore.findFirst({
-                    where: {
-                        AND: [
-                                { nome: 
-                                    {
-                                        mode: Prisma.QueryMode.insensitive,
-                                        contains: arv?.obs
+                    const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
+                    
+                    const especie: any = nome_especie && await prismaClient.categoriaEspeciePoa.findFirst({
+                        distinct: ['id_especie'],
+                        include: {
+                            especie: true
+                        },
+                        where: {
+                            AND: 
+                            [
+                                {
+                                    especie: {
+                                        nome: nome_especie,
+                                        projeto: {
+                                            id: user?.id_projeto_ativo
+                                        }
                                     } 
                                 },
-                                { id_projeto: user?.id_projeto_ativo }
+                                {
+                                    categoria: {
+                                        poa: {
+                                            id: user?.id_poa_ativo
+                                        }
+                                    }
+                                }
                             ]
+                        }
+                    })
+
+                    const ut: any = arv?.ut && await prismaClient.ut.findFirst({
+                        where: {
+                            AND: [
+                                    { numero_ut: parseInt(arv?.ut) },
+                                    { id_upa: upa?.id }
+                                ]
+                        }
+                    })
+
+                    const observacao: any = arv?.obs && await prismaClient.observacaoArvore.findFirst({
+                        where: {
+                            AND: [
+                                    { nome: 
+                                        {
+                                            mode: Prisma.QueryMode.insensitive,
+                                            contains: arv?.obs
+                                        } 
+                                    },
+                                    { id_projeto: user?.id_projeto_ativo }
+                                ]
+                        }
+                    })
+
+                    const preparedData = upa?.tipo === 1 ? {
+                        faixa: parseInt(arv?.faixa),
+                        orient_x: arv?.orient_x,
+                    } : {
+                        ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
+                        lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
+                        long_x: parseFloat(arv?.longitude?.replace(",", ".")),
+                    }                
+
+                    const data = arv?.numero_arvore !== '' && {
+                        numero_arvore: parseInt(arv?.numero_arvore),
+                        dap,
+                        altura: parseFloat(arv?.altura),
+                        fuste: arv?.qf && parseInt(arv?.qf),
+                        volume,
+                        area_basal: areaBasal,
+                        ...preparedData,
+                        id_ut: ut?.id,
+                        id_especie: especie?.id_especie
                     }
-                })
 
-                const preparedData = upa?.tipo === 1 ? {
-                    faixa: parseInt(arv?.faixa),
-                    orient_x: arv?.orient_x,
-                } : {
-                    ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
-                    lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
-                    long_x: parseFloat(arv?.longitude?.replace(",", ".")),
-                }                
+                    const withObs = arv?.obs ? { ...data, id_observacao: observacao?.id } : data
 
-                const data = arv?.numero_arvore !== '' && {
-                    numero_arvore: parseInt(arv?.numero_arvore),
-                    dap,
-                    altura: parseFloat(arv?.altura),
-                    fuste: arv?.qf && parseInt(arv?.qf),
-                    volume,
-                    area_basal: areaBasal,
-                    ...preparedData,
-                    id_ut: ut?.id,
-                    id_especie: especie?.id_especie,
-                    id_observacao: arv?.obs && observacao?.id
-                }
-
-                return data
+                return withObs
             }))
         }
             getData().then(async (data: any) => {

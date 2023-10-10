@@ -32,7 +32,6 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
     }
 
     const formSubmit = () => {
-        console.log(formRef.current)
         formRef.current.handleSubmit()
     }
 
@@ -68,7 +67,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                     const { error, message } = response.data
                     if (!error) {
                         alertService.success(message)
-                        loadUsers()
+                        loadUsers(10)
                         hideModal()
                     } else {
                         alertService.error(message)
@@ -128,7 +127,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
             client.delete('/users/multiples', { data: { ids: checkedUsers} })
                 .then(() => {
                     alertService.success('Os usuários foram deletadas com SUCESSO!!!')
-                    loadUsers()
+                    loadUsers(10)
                 })
         } catch (error) {
             console.log(error)

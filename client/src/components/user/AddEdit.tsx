@@ -265,14 +265,14 @@ export const AddEdit = forwardRef<any, AddEditType>(
                                 await client.get(`/users/${projeto?.id}/${userId}`)
                                     .then(({ data }: any) => {
                                         if (data?.users_roles?.length > 0) {
-                                                setSelectedRoles(data?.users_roles.map((role: any) => {
-                                                    return {
-                                                        label: role.name,
-                                                        value: role.id
-                                                    }
-                                                }))    
-                                            
-                                            setFieldValue('roles', data?.roles)
+                                            const roles = data?.users_roles.map((role: any) => {
+                                                return {
+                                                    label: role.name,
+                                                    value: role.id
+                                                }
+                                            })
+                                            setSelectedRoles(roles)    
+                                            setFieldValue('roles', roles)
                                         }
                                         
                                         const fields = ['username', 'email'];
@@ -399,20 +399,20 @@ export const AddEdit = forwardRef<any, AddEditType>(
                         {session && 
                         (<div className='w-full '>
                             <div className='py-4'>
-                                <Field name="roles_id">
-                                                {() => (
-                                    <Select
-                                        isMulti={true}
-                                        selectedValue={selectedRoles}
-                                        defaultOptions={getRolesDefaultOptions()}
-                                        options={loadRolesOptions}
-                                        label="Grupo de Usuário"
-                                        // options={selectedRoles}
-                                        callback={(data) => {
-                                            setSelectedRoles(data)
-                                            setFieldValue('roles', data)
-                                        }}
-                                    />
+                                <Field name="roles">
+                                    {() => (
+                                        <Select
+                                            isMulti={true}
+                                            selectedValue={selectedRoles}
+                                            defaultOptions={getRolesDefaultOptions()}
+                                            options={loadRolesOptions}
+                                            label="Grupo de Usuário"
+                                            // options={selectedRoles}
+                                            callback={(data) => {
+                                                setSelectedRoles(data)
+                                                setFieldValue('roles', data)
+                                            }}
+                                        />
                                     )}
                                 </Field>
                                 <ErrorMessage className='text-sm text-red-500 mt-1' name="roles" component="div" />
