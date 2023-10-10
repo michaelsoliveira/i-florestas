@@ -214,6 +214,8 @@ class ArvoreService {
                     const preparedData = upa?.tipo === 1 ? {
                         faixa: parseInt(arv?.faixa),
                         orient_x: arv?.orient_x,
+                        long_x: arv?.coord_x ? arv?.coord_x : arv?.x,
+                        lat_y: arv?.coord_y ? arv?.coord_y : arv?.y
                     } : {
                         ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
                         lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
