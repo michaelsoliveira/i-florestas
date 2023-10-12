@@ -11,9 +11,9 @@ import { google } from 'googleapis'
 import { handleCreateDefault } from "./DefaultData"
 import { getProjeto } from "./ProjetoService"
 
-const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET)
-client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
-var smtpTransport = require('nodemailer-smtp-transport');
+// const client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "https://developers.google.com/oauthplayground")
+// client.setCredentials({ refresh_token: process.env.GOOGLE_REFRESH_TOKEN })
+// var smtpTransport = require('nodemailer-smtp-transport');
 
 class UserService {
 
@@ -360,7 +360,8 @@ class UserService {
     }
 
     async sendMail(data: any) {
-        const accessToken = client.getAccessToken() as any
+        // const accessToken = client.getAccessToken() as any
+        // console.log(accessToken)
         const { email, name, message } = data
         
         let transporter = nodemailer.createTransport({

@@ -37,7 +37,8 @@ async function findProvider(token: any) {
           await userService.update(userExists?.id, dataProvider, access_token)
       } else {
         await userService.create(dataProvider)
-          .then( () => {
+          .then( (res) => {
+              console.log(res)
               userService.sendEmail(dataProvider)
           }).catch((err: any) => {
             console.log(err)
@@ -106,6 +107,8 @@ async function refreshAccessToken(token: any) {
           })
 
         const response = await fetch(url, {
+          cache: 'no-store',
+          body: null,
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -113,8 +116,7 @@ async function refreshAccessToken(token: any) {
         })
 
         const refreshedTokens = await response.json()
-        console.log(refreshedTokens)
-        
+
         if (!response.ok) {
           throw refreshedTokens
         }
@@ -307,9 +309,10 @@ export const authOptions: NextAuthOptions = {
         if (Date.now() < token.accessTokenExpires) {
           return token
         }
+        const data = refreshAccessToken(token)
         
         // Access token has expired, try to update it
-        return refreshAccessToken(token)
+        return data
       },
       async session({ session, token }: any) {
         // Send properties to the client, like an access_token from a provider.
