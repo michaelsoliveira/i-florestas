@@ -113,7 +113,8 @@ async function refreshAccessToken(token: any) {
         })
 
         const refreshedTokens = await response.json()
-
+        console.log(refreshedTokens)
+        
         if (!response.ok) {
           throw refreshedTokens
         }
