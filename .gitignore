@@ -1,6 +1,6 @@
 # local env files
 *.env
-*.env.example
 *.env.local
-*.env.staging
-/nbproject/private/
+*.env.development
+*.env.test.local
+*.env.production.local
