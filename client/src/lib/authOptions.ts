@@ -38,7 +38,6 @@ async function findProvider(token: any) {
       } else {
         await userService.create(dataProvider)
           .then( (res) => {
-              console.log(res)
               userService.sendEmail(dataProvider)
           }).catch((err: any) => {
             console.log(err)
@@ -310,7 +309,7 @@ export const authOptions: NextAuthOptions = {
           return token
         }
         const data = refreshAccessToken(token)
-        
+
         // Access token has expired, try to update it
         return data
       },
