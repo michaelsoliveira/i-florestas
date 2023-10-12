@@ -132,8 +132,8 @@ const Index = () => {
                                 id='btn-resp'
                                 onClick={PlanejarPOA}
                                 className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
-                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
-                                    !poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
+                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome?.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poaLocal?.situacao_poa?.nome?.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
                                 )}
                             >
                                 Planejar POA
@@ -143,8 +143,8 @@ const Index = () => {
                                 id='btn-resp'
                                 onClick={changeSituacaoPoaModal}
                                 className={classNames("px-6 py-2 bg-custom-green hover:bg-custom-green/75 transition trasition-all duration-500 ease-in-out rounded-md text-white items-center text-center w-1/2 lg:w-56",
-                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
-                                    !poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
+                                    !poaLocal?.id || poaLocal?.situacao_poa?.nome?.toLowerCase().includes('finalizado') && ("hover:cursor-not-allowed opacity-50"),
+                                    !poaLocal?.situacao_poa?.nome?.toLowerCase().includes('finalizado') && 'hover:cursor-pointer'
                                 )}
                             >
                                 Finalizar
