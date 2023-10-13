@@ -54,7 +54,7 @@ class UtService {
 
         const coordFields = (latitude && longitude) && {
             latitude: Number(latitude), 
-                longitude: Number(longitude),
+            longitude: Number(longitude),
         } 
 
         const preparedData = 
@@ -62,9 +62,8 @@ class UtService {
                 numero_ut: parseFloat(numero_ut), 
                 area_util: parseFloat(area_util), 
                 area_total: parseFloat(area_total), 
-                ...coordFields,
-                polygon_path,
                 id_upa,
+                ...coordFields,
             }
         
 
@@ -77,10 +76,12 @@ class UtService {
             quadrante: parseInt(quadrante), 
         } : preparedData
 
-        const fieldsUt = 'numero_ut, area_util, area_total, id_upa'
-        const withPolygon = polygon_path.length > 0 ? `${fieldsUt}, polygon_path` : fieldsUt
-        const withCoords = (latitude && longitude) ? withPolygon.concat(', latitude, longitude') : withPolygon
-        const fields = upa?.tipo === 1 ? `${fieldsUt}, quantidade_faixas, largura_faixas, azimute, quadrante, polygon_path` : withCoords
+        const fieldsBase = 'numero_ut, area_util, area_total, id_upa, latitude, longitude'
+        const fieldsUt = upa?.tipo === 1 
+            ? fieldsBase.concat(', quantidade_faixas, comprimento_faixas, largura_faixas, azimute, quadrante')
+            : fieldsBase
+
+        const fields = polygon_path.length > 0 ? `${fieldsUt}, polygon_path` : fieldsUt
 
         let values: any = []
         for (const [key, value] of Object.entries(data) as any)  {
@@ -96,13 +97,13 @@ class UtService {
             return acc + point
         }, '')
 
-        polygon_path.length && values.push(`POLYGON((${polygonString}))`)
-        
+        polygon_path.length.length > 0 && values.push(`POLYGON((${polygonString}))`)
+
         const query: any = `
             INSERT INTO ut(${fields})
                 VALUES('${values.join(`', '` )}')
         `
-        
+        console.log(query)
         const ut: Ut = await prismaClient.$queryRawUnsafe(query)
 
         return ut
@@ -322,6 +323,11 @@ class UtService {
                 a.area_total,
                 a.latitude,
                 a.longitude,
+                a.quantidade_faixas,
+                a.largura_faixas,
+                a.comprimento_faixas,
+                a.azimute,
+                a.quadrante,
                 ST_AsGeoJSON(a.polygon_path) as polygon_path , 
                 a.id_upa
             FROM ut a
