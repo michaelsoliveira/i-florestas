@@ -1,8 +1,9 @@
+import List from '@/components/utils/ListItems/List';
 import values from 'lodash/values'
 
 const Association = ({ data, fields, upa }: any) => {
     const dbColumns = upa?.tipo === 1 
-        ? ['ut', 'faixa', 'numero_arvore', 'especie', 'dap', 'altura', 'qf', 'orient_x', 'latitude', 'longitude', 'obs', 'comentario']
+        ? ['ut', 'faixa', 'numero_arvore', 'especie', 'dap', 'altura', 'qf', 'orient_x', 'x', 'y', 'obs', 'comentario']
         : ['ut', 'numero_arvore', 'especie', 'dap', 'altura', 'qf', 'latitude', 'longitude', 'obs', 'comentario']
 
         const datatest = [
@@ -23,31 +24,26 @@ const Association = ({ data, fields, upa }: any) => {
             }
           })
 
-          const items = values(fields)
+          const items = fields.map((field: any) => field.Header)
           
             return (
                 <div>
-                    <span>{JSON.stringify(assocFields)}</span>
-                     <table className="mt-10">
-                        <thead>
-                        <tr>
-                            {Object.values(fields).map((header: any) => (
-                            <th key={header.accessor}>{header.Header}</th>
-                            ))}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {data.map((row: any, index: number) => (
-                            <tr key={index}>
-                            {Object.values(fields).map((header: any, idx: number) => (
-                                <td key={idx}>{row[header.accessor]}</td>
-                            ))}
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                    <div className='flex flex-row max-w-5xl mx-auto rounded-md bg-gray-100 items-center py-4 px-8 my-4 text-sm text-gray-800'>
+                        <div className=''>Para realizar a importação do inventário existem colunas que são obrigatórias e deverão ser utilizadas: 
+                            <span className='font-bold'> ut, numero_arvore, especie, dap, altura</span>
+                        </div>
+                    </div>
+                    <div className='grid md:grid-cols-3 grid-cols-2 gap-4 max-w-xl md:max-w-4xl mx-auto'>
+                        <div className='mt-10'>
+                            <div className='mb-2'>Colunas da Planilha</div>
+                            <List items={items} selected={[0]} className='w-52 md:w-64' />
+                        </div>
+                        <div className='mt-10'>
+                            <div className='mb-2'>Colunas do DB</div>
+                            <List items={dbColumns} selected={[0]} className='w-52 md:w-64' />
+                        </div>
+                    </div>
                 </div>
-             
             );
          
 }

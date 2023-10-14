@@ -10,15 +10,16 @@ import uniq from 'lodash/uniq'
 import ListItem from './ListItem'
 import classNames from '../classNames'
 import { useState } from 'react'
+import '@/styles/List.module.css'
 
 type Props = {
 	className?: string,
 	items: Array<React.ReactNode>,
 	selected: Array<number>,
-	disabled: Array<number>,
-	multiple: boolean,
-	onChange: any,
-	keyboardEvents: boolean,
+	disabled?: Array<number>,
+	multiple?: boolean,
+	onChange?: any,
+	keyboardEvents?: boolean,
 }
 
 type State = {
@@ -73,7 +74,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 			return
 		}
 
-		let {lastSelected} = state
+		let { lastSelected } = state
 		let selectedItems = multiple
 			? [...state.selectedItems, index]
 			: [index]
@@ -94,7 +95,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 
 		setState({
 			...state,
-			selectedItems, lastSelected: index
+			selectedItems, lastSelected: index,
 		})
 
 		onChange(
@@ -158,7 +159,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 		if (!includes(disabledItems, index) && typeof index === 'number') {
 			focusedIndex = index
 		}
-
+		
 		setState({ ...state, focusedIndex })
 	}
 
@@ -248,44 +249,42 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 		let {event, index} = args
 		event.preventDefault()
 		let shift = event.shiftKey
-		toggleSelect({contiguous: shift, index})
+		toggleSelect({ contiguous: shift, index })
 	}
 
 	const toggleMouseSelect = (args: {
 		event: any,
 		index: number,
 	}) => {
-		let {event, index} = args
+		let { event, index } = args
 		event.preventDefault()
 		let shift = event.shiftKey
-		toggleSelect({contiguous: shift, index})
+		toggleSelect({ contiguous: shift, index })
 	}
 
 	return (
 		<>
-			{
-				items.map((itemContent: any, index: number) => (
-					<ListItem
-					key={index}
-					index={index}
-					disabled={includes(state.disabledItems, index)}
-					selected={includes(state.selectedItems, index)}
-					focused={state.focusedIndex === index}
-					onMouseOver={focusIndex}
-					onChange={toggleMouseSelect}
-				>
-					{itemContent}
-				</ListItem>
-				
-				))
-			}
-			
 			<ul
-				className={classNames('react-list-select', className)}
+				className={classNames('relative inline-block outline-none mr-[0.5em] border bg-[#fafafa] text-sm', className)}
 				tabIndex={0}
 				onKeyDown={keyboardEvents ? onKeyDown : undefined}
 			>
-				{items}
+				{
+					items.map((itemContent: any, index: number) => (
+						<ListItem
+							key={index}
+							index={index}
+							disabled={includes(state.disabledItems, index)}
+							selected={includes(state.selectedItems, index)}
+							focused={state.focusedIndex === index}
+							onMouseOver={focusIndex}
+							onChange={toggleMouseSelect}
+						>
+							{itemContent}
+					</ListItem>
+					
+					))
+				}
 			</ul>
 		</>
 	)

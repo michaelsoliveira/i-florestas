@@ -353,48 +353,10 @@ const Index = () => {
         setRowData(rows)
     }
 
-    const displayStep = () => {
-        const renderStep = () => {
-            switch (step) {
-                case 1:
-                    return <SelectFileStep columns={columns} data={data} />;
-                case 2:
-                    return <Association fields={columns} data={data} upa={upa} />
-                case 3:
-                    return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
-                case 4:
-                    return <>
-                    <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
-                        Clique no botão &quot;Finalizar Importação&quot; para realizar a importação inventário
-                    </div>
-                </>;
-                default: <>Importação do Inventário</>
-            }
-        }
-        
-        return renderStep()
-    }
-
-    function handleNext(): void {
-        if (step === 3) {
-            if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
-            if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
-            if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
-            if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
-            nextStep()
-        } else {
-            nextStep()
-        }
-
-        if (step === 4) {
-            handleImportInventario()
-            resetData()
-        }
-    }
-
-    return (
-        <div>
-            <div className="flex flex-col md:flex-row items-center justify-between p-4 w-full">
+    const fileStep = () => {
+        return (
+            <>
+                <div className="flex flex-col md:flex-row items-center justify-between p-4 w-full">
                     <CSVReader 
                         config={
                             {
@@ -477,6 +439,57 @@ const Index = () => {
                     </a>
                 </div>
             </div>
+            <SelectFileStep columns={columns} data={data} />
+            </>
+        )
+    }
+
+    const displayStep = () => {
+        const renderStep = () => {
+            switch (step) {
+                case 1:
+                    return fileStep();
+                case 2:
+                    return <Association fields={columns} data={data} upa={upa} />
+                case 3:
+                    return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
+                case 4:
+                    return <>
+                    <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
+                        Clique no botão &quot;Finalizar Importação&quot; para realizar a importação inventário
+                    </div>
+                </>;
+                default: <>Importação do Inventário</>
+            }
+        }
+        
+        return renderStep()
+    }
+
+    function handleNext(): void {
+        if (step === 3) {
+            if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
+            if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
+            if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
+            if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
+            nextStep()
+        } else {
+            nextStep()
+        }
+
+        if (step === 4) {
+            handleImportInventario()
+            resetData()
+        }
+    }
+
+    return (
+        <div>
+            <Stepper
+                steps= { steps }
+                currentStep={step}
+            />
+            
                 <div className="flex flex-col p-6">
                     <div className="pb-2">
                         <h1 className="text-xl font-semibold text-custom-green">Importação do Inventário</h1>
@@ -518,10 +531,6 @@ const Index = () => {
                         </div>
      
                     </div>
-            <Stepper
-                steps= { steps }
-                currentStep={step}
-            />
             <div>
                 { displayStep() }
             </div>
