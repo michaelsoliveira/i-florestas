@@ -20,6 +20,7 @@ import SelectFileStep from "./steps/SelectFileStep"
 import Finalizar from "./steps/Finalizar"
 import Stepper from "../utils/Stepper"
 import Errors from "./steps/Errors"
+import Association from "./steps/Association"
 
 const styles = {
     csvReader: {
@@ -57,6 +58,7 @@ const Index = () => {
     
     const steps = [
         "Arquivo",
+        "Associação",
         "Erros",
         "Finalizar"
     ]
@@ -210,7 +212,7 @@ const Index = () => {
 
     const obsExists = arvoresUploaded.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs.toLowerCase()))
 
-    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore.especie.toLowerCase()))
+    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore?.especie?.toLowerCase()))
     
     const numArvoreExists = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
     
@@ -354,17 +356,19 @@ const Index = () => {
     const displayStep = () => {
         const renderStep = () => {
             switch (step) {
-              case 1:
-                return <SelectFileStep columns={columns} data={data} />;
-              case 2:
-                return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
-              case 3:
-                return <>
-                <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
-                    Clique no botão &quot;Finalizar Importação&quot; para realizar a importação inventário
-                </div>
+                case 1:
+                    return <SelectFileStep columns={columns} data={data} />;
+                case 2:
+                    return <Association fields={columns} data={data} upa={upa} />
+                case 3:
+                    return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
+                case 4:
+                    return <>
+                    <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
+                        Clique no botão &quot;Finalizar Importação&quot; para realizar a importação inventário
+                    </div>
                 </>;
-              default: <>Importação do Inventário</>
+                default: <>Importação do Inventário</>
             }
         }
         
@@ -372,7 +376,7 @@ const Index = () => {
     }
 
     function handleNext(): void {
-        if (step === 2) {
+        if (step === 3) {
             if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
             if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
             if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
@@ -382,7 +386,7 @@ const Index = () => {
             nextStep()
         }
 
-        if (step === 3) {
+        if (step === 4) {
             handleImportInventario()
             resetData()
         }

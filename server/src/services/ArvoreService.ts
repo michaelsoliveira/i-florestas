@@ -414,7 +414,7 @@ class ArvoreService {
                 id: userId
             }
         })
-        const { perPage, page, search, orderBy, order, utId } = query
+        const { perPage, page, search, orderBy, order, utId, upaId } = query
         const skip = perPage && (page - 1) * perPage
         let orderByTerm = {}
         
@@ -431,16 +431,22 @@ class ArvoreService {
         }
 
         const withUt = utId === "0" || (typeof utId === undefined) 
-            ? {} 
+            ? {
+                ut: {
+                    upa: {
+                        id: upaId
+                    }
+                },
+            } 
             : {
-            ut: { 
-                AND: 
-                    [
-                        {id: utId},
-                        //{id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null}
-                    ]
-             }
-        }
+                ut: { 
+                    AND: 
+                        [
+                            {id: utId},
+                            //{id_poa: user?.id_poa_ativo ? user?.id_poa_ativo : null}
+                        ]
+                }
+            }
 
         const where = search ?
             {
@@ -477,7 +483,7 @@ class ArvoreService {
                         }
                     }
             }
-            
+            console.log(JSON.stringify(where))
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
                 include: {

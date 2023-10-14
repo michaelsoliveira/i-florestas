@@ -24,9 +24,10 @@ type MapProps = {
   shapeText?: string;
 }
 
-
-
 export default function Map({ setLocation, arvores, polygonPath, callBackPolygon, shapeText = 'Shape' }: MapProps) {
+  // Define refs for Polygon instance and listeners
+  const polygonRef = useRef<any>(null);
+  const listenersRef = useRef<any[]>([]);
   const [polygon, setPolygon] = useState<boolean>(true)
   const [size, setSize] = useState({
     x: window.innerWidth,
@@ -70,10 +71,6 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     []
   )
 
-  // Define refs for Polygon instance and listeners
-  const polygonRef = useRef<any>(null);
-  const listenersRef = useRef<any[]>([]);
-
   // Call setPath with new edited path
   const onEdit = useCallback((e: any) => {
     if (polygonRef.current) {
@@ -87,7 +84,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
         polygon ? callBackPolygon(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
 
         if (e.domEvent?.ctrlKey) {
-          // console.log(e)
+          // console.log(e.vertex)
           polygonRef.current?.getPath().removeAt(e.vertex)
         }
     }
@@ -100,7 +97,6 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
       setLocation({ lat: latLng.lat(), lng: latLng.lng() })
       setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
     } else {
-      
       callBackPolygon((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
     }
   }
@@ -115,12 +111,17 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
       listenersRef.current.push(
         path?.addListener("set_at", onEdit),
         path?.addListener("insert_at", onEdit),
-        path?.addListener("remove_at", onEdit),
+        path?.addListener("remove_at", onEdit)
       );
     },
     [onEdit]
   );
   const houses = useMemo(() => generateHouses(center), [center]);
+
+  const clearPath = () => {
+    listenersRef.current.forEach((lis: any) => lis?.remove());
+    callBackPolygon([])
+  }
 
   const fetchDirections = (house: LatLngLiteral) => {
     if (!utLocation) return;
@@ -156,7 +157,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
               /> { shapeText }
             </div> 
             { polygon && polygonPath.length > 0 && (
-              <div onClick={() => callBackPolygon([])} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
+              <div onClick={() => clearPath()} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
                 <div>
                     <FontAwesomeIcon icon={faEraser} />
                 </div>
@@ -188,7 +189,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
             <Polygon
               paths={polygonPath}
               editable={polygon}
-              draggable={polygon}
+              // draggable={polygon}
               // Event used when manipulating and adding points
               onMouseUp={onEdit}
               // Event used when dragging the whole Polygon

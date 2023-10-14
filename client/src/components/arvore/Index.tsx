@@ -53,7 +53,7 @@ const Index = () => {
         setLoading(true)
         const currentPagePagination = (pagination.name === pathname && pagination.currentPage) ? pagination.currentPage : 1
         const perPage = itemsPerPage ? itemsPerPage : pagination.perPage
-        const url = `/arvore/get-all?utId=${ut?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
+        const url = `/arvore/get-all?utId=${ut?.id}&upaId=${upa?.id}&page=${currentPage ? currentPage : currentPagePagination}&perPage=${itemsPerPage? itemsPerPage : perPage}&orderBy=${orderBy}&order=${order}`
 
         setCurrentPage(currentPagePagination)
 
@@ -112,7 +112,7 @@ const Index = () => {
 
         if (search) {
             
-            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&upaId=${upa?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}&search=${search}`)
 
             paginatedData = {
                 name,
@@ -121,7 +121,7 @@ const Index = () => {
                 totalItems: data?.count
             }
         } else {
-            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
+            var { data } = await client.get(`/arvore/get-all?utId=${utId ? utId : ut?.id}&upaId=${upa?.id}&page=${currentPage}&perPage=${perPage}&orderBy=${orderBy}&order=${order}`)
             paginatedData = {
                 name,
                 ...paginatedData,

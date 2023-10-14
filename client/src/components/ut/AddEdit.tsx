@@ -48,7 +48,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             if (!isAddMode && typeof session !== typeof undefined) {
                 
                 const { data: ut } = await client.get(`/ut/${id}`)
-                console.log(ut)
+
                 const polygon_path = ut.polygon_path?.length > 0 ? JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
                     return {
                         lat: polygon[1],
@@ -96,7 +96,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
 
     async function onSubmit(data: any) {
         try {
-            console.log(data)
+
             return isAddMode
                 ? createUt({...data, polygon_path: polygonPath})
                 : updateUt(id, {...data, polygon_path: polygonPath})
