@@ -9,6 +9,7 @@ import umfReducer from './features/umfSlice'
 import upaReducer from './features/upaSlice'
 import utReducer from './features/utSlice'
 import poaReducer from './features/poaSlice'
+import associationReducer from './features/associationSlice'
 import { loadState } from "./browser-storage";
 
 export const store = configureStore({
@@ -24,7 +25,8 @@ export const store = configureStore({
         umf: umfReducer,
         upa: upaReducer,
         ut: utReducer,
-        poa: poaReducer
+        poa: poaReducer,
+        association: associationReducer
     },
     preloadedState: loadState()
 })

@@ -21,6 +21,7 @@ import Finalizar from "./steps/Finalizar"
 import Stepper from "../utils/Stepper"
 import Errors from "./steps/Errors"
 import Association from "./steps/Association"
+import { setAssociation } from "@/redux/features/associationSlice"
 
 const styles = {
     csvReader: {
@@ -48,13 +49,13 @@ const Index = () => {
     const upa = useAppSelector((state: RootState) => state.upa)
     const [selectedUmf, setSelectedUmf] = useState<OptionType>()
     const [selectedUpa, setSelectedUpa] = useState<OptionType>()
-    const { projeto } = useContext(ProjetoContext)
     const [columnData, setColumnData] = useState([])
     const [rowData, setRowData] = useState([])
     const [encoding, setEncoding] = useState('iso-8859-1')
     const { CSVReader } = useCSVReader()
     const poa = useAppSelector((state: RootState) => state.poa)
     const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
+    const association = useAppSelector((state: RootState) => state.association.data)
     
     const steps = [
         "Arquivo",
@@ -162,6 +163,7 @@ const Index = () => {
     }, [defaultUmfsOptions, defaultUpasOptions, getUts, getEspecies, getArvores, getObservacoes])
 
     useEffect(() => {
+        // setStep(1)
         loadData()
     }, [loadData])
 
@@ -209,6 +211,20 @@ const Index = () => {
     const arvoresUploaded: any = rowData.length > 0 
         ? rowData
         : [];
+
+    // const columnsAssoc = rowData.length > 0 
+    // ? 
+    // association?.reduce((acc: any, curr: any, index: any) => {
+    //     acc[rowData[index]] = curr;
+    //     return {
+    //         linha: index + 1,
+    //         ...acc
+    //     };
+    // }, {})
+    // rowData.map((arv: any) => {
+        
+    // })
+    // : []
 
     const obsExists = arvoresUploaded.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs.toLowerCase()))
 
@@ -348,6 +364,8 @@ const Index = () => {
                 };
             }, {})
         })
+
+        dispatch(setAssociation({ columnsCsv: [], columnsDb: [], data: [] }))
 
         setColumnData(columns)
         setRowData(rows)
@@ -534,7 +552,7 @@ const Index = () => {
             <div>
                 { displayStep() }
             </div>
- 
+            
             <div className="flex justify-between mt-4">
                 <div>
                     <button

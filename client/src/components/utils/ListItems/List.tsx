@@ -1,21 +1,16 @@
-// @flow
-
-// Thanks to https://gist.github.com/DelvarWorld/3784055
-// for the inspiration for the shift-selection
-
 import includes from 'lodash/includes'
 import range from 'lodash/range'
 import reject from 'lodash/reject'
 import uniq from 'lodash/uniq'
 import ListItem from './ListItem'
 import classNames from '../classNames'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '@/styles/List.module.css'
 
 type Props = {
 	className?: string,
 	items: Array<React.ReactNode>,
-	selected: Array<number>,
+	selected?: Array<number>,
 	disabled?: Array<number>,
 	multiple?: boolean,
 	onChange?: any,
@@ -23,7 +18,7 @@ type Props = {
 }
 
 type State = {
-	items?: Array<React.ReactNode>,
+	items?: Array<React.ReactNode> | any,
 	selectedItems?: Array<number> | any,
 	disabledItems?: Array<number> | any,
 	focusedIndex?: null | number,
@@ -101,7 +96,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 		onChange(
 			multiple
 			? selectedItems
-			: lastSelected,
+			: index,
 		)
 	}
 
@@ -274,7 +269,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 						<ListItem
 							key={index}
 							index={index}
-							disabled={includes(state.disabledItems, index)}
+							disabled={includes(disabled, index)}
 							selected={includes(state.selectedItems, index)}
 							focused={state.focusedIndex === index}
 							onMouseOver={focusIndex}
