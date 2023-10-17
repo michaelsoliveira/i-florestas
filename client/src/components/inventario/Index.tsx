@@ -55,8 +55,7 @@ const Index = () => {
     const { CSVReader } = useCSVReader()
     const poa = useAppSelector((state: RootState) => state.poa)
     const { step, nextStep, prevStep, data: dataStep, updateData, resetData, setStep } = useContext(StepContext)
-    const association = useAppSelector((state: RootState) => state.association.data)
-    
+    const association = useAppSelector((state: RootState) => state.association)
     const steps = [
         "Arquivo",
         "Associação",
@@ -208,23 +207,25 @@ const Index = () => {
         ? arvores.map((arv: any) => arv.numero_arvore)
         : []
 
-    const arvoresUploaded: any = rowData.length > 0 
-        ? rowData
+    const arvoresUploaded: any = data.length > 0 
+        ? data
         : [];
 
-    // const columnsAssoc = rowData.length > 0 
-    // ? 
-    // association?.reduce((acc: any, curr: any, index: any) => {
-    //     acc[rowData[index]] = curr;
-    //     return {
-    //         linha: index + 1,
-    //         ...acc
-    //     };
-    // }, {})
-    // rowData.map((arv: any) => {
-        
-    // })
-    // : []
+    const relations: any = Object.values(association.relation)
+    const dataImport: any = association.data
+    const assocColumns = association.relation
+    ? 
+    dataImport.map((assoc: any) => {
+
+        return Object.values(association.relation).map((relation: any, index: any) => {
+            return assoc[relation.relation.value.accessor]
+        })
+     
+    })
+    
+
+
+    : []
 
     const obsExists = arvoresUploaded.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs.toLowerCase()))
 
@@ -365,8 +366,8 @@ const Index = () => {
             }, {})
         })
 
-        dispatch(setAssociation({ columnsCsv: [], columnsDb: [], data: [] }))
-
+        dispatch(setAssociation({ columnsCsv: [], columnsDb: [], relation: [], data: rows }))
+        // dispatch(setDataImport(rows))
         setColumnData(columns)
         setRowData(rows)
     }
@@ -374,6 +375,7 @@ const Index = () => {
     const fileStep = () => {
         return (
             <>
+                <div>{JSON.stringify(assocColumns)}</div>
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 w-full">
                     <CSVReader 
                         config={
@@ -468,7 +470,7 @@ const Index = () => {
                 case 1:
                     return fileStep();
                 case 2:
-                    return <Association fields={columns} data={data} upa={upa} />
+                    return <Association columns={columns} data={data} upa={upa} />
                 case 3:
                     return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
                 case 4:

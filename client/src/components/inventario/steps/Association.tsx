@@ -5,40 +5,40 @@ import values from 'lodash/values'
 import { useState } from 'react';
 import { setAssociation } from '@/redux/features/associationSlice';
 
-const Association = ({ data, fields, upa }: any) => {
+const Association = ({ columns, upa }: any) => {
     const [selectedFieldCsv, setSelectedFieldCsv] = useState<any>([])
     const [selectedFieldDb, setSelectedFieldDb] = useState<any>([])
     // const [association, setAssociation] = useState<any>([])
     const [disabledItemsDb, setDisabledItemsDb] = useState<any>([])
-    const assocData = useAppSelector((state: RootState) => state.association.data)
+    const association = useAppSelector((state: RootState) => state.association)
     const columnsCsv = useAppSelector((state: RootState) => state.association.columnsCsv)
     const dispatch = useAppDispatch()
 
     const dbColumns = upa?.tipo === 1 
         ? ['ut', 'faixa', 'numero_arvore', 'especie', 'dap', 'altura', 'qf', 'orient_x', 'x', 'y', 'obs', 'comentario']
         : ['ut', 'numero_arvore', 'especie', 'dap', 'altura', 'qf', 'latitude', 'longitude', 'obs', 'comentario']
-    const fieldCsv = fields[selectedFieldCsv]?.Header
+    const fieldCsv = columns[selectedFieldCsv]
     const fieldDb = dbColumns[selectedFieldDb]
         
     const addAssoc = () => {
-        dispatch(setAssociation({ columnsCsv: fields.map((field: any) => field.Header), columnsDb: dbColumns, data: {...assocData, [fieldDb]: { column: { key: selectedFieldDb, value: fieldDb }, relation: { key: selectedFieldCsv, value: fieldCsv }, row: fieldCsv + ' -> ' + fieldDb }} } )  )
+        dispatch(setAssociation({ ...association, columnsCsv: columns.map((field: any) => field.Header), columnsDb: dbColumns, relation: { ...association.relation, [fieldDb]: { column: { key: selectedFieldDb, value: fieldDb }, relation: { key: selectedFieldCsv, value: fieldCsv }, row: fieldCsv.Header + ' -> ' + fieldDb } } } )  )
     };
 
     const removeAssoc = () => {
         console.log('remover')
     }
 
-    const displayAssoc = Object.values(assocData).map((assoc: any) => assoc.row)
+    const displayAssoc = Object.values(association.relation).map((assoc: any) => assoc.row)
 
 //   const assocFields = dbColumns?.map((column: any, index: number) => {
 //     return {
 //         [fields[index].Header]: column
 //     }
 //   })
-    const fieldsCsv = Object.values(assocData).map((assoc: any) => assoc.relation.key)
-    const fieldsDb = Object.values(assocData).map((assoc: any) => assoc.column.key)
+    const fieldsCsv = Object.values(association.relation).map((assoc: any) => assoc.relation.key)
+    const fieldsDb = Object.values(association.relation).map((assoc: any) => assoc.column.key)
 
-    const items = fields.map((field: any) => field.Header) || columnsCsv
+    const items = columns.map((field: any) => field.Header) || columnsCsv
         
     return (
         <div>

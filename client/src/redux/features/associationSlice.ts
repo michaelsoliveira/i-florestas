@@ -3,13 +3,15 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState = {
     columnsCsv: [],
     columnsDb: [],
+    relation: [],
     data: []
 };
 
 export interface AssociationType {
-    columnsCsv: Array<any>,
-    columnsDb: Array<any>,
-    data: any
+    columnsCsv?: Array<any>,
+    columnsDb?: Array<any>,
+    relation?: any,
+    data?: any
 }
 
 const associationSlice = createSlice({
@@ -17,11 +19,16 @@ const associationSlice = createSlice({
   initialState,
   reducers: {
     setAssociation: (state, action: PayloadAction<AssociationType>) => {
-        const { columnsCsv, columnsDb, data }: any = action.payload
+        const { columnsCsv, columnsDb, relation,data }: any = action.payload
         state.columnsCsv = columnsCsv,
         state.columnsDb = columnsDb,
+        state.relation = relation,
         state.data = data
-      }
+      },
+    // setDataImport: (state, action: PayloadAction<AssociationType>) => {
+    //   const { data }: any = action.payload
+    //   state.data = data
+    // }
   },
   
 });
