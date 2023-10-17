@@ -211,20 +211,42 @@ const Index = () => {
         ? data
         : [];
 
+        function groupBy (arr: any, groupKey: any, headerFields: any) {
+            let ret: any = {};
+            let i = 0, len = arr.length;
+            let key: any;
+        
+            while (i++ < len) {
+                key = arr[i][groupKey];
+                if (!ret[key]) {
+                    ret[key] = {};
+                    ret[key].header = {};
+                    headerFields.forEach(function (headerField: any) {
+                        ret[key].header[headerField] = arr[i][headerField];
+                    });
+                    ret[key].rows = [];
+                }
+                ret[key].rows.push(arr[i]);
+            }
+        
+            return ret;
+        }
+
     const relations: any = Object.values(association.relation)
     const dataImport: any = association.data
     const assocColumns = association.relation
     ? 
-    dataImport.map((assoc: any, index: number) => {
-        return Object.keys(assoc).map((row: any, index: any) => {
-            return Object.keys(association.relation).forEach((relation: any) => {
-                return {
-                    test: 'asdasda'
+    dataImport.map((assoc: any, i: number) => {
+        return relations.map((relation: any, idx: any) => {
+            return Object.values(assoc).reduce((acc: any, curr: any, index: any) => {
+                if (index === relation.relation.key) {
+                    acc[i] = {[relation.column.value]: assoc[relation.relation.value.accessor]}
                 }
-            })
-            // return Object.values(association.relation).forEach((relation: any, index: any) => {
-            //     return row
-            // })
+                return {
+                    ...acc
+                }
+            }, {})
+
         })
     })
     
