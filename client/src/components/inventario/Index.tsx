@@ -215,12 +215,17 @@ const Index = () => {
     const dataImport: any = association.data
     const assocColumns = association.relation
     ? 
-    dataImport.map((assoc: any) => {
-
-        return Object.values(association.relation).map((relation: any, index: any) => {
-            return assoc[relation.relation.value.accessor]
+    dataImport.map((assoc: any, index: number) => {
+        return Object.keys(assoc).map((row: any, index: any) => {
+            return Object.keys(association.relation).forEach((relation: any) => {
+                return {
+                    test: 'asdasda'
+                }
+            })
+            // return Object.values(association.relation).forEach((relation: any, index: any) => {
+            //     return row
+            // })
         })
-     
     })
     
 
