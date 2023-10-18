@@ -15,7 +15,6 @@ export class ArvoreController {
                 })
             })
 
-            console.log(arvore)
             return response.json({
                 error: false,
                 arvore,
@@ -131,20 +130,16 @@ export class ArvoreController {
             }
         })
 
-        const rows = columns.map((row: any) => {
-            return row.accessor
-        })
-
         try {
 
-            if (rows.includes('faixa') && upa?.tipo === 0) {
+            if (columns.includes('faixa') && upa?.tipo === 0) {
                 return response.json({
                     error: true,
                     message: 'Inventário diferente do tipo da UPA'
                 })
             }
 
-            const { error, message } = await arvoreService.createByImport({ rows, importedData }, request.user?.id, upa)            
+            const { error, message } = await arvoreService.createByImport(importedData, request.user?.id, upa)            
 
             return response.json({
                 error,

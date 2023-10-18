@@ -145,7 +145,7 @@ const Index = () => {
     }, [client])
 
     const getArvores = useCallback(async() => {
-        const response = await client.get(`/arvore/get-all`)
+        const response = await client.get(`/arvore/get-all?utId=0&upaId=${upa?.id}`)
         const { arvores } = response.data
         setArvores(arvores)
     }, [client])
@@ -229,13 +229,13 @@ const Index = () => {
     
     const utsNotFound = assocColumns?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
     
-    const dapIsNumber = assocColumns.filter((arvore: any) => !arvore.dap?.match(/^[\d,.?!]+$/))
+    const dapIsNotNumber = assocColumns.filter((arvore: any) => !arvore.dap?.match(/^[\d,.?!]+$/))
 
-    const alturaIsNumber = assocColumns.filter((arvore: any) => !arvore.altura?.match(/^[\d,.?!]+$/))
+    const alturaIsNotNumber = assocColumns.filter((arvore: any) => !arvore.altura?.match(/^[\d,.?!]+$/))
 
-    const dapData: any = dapIsNumber?.length > 0 ? getData(dapIsNumber) : []
+    const dapData: any = dapIsNotNumber?.length > 0 ? getData(dapIsNotNumber) : []
 
-    const alturaData: any = alturaIsNumber?.length > 0 ? getData(alturaIsNumber) : []
+    const alturaData: any = alturaIsNotNumber?.length > 0 ? getData(alturaIsNotNumber) : []
 
     const obsData: any = obsExists?.length > 0 ? getData(obsExists) : []
 
@@ -321,14 +321,19 @@ const Index = () => {
 
                 setLoading(true)
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
-                    columns: columnData,
-                    data: rowData
+                    columns: association.columnsDb,
+                    data: assocColumns
                 })
                 .then((result: any) => {
                     setLoading(false)
                     const { data } = result
                     if (!data.error) {
                         alertService.success(data?.message)
+                        resetData()
+                        setRowData([])
+                        setColumnData([])
+                        setAssociation({})
+                        setStep(1)
                     } else {
                         alertService.warn(data?.message)
                     }
@@ -372,7 +377,7 @@ const Index = () => {
             }, {})
         })
 
-        dispatch(setAssociation({ ...association, columnsCsv: columns, columnsDb: [], relation: [], data: rows }))
+        dispatch(setAssociation({ ...association, columnsCsv: columns, columnsDb: [], relation: [] }))
         // dispatch(setDataImport(rows))
         setColumnData(columns)
         setRowData(rows)
@@ -381,7 +386,6 @@ const Index = () => {
     const fileStep = () => {
         return (
             <>
-                <div>{JSON.stringify(assocColumns)}</div>
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 w-full">
                     <CSVReader 
                         config={
@@ -465,7 +469,7 @@ const Index = () => {
                     </a>
                 </div>
             </div>
-            <SelectFileStep columns={columns} data={dataImport} />
+            <SelectFileStep columns={columns} data={data} />
             </>
         )
     }
@@ -478,7 +482,7 @@ const Index = () => {
                 case 2:
                     return <Association data={data} upa={upa} />
                 case 3:
-                    return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
+                    return <div><Errors errors={{dapData, alturaData, utsData, especiesData, numArvoresData, obsData}} /></div>
                 case 4:
                     return <>
                     <div className="flex flex-row items-center justify-center text-sm mt-10 border max-w-4xl mx-auto py-8 rounded-lg">
@@ -506,13 +510,14 @@ const Index = () => {
                 if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
                 if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
                 if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
+                if (dapData?.data?.length > 0) return alertService.error('Existe um "DAP" não númerico')
                 nextStep()
             }
             break;
             case 4: {
                 handleImportInventario()
-                resetData()
             }
+            break;
             default: nextStep()
         }
     }

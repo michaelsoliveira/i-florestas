@@ -149,10 +149,10 @@ class ArvoreService {
             const getData: any = async () => { 
                 return await Promise.all(dados?.map(async (arv: any) =>  {
                     const dap = arv?.cap ? (Number(arv?.cap?.replace(",","."))/ Math.PI) : Number(arv?.dap?.replace(",","."))
-
+                    const altura = Number(arv?.altura?.replace(",","."))
                     let scope = {
                         dap,
-                        altura: parseFloat(arv?.altura)
+                        altura
                     }
 
                     const nome_especie = arv?.especie ? arv?.especie : arv?.especie_nome_vulgar
@@ -214,8 +214,8 @@ class ArvoreService {
                     const preparedData = upa?.tipo === 1 ? {
                         faixa: parseInt(arv?.faixa),
                         orient_x: arv?.orient_x,
-                        long_x: arv?.coord_x ? parseFloat(arv?.coord_x) : parseFloat(arv?.x),
-                        lat_y: arv?.coord_y ? parseFloat(arv?.coord_y) : parseFloat(arv?.y)
+                        long_x: arv?.coord_x ? Number(arv?.coord_x?.replace(",", ".")) : Number(arv?.x?.replace(",", ".")),
+                        lat_y: arv?.coord_y ? Number(arv?.coord_y.replace(",", ".")) : Number(arv?.y?.replace(",", "."))
                     } : {
                         ponto_gps: arv?.ponto_gps && parseInt(arv?.ponto_gps),
                         lat_y: parseFloat(arv?.latitude?.replace(",", ".")),
@@ -278,7 +278,7 @@ class ArvoreService {
 
     async createByImport(dt: any, userId: string, upa?: any): Promise<any> {
         try {
-            const data = await this.inserirDadosEmParalelo(dt?.importedData, userId, upa, NUM_WRITES).then((data: any) => {
+            const data = await this.inserirDadosEmParalelo(dt, userId, upa, NUM_WRITES).then((data: any) => {
                 return {
                     ...data
                 }
@@ -433,9 +433,7 @@ class ArvoreService {
         const withUt = utId === "0" || (typeof utId === undefined) 
             ? {
                 ut: {
-                    upa: {
-                        id: upaId
-                    }
+                    id_upa: upaId
                 },
             } 
             : {
@@ -483,7 +481,7 @@ class ArvoreService {
                         }
                     }
             }
-            console.log(JSON.stringify(where))
+
         const [data, total] = await prismaClient.$transaction([
             prismaClient.arvore.findMany({
                 include: {
