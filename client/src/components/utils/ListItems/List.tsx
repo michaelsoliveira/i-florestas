@@ -15,6 +15,8 @@ type Props = {
 	multiple?: boolean,
 	onChange?: any,
 	keyboardEvents?: boolean,
+	handleClear?: any,
+	handleDisable?: any
 }
 
 type State = {
@@ -30,7 +32,7 @@ type SelectArgs = {
 	contiguous: boolean,
 }
 
-const List = ({ className, items = [], selected = [], disabled = [], multiple = false, onChange = () => {}, keyboardEvents = true }: Props) => {
+const List = ({ className, items = [], selected = [], disabled = [], multiple = false, handleClear, handleDisable, onChange = () => {}, keyboardEvents = true }: Props) => {
 	const KEY = {
 		UP: 38,
 		DOWN: 40,
@@ -160,7 +162,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 
 	const focusPrevious = () => {
 		let { focusedIndex, disabledItems, items } = state as any
-			let lastItem = items.length - 1 
+			let lastItem = items?.length - 1 
 
 			if (focusedIndex === null) {
 				focusedIndex = lastItem
@@ -170,7 +172,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 			}
 
 			// skip disabled items
-			if (disabledItems.length) {
+			if (disabledItems?.length) {
 				while (includes(disabledItems, focusedIndex)) {
 					focusedIndex =
 						focusedIndex <= 0 ? lastItem : focusedIndex - 1
@@ -182,7 +184,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 	const focusNext = () => {
 		setState(state => {
 			let {focusedIndex, disabledItems, items} = state as any
-			let lastItem = items.length - 1
+			let lastItem = items?.length - 1
 
 			if (focusedIndex === null) {
 				focusedIndex = 0
@@ -192,7 +194,7 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 			}
 
 			// skip disabled items
-			if (disabledItems.length) {
+			if (disabledItems?.length) {
 				while (includes(disabledItems, focusedIndex)) {
 					focusedIndex =
 						focusedIndex >= lastItem ? 0 : focusedIndex + 1
@@ -281,6 +283,10 @@ const List = ({ className, items = [], selected = [], disabled = [], multiple = 
 					))
 				}
 			</ul>
+			<div className='hidden'>
+				<button type="button" ref={handleClear} onClick={clear}>Clear</button>
+				<button type="button" ref={handleDisable} onClick={(index: any) => disable(index)}></button>
+			</div>
 		</>
 	)
 }

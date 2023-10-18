@@ -207,60 +207,35 @@ const Index = () => {
         ? arvores.map((arv: any) => arv.numero_arvore)
         : []
 
-    const arvoresUploaded: any = data.length > 0 
-        ? data
-        : [];
-
-        function groupBy (arr: any, groupKey: any, headerFields: any) {
-            let ret: any = {};
-            let i = 0, len = arr.length;
-            let key: any;
-        
-            while (i++ < len) {
-                key = arr[i][groupKey];
-                if (!ret[key]) {
-                    ret[key] = {};
-                    ret[key].header = {};
-                    headerFields.forEach(function (headerField: any) {
-                        ret[key].header[headerField] = arr[i][headerField];
-                    });
-                    ret[key].rows = [];
-                }
-                ret[key].rows.push(arr[i]);
-            }
-        
-            return ret;
-        }
-
     const relations: any = Object.values(association.relation)
     const dataImport: any = association.data
     const assocColumns = association.relation
     ? 
     dataImport.map((assoc: any, i: number) => {
-        return relations.map((relation: any, idx: any) => {
-            return Object.values(assoc).reduce((acc: any, curr: any, index: any) => {
-                if (index === relation.relation.key) {
-                    acc[i] = {[relation.column.value]: assoc[relation.relation.value.accessor]}
-                }
-                return {
-                    ...acc
-                }
-            }, {})
-
-        })
+        return relations.reduce((acc: any, curr: any, index: any) => {
+            acc[curr.column.value] = assoc[curr.relation.value.accessor]
+            return {
+                ...acc
+            }
+        }, [])
     })
-    
-
-
     : []
 
-    const obsExists = arvoresUploaded.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs.toLowerCase()))
+    const obsExists = assocColumns.filter((arvore: any) => arvore?.obs && !obsArvores.includes(arvore?.obs?.toLowerCase()))
 
-    const especiesNotFound = arvoresUploaded.filter((arvore: any) => !nomeEspecies.includes(arvore?.especie?.toLowerCase()))
+    const especiesNotFound = assocColumns.filter((arvore: any) => !nomeEspecies.includes(arvore?.especie?.toLowerCase()))
     
-    const numArvoreExists = arvoresUploaded.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
+    const numArvoreExists = assocColumns.filter((arvore: any) => String(numArvores).includes(String(arvore.numero_arvore)))
     
-    const utsNotFound = arvoresUploaded?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
+    const utsNotFound = assocColumns?.filter((arvore: any) => !numUts.includes(String(arvore?.ut)))
+    
+    const dapIsNumber = assocColumns.filter((arvore: any) => !arvore.dap?.match(/^[\d,.?!]+$/))
+
+    const alturaIsNumber = assocColumns.filter((arvore: any) => !arvore.altura?.match(/^[\d,.?!]+$/))
+
+    const dapData: any = dapIsNumber?.length > 0 ? getData(dapIsNumber) : []
+
+    const alturaData: any = alturaIsNumber?.length > 0 ? getData(alturaIsNumber) : []
 
     const obsData: any = obsExists?.length > 0 ? getData(obsExists) : []
 
@@ -269,6 +244,10 @@ const Index = () => {
     const especiesData: any = especiesNotFound?.length > 0 ? getData(especiesNotFound) : []
 
     const numArvoresData: any = numArvoreExists?.length > 0 ? getData(numArvoreExists) : []
+
+    const columnsAssociative = Object.values(association.relation).map((relation: any) => relation.column.value)
+
+    const requiredColumns = ['ut', 'numero_arvore', 'especie', 'dap', 'altura', 'qf']
     
     const selectUmf = async (umf: any) => {
         dispatch(setUmf({
@@ -393,7 +372,7 @@ const Index = () => {
             }, {})
         })
 
-        dispatch(setAssociation({ columnsCsv: [], columnsDb: [], relation: [], data: rows }))
+        dispatch(setAssociation({ ...association, columnsCsv: columns, columnsDb: [], relation: [], data: rows }))
         // dispatch(setDataImport(rows))
         setColumnData(columns)
         setRowData(rows)
@@ -486,7 +465,7 @@ const Index = () => {
                     </a>
                 </div>
             </div>
-            <SelectFileStep columns={columns} data={data} />
+            <SelectFileStep columns={columns} data={dataImport} />
             </>
         )
     }
@@ -497,7 +476,7 @@ const Index = () => {
                 case 1:
                     return fileStep();
                 case 2:
-                    return <Association columns={columns} data={data} upa={upa} />
+                    return <Association data={data} upa={upa} />
                 case 3:
                     return <div><Errors errors={{utsData, especiesData, numArvoresData, obsData}} /></div>
                 case 4:
@@ -514,19 +493,27 @@ const Index = () => {
     }
 
     function handleNext(): void {
-        if (step === 3) {
-            if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
-            if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
-            if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
-            if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
-            nextStep()
-        } else {
-            nextStep()
-        }
-
-        if (step === 4) {
-            handleImportInventario()
-            resetData()
+        switch(step) {
+            case 2: {
+                if (!requiredColumns.every((elem: any) => columnsAssociative.includes(elem))) {
+                    return alertService.error('Existem campos obrigatórios que não forão associados')
+                }
+                nextStep()
+            }
+            break;
+            case 3: {
+                if (utsData?.data?.length > 0) return alertService.error('Existe erro na coluna de UT')
+                if (especiesData?.data?.length > 0) return alertService.error('Existe erro na coluna de espécie')
+                if (numArvoresData?.data?.length > 0) return alertService.error('Existe erro na coluna de número árvore')
+                if (obsData?.data?.length > 0) return alertService.error('Existe erro na coluna Observação')
+                nextStep()
+            }
+            break;
+            case 4: {
+                handleImportInventario()
+                resetData()
+            }
+            default: nextStep()
         }
     }
 
