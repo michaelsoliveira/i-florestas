@@ -1,7 +1,7 @@
 'use client'
 
 import { FormInput } from '@/components/utils/FormInput'
-import { useContext, useEffect, useState, useCallback } from 'react'
+import { useContext, useEffect, useState, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
@@ -13,11 +13,13 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 import { setUt } from "@/redux/features/utSlice"
 import Map from '../maps/Map'
-import { useJsApiLoader } from '@react-google-maps/api'
+import { Libraries, useLoadScript } from '@react-google-maps/api'
 
-export const libraries = String(['places', 'geometry', 'drawing'])
+
 
 type LatLngLiteral = google.maps.LatLngLiteral;
+
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
 
 const AddEdit = ({ params } : { params: { id: string } }) => {
     const { id } = params
@@ -31,16 +33,14 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const dispatch = useAppDispatch()
     const isAddMode = !id
     const [polygonPath, setPolygonPath] = useState<any>([])
+    const libraries: Libraries = useMemo(() =>['places', 'geometry', 'drawing'], [])
 
-    const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: `${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`,
-        libraries: ['places', 'geometry', 'drawing']
+    const { isLoaded } = useLoadScript({
+        id: 'script-loader',
+        version: "weekly",
+        googleMapsApiKey: API_KEY,
+        libraries
     })
-
-    const callBackPolygon = (data: Array<LatLngLiteral>) => {
-        setPolygonPath(data)
-    }
 
     useEffect(() => {        
         async function loadUt() {
@@ -316,12 +316,12 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                 <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
                                 <div className='flex flex-row items-center mx-auto'>
                                     {
-                                        (!isLoaded) ? <div>Loading...</div> : 
+                                        isLoaded && 
                                         (
                                             <Map 
                                                 setLocation={setLocation}
                                                 arvores={arvores}
-                                                callBackPolygon={callBackPolygon}
+                                                point={setPolygonPath}
                                                 polygonPath={polygonPath}
                                                 shapeText='Definir área da UT'
                                             />

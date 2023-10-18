@@ -3,10 +3,10 @@ import {
   GoogleMap,
   Marker,
   DirectionsRenderer,
-  Circle,
-  MarkerClusterer,
-  Polygon,
-  DrawingManager
+  DrawingManagerF,
+  MarkerClustererF,
+  MarkerF,
+  PolygonF,
 } from "@react-google-maps/api";
 
 import Distance from "./Distance";
@@ -20,14 +20,13 @@ type MapOptions = google.maps.MapOptions;
 type OverlayType = google.maps.drawing.OverlayType
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
-  callBackPolygon?: any
   arvores?: Array<LatLngLiteral>
   polygonPath?: any;
   shapeText?: string;
-  point?: any
+  point?: any;
 }
 
-export default function Map({ setLocation, arvores, polygonPath, callBackPolygon, point, shapeText = 'Shape' }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, point, shapeText = 'Shape' }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
@@ -37,7 +36,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     x: window.innerWidth,
     y: window.innerHeight
   })
-  const [path, setPath] = useState<any>(polygonPath);
+  const [path, setPath] = useState<any>([]);
 
   const updateSize = () => {
     setSize({
@@ -96,37 +95,11 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     []
   )
 
-  // const drawingManager = new google.maps.drawing.DrawingManager({
-  //   drawingMode: google.maps.drawing.OverlayType.MARKER,
-  //   drawingControl: true,
-  //   drawingControlOptions: {
-  //     position: google.maps.ControlPosition.TOP_CENTER,
-  //     drawingModes: [
-  //       google.maps.drawing.OverlayType.MARKER,
-  //       google.maps.drawing.OverlayType.CIRCLE,
-  //       google.maps.drawing.OverlayType.POLYGON,
-  //       google.maps.drawing.OverlayType.POLYLINE,
-  //       google.maps.drawing.OverlayType.RECTANGLE,
-  //     ],
-  //   },
-  //   markerOptions: {
-  //     icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
-  //   },
-  //   circleOptions: {
-  //     fillColor: "#ffff00",
-  //     fillOpacity: 1,
-  //     strokeWeight: 5,
-  //     clickable: false,
-  //     editable: true,
-  //     zIndex: 1,
-  //   },
-  // });
-
   const options: google.maps.drawing.DrawingManagerOptions = {
-    // drawingMode: google.maps.drawing.OverlayType.MARKER,
+    // drawingMode: google.maps.drawing.OverlayType.POLYGON,
     drawingControl: true,
     drawingControlOptions: {
-      // position: google.maps.ControlPosition.TOP_CENTER,
+      position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
         google.maps.drawing.OverlayType.POLYGON
       ],
@@ -134,12 +107,16 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     markerOptions: {
       icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
     },
-    circleOptions: {
-      fillColor: "#ffff00",
-      fillOpacity: 1,
-      strokeWeight: 2,
+    polygonOptions: {
+      fillColor: "#2196F3",
+      strokeColor: `#2196F3`,
+      fillOpacity: 0.5,
+      strokeWeight: 1,
       clickable: true,
       zIndex: 1,
+      editable: true,
+      draggable: true,
+      visible: true
     },
   };
 
@@ -152,17 +129,18 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
         .map((latLng: any) => {
           return { lat: latLng.lat(), lng: latLng.lng() };
         });
-
-        // path ? callBackPolygon(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-        
-        
+        setPath(nextPath);
+        point(nextPath);
+        path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
     }
+    
     if (e.domEvent?.ctrlKey) {
+      console.log('clicou')
       const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
-      callBackPolygon(paths)
+      point(paths)
     }
 
-  }, [callBackPolygon, polygon]);
+  }, [setPath, point]);
 
   const handleClick = (e: any) => {
     const { latLng } = e;
@@ -170,7 +148,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
       setLocation({ lat: latLng.lat(), lng: latLng.lng() })
       setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
     } else {
-      callBackPolygon((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
+      point((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
     }
   }
 
@@ -193,7 +171,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
 
   const clearPath = () => {
     listenersRef.current.forEach((lis: any) => lis?.remove());
-    callBackPolygon([])
+    point([])
   }
 
   const fetchDirections = (house: LatLngLiteral) => {
@@ -243,101 +221,91 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           </div>
         </div>
       </div>
-      <div>{JSON.stringify(path)}</div>
+      <div>{JSON.stringify(drawingMode)}</div>
       <div className="map">
-        
-        <GoogleMap
-          zoom={8}
-          center={center}
-          mapContainerStyle={{
-            width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
-            height: '400px'
-          }}
-          options={mapOptions}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-          onClick={handleClick}
-        >
-          {path && path.length === 0 ? (
-            <DrawingManager
-              drawingMode={drawingMode}
-              options={options}
-              onPolygonComplete={onPolygonComplete}
-              //onLoad={onDrawingManagerLoad}
-              // editable
-              // draggable
-              // Event used when manipulating and adding points
-              // onMouseUp={onEdit}
-              // Event used when dragging the whole Polygon
-              // onDragEnd={onEdit}
-            />
-          ) : (
-            <>
-            <Polygon
-              path={path}
-              editable
-              // draggable={polygon}
-              // Event used when manipulating and adding points
-              onMouseUp={onEdit}
-              // Event used when dragging the whole Polygon
-              onDragEnd={onEdit}
-              onLoad={onLoadPolygon}
-              onUnmount={onUnmountPolygon}
-              options={{
-                fillColor: '#00FF00',
-                fillOpacity: 0.4,
-                strokeColor: '#00FF00',
-                strokeOpacity: 1,
-                strokeWeight: 2,
-              }}
-            />
-            </>
-          ) }
-          {directions && (
-            <DirectionsRenderer
-              directions={directions}
-              options={{
-                polylineOptions: {
-                  zIndex: 50,
-                  strokeColor: "#1976D2",
-                  strokeWeight: 4,
-                },
-              }}
-            />
-          )}
-          { utLocation && (
-            <>
-              <Marker
-                position={utLocation}
-                icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+          <GoogleMap
+            zoom={8}
+            center={center}
+            mapContainerStyle={{
+              width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
+              height: '400px'
+            }}
+            options={mapOptions}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+            // onClick={handleClick}
+          >
+            {
+            path && path.length === 0 ? 
+            (
+              <DrawingManagerF
+                drawingMode={drawingMode}
+                options={options}
+                onPolygonComplete={onPolygonComplete}
               />
-            </>
-          ) }
-          {arvores && (
-            <>
-              <MarkerClusterer>
-                {(clusterer) =>
-                  <>
-                    {arvores?.map((arv: any, idx: any) => (
-                      <Marker
-                        key={idx}
-                        position={arv}
-                        clusterer={clusterer}
-                        onClick={() => {
-                          fetchDirections(arv);
-                        } } 
-                      />
-                    ))}
-                  </> 
-                }
-              </MarkerClusterer>
+            ) 
+            : (
+              <>
+              <PolygonF
+                path={path}
+                editable
+                draggable
+                // draggable={polygon}
+                // Event used when manipulating and adding points
+                onMouseUp={onEdit}
+                // Event used when dragging the whole Polygon
+                onDragEnd={onEdit}
+                onLoad={onLoadPolygon}
+                onUnmount={onUnmountPolygon}
+              />
+              </>
+            ) 
+            }
+            {directions && (
+              <DirectionsRenderer
+                directions={directions}
+                options={{
+                  polylineOptions: {
+                    zIndex: 50,
+                    strokeColor: "#1976D2",
+                    strokeWeight: 4,
+                  },
+                }}
+              />
+            )}
+            { utLocation && (
+              <>
+                <MarkerF
+                  position={utLocation}
+                  icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                />
+              </>
+            ) }
+            {arvores && (
+              <>
+                <MarkerClustererF>
+                  {(clusterer) =>
+                    <>
+                      {arvores?.map((arv: any, idx: any) => (
+                        <Marker
+                          key={idx}
+                          position={arv}
+                          clusterer={clusterer}
+                          onClick={() => {
+                            fetchDirections(arv);
+                          } } 
+                        />
+                      ))}
+                    </> 
+                  }
+                </MarkerClustererF>
 
-              {/* <Circle center={utLocation} radius={15000} options={closeOptions} />
-              <Circle center={utLocation} radius={30000} options={middleOptions} />
-              <Circle center={utLocation} radius={45000} options={farOptions} /> */}
-            </>
-          )}
-        </GoogleMap>
+                {/* <Circle center={utLocation} radius={15000} options={closeOptions} />
+                <Circle center={utLocation} radius={30000} options={middleOptions} />
+                <Circle center={utLocation} radius={45000} options={farOptions} /> */}
+              </>
+            )}
+          </GoogleMap>
       </div>
       {
         utLocation && (
