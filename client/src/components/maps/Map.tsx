@@ -6,8 +6,9 @@ import {
   Circle,
   MarkerClusterer,
   Polygon,
-  OverlayView
+  DrawingManager
 } from "@react-google-maps/api";
+
 import Distance from "./Distance";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser } from "@fortawesome/free-solid-svg-icons"
@@ -16,23 +17,27 @@ import { AiOutlineConsoleSql } from "react-icons/ai";
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
+type OverlayType = google.maps.drawing.OverlayType
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
   callBackPolygon?: any
   arvores?: Array<LatLngLiteral>
   polygonPath?: any;
   shapeText?: string;
+  point?: any
 }
 
-export default function Map({ setLocation, arvores, polygonPath, callBackPolygon, shapeText = 'Shape' }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, callBackPolygon, point, shapeText = 'Shape' }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
-  const [polygon, setPolygon] = useState<boolean>(true)
+  const [polygon, setPolygon] = useState<boolean>(false)
+  const [drawingMode, setDrawingMode] = useState<OverlayType>(google.maps.drawing.OverlayType.POLYGON);
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
   })
+  const [path, setPath] = useState<any>(polygonPath);
 
   const updateSize = () => {
     setSize({
@@ -51,10 +56,30 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     mapRef.current = undefined
   }, [])
 
+  const noDraw = () => {
+    setDrawingMode(google.maps.drawing.OverlayType.MARKER)
+  };
+
+  const onPolygonComplete = useCallback(
+    function onPolygonComplete(poly: any) {
+      const polyArray = poly.getPath().getArray();
+      let paths: any = [];
+      polyArray.forEach(function(path: any) {
+        paths.push({ lat: path.lat(), lng: path.lng() });
+      });
+      setPath(paths);
+      console.log("onPolygonComplete", paths);
+      point(paths);
+      noDraw();
+      poly.setMap(null);
+    },
+    [point]
+  );
+
   const onUnmountPolygon = useCallback(() => {
       listenersRef.current.forEach((lis: any) => lis?.remove());
       polygonRef.current = null;
-      mapRef.current = undefined
+      // mapRef.current = undefined
   }, [])
 
   const center = useMemo<LatLngLiteral>(
@@ -62,7 +87,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     []
   );
 
-  const options = useMemo<MapOptions>(
+  const mapOptions = useMemo<MapOptions>(
     () => ({
       mapId: "e8b3ef309dafc25e",
       disableDefaultUI: false,
@@ -70,6 +95,53 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
     }),
     []
   )
+
+  // const drawingManager = new google.maps.drawing.DrawingManager({
+  //   drawingMode: google.maps.drawing.OverlayType.MARKER,
+  //   drawingControl: true,
+  //   drawingControlOptions: {
+  //     position: google.maps.ControlPosition.TOP_CENTER,
+  //     drawingModes: [
+  //       google.maps.drawing.OverlayType.MARKER,
+  //       google.maps.drawing.OverlayType.CIRCLE,
+  //       google.maps.drawing.OverlayType.POLYGON,
+  //       google.maps.drawing.OverlayType.POLYLINE,
+  //       google.maps.drawing.OverlayType.RECTANGLE,
+  //     ],
+  //   },
+  //   markerOptions: {
+  //     icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+  //   },
+  //   circleOptions: {
+  //     fillColor: "#ffff00",
+  //     fillOpacity: 1,
+  //     strokeWeight: 5,
+  //     clickable: false,
+  //     editable: true,
+  //     zIndex: 1,
+  //   },
+  // });
+
+  const options: google.maps.drawing.DrawingManagerOptions = {
+    // drawingMode: google.maps.drawing.OverlayType.MARKER,
+    drawingControl: true,
+    drawingControlOptions: {
+      // position: google.maps.ControlPosition.TOP_CENTER,
+      drawingModes: [
+        google.maps.drawing.OverlayType.POLYGON
+      ],
+    },
+    markerOptions: {
+      icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+    },
+    circleOptions: {
+      fillColor: "#ffff00",
+      fillOpacity: 1,
+      strokeWeight: 2,
+      clickable: true,
+      zIndex: 1,
+    },
+  };
 
   // Call setPath with new edited path
   const onEdit = useCallback((e: any) => {
@@ -81,12 +153,13 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           return { lat: latLng.lat(), lng: latLng.lng() };
         });
 
-        polygon ? callBackPolygon(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-
-        if (e.domEvent?.ctrlKey) {
-          // console.log(e.vertex)
-          polygonRef.current?.getPath().removeAt(e.vertex)
-        }
+        // path ? callBackPolygon(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+        
+        
+    }
+    if (e.domEvent?.ctrlKey) {
+      const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
+      callBackPolygon(paths)
     }
 
   }, [callBackPolygon, polygon]);
@@ -170,6 +243,7 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
           </div>
         </div>
       </div>
+      <div>{JSON.stringify(path)}</div>
       <div className="map">
         
         <GoogleMap
@@ -179,16 +253,29 @@ export default function Map({ setLocation, arvores, polygonPath, callBackPolygon
             width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
             height: '400px'
           }}
-          options={options}
+          options={mapOptions}
           onLoad={onLoad}
           onUnmount={onUnmount}
           onClick={handleClick}
         >
-          { polygonPath.length > 0 && (
+          {path && path.length === 0 ? (
+            <DrawingManager
+              drawingMode={drawingMode}
+              options={options}
+              onPolygonComplete={onPolygonComplete}
+              //onLoad={onDrawingManagerLoad}
+              // editable
+              // draggable
+              // Event used when manipulating and adding points
+              // onMouseUp={onEdit}
+              // Event used when dragging the whole Polygon
+              // onDragEnd={onEdit}
+            />
+          ) : (
             <>
             <Polygon
-              paths={polygonPath}
-              editable={polygon}
+              path={path}
+              editable
               // draggable={polygon}
               // Event used when manipulating and adding points
               onMouseUp={onEdit}
