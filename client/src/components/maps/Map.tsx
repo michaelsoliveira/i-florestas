@@ -13,6 +13,8 @@ import Distance from "./Distance";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEraser } from "@fortawesome/free-solid-svg-icons"
 import { AiOutlineConsoleSql } from "react-icons/ai";
+import { RootState } from "@/redux/store";
+import { useAppSelector } from "@/redux/hooks";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -30,7 +32,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
-  const [polygon, setPolygon] = useState<boolean>(false)
+  const upa = useAppSelector((state: RootState) => state.upa)
   const [drawingMode, setDrawingMode] = useState<OverlayType>(google.maps.drawing.OverlayType.POLYGON);
   const [size, setSize] = useState({
     x: window.innerWidth,
@@ -96,11 +98,12 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
   )
 
   const options: google.maps.drawing.DrawingManagerOptions = {
-    // drawingMode: google.maps.drawing.OverlayType.POLYGON,
+    drawingMode: null,
     drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
+        // google.maps.drawing.OverlayType.MARKER,
         google.maps.drawing.OverlayType.POLYGON
       ],
     },
@@ -135,8 +138,8 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
     }
     
     if (e.domEvent?.ctrlKey) {
-      console.log('clicou')
       const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
+      setPath(paths)
       point(paths)
     }
 
@@ -144,12 +147,9 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
 
   const handleClick = (e: any) => {
     const { latLng } = e;
-    if (!polygon) {
-      setLocation({ lat: latLng.lat(), lng: latLng.lng() })
+
       setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
-    } else {
-      point((prev: any)=> [...prev, { lat: latLng.lat(), lng: latLng.lng() }])
-    }
+      setLocation({ lat: latLng.lat(), lng: latLng.lng() })    
   }
 
   const onLoad = useCallback((map: any) => {  
@@ -197,10 +197,10 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
       <div className="pb-2">
         <div className="flex flex-row items-center justify-between w-full">
           <div className="w-full">
-            {!utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
+            {upa.tipo === 0 && !utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
             {directions && <Distance leg={directions.routes[0].legs[0]} />}
           </div>
-          <div className="flex flex-row items-center w-full space-x-2 justify-end">
+          {/* <div className="flex flex-row items-center w-full space-x-2 justify-end">
             <div className="space-x-2">
               <input type="checkbox" 
                 checked={polygon}
@@ -218,10 +218,9 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
                 </div>
             ) }
            
-          </div>
+          </div> */}
         </div>
       </div>
-      <div>{JSON.stringify(drawingMode)}</div>
       <div className="map">
           <GoogleMap
             zoom={8}
@@ -233,15 +232,16 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
             options={mapOptions}
             onLoad={onLoad}
             onUnmount={onUnmount}
-            // onClick={handleClick}
+            onClick={handleClick}
           >
             {
-            path && path.length === 0 ? 
+            drawingMode === "polygon" ? 
             (
               <DrawingManagerF
                 drawingMode={drawingMode}
                 options={options}
                 onPolygonComplete={onPolygonComplete}
+                // onOverlayComplete={onOverlayComplete}
               />
             ) 
             : (
