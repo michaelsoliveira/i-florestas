@@ -21,16 +21,18 @@ type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
   arvores?: Array<LatLngLiteral>
   polygonPath?: any;
-  shapeText?: string;
+  location?: any;
   point?: any;
 }
 
-export default function Map({ setLocation, arvores, polygonPath, point, shapeText = 'Shape' }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, point, location }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
+  const [selectedShape, setSelectedShape] = useState<any>()
   const upa = useAppSelector((state: RootState) => state.upa)
-  const [drawingMode, setDrawingMode] = useState<OverlayType>(google.maps.drawing.OverlayType.POLYGON);
+  let all_overlays: any = []
+  const [drawingMode, setDrawingMode] = useState<OverlayType | null>(google.maps.drawing.OverlayType.POLYGON);
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
@@ -46,8 +48,8 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
 
   useEffect(() => (onresize = updateSize), [])
 
-  const [utLocation, setUtLocation] = useState<LatLngLiteral>();
-  const [directions, setDirections] = useState<DirectionsResult>();
+  const [utLocation, setUtLocation] = useState<LatLngLiteral>(location);
+
   const mapRef = useRef<GoogleMap>();
 
   const onUnmount = useCallback(function callback() {
@@ -67,6 +69,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
       });
       setPath(paths);
       console.log("onPolygonComplete", paths);
+      setDrawingMode(null)
       point(paths);
       noDraw();
       poly.setMap(null);
@@ -105,8 +108,9 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
       ],
     },
     markerOptions: {
-      icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+      // icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
     },
+    
     polygonOptions: {
       fillColor: "#2196F3",
       strokeColor: `#2196F3`,
@@ -131,7 +135,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
         });
         setPath(nextPath);
         point(nextPath);
-        path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+        // path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
     }
     
     if (e.domEvent?.ctrlKey) {
@@ -171,23 +175,86 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
     point([])
   }
 
-  const fetchDirections = (house: LatLngLiteral) => {
-    if (!utLocation) return;
+  // const fetchDirections = (house: LatLngLiteral) => {
+  //   if (!utLocation) return;
 
-    const service = new google.maps.DirectionsService();
-    service.route(
-      {
-        origin: house,
-        destination: utLocation,
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (status === "OK" && result) {
-          setDirections(result);
+  //   const service = new google.maps.DirectionsService();
+  //   service.route(
+  //     {
+  //       origin: house,
+  //       destination: utLocation,
+  //       travelMode: google.maps.TravelMode.DRIVING,
+  //     },
+  //     (result, status) => {
+  //       if (status === "OK" && result) {
+  //         setDirections(result);
+  //       }
+  //     }
+  //   );
+  // };
+
+  let marker: google.maps.Marker;
+  let infowindow: google.maps.InfoWindow;
+
+  function clearSelection() {
+    if (selectedShape) {
+      selectedShape.setEditable(false);
+      setSelectedShape(null)
+    }
+  }
+
+  function setSelection(shape: any) {
+    clearSelection();
+    setSelectedShape(shape)
+    console.log
+    shape.setEditable(false)
+    // selectColor(shape.get('fillColor') || shape.get('strokeColor'));
+  }
+  function deleteAllShape() {
+    for (var i=0; i < all_overlays.length; i++)
+    {
+      all_overlays[i].overlay.setMap(null);
+    }
+    all_overlays = [];
+  }
+
+  function onOverlayComplete(event: any): void {
+    if (event.type === google.maps.drawing.OverlayType.MARKER) {
+      deleteAllShape()
+      all_overlays.push(event);
+      if (!marker || !marker.setPosition) {
+        marker = new google.maps.Marker({
+            position: event.overlay.position,
+            map: event.overlay.map,
+            });
+        } else {
+            marker.setPosition(event.overlay.position);
         }
+        if (!!infowindow && !!infowindow.close) {
+          infowindow.close();
       }
-    );
-  };
+
+      setLocation({ lat: event.overlay.position.lat(), lng: event.overlay.position.lng() })   
+      // setUtLocation({ lat: event.overlay.position.lat(), lng: event.overlay.position.lng() }) 
+      
+      infowindow = new google.maps.InfoWindow({
+          content: 'Latitude: ' + event.overlay.position.lat() + '<br>Longitude: ' + event.overlay.position.lng()
+      });
+      infowindow.open(event.overlay.map, marker);
+    } else {
+      // Switch back to non-drawing mode after drawing a shape.
+      // setDrawingMode(null);
+
+      // Add an event listener that selects the newly-drawn shape when the user
+      // mouses down on it.
+      var newShape = event.overlay;
+      newShape.type = event.type;
+      google.maps.event.addListener(newShape, 'click', function() {
+        setSelection(newShape);
+      });
+      setSelection(newShape);
+    }
+}
 
   return (
     <div className="mt-2">
@@ -195,27 +262,8 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
         <div className="flex flex-row items-center justify-between w-full">
           <div className="w-full">
             {upa.tipo === 0 && !utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
-            {directions && <Distance leg={directions.routes[0].legs[0]} />}
+            {/* {directions && <Distance leg={directions.routes[0].legs[0]} />} */}
           </div>
-          {/* <div className="flex flex-row items-center w-full space-x-2 justify-end">
-            <div className="space-x-2">
-              <input type="checkbox" 
-                checked={polygon}
-                onChange={() => setPolygon(!polygon)}
-              /> { shapeText }
-            </div> 
-            { polygon && polygonPath.length > 0 && (
-              <div onClick={() => clearPath()} className="flex flex-row px-4 py-2 space-x-2 border rounded-md">
-                <div>
-                    <FontAwesomeIcon icon={faEraser} />
-                </div>
-                <span>
-                    Limpar
-                </span>
-                </div>
-            ) }
-           
-          </div> */}
         </div>
       </div>
       <div className="map">
@@ -231,23 +279,19 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
             onUnmount={onUnmount}
             onClick={handleClick}
           >
-            {
-            polygonPath && polygonPath.length === 0 ? 
-            (
+
               <DrawingManagerF
-                drawingMode={drawingMode}
+                // drawingMode={drawingMode}
                 options={options}
                 onPolygonComplete={onPolygonComplete}
-                // onOverlayComplete={onOverlayComplete}
+                onOverlayComplete={onOverlayComplete}
               />
-            ) 
-            : (
+
               <>
               <PolygonF
                 path={polygonPath}
                 editable
                 draggable
-                // draggable={polygon}
                 // Event used when manipulating and adding points
                 onMouseUp={onEdit}
                 // Event used when dragging the whole Polygon
@@ -256,9 +300,8 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
                 onUnmount={onUnmountPolygon}
               />
               </>
-            ) 
-            }
-            {directions && (
+        
+            {/* {directions && (
               <DirectionsRenderer
                 directions={directions}
                 options={{
@@ -269,7 +312,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
                   },
                 }}
               />
-            )}
+            )} */}
             { utLocation && (
               <>
                 <MarkerF
@@ -288,18 +331,14 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
                           key={idx}
                           position={arv}
                           clusterer={clusterer}
-                          onClick={() => {
-                            fetchDirections(arv);
-                          } } 
+                          // onClick={() => {
+                          //   fetchDirections(arv);
+                          // } } 
                         />
                       ))}
                     </> 
                   }
                 </MarkerClustererF>
-
-                {/* <Circle center={utLocation} radius={15000} options={closeOptions} />
-                <Circle center={utLocation} radius={30000} options={middleOptions} />
-                <Circle center={utLocation} radius={45000} options={farOptions} /> */}
               </>
             )}
           </GoogleMap>

@@ -23,7 +23,8 @@ const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
 
 const AddEdit = ({ params } : { params: { id: string } }) => {
     const { id } = params
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm()
+    const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm()
+    const { latitude, longitude } = getValues()
     const { client } = useContext(AuthContext)
     const upa = useAppSelector((state: RootState) => state.upa)
     const [arvores, setArvores] = useState<any>([])
@@ -322,7 +323,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                                 arvores={arvores}
                                                 point={setPolygonPath}
                                                 polygonPath={polygonPath}
-                                                shapeText='Definir área da UT'
+                                                location={{ lat: latitude, lng: longitude }}
                                             />
                                         )
                                     }
