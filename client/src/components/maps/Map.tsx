@@ -21,11 +21,11 @@ type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
   arvores?: Array<LatLngLiteral>
   polygonPath?: any;
-  location?: any;
+  utLocation?: any;
   point?: any;
 }
 
-export default function Map({ setLocation, arvores, polygonPath, point, location }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, point, utLocation }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
@@ -47,8 +47,6 @@ export default function Map({ setLocation, arvores, polygonPath, point, location
   }
 
   useEffect(() => (onresize = updateSize), [])
-
-  const [utLocation, setUtLocation] = useState<LatLngLiteral>(location);
 
   const mapRef = useRef<GoogleMap>();
 
@@ -98,7 +96,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, location
   )
 
   const options: google.maps.drawing.DrawingManagerOptions = {
-    drawingMode: null,
+    // drawingMode: null,
     drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
@@ -148,8 +146,6 @@ export default function Map({ setLocation, arvores, polygonPath, point, location
 
   const handleClick = (e: any) => {
     const { latLng } = e;
-
-      setUtLocation({ lat: latLng.lat(), lng: latLng.lng() })
       setLocation({ lat: latLng.lat(), lng: latLng.lng() })    
   }
 
@@ -247,12 +243,12 @@ export default function Map({ setLocation, arvores, polygonPath, point, location
 
       // Add an event listener that selects the newly-drawn shape when the user
       // mouses down on it.
-      var newShape = event.overlay;
-      newShape.type = event.type;
-      google.maps.event.addListener(newShape, 'click', function() {
-        setSelection(newShape);
-      });
-      setSelection(newShape);
+      // var newShape = event.overlay;
+      // newShape.type = event.type;
+      // google.maps.event.addListener(newShape, 'click', function() {
+      //   setSelection(newShape);
+      // });
+      // setSelection(newShape);
     }
 }
 

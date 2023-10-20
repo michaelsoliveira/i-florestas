@@ -24,7 +24,7 @@ const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
 const AddEdit = ({ params } : { params: { id: string } }) => {
     const { id } = params
     const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm()
-    const { latitude, longitude } = getValues()
+    const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral>()
     const { client } = useContext(AuthContext)
     const upa = useAppSelector((state: RootState) => state.upa)
     const [arvores, setArvores] = useState<any>([])
@@ -63,6 +63,11 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                     }
                 })
 
+                setUtLocation({
+                    lat: ut?.latitude,
+                    lng: ut?.longitude
+                })
+
                 for (const [key, value] of Object.entries(ut)) {
                     switch(key) {
                         case 'upa': setValue('upa', ut?.id_upa);
@@ -93,7 +98,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
 
         loadUt()
 
-    }, [session, isAddMode, client, id, setValue, upa, setArvores])
+    }, [session, isAddMode, client, id, setValue, upa, setArvores, setUtLocation])
 
     async function onSubmit(data: any) {
         try {
@@ -128,6 +133,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     }
 
     async function setLocation(location: any) {
+        setUtLocation(location)
         setValue('latitude', location.lat)
         setValue('longitude', location.lng)
     }
@@ -323,7 +329,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                                 arvores={arvores}
                                                 point={setPolygonPath}
                                                 polygonPath={polygonPath}
-                                                location={{ lat: latitude, lng: longitude }}
+                                                utLocation={utLocation}
                                             />
                                         )
                                     }
