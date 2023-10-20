@@ -10,9 +10,6 @@ import {
 } from "@react-google-maps/api";
 
 import Distance from "./Distance";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEraser } from "@fortawesome/free-solid-svg-icons"
-import { AiOutlineConsoleSql } from "react-icons/ai";
 import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -38,7 +35,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
     x: window.innerWidth,
     y: window.innerHeight
   })
-  const [path, setPath] = useState<any>([]);
+  const [path, setPath] = useState<any>(polygonPath);
 
   const updateSize = () => {
     setSize({
@@ -143,7 +140,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
       point(paths)
     }
 
-  }, [setPath, point]);
+  }, [point, path]);
 
   const handleClick = (e: any) => {
     const { latLng } = e;
@@ -235,7 +232,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
             onClick={handleClick}
           >
             {
-            drawingMode === "polygon" ? 
+            polygonPath && polygonPath.length === 0 ? 
             (
               <DrawingManagerF
                 drawingMode={drawingMode}
@@ -247,7 +244,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, shapeTex
             : (
               <>
               <PolygonF
-                path={path}
+                path={polygonPath}
                 editable
                 draggable
                 // draggable={polygon}

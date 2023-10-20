@@ -28,7 +28,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const upa = useAppSelector((state: RootState) => state.upa)
     const [arvores, setArvores] = useState<any>([])
     const { data: session } = useSession()
-    const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral | null>(null)
+    // const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral | null>(null)
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isAddMode = !id
@@ -127,7 +127,6 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     }
 
     async function setLocation(location: any) {
-        setUtLocation(location)
         setValue('latitude', location.lat)
         setValue('longitude', location.lng)
     }

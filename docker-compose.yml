@@ -12,6 +12,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
+#    networks:
+#      - app
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -25,6 +27,8 @@ services:
     volumes:
       - pgadmindata:/var/lib/pgadmin
     restart: unless-stopped
+#  networks:
+#      - app
   backend:
     depends_on:
       - postgres
@@ -40,6 +44,8 @@ services:
     environment:
       POSTGRES_URL: ${POSTGRES_URL}
       FRONTEND_URL: ${FRONTEND_URL}
+#    networks:
+#      - app
     volumes:
       - ./server:/app
       - /app/node_modules
@@ -57,6 +63,10 @@ services:
       BACKEND_URL: ${BACKEND_URL}
       NEXTAUTH_URL: ${FRONTEND_URL}
       NEXT_PUBLIC_API_URL: ${BACKEND_URL}
+#    networks:
+#      - app
+    depends_on:
+      - backend
     volumes:
      #- ./client:/app/.next/standalone
      - /app/node_modules
@@ -65,3 +75,7 @@ services:
 volumes:
   pgdata:
   pgadmindata:
+
+#networks:
+#  backend:
+#    driver: bridge

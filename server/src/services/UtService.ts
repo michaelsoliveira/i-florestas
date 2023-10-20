@@ -97,7 +97,9 @@ class UtService {
             return acc + point
         }, '')
 
-        polygon_path.length.length > 0 && values.push(`POLYGON((${polygonString}))`)
+        console.log(polygonString)
+
+        polygon_path.length > 0 && values.push(`POLYGON((${polygonString}))`)
 
         const query: any = `
             INSERT INTO ut(${fields})
