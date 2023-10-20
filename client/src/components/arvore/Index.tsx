@@ -63,7 +63,7 @@ const Index = () => {
 
         setLoading(false)
         
-    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, pathname, setLoading, ut?.id])
+    }, [client, order, orderBy, pagination.currentPage, pagination.name, pagination.perPage, pathname, setLoading, upa?.id, ut?.id])
 
     const exportCsv = async () => {
         var { data: response } = await client.get(`/arvore/get-all?utId=${ut?.id ? ut?.id : null}&order=asc&orderBy=numero_arvore`)

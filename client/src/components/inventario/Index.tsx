@@ -148,7 +148,7 @@ const Index = () => {
         const response = await client.get(`/arvore/get-all?utId=0&upaId=${upa?.id}`)
         const { arvores } = response.data
         setArvores(arvores)
-    }, [client])
+    }, [client, upa?.id])
 
     const getEspecies = useCallback(async () => {
     

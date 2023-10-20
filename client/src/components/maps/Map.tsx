@@ -144,7 +144,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, location
       point(paths)
     }
 
-  }, [point, path]);
+  }, [point]);
 
   const handleClick = (e: any) => {
     const { latLng } = e;
