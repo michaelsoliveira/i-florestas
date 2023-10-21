@@ -10,7 +10,7 @@ DECLARE
  r numeric;
 
 BEGIN
-r := COALESCE((nvl(x * y)/100));        
+r := ceil((COALESCE(x * y)/100));        
 
 return r;  
 END;
