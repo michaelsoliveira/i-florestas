@@ -318,24 +318,25 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                 </div>
                                 </>)
                             }
-                            <div className="col-span-2 relative border border-gray-400 p-4 rounded-md mt-6">
-                                <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
-                                <div className='flex flex-row items-center mx-auto'>
-                                    {
-                                        isLoaded && upa.tipo === 1 &&
-                                        (
-                                            <Map 
-                                                setLocation={setLocation}
-                                                arvores={arvores}
-                                                point={setPolygonPath}
-                                                polygonPath={polygonPath}
-                                                utLocation={utLocation}
-                                            />
-                                        )
-                                    }
+                            {
+                                isLoaded && upa.tipo === 1 &&
+                                (
+                                    <div className="col-span-2 relative border border-gray-400 p-4 rounded-md mt-6">
+                                        <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
+                                        <div className='flex flex-row items-center mx-auto'>
+                                            
+                                                    <Map 
+                                                        setLocation={setLocation}
+                                                        arvores={arvores}
+                                                        point={setPolygonPath}
+                                                        polygonPath={polygonPath}
+                                                        utLocation={utLocation}
+                                                    />
+                                        
+                                        </div>
+                                    </div>
+                                    )}
                                 </div>
-                            </div>
-                            </div>
                             <div className='flex items-center justify-between pt-4'>
                                 <Link href="/ut" className="text-center bg-gray-light w-1/5 text-gray-dark border p-3 rounded-md">Voltar</Link>
                                 <button className="w-1/5 bg-custom-green text-white p-3 rounded-md font-medium">Salvar</button>
