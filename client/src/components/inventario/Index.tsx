@@ -318,13 +318,15 @@ const Index = () => {
                 if (especiesNotFound.length > 0) return alertService.error('Existem espécies na planilha que não foram cadastras');
                 if (numArvoreExists.length > 0) return alertService.error('Existem árvores já cadastradas com o(s) dados informados na planilha, verifique os detalhes em "Errors"')
                 if (obsExists.length > 0) return alertService.error('Existe árvore com observação não cadastrada!');
-
+                
                 setLoading(true)
+                
                 await client.post(`/arvore/import-inventario?upaId=${upa?.id}`, {
                     columns: association.columnsDb,
                     data: assocColumns
                 })
                 .then((result: any) => {
+                    console.log(result)
                     setLoading(false)
                     const { data } = result
                     if (!data.error) {
@@ -377,7 +379,7 @@ const Index = () => {
             }, {})
         })
 
-        dispatch(setAssociation({ ...association, columnsCsv: columns, columnsDb: [], relation: [] }))
+        dispatch(setAssociation({ data: rows, columnsCsv: columns, columnsDb: [], relation: [] }))
         // dispatch(setDataImport(rows))
         setColumnData(columns)
         setRowData(rows)

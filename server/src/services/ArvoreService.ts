@@ -65,7 +65,7 @@ class ArvoreService {
     
             const volume = math.evaluate(eqVolume?.expressao.toLowerCase().replace("ln(", "log("), scope)
             const areaBasal = math.evaluate('PI * (DAP ^ 2) / 40000', { DAP: dap })
-            console.log(volume, areaBasal)
+
             const preparedData = upa?.tipo === 1 ? {
                 numero_arvore: parseInt(data?.numero_arvore),
                 faixa: parseInt(data?.faixa),
@@ -260,7 +260,7 @@ class ArvoreService {
         for (let i = 0; i < dados.length; i += size) {
             lotes.push(dados.slice(i, i + size));
         }
-
+        
         const promises: any = lotes?.map(async (lote: any) => await this.inserirLoteDeDados(lote, userId, upa))
         
         try {
