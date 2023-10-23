@@ -45,6 +45,7 @@ export class PlanejoService {
                 AND cat.id = cep.id_categoria
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = true
         `;
@@ -88,6 +89,7 @@ export class PlanejoService {
                 AND cat.id_poa = us.id_poa_ativo
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.dap < cat.criterio_dminc
@@ -114,6 +116,7 @@ export class PlanejoService {
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND cat.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.fuste > cat.criterio_fuste; 
@@ -141,6 +144,7 @@ export class PlanejoService {
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND cat.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.dap > cat.criterio_dmaxc
@@ -168,6 +172,7 @@ export class PlanejoService {
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND cat.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.altura > cat.criterio_altura
@@ -195,6 +200,7 @@ export class PlanejoService {
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND cat.id_poa = p.id
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND cat.preservar = false
                 AND a.volume > cat.criterio_volume
@@ -219,6 +225,7 @@ export class PlanejoService {
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND u.id = a.id_ut
+                AND a.id_ut = u.id
                 AND a.id_situacao = 2
                 AND e.id = a.id_especie
                 AND obs.id = a.id_observacao
@@ -267,6 +274,7 @@ export class PlanejoService {
                             and a.id_ut = u.id
                             and u.id_poa = p.id
                             and a.id_especie = ${percente.id_especie}
+                            AND a.id_ut = u.id
                             and a.id_situacao = 2
                             order by a.volume asc, a.dap asc, a.altura asc
                             limit ${percente.n_minimo}
