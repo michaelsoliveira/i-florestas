@@ -24,6 +24,7 @@ from sklearn.metrics import mean_squared_error
 from math import sqrt
 from sklearn.metrics import r2_score
 import psycopg2
+from pathlib import Path
 
 from ia.models import Ut, Poa, Arvore
 from .database import engine, SessionLocal
@@ -39,6 +40,10 @@ from shapely import Point, to_wkb, to_wkt, to_geojson
 class Poa(BaseModel):
     id: str
     descricao: str
+    
+path = Path(__file__).parent.absolute()
+
+os.chdir(path)
 
 app = FastAPI(docs_url="/ia/docs", openapi_url="/ia/openapi.json")
 
