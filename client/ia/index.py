@@ -1,5 +1,5 @@
 from typing import Union, List, Annotated
-
+from sqlalchemy.dialects.postgresql import UUID
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 # from psycopg_pool import AsyncConnectionPool
@@ -121,9 +121,17 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
 @app.get('/ia/get-poa/{poa_id}')
 async def inventario_poa(poa_id: str, db: db_dependency):
     arvores = []
-
-    result = db.query(Arvore).order_by(Arvore.numero_arvore).all()
-    # result = select(models.Arvore).join(models.Ut).join(models.Poa).where(models.Arvore.id_ut == models.Ut.id).where(models.Ut.id == models.Poa.id)
+    utIds = []  
+    uts = db.query(Ut).filter(Ut.id_poa == poa_id).all()
+      
+    for ut in uts:
+        utIds.append(ut.id)
+    
+    result = db.query(Arvore).filter(Arvore.id_ut.in_(utIds)).order_by(Arvore.numero_arvore).all()
+    # df = pd.read_sql_query(
+    #     sql = db.query(Arvore).filter(Arvore.id_ut.in_(utIds)).order_by(Arvore.numero_arvore),
+    #     con = engine
+    # )
 
     for row in result:
         point = 'POINT({} {})'.format(row.lng, row.lat)
