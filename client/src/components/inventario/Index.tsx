@@ -500,6 +500,11 @@ const Index = () => {
 
     function handleNext(): void {
         switch(step) {
+            case 1: {
+                if (data.length === 0) return alertService.warn('Por favor, selecione um arquivo para avançar')
+                nextStep()
+            }
+            break;
             case 2: {
                 if (!requiredColumns.every((elem: any) => columnsAssociative.includes(elem))) {
                     return alertService.error('Existem campos obrigatórios que não forão associados')
