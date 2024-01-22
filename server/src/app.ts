@@ -5,6 +5,7 @@ import cors from 'cors'
 
 const app = express()
 import fetch from 'cross-fetch'
+import { errorMiddleware } from "./middleware/error"
 
 app.get('/ia', async function(req, res) {
   await fetch('http://127.0.0.1:5000/home', {
@@ -35,6 +36,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(routes)
+app.use(errorMiddleware)
 
 app.listen(3333, () => {
     console.log("Now running on Port 3333")
