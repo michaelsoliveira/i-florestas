@@ -19,7 +19,9 @@ COPY tsconfig.json ./
 # COPY
 COPY . .
 
-RUN apk add --update --no-cache openssl1.1-compat
+RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing openssl1.1-compat
+
+#RUN apk add --no-cache --update openssl1.1-compat
 
 # Install package.json dependencies
 RUN npm install
