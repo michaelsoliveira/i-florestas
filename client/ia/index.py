@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import numpy as np 
 import matplotlib.pyplot as plt
-import sklearn
+import seaborn as sns
 from sklearn.neural_network import MLPClassifier
 from sklearn.neural_network import MLPRegressor
 from .config import settings
@@ -103,14 +103,6 @@ def info():
         "default variable": url
     }
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.nome as situacao FROM arvore a 
     INNER JOIN ut u ON u.id = a.id_ut
     INNER JOIN poa p on p.id = u.id_poa
@@ -118,7 +110,7 @@ ALL_INVENTARIO_BY_POA = """SELECT a.numero_arvore, a.altura, a.dap, a.volume, s.
     WHERE p.id = %s
     ORDER BY a.numero_arvore;"""
 
-@app.get('/ia/get-poa/{poa_id}')
+@app.get('/ia/get-inventario/{poa_id}')
 async def inventario_poa(poa_id: str, db: db_dependency):
     arvores = []
     utIds = []  
