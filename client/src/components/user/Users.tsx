@@ -215,7 +215,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                         <th
                             scope="col"
                             className="w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortUsers('user.username')}
+                            onClick={() => sortUsers('username')}
                         >
                             <div className="flex flex-row items-center">
                                 Nome
@@ -228,7 +228,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                         <th
                             scope="col"
                             className="items-center w-auto px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                            onClick={() => sortUsers('user.email')}
+                            onClick={() => sortUsers('email')}
                         >
                             <div className="flex flex-row items-center">
                                 Email
