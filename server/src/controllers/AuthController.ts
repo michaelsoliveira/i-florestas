@@ -24,7 +24,7 @@ export class AuthController {
                 ...user
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.status(403).json({
                 error: true,
                 message: error.message,
@@ -60,7 +60,7 @@ export class AuthController {
             const newToken = await authService.handleRefreshToken(refreshToken)   
             
             return response.json(newToken)
-        } catch (error) {
+        } catch (error: any) {
             return response.status(401).json(error.message)
         }
     }

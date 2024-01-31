@@ -105,7 +105,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     loadUpas()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -165,7 +165,7 @@ const Index = ({ currentUpas, onPageChanged, changeItemsPerPage, orderBy, order,
                     loadUpas()  
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

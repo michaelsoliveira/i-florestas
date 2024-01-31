@@ -12,7 +12,7 @@ export class EquacaoVolumeController {
                 message: `Equação ${eqVolume.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 equacaoVolume: null,
@@ -31,7 +31,7 @@ export class EquacaoVolumeController {
                 message: `Equação ${eqVolume.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 equacaoVolume: null,
@@ -50,7 +50,7 @@ export class EquacaoVolumeController {
                 error: false,
                 message: 'Equacação Volume deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 equacaoVolume: null,

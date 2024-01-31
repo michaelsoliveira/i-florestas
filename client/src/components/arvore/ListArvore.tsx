@@ -46,7 +46,7 @@ const ListArvore = ({
                     hideModal()
                 })
         setLoading(false)
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }
@@ -89,7 +89,7 @@ const ListArvore = ({
                         hideModal()
                     }
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }, [client, hideModal, loadArvores])

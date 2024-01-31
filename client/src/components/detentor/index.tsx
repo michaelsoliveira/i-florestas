@@ -23,7 +23,7 @@ const ListEmpresas = ({ empresas, isLoading, loadEmpresas, projetoId } : any) =>
                     hideModal()
                 })
             
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }

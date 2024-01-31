@@ -79,7 +79,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                         hideModal()
                     }
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -134,7 +134,7 @@ const Index = ({ currentObservacoes, onPageChanged, orderBy, order, changeItemsP
                     alertService.success('As observações de árvores foram excluidas com SUCESSO!!!')
                     loadObservacoes()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

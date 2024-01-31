@@ -49,7 +49,7 @@ export const create = createAsyncThunk('user/create', async (dataRequest: UserDa
             message
         }
                 
-    } catch (error) {
+    } catch (error: any) {
         return thunkAPI.rejectWithValue({error})
     }
 })

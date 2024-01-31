@@ -21,7 +21,7 @@ export class ArvoreController {
                 message: `Árvore cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 arvore: null,
@@ -40,7 +40,7 @@ export class ArvoreController {
                 message: `Árvore atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 arvore: null,
@@ -59,7 +59,7 @@ export class ArvoreController {
                 error: false,
                 message: 'Árvore deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -146,7 +146,7 @@ export class ArvoreController {
                 message
             })
             
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 message: error.message

@@ -13,7 +13,7 @@ export class UpaController {
                 message: `UPA ${upa.descricao} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
@@ -34,7 +34,7 @@ export class UpaController {
                 message: `UPA ${upa.descricao} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
@@ -54,7 +54,7 @@ export class UpaController {
                 error: false,
                 message: 'UPA deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 upa: null,

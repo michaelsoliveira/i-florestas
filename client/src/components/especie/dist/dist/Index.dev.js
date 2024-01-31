@@ -299,7 +299,7 @@ var Index = function Index(_a) {
               hideModal();
             }
           });
-        } catch (error) {
+        } catch (error: any) {
           console.log(error);
         }
 

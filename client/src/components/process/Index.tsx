@@ -71,7 +71,7 @@ const Index = () => {
                     loadPoa()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }

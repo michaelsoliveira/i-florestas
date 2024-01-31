@@ -11,7 +11,7 @@ export class ObservacaoArvoreController {
                 message: `Observação ${observacao.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 observacao: null,
@@ -30,7 +30,7 @@ export class ObservacaoArvoreController {
                 message: `Observação ${observacao.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 observacao: null,
@@ -49,7 +49,7 @@ export class ObservacaoArvoreController {
                 error: false,
                 message: 'Observação deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 message: error.message

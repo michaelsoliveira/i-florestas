@@ -8,7 +8,7 @@ export const getDecodedOAuthJwtGoogle = async (token: string | undefined) => {
     const tokenInfo = await client.getTokenInfo(token);
 
     return tokenInfo
-  } catch (error) {
+  } catch (error: any) {
     return { status: 500, data: error }
   }
 }

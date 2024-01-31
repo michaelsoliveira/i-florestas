@@ -173,7 +173,7 @@ class AuthService {
             return {
                 ...newAccessToken
             }
-        } catch (error) {
+        } catch (error: any) {
             throw new Error('Error: ' + error.message)
         }
     }

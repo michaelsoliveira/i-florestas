@@ -12,7 +12,7 @@ export class EstadoController {
                 message: `Estado ${estado.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -31,7 +31,7 @@ export class EstadoController {
                 message: `Estado ${estado.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 estado: null,
@@ -50,7 +50,7 @@ export class EstadoController {
                 error: false,
                 message: 'Estado deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 estado: null,

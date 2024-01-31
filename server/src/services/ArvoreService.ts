@@ -248,7 +248,7 @@ class ArvoreService {
             })
 
             
-        } catch (error) {
+        } catch (error: any) {
             //console.error('Erro ao inserir lote de dados:', error);
             throw error;
         }
@@ -271,7 +271,7 @@ class ArvoreService {
                 }
             })
             
-        } catch (error) {
+        } catch (error: any) {
             throw error
         }
     }

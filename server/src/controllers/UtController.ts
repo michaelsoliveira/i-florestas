@@ -14,7 +14,7 @@ export class UtController {
                 message: `A Ut de número ${ut.numero_ut} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
@@ -35,7 +35,7 @@ export class UtController {
                 message: `A UT ${ut.numero_ut} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
@@ -55,7 +55,7 @@ export class UtController {
                 error: false,
                 message: 'UT deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 ut: null,

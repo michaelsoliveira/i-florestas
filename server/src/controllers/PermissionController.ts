@@ -11,7 +11,7 @@ export class PermissionController {
                 message: `Permissão ${permission.name} cadastrado com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 permission: null,
@@ -30,7 +30,7 @@ export class PermissionController {
                 message: `Permissão ${permission?.name} atualizado com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 permission: null,
@@ -49,7 +49,7 @@ export class PermissionController {
                 error: false,
                 message: 'Permissão deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 permission: null,

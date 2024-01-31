@@ -9,7 +9,7 @@ async function createManyInThread(data: any) {
     await prisma.model.createMany({
       data: data
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
   } finally {
     await prisma.$disconnect();
