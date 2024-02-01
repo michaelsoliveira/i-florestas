@@ -284,8 +284,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                             </div>
                                             <div>
                                                 <FormInput
-                                                    id="long_x"
-                                                    name="long_x"
+                                                    id="lat_y"
+                                                    name="lat_y"
                                                     label="Coord. Y"
                                                     register={register}
                                                     errors={errors}
