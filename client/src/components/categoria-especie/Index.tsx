@@ -106,7 +106,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                     loadCategorias()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }, [client, hideModal, loadCategorias])
@@ -169,7 +169,7 @@ const Index = ({ currentCategorias, onPageChanged, changeItemsPerPage, currentPa
                     loadCategorias()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

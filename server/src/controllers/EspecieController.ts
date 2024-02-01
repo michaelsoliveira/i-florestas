@@ -35,7 +35,7 @@ export class EspecieController {
                 message: `Especie ${especie?.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -55,7 +55,7 @@ export class EspecieController {
                 })
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -137,7 +137,7 @@ export class EspecieController {
                 error: false,
                 data
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 message: error.message
@@ -190,7 +190,7 @@ export class EspecieController {
                 message: importData?.message
             })
             
-        } catch (error) {
+        } catch (error: any) {
 
             return response.json({
                 error: true,

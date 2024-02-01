@@ -11,7 +11,7 @@ export class SysRefController {
                 message: `Estado ${sysRef.srtext} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 sysRef: null,
@@ -30,7 +30,7 @@ export class SysRefController {
                 message: `Sistema de coordenada ${sysRef.srtext} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 sysRef: null,
@@ -49,7 +49,7 @@ export class SysRefController {
                 error: false,
                 message: 'Sistema de Coordenada deletado com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 sysRef: null,

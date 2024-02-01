@@ -36,7 +36,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                     loadUmfs()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -93,7 +93,7 @@ const Umfs = ({ currentUmfs, onPageChanged, changeItemsPerPage, orderBy, order, 
                     loadUmfs()  
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

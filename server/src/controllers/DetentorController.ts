@@ -11,7 +11,7 @@ export class DetentorController {
                 message: null
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 detentor: null,
@@ -32,7 +32,7 @@ export class DetentorController {
                 message: null
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 detentor: null,
@@ -51,7 +51,7 @@ export class DetentorController {
                 error: false,
                 message: 'detentor deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 detentor: null,

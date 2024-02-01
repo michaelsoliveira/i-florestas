@@ -11,7 +11,7 @@ export class RoleController {
                 message: `Grupo de usuário ${role.name} cadastrado com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 role: null,
@@ -30,7 +30,7 @@ export class RoleController {
                 message: `Grupo de usuário ${role?.name} atualizado com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 role: null,
@@ -49,7 +49,7 @@ export class RoleController {
                 error: false,
                 message: 'Grupo de usuário deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 role: null,

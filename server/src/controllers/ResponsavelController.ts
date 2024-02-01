@@ -11,7 +11,7 @@ export class ResponsavelController {
                 message: null
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 responsavel: null,
@@ -32,7 +32,7 @@ export class ResponsavelController {
                 message: null
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 responsavel: null,
@@ -51,7 +51,7 @@ export class ResponsavelController {
                 error: false,
                 message: 'responsavel deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 responsavel: null,

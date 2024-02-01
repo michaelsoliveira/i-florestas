@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import poaService from "../services/PoaService";
-import UserService from "src/services/UserService";
 
 export class PoaController {
     async store(request : Request, response: Response) : Promise<Response> {
@@ -13,7 +12,7 @@ export class PoaController {
                 message: `POA ${poa.descricao} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
 
             return response.json({
                 error: true,
@@ -34,7 +33,7 @@ export class PoaController {
                 message: `POA ${poa.descricao} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
@@ -54,7 +53,7 @@ export class PoaController {
                 error: false,
                 message: 'POA deletado com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 poa: null,
@@ -131,7 +130,7 @@ export class PoaController {
                 poa,
                 message: 'Poa ativo definido com sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 poa: null,
@@ -149,7 +148,7 @@ export class PoaController {
                 poa,
                 message: 'Poa alterado com sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 poa: null,

@@ -11,7 +11,7 @@ export class CategoriaEspecieController {
                 message: `Categoria de espécie ${categoria.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -30,7 +30,7 @@ export class CategoriaEspecieController {
                 message: `Categoria de espécie ${categoria.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 categoria: null,
@@ -49,7 +49,7 @@ export class CategoriaEspecieController {
                 error: false,
                 message: 'Especie deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 especie: null,
@@ -96,7 +96,7 @@ export class CategoriaEspecieController {
                 error: false,
                 categorias
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 categorias: [],
@@ -113,7 +113,7 @@ export class CategoriaEspecieController {
                 error: false,
                 categorias
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 message: error.message

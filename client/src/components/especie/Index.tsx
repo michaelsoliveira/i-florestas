@@ -78,7 +78,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                         hideModal()
                     }
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }, [client, hideModal, loadEspecies])
@@ -106,7 +106,7 @@ const Index = ({ currentEspecies, onPageChanged, orderBy, order, changeItemsPerP
                     hideModal()
                 })
         setLoading(false)
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

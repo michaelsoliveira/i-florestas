@@ -12,7 +12,7 @@ export class UmfController {
                 message: `UMF ${umf.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 umf: null,
@@ -31,7 +31,7 @@ export class UmfController {
                 message: `UMF ${umf.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 umf: null,
@@ -50,7 +50,7 @@ export class UmfController {
                 error: false,
                 message: 'UMF deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 umf: null,

@@ -13,7 +13,7 @@ export class ProjetoController {
                 message: `Projeto ${projeto.nome} cadastrada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 projeto: null,
@@ -33,7 +33,7 @@ export class ProjetoController {
                 message: `Projeto ${projeto.nome} atualizada com SUCESSO!!!`
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 projeto: null,
@@ -51,7 +51,7 @@ export class ProjetoController {
                 projeto,
                 message: 'Projeto Ativo alterado com Sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 defaultData: null,
@@ -69,7 +69,7 @@ export class ProjetoController {
                 data,
                 message: 'Dados retornados com sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 data: null,
@@ -92,7 +92,7 @@ export class ProjetoController {
                 error: false,
                 message: 'Projeto deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 projeto: null,
@@ -153,7 +153,7 @@ export class ProjetoController {
                 count,
                 message: 'Equações carregados com sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 equacoes: [],
@@ -178,7 +178,7 @@ export class ProjetoController {
                 count: data.length,
                 message: 'Usuários carregados com sucesso!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 users: [],

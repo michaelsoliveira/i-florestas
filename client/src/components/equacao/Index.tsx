@@ -89,7 +89,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                         hideModal()
                     }
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -144,7 +144,7 @@ const Index = ({ currentEquacoes, onPageChanged, orderBy, order, changeItemsPerP
                     alertService.success('As equações foram deletadas com SUCESSO!!!')
                     loadEquacoes()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

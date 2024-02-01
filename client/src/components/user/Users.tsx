@@ -74,7 +74,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                         hideModal()
                     }
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -129,7 +129,7 @@ const Users = ({ currentUsers, onPageChanged, orderBy, order, changeItemsPerPage
                     alertService.success('Os usuários foram deletadas com SUCESSO!!!')
                     loadUsers(10)
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

@@ -26,7 +26,7 @@ export class UserController {
                 message: null
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 user: null,
@@ -57,7 +57,7 @@ export class UserController {
                 message: null
             })
             
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 user: null,
@@ -78,7 +78,7 @@ export class UserController {
                 message: 'Usuário atualizado com sucesso!'
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 user: null,
@@ -101,7 +101,7 @@ export class UserController {
                 message: 'Senha alterada com sucesso'
             })
 
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 user: null,
@@ -120,7 +120,7 @@ export class UserController {
                 error: false,
                 message: 'Usuário deletada com Sucesso!!!'
             })
-        } catch (error) {
+        } catch (error: any) {
             return response.json({
                 error: true,
                 upa: null,
@@ -205,7 +205,7 @@ export class UserController {
             const user = await userService.findProvider(email)
 
             return response.json(user)
-        } catch (error) {
+        } catch (error: any) {
             return response.json(error)
         }
     }

@@ -113,7 +113,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                     loadPoas()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -129,7 +129,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                     loadPoas()
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }       
     }
@@ -189,7 +189,7 @@ const Index = ({ currentPoas, onPageChanged, changeItemsPerPage, orderBy, order,
                     loadPoas()  
                     hideModal()
                 })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error)
         }
     }

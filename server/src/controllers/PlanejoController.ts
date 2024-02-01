@@ -58,7 +58,7 @@ export class PlanejoController {
                 error: false,
                 message: 'Planejamento do POA realizado com Sucesso!',
             })
-        } catch (error) {
+        } catch (error: any) {
             console.log(error.message)
             return response.json({
                 error: true,
