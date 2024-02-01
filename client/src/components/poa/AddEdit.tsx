@@ -673,51 +673,53 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
                                 </div>
                                 {isAddMode && (
                                     <div className='flex flex-col lg:flex-row space-y-4 mt-2 lg:space-y-0 space-x-0 lg:space-x-4'>
-                                        <div className='grid border border-gray-200 rounded-lg p-4 w-full justify-around'>
+                                        <div className='grid border border-gray-200 rounded-lg p-4 justify-around'>
                                             <div className="flex items-center">
                                                 <input
-                                                id="import-criterios"
-                                                name="import_criterios"
-                                                type="checkbox"
-                                                value={includeCategories}
-                                                onChange={() => setIncludeCategories((current: any) => !current)}
-                                                className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                                                    id="import-criterios"
+                                                    name="import_criterios"
+                                                    type="checkbox"
+                                                    value={includeCategories}
+                                                    onChange={() => setIncludeCategories((current: any) => !current)}
+                                                    className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                                                 />
                                                 <label htmlFor="import-criterios" className="ml-2 block text-sm text-gray-900">
                                                     Deseja importar critérios de outro POA?
                                                 </label>
                                             </div>
                                             {includeCategories && (
-                                            <div>
+                                            <>
                                                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-gray-100 bg-opacity-25 my-2">
-                                                <div className="lg:flex lg:flex-wrap px-4">
-                                                    <span className="flex items-center">POA: </span>
-                                                    <div className="w-full">
-                                                        <Select
-                        
-                                                            placeholder='Selecione o POA...'
-                                                            selectedValue={selectedPoa}
-                                                            defaultOptions={getPoasDefaultOptions()}
-                                                            options={loadPoas}
-                                                            callback={selectPoa}
-                                                            initialData={{
-                                                                label: 'Entre com as iniciais do POA ...', value: ''
-                                                            }}
-                                                        />
+                                                    <div className="lg:flex lg:flex-wrap px-4 w-full md:w-2/4">
+                                                        <span className="flex items-center">POA: </span>
+                                                        <div className="w-full">
+                                                            <Select
+                            
+                                                                placeholder='Selecione o POA...'
+                                                                selectedValue={selectedPoa}
+                                                                defaultOptions={getPoasDefaultOptions()}
+                                                                options={loadPoas}
+                                                                callback={selectPoa}
+                                                                initialData={{
+                                                                    label: 'Entre com as iniciais do POA ...', value: ''
+                                                                }}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>     
-                                            {categorias.length > 0 && (
-                                                <>
-                                                    <CriterioPoa 
-                                                        checkedCategorias={checkedCategorias} 
-                                                        categorias={categorias} 
-                                                        handleSelectAllCategorias={handleSelectAllCategorias} 
-                                                        handleSelectCategoria={handleSelectCategoria} 
-                                                    />
-                                                </>
-                                            )}
-                                            </div>
+                                                </div>  
+                                                <div className='overflow-x-auto'>
+                                                    {categorias.length > 0 && (
+                                                        <div className='px-4'>
+                                                            <CriterioPoa 
+                                                                checkedCategorias={checkedCategorias} 
+                                                                categorias={categorias} 
+                                                                handleSelectAllCategorias={handleSelectAllCategorias} 
+                                                                handleSelectCategoria={handleSelectCategoria} 
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>   
+                                            </>
                                         )}
                                         </div>
                                     </div>

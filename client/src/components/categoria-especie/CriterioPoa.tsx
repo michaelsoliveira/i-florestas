@@ -29,8 +29,8 @@ const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias,
                 <thead className="bg-gray-light">
                     <tr>
                         {checkedCategorias ? (
-                            <th className="w-1/12">
-                                <div className="flex justify-center">
+                            <th className="w-[20px] pl-3">
+                                <div className="">
                                 <input  
                                     checked={checkedCategorias?.length === categorias?.length }
                                     onChange={handleSelectAllCategorias}                
@@ -91,9 +91,9 @@ const CriterioPoa = ({ checkedCategorias, categorias, handleSelectAllCategorias,
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {categorias?.map((categoria: any) => (
-                    <tr key={categoria.id}>
+                    <tr key={categoria.id} className="space-y-0">
                         { checkedCategorias ? (
-                            <td className="flex justify-center">
+                            <td className="pl-3">
                                 <input                 
                                     value={categoria?.id}
                                     checked={checkedCategorias.includes(categoria?.id)}

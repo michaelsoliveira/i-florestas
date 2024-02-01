@@ -32,8 +32,8 @@ RUN npx prisma generate
 # Run and expose the server on port 3333
 EXPOSE 3333
 
-ARG POSTGRES_URL
-ENV POSTGRES_URL "$POSTGRES_URL"
+ARG DATABASE_URL
+ENV DATABASE_URL "$DATABASE_URL"
 
 RUN npm install
 

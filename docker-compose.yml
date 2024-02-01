@@ -3,7 +3,7 @@ services:
   postgres:
     container_name: postgres
     ports:
-      - '5433:5432'
+      - ${DB_PORT}:5432
     image: postgis/postgis
     restart: always
     environment:
@@ -40,9 +40,9 @@ services:
       context: server
       dockerfile: ./Dockerfile
       args:
-        - POSTGRES_URL=${POSTGRES_URL}
+        - DATABASE_URL:${DATABASE_URL}
     environment:
-      POSTGRES_URL: ${POSTGRES_URL}
+      DATABASE_URL: ${DATABASE_URL}
       FRONTEND_URL: ${FRONTEND_URL}
 #    networks:
 #      - app
