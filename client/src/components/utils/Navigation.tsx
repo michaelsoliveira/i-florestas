@@ -42,7 +42,7 @@ type SubMenuType = {
 
     const NOT_DISPLAY_OPTIONS = ['change_projeto', 'change_poa']
 
-export default function Navigation({ defaultNavigation, userNavigation }: any) {
+export default function Navigation({ defaultNavigation, userNavigation, withIcons = false }: any) {
     const { data: session } = useSession() as any
     const pathname = usePathname()
     const { showModal } = useModalContext()
@@ -51,7 +51,6 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
     const { projeto } = useContext(ProjetoContext)
     const poa = useAppSelector((state: RootState) => state.poa)
     const animation = true
-    const withIcons = false
     const [navigation, setNavigation] = useState<NavigationType[]>(defaultNavigation)
     const [sticky, setSticky] = useState(false)
 
@@ -266,7 +265,7 @@ export default function Navigation({ defaultNavigation, userNavigation }: any) {
                                                     className={classNames(
                                                     
                                                         pathname === subMenu?.href && 'bg-gray-100',
-                                                        'group flex rounded-md text-start items-centerv px-2 py-2 text-sm transition duration-500 ease-in-out hover:bg-gray-100'
+                                                        'group flex rounded-md text-start items-center px-2 py-2 text-sm transition duration-500 ease-in-out hover:bg-gray-100'
                                                     )}
                                                 >
                                                     {withIcons && subMenu?.icon && (

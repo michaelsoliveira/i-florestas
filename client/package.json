@@ -4,10 +4,10 @@
   "scripts": {
     "fastapi-install": "pip install -r requirements.txt",
     "fastapi-dev": "python -m uvicorn ia.index:app --reload",
-    "next-dev": "next dev",
+    "next-dev": "next dev -p 8080",
     "dev": "concurrently \"pnpm run next-dev\" \"pnpm run fastapi-dev\"",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 8080",
     "lint": "next lint"
   },
   "proxy": "http://localhost:5000",
@@ -52,6 +52,7 @@
     "redux": "^4.2.1",
     "rxjs": "^7.8.1",
     "sharp": "^0.32.5",
+    "shpjs": "^4.0.4",
     "styled-components": "^6.0.7",
     "tailwindcss": "^3.3.3",
     "ts-node-dev": "^2.0.0",
@@ -66,6 +67,7 @@
     "@types/react": "18.2.21",
     "@types/react-redux": "^7.1.26",
     "@types/react-table": "^7.7.15",
+    "@types/shpjs": "^3.4.6",
     "@types/styled-components": "^5.1.26",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",

@@ -9,7 +9,7 @@ import alertService from '@/services/alert'
 
 const Exploracao = ({ ut, loadUts }:any) => {
     const { client } = useContext(AuthContext)
-    const [data, setData] = useState<any>()
+    const [data, setData] = useState<Array<any>>()
     const [totais, setTotais] = useState<any>()
     const [especies, setEspecies] = useState<any>([])
     const [inventario, setInventario] = useState<any[]>([])
@@ -64,8 +64,8 @@ const Exploracao = ({ ut, loadUts }:any) => {
         const result = await client.get(`/poa/get-volume-ut?ut=${ut?.id_ut}`)
         const { error, data } = result?.data
         setData(data)
-
-        const esp = data.map((e: any) => {
+        
+        const esp = data?.map((e: any) => {
           return {
             id_especie: e.id_especie,
             nome: e.especie
@@ -73,14 +73,14 @@ const Exploracao = ({ ut, loadUts }:any) => {
         })
         setEspecies(esp)
 
-        const totEspecies = data.reduce((acc: any, curr: any) => acc + curr.total_especie, 0)
-        const totVolCorte = data.reduce((acc: any, curr: any) => acc + curr.volume_corte, 0)
-        const totVolCorteHa = data.reduce((acc: any, curr: any) => acc + curr.volume_corte_ha, 0)
-        console.log(totVolCorteHa)
+        const totEspecies = data?.reduce((acc: any, curr: any) => acc + curr.total_especie, 0)
+        const totVolCorte = data?.reduce((acc: any, curr: any) => acc + curr.volume_corte, 0)
+        const totVolCorteHa = data?.reduce((acc: any, curr: any) => acc + curr.volume_corte_ha, 0)
+        
         setTotais({
-          total_individuos: totEspecies,
-          total_corte: totVolCorte,
-          total_corte_ha: totVolCorteHa
+          total_individuos: Number(totEspecies),
+          total_corte: Number(totVolCorte),
+          total_corte_ha: Number(totVolCorteHa)
         })
     }, [client, ut])
 
@@ -208,9 +208,10 @@ const Exploracao = ({ ut, loadUts }:any) => {
                         </tr>
                     </thead>
                     
-                    <tbody className="bg-white divide-y divide-gray-300 w-full h-48 overflow-y-auto" style={{height: '50vh'}}>
+                    <tbody className="bg-white divide-y divide-gray-300 w-full overflow-y-auto" style={{height: '30vh'}}>
                         {data?.map((especie: any, idx: number) => (
                             <tr key={idx}
+                            className='align-top'
                             >
                                 <td className="px-3 whitespace-nowrap">
                                     <div className="text-sm">{especie?.especie}</div>
@@ -222,12 +223,12 @@ const Exploracao = ({ ut, loadUts }:any) => {
                                 </td>
                                 <td className="px-3 whitespace-nowrap">
                                     <span className="text-sm">
-                                        <div className="text-sm">{especie?.volume_corte.toFixed(4)}</div>
+                                        <div className="text-sm">{parseFloat(especie?.volume_corte).toFixed(4)}</div>
                                     </span>
                                 </td>
                                 <td className="px-3 whitespace-nowrap">
                                     <span className="text-sm">
-                                        <div className="text-sm">{especie?.volume_corte_ha.toFixed(4)}</div>
+                                        <div className="text-sm">{parseFloat(especie?.volume_corte_ha).toFixed(4)}</div>
                                     </span>
                                 </td>
                             </tr>
@@ -250,12 +251,12 @@ const Exploracao = ({ ut, loadUts }:any) => {
                     </td>
                     <td className="px-3 whitespace-nowrap">
                         <span className="text-sm">
-                            <div className="text-sm">{totais?.total_corte.toFixed(4)}</div>
+                            <div className="text-sm">{parseFloat(totais?.total_corte).toFixed(4)}</div>
                         </span>
                     </td>
                     <td className="px-3 whitespace-nowrap">
                         <span className="text-sm">
-                            <div className="text-sm">{totais?.total_corte_ha.toFixed(4)}</div>
+                            <div className="text-sm">{parseFloat(totais?.total_corte_ha).toFixed(4)}</div>
                         </span>
                     </td>
                 </tr>
@@ -327,10 +328,10 @@ const Exploracao = ({ ut, loadUts }:any) => {
             <div className='mt-2'>
                 <div className='flex flex-col w-full items-center justify-center'>
                     <span className='font-medium'>
-                        Volume Total: {volumePreservado?.total.toFixed(4)}
+                        Volume Total: {parseFloat(volumePreservado?.total).toFixed(4)}
                     </span>
                     <span className='font-medium'>
-                        Volume / ha: {volumePreservado?.area_util.toFixed(4)}
+                        Volume / ha: {parseFloat(volumePreservado?.area_util).toFixed(4)}
                     </span>
                 </div>
             </div>

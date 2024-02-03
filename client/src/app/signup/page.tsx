@@ -29,7 +29,7 @@ const SigupPage = () => {
         <div className="relative max-w-md flex flex-col justify-center items-center w-full space-y-4 px-8 py-4 border rounded-md shadow-2xl">
           <div className='flex bg-gray-50 border absolute -top-16 border-custom-green justify-center items-center rounded-full shadow-lg w-36 h-36'>
           <div className='flex flex-col items-center justify-center'>
-            <Image src='/imgs/logo_bomanejo.png' alt="" width="35" height="35"/>
+            <Image src='/imgs/logo_bomanejo.png' alt="" width={35} height={35}/>
             <h1 className='font-roboto text-md font-semibold text-custom-green'>BOManejoWeb</h1>
             </div>
           </div>

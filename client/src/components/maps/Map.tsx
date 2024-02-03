@@ -1,15 +1,13 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import {
   GoogleMap,
-  Marker,
-  DirectionsRenderer,
+  InfoWindowF,
   DrawingManagerF,
   MarkerClustererF,
   MarkerF,
   PolygonF,
 } from "@react-google-maps/api";
 
-import Distance from "./Distance";
 import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -22,22 +20,25 @@ type MapProps = {
   arvores?: Array<LatLngLiteral>
   polygonPath?: any;
   utLocation?: any;
-  point?: any;
+  point?: any;  
+  isLoaded?: boolean;
 }
 
-export default function Map({ setLocation, arvores, polygonPath, point, utLocation }: MapProps) {
+export default function Map({ setLocation, arvores, polygonPath, point, utLocation, isLoaded }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
-  const [selectedShape, setSelectedShape] = useState<any>()
+  const [showInfoUt, setShowInfoUt] = useState<boolean>(false)
+  const [editabledPolygon, setEditabledPolygon] = useState<boolean>(false)
   const upa = useAppSelector((state: RootState) => state.upa)
-  let all_overlays: any = []
-  const [drawingMode, setDrawingMode] = useState<OverlayType | null>(google.maps.drawing.OverlayType.POLYGON);
+  const [drawingMode, setDrawingMode] = useState<OverlayType | null>(null);
   const [size, setSize] = useState({
     x: window.innerWidth,
     y: window.innerHeight
   })
   const [path, setPath] = useState<any>(polygonPath);
+  const [map, setMap] = useState<any>(null);
+  const [fullyLoaded, setFullyLoaded] = useState(false);
 
   const updateSize = () => {
     setSize({
@@ -46,16 +47,86 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
     })
   }
 
-  useEffect(() => (onresize = updateSize), [])
+  // const mapRef = useRef<GoogleMap>();
 
-  const mapRef = useRef<GoogleMap>();
+  // Call setPath with new edited path
+const onEdit = useCallback((e: any) => {
+  if (polygonRef.current) {
+    const nextPath = polygonRef.current
+      .getPath()
+      .getArray()
+      .map((latLng: any) => {
+        return { lat: latLng.lat(), lng: latLng.lng() };
+      });
+      setPath(nextPath);
+      point(nextPath);
+      // path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
+  }
+  
+  if (e.domEvent?.ctrlKey) {
+    const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
+    setPath(paths)
+    point(paths)
+  }
+
+}, [point]);
+
+const onLoadPolygon = useCallback(
+  (polygon: any) => {
+    polygonRef.current = polygon;
+    const path = polygon.getPath();
+    listenersRef.current.push(
+      path?.addListener("set_at", onEdit),
+      path?.addListener("insert_at", onEdit),
+      path?.addListener("remove_at", onEdit)
+    );
+  },
+  [onEdit]
+);
+
+  const getBoundingBox = (polygon: any) => {
+      var bounds = new google.maps.LatLngBounds();
+      if (polygon) {
+        polygon.forEach(function(location: any) {
+          bounds.extend({ lat: Number(location.lat), lng: Number(location.lng) });
+
+        });
+      }
+
+      return(bounds);
+  };
+
+  const onLoad = useCallback((map: any) => {      
+      setMap(map)
+  }, []);
+
+  
+  useEffect(() => {
+    onresize = updateSize
+    if (map && isLoaded) {
+        const listener = window.google.maps.event.addListener(map, 'tilesloaded', function () {
+            setFullyLoaded(true);
+            listener.remove();
+        });
+    }
+}, [map, isLoaded]);
+
+  useEffect(() => {
+    if (map && isLoaded && polygonPath.length > 0) {
+      const bounds = getBoundingBox(polygonPath)
+      map.fitBounds(bounds)
+    }
+  }, [map, isLoaded, polygonPath, fullyLoaded])
 
   const onUnmount = useCallback(function callback() {
-    mapRef.current = undefined
+    setMap(null)
   }, [])
 
   const noDraw = () => {
-    setDrawingMode(google.maps.drawing.OverlayType.MARKER)
+    setDrawingMode(
+      null
+      // google.maps.drawing.OverlayType.MARKER
+      )
   };
 
   const onPolygonComplete = useCallback(
@@ -66,7 +137,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
         paths.push({ lat: path.lat(), lng: path.lng() });
       });
       setPath(paths);
-      console.log("onPolygonComplete", paths);
+      
       setDrawingMode(null)
       point(paths);
       noDraw();
@@ -82,7 +153,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
   }, [])
 
   const center = useMemo<LatLngLiteral>(
-    () => ({ lat: -3, lng: -49.8 }),
+    () => ({ lat: 1, lng: -52 }),
     []
   );
 
@@ -95,9 +166,19 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
     []
   )
 
+  const polygonOptions = {
+    fillColor: "#2196F3",
+    strokeColor: "#54A6C3",
+    fillOpacity: 0.5,
+    strokeWeight: 1,
+    clickable: true,
+    zIndex: -1,
+    visible: true
+  }
+
   const options: google.maps.drawing.DrawingManagerOptions = {
     // drawingMode: null,
-    drawingControl: true,
+    // drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_CENTER,
       drawingModes: [
@@ -109,162 +190,38 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
       // icon: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
     },
     
-    polygonOptions: {
-      fillColor: "#2196F3",
-      strokeColor: `#2196F3`,
-      fillOpacity: 0.5,
-      strokeWeight: 1,
-      clickable: true,
-      zIndex: 1,
-      editable: true,
-      draggable: true,
-      visible: true
-    },
+    polygonOptions
   };
 
-  // Call setPath with new edited path
-  const onEdit = useCallback((e: any) => {
-    if (polygonRef.current) {
-      const nextPath = polygonRef.current
-        .getPath()
-        .getArray()
-        .map((latLng: any) => {
-          return { lat: latLng.lat(), lng: latLng.lng() };
-        });
-        setPath(nextPath);
-        point(nextPath);
-        // path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
-    }
-    
-    if (e.domEvent?.ctrlKey) {
-      const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
-      setPath(paths)
-      point(paths)
-    }
-
-  }, [point]);
-
   const handleClick = (e: any) => {
-    const { latLng } = e;
-      setLocation({ lat: latLng.lat(), lng: latLng.lng() })    
+      const { latLng } = e;
+      setLocation({ lat: latLng.lat(), lng: latLng.lng() })   
   }
-
-  const onLoad = useCallback((map: any) => {  
-    mapRef.current = map
-  }, []);
-  const onLoadPolygon = useCallback(
-    (polygon: any) => {
-      polygonRef.current = polygon;
-      const path = polygon.getPath();
-      listenersRef.current.push(
-        path?.addListener("set_at", onEdit),
-        path?.addListener("insert_at", onEdit),
-        path?.addListener("remove_at", onEdit)
-      );
-    },
-    [onEdit]
-  );
-  const houses = useMemo(() => generateHouses(center), [center]);
-
-  const clearPath = () => {
-    listenersRef.current.forEach((lis: any) => lis?.remove());
-    point([])
-  }
-
-  // const fetchDirections = (house: LatLngLiteral) => {
-  //   if (!utLocation) return;
-
-  //   const service = new google.maps.DirectionsService();
-  //   service.route(
-  //     {
-  //       origin: house,
-  //       destination: utLocation,
-  //       travelMode: google.maps.TravelMode.DRIVING,
-  //     },
-  //     (result, status) => {
-  //       if (status === "OK" && result) {
-  //         setDirections(result);
-  //       }
-  //     }
-  //   );
-  // };
-
-  let marker: google.maps.Marker;
-  let infowindow: google.maps.InfoWindow;
-
-  function clearSelection() {
-    if (selectedShape) {
-      selectedShape.setEditable(false);
-      setSelectedShape(null)
-    }
-  }
-
-  function setSelection(shape: any) {
-    clearSelection();
-    setSelectedShape(shape)
-    console.log
-    shape.setEditable(false)
-    // selectColor(shape.get('fillColor') || shape.get('strokeColor'));
-  }
-  function deleteAllShape() {
-    for (var i=0; i < all_overlays.length; i++)
-    {
-      all_overlays[i].overlay.setMap(null);
-    }
-    all_overlays = [];
-  }
-
-  function onOverlayComplete(event: any): void {
-    if (event.type === google.maps.drawing.OverlayType.MARKER) {
-      deleteAllShape()
-      all_overlays.push(event);
-      if (!marker || !marker.setPosition) {
-        marker = new google.maps.Marker({
-            position: event.overlay.position,
-            map: event.overlay.map,
-            });
-        } else {
-            marker.setPosition(event.overlay.position);
-        }
-        if (!!infowindow && !!infowindow.close) {
-          infowindow.close();
-      }
-
-      setLocation({ lat: event.overlay.position.lat(), lng: event.overlay.position.lng() })   
-      // setUtLocation({ lat: event.overlay.position.lat(), lng: event.overlay.position.lng() }) 
-      
-      infowindow = new google.maps.InfoWindow({
-          content: 'Latitude: ' + event.overlay.position.lat() + '<br>Longitude: ' + event.overlay.position.lng()
-      });
-      infowindow.open(event.overlay.map, marker);
-    } else {
-      // Switch back to non-drawing mode after drawing a shape.
-      // setDrawingMode(null);
-
-      // Add an event listener that selects the newly-drawn shape when the user
-      // mouses down on it.
-      // var newShape = event.overlay;
-      // newShape.type = event.type;
-      // google.maps.event.addListener(newShape, 'click', function() {
-      //   setSelection(newShape);
-      // });
-      // setSelection(newShape);
-    }
-}
 
   return (
     <div className="mt-2">
       <div className="pb-2">
         <div className="flex flex-row items-center justify-between w-full">
+          <div className="flex flex-row items-center w-64">
+          { polygonPath && (
+            <>
+              <input  
+                  onChange={() => setEditabledPolygon(!editabledPolygon)}                
+                  className="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox" value="" id="flexCheckDefault"
+              /> Editar Polígono
+            </>
+          ) }
+
+          </div>
           <div className="w-full">
-            {upa.tipo === 0 && !utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
+            {upa.tipo === 1 && !utLocation && <p>Selecione no mapa as coordenadas da UT</p>}
             {/* {directions && <Distance leg={directions.routes[0].legs[0]} />} */}
           </div>
         </div>
       </div>
       <div className="map">
           <GoogleMap
-            zoom={8}
+            zoom={7.5}
             center={center}
             mapContainerStyle={{
               width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
@@ -277,44 +234,44 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
           >
 
               <DrawingManagerF
-                // drawingMode={drawingMode}
+                drawingMode={drawingMode}
                 options={options}
                 onPolygonComplete={onPolygonComplete}
-                onOverlayComplete={onOverlayComplete}
+                // onOverlayComplete={onOverlayComplete}
               />
 
               <>
-              <PolygonF
-                path={polygonPath}
-                editable
-                draggable
-                // Event used when manipulating and adding points
-                onMouseUp={onEdit}
-                // Event used when dragging the whole Polygon
-                onDragEnd={onEdit}
-                onLoad={onLoadPolygon}
-                onUnmount={onUnmountPolygon}
-              />
+                <PolygonF
+                  path={polygonPath}
+                  editable={editabledPolygon}
+                  options={polygonOptions}
+                  // draggable
+                  // Event used when manipulating and adding points
+                  onMouseUp={onEdit}
+                  // Event used when dragging the whole Polygon
+                  onDragEnd={onEdit}
+                  onLoad={onLoadPolygon}
+                  onUnmount={onUnmountPolygon}
+                  onClick={handleClick}
+                />
               </>
         
-            {/* {directions && (
-              <DirectionsRenderer
-                directions={directions}
-                options={{
-                  polylineOptions: {
-                    zIndex: 50,
-                    strokeColor: "#1976D2",
-                    strokeWeight: 4,
-                  },
-                }}
-              />
-            )} */}
             { utLocation && (
               <>
                 <MarkerF
                   position={utLocation}
                   icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
-                />
+                >
+                  { showInfoUt && (
+                    <InfoWindowF position={utLocation}>
+                      <div className="flex flex-col">
+                        <span>Latitude: {utLocation?.lat}</span>
+                        <span>Longitude: {utLocation?.lng}</span>
+                        <button onClick={() => setShowInfoUt(!showInfoUt)}>Fechar</button>
+                      </div>
+                    </InfoWindowF>
+                  )}
+                </MarkerF>
               </>
             ) }
             {arvores && (
@@ -323,7 +280,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
                   {(clusterer) =>
                     <>
                       {arvores?.map((arv: any, idx: any) => (
-                        <Marker
+                        <MarkerF
                           key={idx}
                           position={arv}
                           clusterer={clusterer}
@@ -341,9 +298,11 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
       </div>
       {
         utLocation && (
-          <div className="mt-2">
-            <p className="flex text-sm flex-row items-center w-full">Coordenadas da UT:{" "}[{utLocation?.lat}, {utLocation?.lng}]</p>
-          </div>
+          <>
+            <div className="mt-2">
+              <p className="flex text-sm flex-row items-center w-full">Coordenadas da UT:{" "}[{utLocation?.lat}, {utLocation?.lng}]</p>
+            </div>
+          </>
         )
       }
     </div>
@@ -357,37 +316,4 @@ const defaultOptions = {
   draggable: false,
   editable: false,
   visible: true,
-};
-const closeOptions = {
-  ...defaultOptions,
-  zIndex: 3,
-  fillOpacity: 0.05,
-  strokeColor: "#8BC34A",
-  fillColor: "#8BC34A",
-};
-const middleOptions = {
-  ...defaultOptions,
-  zIndex: 2,
-  fillOpacity: 0.05,
-  strokeColor: "#FBC02D",
-  fillColor: "#FBC02D",
-};
-const farOptions = {
-  ...defaultOptions,
-  zIndex: 1,
-  fillOpacity: 0.05,
-  strokeColor: "#FF5252",
-  fillColor: "#FF5252",
-};
-
-const generateHouses = (position: LatLngLiteral) => {
-  const _houses: Array<LatLngLiteral> = [];
-  for (let i = 0; i < 100; i++) {
-    const direction = Math.random() < 0.5 ? -2 : 2;
-    _houses.push({
-      lat: position.lat + Math.random() / direction,
-      lng: position.lng + Math.random() / direction,
-    });
-  }
-  return _houses;
 }

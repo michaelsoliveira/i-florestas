@@ -118,7 +118,7 @@ export const planejamento = [
     },
     {
         name: 'change_poa',
-        description: '',
+        description: 'Mudar Poa Ativo',
         href: `#`,
         icon: ArrowsRightLeftIcon
     },
@@ -158,6 +158,12 @@ export const inventario = [
         description: 'Realizar importação de inventário a partir de um dataset',
         href: '/inventario',
         icon: DocumentArrowDownIcon,
+    },
+    {
+        name: 'Visualizar Mapa',
+        description: 'Visualização do Mapa do Inventário',
+        href: '/inventario/map',
+        icon: MapIcon,
     },
 ]
 

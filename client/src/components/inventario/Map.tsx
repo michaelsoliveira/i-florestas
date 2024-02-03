@@ -14,7 +14,6 @@ import { RootState } from '@/redux/store'
 import { setUt } from "@/redux/features/utSlice"
 import Map from '../maps/Map'
 import { Libraries, useLoadScript } from '@react-google-maps/api'
-import shp from "shpjs";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
@@ -101,59 +100,15 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
 
     async function onSubmit(data: any) {
         try {
-            if (upa?.tipo === 1 && !utLocation) {
-                alertService.error('É necessário indicar a origem da UT...')
-                return;
-            }
+
             return isAddMode
                 ? createUt({...data, polygon_path: polygonPath})
                 : updateUt(id, {...data, polygon_path: polygonPath})
         } catch (error: any) {
             alertService.error(error.message);
-        }   
-    }
-
-    const loadShapeFile = (e: any) => {
-        let pathUt: Array<LatLngLiteral> = []
-        var reader = new FileReader();
-        var file = e.target && e.target.files[0];
-
-        let fileType = file.name.split('.').pop();
-        reader.onabort = () => console.log('file reading was aborted');
-        reader.onerror = () => console.log('file reading has failed');
-        reader.onload = (e) => {
-            const binaryStr: any = reader.result;
-            if (fileType === 'zip') {
-                shp(binaryStr).then(function(geojson: any){
-                    const coordinates = geojson.features[0].geometry?.coordinates[0]
-                    coordinates.map((coord: any) => {
-                        pathUt.push({ lat: coord[1],  lng: coord[0]})
-                    })
-                    setPolygonPath(pathUt)
-                }).catch((error) => {
-                    console.log('didnt work');
-                    console.log(error);
-                });
-            } else if (fileType === 'kml') {
-            // do other stuff
-            }
-        };
-        if (fileType === 'zip') {
-            reader.readAsArrayBuffer(file)
-        } else {
-            reader.readAsText(file)
         }
-
-        // reader.readAsArrayBuffer(file);
-        // reader.onload = function(buffer: any) {
-        //     console.log(buffer.target.result)
-        //     shpjs?.parseShape(buffer.target.result).then((geojson: any) => {
-        //         console.log(geojson)
-        //     })
-        //     // topojson.feature(buffer)
-        //     // setPolygonPath(buffer.target.result);
-        // }
-      }
+        
+    }
 
     async function createUt(data: any) {
         await client.post('ut', {
@@ -312,53 +267,53 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                         </div>
                                     </div>
                                     <div className="border border-gray-400 p-4 mt-4 rounded-md">
-                                        <span className="text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2">Coordenadas</span>
-                                        <div className="flex flex-col">
+                                <span className="text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2">Coordenadas</span>
+                                    <div className="flex flex-col">
+                                        <FormInput
+                                            id="latitude"
+                                            name="latitude"
+                                            label="Latitude"
+                                            type="number"
+                                            register={register}
+                                            errors={errors}
+                                            className="pb-4"
+                                            step="any"
+                                        />
+                                    
+                                        <FormInput
+                                            id="longitude"
+                                            name="longitude"
+                                            label="Longitude"
+                                            type="number"
+                                            register={register}
+                                            errors={errors}
+                                            className="pb-4"
+                                            step="any"
+                                        />
+                                        <div className='w-full lg:w-1/3'>
                                             <FormInput
-                                                id="latitude"
-                                                name="latitude"
-                                                label="Latitude"
+                                                name="azimute"
+                                                label="Azimute"
                                                 type="number"
                                                 register={register}
                                                 errors={errors}
+                                                id="azimute"
                                                 className="pb-4"
-                                                step="any"
                                             />
-                                        
+                                        </div>
+                                        <div className='w-full lg:w-1/3'>
                                             <FormInput
-                                                id="longitude"
-                                                name="longitude"
-                                                label="Longitude"
+                                                name="quadrante"
+                                                label="Quadrante"
                                                 type="number"
                                                 register={register}
                                                 errors={errors}
+                                                id="quadrante"
                                                 className="pb-4"
-                                                step="any"
                                             />
-                                            <div className='w-full lg:w-1/3'>
-                                                <FormInput
-                                                    name="azimute"
-                                                    label="Azimute"
-                                                    type="number"
-                                                    register={register}
-                                                    errors={errors}
-                                                    id="azimute"
-                                                    className="pb-4"
-                                                />
-                                            </div>
-                                            <div className='w-full lg:w-1/3'>
-                                                <FormInput
-                                                    name="quadrante"
-                                                    label="Quadrante"
-                                                    type="number"
-                                                    register={register}
-                                                    errors={errors}
-                                                    id="quadrante"
-                                                    className="pb-4"
-                                                />
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
                                 </>)
                             }
                             {
@@ -366,24 +321,16 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                 (
                                     <div className="col-span-2 relative border border-gray-400 p-4 rounded-md mt-6">
                                         <span className="text-gray-700 absolute -top-3 bg-white px-2">Localização da UT</span>
-                                        <div className='inline-block align-baseline space-x-2'>
-                                            <label htmlFor="shapefile" className=''>Selecionar Shapefile:</label>
-                                            <input 
-                                                type="file" 
-                                                onChange={loadShapeFile} 
-                                                className="inputfile"
-                                            />
-                                        </div>
-                                        
                                         <div className='flex flex-row items-center mx-auto'>
-                                            <Map 
-                                                setLocation={setLocation}
-                                                arvores={arvores}
-                                                point={setPolygonPath}
-                                                polygonPath={polygonPath}
-                                                utLocation={utLocation}
-                                                isLoaded={isLoaded}
-                                            />
+                                            
+                                                    <Map 
+                                                        setLocation={setLocation}
+                                                        arvores={arvores}
+                                                        point={setPolygonPath}
+                                                        polygonPath={polygonPath}
+                                                        utLocation={utLocation}
+                                                    />
+                                        
                                         </div>
                                     </div>
                                     )}

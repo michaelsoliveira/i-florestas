@@ -126,7 +126,7 @@ const Index = () => {
                     )}
                     <div className="border border-gray-300 p-4 rounded-md col-span-6 relative w-full mt-6">
                         <span className="text-gray-700 absolute -top-3 bg-white px-2 text-sm">Processamento do POA</span>
-                        <div className='flex flex-col md:flex-row space-x-2 items-center justify-between w-full'>
+                        <div className='flex flex-col md:flex-row md:space-x-2 items-center md:justify-between space-y-3 md:space-y-0 w-full'>
                             <button
                                 disabled={!poaLocal?.id || poaLocal?.situacao_poa?.nome.toLowerCase().includes('finalizado')}
                                 id='btn-resp'
@@ -220,19 +220,19 @@ const Index = () => {
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                         <span className="text-sm">
-                                            <div className="text-sm">{ut?.volume_total.toFixed(2)}</div>
+                                            <div className="text-sm">{parseFloat(ut?.volume_total).toFixed(2)}</div>
                                         </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
-                                                <div className="text-sm">{ut?.volume_explorar.toFixed(4)}</div>
+                                                <div className="text-sm">{parseFloat(ut?.volume_explorar).toFixed(4)}</div>
                                             </span>
                                         </td>
                                         <td className="px-3 whitespace-nowrap">
                                             <span className="text-sm">
                                                 <div className={classNames("text-sm", 
                                                 ut?.volume_area_util > 30 && "text-red-700"
-                                                )}>{ut?.volume_area_util.toFixed(4)}</div>
+                                                )}>{parseFloat(ut?.volume_area_util).toFixed(4)}</div>
                                             </span>
                                         </td>
                                     </tr>

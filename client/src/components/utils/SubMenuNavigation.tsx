@@ -35,11 +35,11 @@ const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
                     className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
                     onClick={changeProjetoModal}
                 >
-                    <div>
+                    {/* <div>
                         {subMenu?.icon && (
                             <subMenu.icon className="flex-shrink-0 h-6 w-6 text-custom-green" aria-hidden="true" />
                         )}
-                    </div>
+                    </div> */}
                     <span>
                         Mudar projeto ativo
                     </span>
@@ -52,11 +52,11 @@ const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
                     className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
                     onClick={changePoaModal}
                 >
-                    <div>
+                    {/* <div>
                         {subMenu?.icon && (
                             <subMenu.icon className="flex-shrink-0 h-6 w-6 text-custom-green" aria-hidden="true" />
                         )}
-                    </div>
+                    </div> */}
                     <span>
                         Mudar poa ativo
                     </span>

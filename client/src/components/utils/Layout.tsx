@@ -124,6 +124,7 @@ const Layout = ({ children }: props) => {
                     <Navigation
                         defaultNavigation={defaultNavigation}
                         userNavigation={userNavigation}
+                        withIcons={true}
                     />
                 </div>
                     { (processPath && !poa?.id) && (
