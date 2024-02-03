@@ -93,15 +93,12 @@ class UtService {
             return acc + point
         }, '')
 
-        console.log(polygonString)
-
         polygon_path.length > 0 && values.push(`POLYGON((${polygonString}))`)
 
         const query: any = `
             INSERT INTO ut(${fields})
                 VALUES('${values.join(`', '` )}')
         `
-        console.log(query)
         const ut: Ut = await prismaClient.$queryRawUnsafe(query)
 
         return ut
@@ -161,7 +158,7 @@ class UtService {
             return acc + point
         }, '')
 
-        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = '${id}'`
+        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = ${id}::uuid`
 
         polygon_path && polygon_path.length > 0 && await prismaClient.$executeRawUnsafe(query)
 
@@ -329,7 +326,7 @@ class UtService {
                 ST_AsGeoJSON(a.polygon_path) as polygon_path , 
                 a.id_upa
             FROM ut a
-            WHERE a.id = ${id}
+            WHERE a.id = ${id}::uuid
         `
 
         return ut[0]

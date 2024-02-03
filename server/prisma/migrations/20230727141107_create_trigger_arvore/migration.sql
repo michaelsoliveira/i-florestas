@@ -35,7 +35,9 @@ IF (tipo_gps=1) THEN
 		RETURN NEW;
 	END IF;
 	
-	origem := ST_geomfromtext('POINT(' || long_ut || ' ' || lat_ut  || ')',epsg);
+	origem := ST_Transform(
+	ST_geomfromtext(
+		'POINT(' || long_ut || ' ' || lat_ut  || ')',4326),epsg);
 
     IF ((epsg=4326) OR (epsg=4674)) THEN
         epsg_utm := get_utmzone(origem);
@@ -47,7 +49,7 @@ IF (tipo_gps=1) THEN
 	ELSE
 		x := largura*(NEW.faixa-1)-NEW.long_x;
 	END IF;
-   	y := NEW.lat_y;
+    y := NEW.lat_y;
 	azimute := radians(azimute);
 
 	IF (quadrante=1) THEN

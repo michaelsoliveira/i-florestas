@@ -36,8 +36,8 @@ export class PlanejoService {
                 id_motivo_preservacao = 4
             FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${user?.id}
-                AND u.id = ${this.ut}
+                us.id = ${user?.id}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND a.id_ut = u.id
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
@@ -81,8 +81,8 @@ export class PlanejoService {
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
@@ -107,8 +107,8 @@ export class PlanejoService {
                 id_motivo_preservacao = ${motivoPreservacaoId}
                 FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
@@ -135,8 +135,8 @@ export class PlanejoService {
                 id_motivo_preservacao = ${motivoPreservacaoId}
                 FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
@@ -163,8 +163,8 @@ export class PlanejoService {
                 id_motivo_preservacao = ${motivoPreservacaoId}
             FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
@@ -191,8 +191,8 @@ export class PlanejoService {
                 id_motivo_preservacao = ${motivoPreservacaoId}
                 FROM ut u, especie e, categoria_especie_poa cep, categoria_especie cat, poa p, users us
             WHERE
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND e.id = a.id_especie
                 AND cep.id_especie = e.id
                 AND cat.id = cep.id_categoria
@@ -220,8 +220,8 @@ export class PlanejoService {
             FROM 
                 ut u, observacao_arvore obs, especie e, poa p, users us 
             WHERE 
-                us.id = ${userId}
-                AND u.id = ${this.ut}
+                us.id = ${userId}::uuid
+                AND u.id = ${this.ut}::uuid
                 AND p.id = us.id_poa_ativo
                 AND u.id_poa = p.id
                 AND u.id = a.id_ut
@@ -252,7 +252,7 @@ export class PlanejoService {
                 INNER JOIN users us ON us.id = ${userId}
                 INNER JOIN poa p ON p.id = us.id_poa_ativo
             WHERE
-                u.id = ${this.ut}
+                u.id = ${this.ut}::uuid
                 AND u.id_poa = us.id_poa_ativo
                 AND cat.id_poa = us.id_poa_ativo
                 AND a.id_situacao = 2
@@ -268,12 +268,12 @@ export class PlanejoService {
                         from 
                             arvore a, ut u, poa p, users us
                         where 
-                            us.id = ${userId}
+                            us.id = ${userId}::uuid
                             and p.id = us.id_poa_ativo
-                            and u.id = ${percente.id_ut}
+                            and u.id = ${percente.id_ut}::uuid
                             and a.id_ut = u.id
                             and u.id_poa = p.id
-                            and a.id_especie = ${percente.id_especie}
+                            and a.id_especie = ${percente.id_especie}::uuid
                             AND a.id_ut = u.id
                             and a.id_situacao = 2
                             order by a.volume asc, a.dap asc, a.altura asc
@@ -301,11 +301,11 @@ export class PlanejoService {
                         from 
                             arvore a, ut u, poa p, users us
                         where a.id_ut = u.id
-                            and us.id = ${userId}
+                            and us.id = ${userId}::uuid
                             and p.id = us.id_poa_ativo
-                            and   u.id = ${percente.id_ut}
+                            and   u.id = ${percente.id_ut}::uuid
                             and   u.id_poa = p.id
-                            and   a.id_especie = ${percente.id_especie}
+                            and   a.id_especie = ${percente.id_especie}::uuid
                             and   a.id_situacao = 2
                             order by a.volume asc, a.dap asc, a.altura asc
                             limit ${percente.percentual}

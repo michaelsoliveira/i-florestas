@@ -12,7 +12,7 @@ import { Link } from '@/components/utils/Link'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { RootState } from '@/redux/store'
 import { setUt } from "@/redux/features/utSlice"
-import Map from '../maps/Map'
+import Map from '../maps/MapUt'
 import { Libraries, useLoadScript } from '@react-google-maps/api'
 import shp from "shpjs";
 
@@ -42,62 +42,57 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         libraries
     })
 
-    useEffect(() => {        
-        async function loadUt() {
-            
-            if (!isAddMode && typeof session !== typeof undefined) {
+    const loadUt = useCallback(async () => {
+        if (!isAddMode && typeof session !== typeof undefined) {
                 
-                const { data: ut } = await client.get(`/ut/${id}`)
+            const { data: ut } = await client.get(`/ut/${id}`)
 
-                const polygon_path = ut.polygon_path?.length > 0 ? JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
-                    return {
-                        lat: polygon[1],
-                        lng: polygon[0]
-                    }
-                }) : []
+            const polygon_path = ut.polygon_path?.length > 0 ? JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
+                return {
+                    lat: polygon[1],
+                    lng: polygon[0]
+                }
+            }) : []
 
-                const polygonValues = polygon_path.map((poly: any) => {
-                    return {
-                        lat: poly.lat, lng: poly.lng
-                    }
-                })
+            let polygonValues: Array<google.maps.LatLngLiteral> = []
+                
+            polygon_path.map((poly: any) => {
+                polygonValues.push({ lat: poly.lat, lng: poly.lng })
+            })
 
-                setUtLocation({
-                    lat: ut?.latitude,
-                    lng: ut?.longitude
-                })
+            setUtLocation({
+                lat: ut?.latitude,
+                lng: ut?.longitude
+            })
 
-                for (const [key, value] of Object.entries(ut)) {
-                    switch(key) {
-                        case 'upa': setValue('upa', ut?.id_upa);
-                        break;
-                        case 'polygon_path': polygon_path.map((poly: any) => {
-                            setPolygonPath(polygonValues)
+            for (const [key, value] of Object.entries(ut)) {
+                switch(key) {
+                    case 'upa': setValue('upa', ut?.id_upa);
+                    break;
+                    case 'polygon_path': setPolygonPath(polygonValues);
+                    break;
+                    default: {
+                        setValue(key, value, {
+                            shouldValidate: true,
+                            shouldDirty: true
                         })
-                        break;
-                        default: {
-                            setValue(key, value, {
-                                shouldValidate: true,
-                                shouldDirty: true
-                            })
-                        }
                     }
                 }
-                const { data } = await client.get(`/arvore/get-all?utId=${id}`)
-                const arvores = data.arvores?.map(({ lat, lng }: any) => {
-                    return {
-                        lat,
-                        lng
-                    }
-                })
-
-                setArvores(arvores)
             }
+            const { data } = await client.get(`/arvore/get-all?utId=${id}`)
+            const arvores: Array<LatLngLiteral> = data.arvores?.map(({ lat, lng }: any) => {
+                return {
+                    lat,
+                    lng
+                }
+            })
+            setArvores(arvores)
         }
-
-        loadUt()
-
     }, [session, isAddMode, client, id, setValue, upa, setArvores, setUtLocation])
+
+    useEffect(() => {        
+        loadUt()
+    }, [loadUt])
 
     async function onSubmit(data: any) {
         try {

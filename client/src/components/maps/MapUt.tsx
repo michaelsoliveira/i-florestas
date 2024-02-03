@@ -12,19 +12,18 @@ import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hooks";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
-type DirectionsResult = google.maps.DirectionsResult;
 type MapOptions = google.maps.MapOptions;
 type OverlayType = google.maps.drawing.OverlayType
 type MapProps = {
   setLocation: (position: google.maps.LatLngLiteral) => void;
-  arvores?: Array<LatLngLiteral>
+  arvores: Array<LatLngLiteral>
   polygonPath?: any;
   utLocation?: any;
   point?: any;  
   isLoaded?: boolean;
 }
 
-export default function Map({ setLocation, arvores, polygonPath, point, utLocation, isLoaded }: MapProps) {
+export default function MapUt({ setLocation, arvores, polygonPath, point, utLocation, isLoaded }: MapProps) {
   // Define refs for Polygon instance and listeners
   const polygonRef = useRef<any>(null);
   const listenersRef = useRef<any[]>([]);
@@ -36,7 +35,7 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
     x: window.innerWidth,
     y: window.innerHeight
   })
-  const [path, setPath] = useState<any>(polygonPath);
+
   const [map, setMap] = useState<any>(null);
   const [fullyLoaded, setFullyLoaded] = useState(false);
 
@@ -47,8 +46,6 @@ export default function Map({ setLocation, arvores, polygonPath, point, utLocati
     })
   }
 
-  // const mapRef = useRef<GoogleMap>();
-
   // Call setPath with new edited path
 const onEdit = useCallback((e: any) => {
   if (polygonRef.current) {
@@ -58,17 +55,13 @@ const onEdit = useCallback((e: any) => {
       .map((latLng: any) => {
         return { lat: latLng.lat(), lng: latLng.lng() };
       });
-      setPath(nextPath);
       point(nextPath);
-      // path ? point(nextPath) : setUtLocation({ lat: e.latLng.lat(), lng: e.latLng.lng() })
   }
   
   if (e.domEvent?.ctrlKey) {
     const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
-    setPath(paths)
     point(paths)
   }
-
 }, [point]);
 
 const onLoadPolygon = useCallback(
@@ -92,14 +85,8 @@ const onLoadPolygon = useCallback(
 
         });
       }
-
       return(bounds);
   };
-
-  const onLoad = useCallback((map: any) => {      
-      setMap(map)
-  }, []);
-
   
   useEffect(() => {
     onresize = updateSize
@@ -109,24 +96,26 @@ const onLoadPolygon = useCallback(
             listener.remove();
         });
     }
-}, [map, isLoaded]);
+  }, [map, isLoaded]);
+
+  const onLoad = useCallback((map: any) => { 
+      setMap(map)
+  }, [setMap])
 
   useEffect(() => {
-    if (map && isLoaded && polygonPath.length > 0) {
-      const bounds = getBoundingBox(polygonPath)
-      map.fitBounds(bounds)
-    }
-  }, [map, isLoaded, polygonPath, fullyLoaded])
+      if (map && fullyLoaded && polygonPath.length > 0) {
+        const bounds = getBoundingBox(polygonPath)
+        map.fitBounds(bounds)
+        setFullyLoaded(false)
+      }
+    }, [map, isLoaded, fullyLoaded, polygonPath])
 
   const onUnmount = useCallback(function callback() {
     setMap(null)
   }, [])
 
   const noDraw = () => {
-    setDrawingMode(
-      null
-      // google.maps.drawing.OverlayType.MARKER
-      )
+    setDrawingMode(null)
   };
 
   const onPolygonComplete = useCallback(
@@ -136,7 +125,6 @@ const onLoadPolygon = useCallback(
       polyArray.forEach(function(path: any) {
         paths.push({ lat: path.lat(), lng: path.lng() });
       });
-      setPath(paths);
       
       setDrawingMode(null)
       point(paths);
@@ -224,8 +212,8 @@ const onLoadPolygon = useCallback(
             zoom={7.5}
             center={center}
             mapContainerStyle={{
-              width: `${size.x > 1024 ? 920 : ''}${(size.x > 800 && size.x < 1024) ? 600 : ''}${size.x < 800 ? 400 : ''}px`,
-              height: '400px'
+              width: '100%',
+              height: '450px'
             }}
             options={mapOptions}
             onLoad={onLoad}
@@ -240,7 +228,7 @@ const onLoadPolygon = useCallback(
                 // onOverlayComplete={onOverlayComplete}
               />
 
-              <>
+              
                 <PolygonF
                   path={polygonPath}
                   editable={editabledPolygon}
@@ -254,46 +242,43 @@ const onLoadPolygon = useCallback(
                   onUnmount={onUnmountPolygon}
                   onClick={handleClick}
                 />
-              </>
+              { arvores?.length > 0 && (
+                <MarkerClustererF>
+                {(clusterer) =>
+                  <>
+                    {arvores?.map((arv: any, idx: any) => (
+                      <MarkerF
+                        key={idx}
+                        position={arv}
+                        clusterer={clusterer}
+                        // onClick={() => {
+                        //   fetchDirections(arv);
+                        // } } 
+                      />
+                    ))}
+                  </> 
+                }
+              </MarkerClustererF>
+              ) }
         
             { utLocation && (
               <>
                 <MarkerF
                   position={utLocation}
                   icon="https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+                  onClick={() => setShowInfoUt(!showInfoUt)}
                 >
                   { showInfoUt && (
                     <InfoWindowF position={utLocation}>
                       <div className="flex flex-col">
                         <span>Latitude: {utLocation?.lat}</span>
                         <span>Longitude: {utLocation?.lng}</span>
-                        <button onClick={() => setShowInfoUt(!showInfoUt)}>Fechar</button>
                       </div>
                     </InfoWindowF>
                   )}
                 </MarkerF>
               </>
             ) }
-            {arvores && (
-              <>
-                <MarkerClustererF>
-                  {(clusterer) =>
-                    <>
-                      {arvores?.map((arv: any, idx: any) => (
-                        <MarkerF
-                          key={idx}
-                          position={arv}
-                          clusterer={clusterer}
-                          // onClick={() => {
-                          //   fetchDirections(arv);
-                          // } } 
-                        />
-                      ))}
-                    </> 
-                  }
-                </MarkerClustererF>
-              </>
-            )}
           </GoogleMap>
       </div>
       {
@@ -307,13 +292,4 @@ const onLoadPolygon = useCallback(
       }
     </div>
   );
-}
-
-const defaultOptions = {
-  strokeOpacity: 0.5,
-  strokeWeight: 2,
-  clickable: false,
-  draggable: false,
-  editable: false,
-  visible: true,
 }

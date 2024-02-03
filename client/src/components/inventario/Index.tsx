@@ -536,47 +536,46 @@ const Index = () => {
                 currentStep={step}
             />
             
-                <div className="flex flex-col p-6">
-                    <div className="pb-2">
-                        <h1 className="text-xl font-semibold text-custom-green">Importação do Inventário</h1>
-                    </div>
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
-                            <div>
-                                <Select
-                                    styleLabel="text-white"
-                                    initialData={
-                                        {
-                                            label: 'Selecione UMF...',
-                                            value: ''
-                                        }
+            <div className="flex flex-col p-6">
+                <div className="pb-2">
+                    <h1 className="text-xl font-semibold text-custom-green">Importação do Inventário</h1>
+                </div>
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-items-center py-4 bg-custom-green rounded-lg">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full lg:w-3/5 px-4">
+                        <div>
+                            <Select
+                                styleLabel="text-white"
+                                initialData={
+                                    {
+                                        label: 'Selecione UMF...',
+                                        value: ''
                                     }
-                                    selectedValue={selectedUmf}
-                                    defaultOptions={getUmfsDefaultOptions()}
-                                    options={loadUmfs}
-                                    label="UMF:"
-                                    callback={selectUmf}
-                                />
-                            </div>
-                            <div>
-                                <Select
-                                    styleLabel="text-white"
-                                    initialData={
-                                        {
-                                            label: 'Selecione UPA...',
-                                            value: ''
-                                        }
-                                    }
-                                    selectedValue={selectedUpa}
-                                    defaultOptions={getUpasDefaultOptions()}
-                                    options={loadUpas}
-                                    label="UPA:"
-                                    callback={(e) => {selectUpa(e)}}
-                                />
-                            </div>
+                                }
+                                selectedValue={selectedUmf}
+                                defaultOptions={getUmfsDefaultOptions()}
+                                options={loadUmfs}
+                                label="UMF:"
+                                callback={selectUmf}
+                            />
                         </div>
-     
+                        <div>
+                            <Select
+                                styleLabel="text-white"
+                                initialData={
+                                    {
+                                        label: 'Selecione UPA...',
+                                        value: ''
+                                    }
+                                }
+                                selectedValue={selectedUpa}
+                                defaultOptions={getUpasDefaultOptions()}
+                                options={loadUpas}
+                                label="UPA:"
+                                callback={(e) => {selectUpa(e)}}
+                            />
+                        </div>
                     </div>
+                </div>
             <div>
                 { displayStep() }
             </div>

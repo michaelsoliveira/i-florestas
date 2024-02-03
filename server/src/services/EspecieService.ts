@@ -13,23 +13,22 @@ class EspecieService {
 
     async create({ data: requestData, userId }: any, projetoId?: string): Promise<Especie> {
         const { nome, nome_cientifico, nome_orgao, id_projeto, id_categoria } = requestData
-        const especieExists = await prismaClient.especie.findFirst({ 
-            where: { 
-                AND: {
-                    nome: requestData.nome,
-                    id_projeto: projetoId ? projetoId : id_projeto
-                }
-            } 
-        })
-
         const user: User = await prismaClient.user.findFirst({
             where: {
                 id: userId
             }
         }) as User
         
-        if (especieExists) {
-            throw new Error(`Já existe uma espécie cadastrada com o nome ${especieExists?.nome} neste projeto`)
+        const especieNotExists= await prismaClient.$queryRaw<any|undefined>`
+            SELECT e.nome, e.id as id_especie, ce.id as id_categoria
+            FROM especie e 
+                INNER JOIN categoria_especie_poa cep ON cep.id_especie = e.id
+                INNER JOIN categoria_especie ce ON ce.id = cep.id_categoria
+            WHERE ce.id_poa = ${user?.id_poa_ativo}::uuid
+        `
+        
+        if (!especieNotExists) {
+            throw new Error(`Já existe uma espécie cadastrada com o nome ${especieNotExists?.nome} neste projeto`)
         }
 
         const categoriaNaoDefinida = user?.id_poa_ativo ? await prismaClient.categoriaEspecie.findFirst({
@@ -385,9 +384,9 @@ class EspecieService {
                 INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
                 INNER JOIN categoria_especie cat on cat.id = cep.id_categoria
             WHERE
-                cep.id_categoria = ${id}
-                and cat.id_poa = ${user?.id_poa_ativo}
-                and e.id_projeto = ${user?.id_projeto_ativo}
+                cep.id_categoria = ${id}::uuid
+                and cat.id_poa = ${user?.id_poa_ativo}::uuid
+                and e.id_projeto = ${user?.id_projeto_ativo}::uuid
                 and cat.id_projeto = e.id_projeto
                 and cep.id_especie = e.id
                 and cep.id_categoria = cat.id
@@ -423,9 +422,9 @@ class EspecieService {
                 INNER JOIN categoria_especie_poa cep on cep.id_especie = e.id
                 INNER JOIN categoria_especie ce on ce.id = cep.id_categoria
             WHERE
-                e.id = ${id}
+                e.id = ${id}::uuid
                 ${
-                    poaId ? Prisma.sql`AND ce.id_poa = ${poaId}` : Prisma.sql`AND ce.id_poa ISNULL`
+                    poaId ? Prisma.sql`AND ce.id_poa = ${poaId}::uuid` : Prisma.sql`AND ce.id_poa ISNULL`
                 }
         `
 
