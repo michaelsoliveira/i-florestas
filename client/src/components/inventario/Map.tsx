@@ -81,7 +81,7 @@ const Map = () => {
 
         loadUt()
 
-    }, [session, client, upa, setArvores, setUtLocation])
+    }, [session, client, upa, ut, setArvores, setUtLocation])
 
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const data = upas.filter((upa: any) => upa?.descricao.toLowerCase().includes(inputValue.toLowerCase()))
