@@ -106,7 +106,7 @@ const onLoadPolygon = useCallback(
     }
 
     if (map && fullyLoaded && polygonPath.length === 0) getCurrentPosition()
-  }, [map, isLoaded]);
+  }, [map, isLoaded, fullyLoaded, polygonPath]);
 
   const onLoad = useCallback((map: any) => { 
       setMap(map)
@@ -118,7 +118,7 @@ const onLoadPolygon = useCallback(
         map.fitBounds(bounds)
         setFullyLoaded(false)
       }
-    }, [map, fullyLoaded])
+    }, [map, fullyLoaded, polygonPath])
 
   const onUnmount = useCallback(function callback() {
     setMap(null)

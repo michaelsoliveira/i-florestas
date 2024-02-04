@@ -83,15 +83,6 @@ const Map = () => {
 
     }, [session, client, upa, setArvores, setUtLocation])
 
-    const loadArvores = useCallback(async (itemsPerPage?: number, currentPage?: number) => {
-        const url = `/arvore/get-all?utId=${ut?.id}&upaId=${upa?.id}&orderBy=numero_arvore&order=ASC`
-
-        const { data } = await client.get(url)
-        // setTotalItems(data?.count)
-        setArvores(data?.arvores)
-        
-    }, [client, upa?.id, ut?.id])
-
     const loadUpas = async (inputValue: string, callback: (options: OptionType[]) => void) => {
         const data = upas.filter((upa: any) => upa?.descricao.toLowerCase().includes(inputValue.toLowerCase()))
         

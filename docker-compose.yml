@@ -3,7 +3,7 @@ services:
   postgres:
     container_name: postgres
     ports:
-      - ${DB_PORT}:5432
+      - ${PGPORT}:5432
     image: postgis/postgis
     restart: always
     environment:
@@ -11,9 +11,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
-#    networks:
-#      - app
+      - data_pgdir:/var/lib/postgresql/data
+    networks:
+      - stack
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -25,31 +26,40 @@ services:
       PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
-      - pgadmindata:/var/lib/pgadmin
+      - data_pgadmin:/var/lib/pgadmin
     restart: unless-stopped
-#  networks:
-#      - app
+    networks:
+      - stack
+
   backend:
-    depends_on:
-      - postgres
     container_name: backend
-    restart: always
     ports:
       - '3333:3333'
     build:
       context: server
       dockerfile: ./Dockerfile
-      args:
-        - DATABASE_URL:${DATABASE_URL}
     environment:
-      DATABASE_URL: ${DATABASE_URL}
       FRONTEND_URL: ${FRONTEND_URL}
-#    networks:
-#      - app
-    volumes:
-      - ./server:/app
-      - /app/node_modules
-      - /app/prisma
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${PGPORT}/${POSTGRES_DB}?schema=public
+      NODE_ENV: ${ENVIRONMENT}
+      STAGE: ${IO_STAGE}
+      SENTRY_DSN: ${SENTRY_DSN}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MATOMO_ID: ${MATOMO_ID}
+      MATOMO_TOKEN: ${MATOMO_TOKEN}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail -s http://localhost:3000/status || exit 1
+      interval: 20s
+      timeout: 10s
+      start_period: 10s
+      retries: 5
+    networks:
+      - stack
+
   frontend:
     container_name: frontend
     ports:
@@ -63,19 +73,105 @@ services:
       BACKEND_URL: ${BACKEND_URL}
       NEXTAUTH_URL: ${FRONTEND_URL}
       NEXT_PUBLIC_API_URL: ${BACKEND_URL}
-#    networks:
-#      - app
+    networks:
+      - stack
     depends_on:
       - backend
     volumes:
-     #- ./client:/app/.next/standalone
      - /app/node_modules
      - /app/.next
+  backup:
+    image: postgres:16
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+    restart: no
+    links:
+      - postgres
+    volumes:
+      - data_backup:/backup
+    networks:
+      - stack
+    command: >
+      sh -c  "set -ex &&
+        cd /backup &&
+        export PGHOST=postgres &&
+        export BACKUP_PGDB=$$(date +'%Y_%m_%d_%H_%M_%S')_${IO_PROJECT}_${IO_APP}_${IO_STAGE}_${IO_VERSION}.dump &&
+        PGPASSWORD=${POSTGRES_PASSWORD} pg_dump --file ""$$BACKUP_PGDB"" -p ${PGPORT} --format=p --encoding=UTF8 --no-owner --no-privileges --clean --if-exists --verbose ${IO_PROJECT} &&
+        tar -czf $$BACKUP_PGDB.tar.gz $$BACKUP_PGDB &&
+        rm -rf $$BACKUP_PGDB"
+    profiles:
+      - cli
+
+  restore:
+    image: postgres:16
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+    restart: no
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    volumes:
+      - data_backup:/backup
+    networks:
+      - stack
+    command: >
+      sh -c  'set -ex &&
+        cd /backup &&
+        export PGHOST=postgres &&
+        export FILE_TO_RESTORE=${BACKUP_FILE_TO_RESTORE:-no_file_to_restore} &&
+        tar -zxf $$FILE_TO_RESTORE &&
+        BACKUP_PGDB=$$FILE_TO_RESTORE &&
+        export BACKUP_PGDB=$${BACKUP_PGDB%".tar.gz"} &&
+        PGPASSWORD=${POSTGRES_PASSWORD} dropdb -U ${POSTGRES_USER} -p ${PGPORT} ${IO_PROJECT} &&
+        PGPASSWORD=${POSTGRES_PASSWORD} createdb -U ${POSTGRES_USER} -p ${PGPORT} --encoding UTF8 --locale en_US.utf8 ${IO_PROJECT}  &&
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -U ${POSTGRES_USER} -p ${PGPORT} -d ${IO_PROJECT} < $$BACKUP_PGDB &&
+        rm -rf $$BACKUP_PGDB'
+    profiles:
+      - cli
+
+  sanitize:
+    image: postgres:16
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+    restart: no
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    volumes:
+      - data_backup:/backup
+    networks:
+      - stack
+    command: >
+      sh -c  'set -ex &&
+        export PGHOST=postgres &&
+        PGPASSWORD=${POSTGRES_PASSWORD} vacuumdb --analyze ${IO_PROJECT} --port=${PGPORT} &&
+        PGPASSWORD=${POSTGRES_PASSWORD} reindexdb ${IO_PROJECT} --port=${PGPORT}'
+    profiles:
+      - cli
+
+# volumes:
+#   pgdata:
+#   pgadmindata:
+
+networks:
+  stack:
+    external: true
+    name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}
 
 volumes:
-  pgdata:
-  pgadmindata:
+  data_backup:
+    name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}_backup
+    external: true
 
-#networks:
-#  backend:
-#    driver: bridge
+  data_pgdir:
+    name: ${POSTGRES_VOL}
+    external: true
+
+  data_pgadmin:
+    name: ${PGADMIN_VOL}
+    external: true

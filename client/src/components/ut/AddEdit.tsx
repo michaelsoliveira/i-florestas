@@ -88,7 +88,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             })
             setArvores(arvores)
         }
-    }, [session, isAddMode, client, id, setValue, upa, setArvores, setUtLocation])
+    }, [session, isAddMode, client, id, setValue, setArvores, setUtLocation])
 
     useEffect(() => {        
         loadUt()
