@@ -1,11 +1,10 @@
-import jwt from "jsonwebtoken"
 import { User } from "@prisma/client"
-import bcrypt from "bcryptjs"
 import { DataStoredInToken } from "../interfaces/DataStoredInToken"
-import dayjs from "dayjs"
 import { prismaClient } from "../database/prismaClient"
 const config = require("../config")
-
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const dayjs = require("dayjs")
 
 export interface UserRequest {
     email: string,
@@ -16,10 +15,9 @@ interface TokenData {
     access_token: string;
     expires_in: number;
 }
-const { TokenExpiredError } = jwt;
 
 class AuthService {
-    public refreshTokens: string[]
+    public refreshTokens: string[] = []
     
     async execute({ email, password }: UserRequest) {
         

@@ -49,7 +49,7 @@ export class AuthController {
     async getUserByToken(request: Request, response: Response): Promise<Response> {
         const user = request.user
 
-        return response.status(200).json(request.user)
+        return response.status(200).json(request?.user)
     }
 
     async refreshToken(request: Request, response: Response): Promise<Response> {

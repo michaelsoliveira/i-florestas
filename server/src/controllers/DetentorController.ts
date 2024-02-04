@@ -70,7 +70,7 @@ export class DetentorController {
                 detentores,
                 message: null
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: true,
                 detentores: [],
@@ -92,7 +92,7 @@ export class DetentorController {
             return response.json({
                 type: 'add'
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

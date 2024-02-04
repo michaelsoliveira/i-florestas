@@ -79,21 +79,14 @@ export class PoaController {
     }
 
     async getVolumePorEspecie(request: Request, response: Response) {
-        try {
-            const { ut }: any = request.query
+        const { ut }: any = request.query
 
-            const data = await poaService.getVolumePorEspecie(request.user?.id, ut)
-
-            return response.json({
-                error: false,
-                data
-            })
-        } catch (error: any) {
-            return response.json({
-                error: true,
-                message: 'Error ao carregar as espécies!'
-            })
-        }
+        const data = await poaService.getVolumePorEspecie(request.user?.id, ut)
+        
+        return response.json({
+            error: false,
+            data
+        })
     }
 
     async getArvorePorEspecie(request: Request, response: Response) {

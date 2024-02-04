@@ -249,7 +249,7 @@ export class PlanejoService {
                 INNER JOIN ut u ON u.id = a.id_ut
                 INNER JOIN categoria_especie_poa cep ON cep.id_especie = e.id
                 INNER JOIN categoria_especie cat ON cat.id = cep.id_categoria
-                INNER JOIN users us ON us.id = ${userId}
+                INNER JOIN users us ON us.id = ${userId}::uuid
                 INNER JOIN poa p ON p.id = us.id_poa_ativo
             WHERE
                 u.id = ${this.ut}::uuid

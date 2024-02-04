@@ -127,7 +127,7 @@ export class CategoriaEspecieController {
             const categoria = await categoriaService.findById(id)
 
             return response.json(categoria)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

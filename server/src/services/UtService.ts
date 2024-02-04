@@ -154,11 +154,11 @@ class UtService {
         })
 
         const polygonString = polygon_path.reduce((acc: any, curr: any, idx: any) => {
-            const point = idx < polygon_path.length - 1? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat))
+            const point = idx < polygon_path.length - 1? curr.lng.toString().concat(' ', curr.lat, ', ') : curr.lng.toString().concat(' ', curr.lat, ', ', polygon_path[0].lng.toString().concat(' ', polygon_path[0].lat.toString()))
             return acc + point
         }, '')
 
-        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = ${id}::uuid`
+        const query = `UPDATE ut SET polygon_path = \'POLYGON((${polygonString}))\' WHERE id = '${id}'`
 
         polygon_path && polygon_path.length > 0 && await prismaClient.$executeRawUnsafe(query)
 

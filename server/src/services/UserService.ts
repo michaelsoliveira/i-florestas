@@ -1,13 +1,13 @@
-import bcrypt from "bcryptjs"
-import nodemailer from 'nodemailer'
+import * as bcrypt from "bcryptjs"
+import * as nodemailer from 'nodemailer'
 import { prismaClient } from "../database/prismaClient"
-import { prisma, Prisma, User as UserPrisma } from "@prisma/client"
+import { Prisma, User as UserPrisma } from "@prisma/client"
 export interface UserRequest {
     username: string,
     email: string,
     password: string
 }
-import { google } from 'googleapis'
+
 import { handleCreateDefault } from "./DefaultData"
 import { getProjeto } from "./ProjetoService"
 
@@ -384,7 +384,7 @@ class UserService {
             // },
         });
 
-        transporter.verify(function(error, success) {
+        transporter.verify(function(error: any, success: any) {
             if (error) {
                     console.log(error);
             } else {
@@ -449,7 +449,7 @@ class UserService {
                         </tr>
                     </table>
                 </body>`, // html body
-        }, (error, data) => {
+        }, (error: any, data: any) => {
             if (error) {
                 console.log('Error: ', error)
             } else {

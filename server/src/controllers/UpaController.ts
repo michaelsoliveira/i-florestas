@@ -78,7 +78,7 @@ export class UpaController {
                 count,
                 message: null
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: false,
                 upas: [],
@@ -112,7 +112,7 @@ export class UpaController {
         try {
             const upa = await upaService.findById(id)
             return response.json(upa)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

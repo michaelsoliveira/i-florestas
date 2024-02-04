@@ -9,5 +9,8 @@ export const errorMiddleware = (
 ) => {
     const statusCode = error.statusCode ?? 500
     const message = error.statusCode ? error.message : 'Internal Server Error!'
-    return res.status(statusCode).json({ message });
+    return res.status(statusCode).json({ 
+        error: true,
+        message: error?.message 
+    });
 }

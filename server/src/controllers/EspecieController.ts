@@ -121,7 +121,7 @@ export class EspecieController {
                 error: false,
                 especies
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: true,
                 message: error.message
@@ -153,7 +153,7 @@ export class EspecieController {
             const especie = await especieService.findById(id, poa) as any
 
             return response.json(especie[0])
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }
@@ -167,7 +167,7 @@ export class EspecieController {
             return response.json({
                 ...errors
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

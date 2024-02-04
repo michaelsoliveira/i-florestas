@@ -215,7 +215,7 @@ export class UserController {
             let users = await userService.getAllByProjeto(request.user?.id)
 
             return response.json(users)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }
@@ -231,7 +231,7 @@ export class UserController {
             let users = await userService.findOne(userId, projetoId)
 
             return response.json(users)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

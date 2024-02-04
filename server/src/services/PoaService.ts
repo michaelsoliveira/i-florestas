@@ -1,5 +1,5 @@
 import { prismaClient } from "../database/prismaClient";
-import { Prisma, Poa, prisma, CategoriaEspecie, User } from "@prisma/client";
+import { Prisma, Poa, CategoriaEspecie, User } from "@prisma/client";
 import { getProjeto } from "./ProjetoService";
 
 export interface PoaType {
@@ -147,13 +147,15 @@ class PoaService {
         })
 
         const categoriaEspeciePoa = await prismaClient.$queryRaw`
-            SELECT DISTINCT t1.id_categoria, e.id as id_especie from
-                (SELECT c.id as id_categoria, c.nome from categoria_especie c INNER JOIN poa p on p.id = c.id_poa
-                    WHERE c.id_poa = ${poa.id}) as t1
-                INNER JOIN categoria_especie ce on t1.nome = ce.nome 
-                INNER JOIN categoria_especie_poa cep on cep.id_categoria = ce.id 
-                INNER JOIN especie e on e.id = cep.id_especie
-        ` as any
+            SELECT DISTINCT t1.id_categoria, e.id AS id_especie FROM
+                (SELECT c.id as id_categoria, c.nome 
+                    FROM categoria_especie c 
+                    INNER JOIN poa p on p.id = c.id_poa
+                        WHERE c.id_poa = ${poa.id})::uuid as t1
+                    INNER JOIN categoria_especie ce on t1.nome = ce.nome 
+                    INNER JOIN categoria_especie_poa cep on cep.id_categoria = ce.id 
+                    INNER JOIN especie e on e.id = cep.id_especie
+            ` as any
 
         await prismaClient.categoriaEspeciePoa.createMany({
             data: categoriaEspeciePoa
@@ -440,7 +442,7 @@ class PoaService {
                 trunc(CAST(t2.volume_corte/u.area_util AS numeric), 6) as volume_corte_ha
             FROM
                 especie e, poa p, categoria_especie_poa cep, categoria_especie cat, arvore a, ut u,
-                (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie) as total_especie 
+                (SELECT cat.id_poa, u.id as id_ut, e.id as id_especie, count(a.id_especie)::numeric as total_especie 
                 FROM especie e
                     INNER JOIN arvore a ON a.id_especie = e.id
                     INNER JOIN ut u on u.id = a.id_ut
@@ -473,13 +475,13 @@ class PoaService {
                 AND t2.id_poa = p.id
                 AND t1.id_ut = u.id
                 AND t2.id_ut = u.id
-                AND p.id = ${user?.id_poa_ativo}
-                AND e.id_projeto = ${user?.id_projeto_ativo}
-                AND u.id = ${ut}
+                AND p.id = ${user?.id_poa_ativo}::uuid
+                AND e.id_projeto = ${user?.id_projeto_ativo}::uuid
+                AND u.id = ${ut}::uuid
             GROUP BY e.id, e.nome, t1.total_especie, t2.volume_corte, u.area_util
             ORDER BY e.nome
         `
-
+        
         return data
     }
 
@@ -620,9 +622,9 @@ class PoaService {
             WITH dados AS (
                 SELECT e.id_projeto, u.id as id_ut, up.ano, p.id as id_poa, u.area_util, u.numero_ut, t1.volume_explorar, 
                 trunc(CAST((t1.volume_explorar / u.area_util) AS numeric),5) as volume_area_util,
-                COALESCE(SUM(a.volume),0) as volume_total
+                COALESCE(SUM(a.volume)::numeric,0) as volume_total
                     FROM ut u, arvore a, poa p, upa up, especie e,
-                        (SELECT u.id_poa, u.id as id_ut, COALESCE(SUM(a.volume),0) as volume_explorar
+                        (SELECT u.id_poa, u.id as id_ut, COALESCE(SUM(a.volume)::numeric,0) as volume_explorar
                             FROM ut u 
                                 INNER JOIN arvore a on a.id_ut = u.id
                                 INNER JOIN poa p on p.id = u.id_poa
@@ -642,8 +644,8 @@ class PoaService {
                 GROUP BY e.id_projeto, up.ano, p.id, u.id, t1.volume_explorar
             )
             SELECT id_ut, ano, numero_ut, area_util, volume_total, volume_explorar, volume_area_util FROM dados
-            WHERE id_poa = ${user?.id_poa_ativo}
-                AND dados.id_projeto = ${user?.id_projeto_ativo}
+            WHERE id_poa = ${user?.id_poa_ativo}::uuid
+                AND dados.id_projeto = ${user?.id_projeto_ativo}::uuid
             ORDER BY numero_ut
         `
 

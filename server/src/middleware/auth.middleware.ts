@@ -7,15 +7,6 @@ import { getDecodedOAuthJwtGoogle } from "../services/DecodeJwtGoogle"
 const config = require("../config")
 
 export const Authentication = () => {
-    const { TokenExpiredError } = jwt;
-
-    const catchError = (err: any, res: any) => {
-    if (err instanceof TokenExpiredError) {
-        return res.status(401).send({ message: "Unauthorized! Access Token was expired!" });
-    }
-
-    return res.sendStatus(401).send({ message: "Unauthorized!" });
-    }
 
     return async (request: Request, response: Response, next: NextFunction) => {
         

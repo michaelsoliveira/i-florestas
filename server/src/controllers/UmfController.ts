@@ -75,7 +75,7 @@ export class UmfController {
                 count,
                 message: null
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: false,
                 umfs: [],
@@ -115,7 +115,7 @@ export class UmfController {
             const umf = await umfService.findById(id)
 
             return response.json(umf)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

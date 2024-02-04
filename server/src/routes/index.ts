@@ -1,13 +1,15 @@
 import 'express-async-errors'
-import express from "express"
-
+// import express, { Router } from "express"
+const express = require('express');
+const multer = require('multer')
+import { Request, Response } from "express";
 import { UserController } from "../controllers/UserController"
 import { AuthController } from "../controllers/AuthController"
 import { Authentication } from "../middleware/auth.middleware"
 import { DetentorController } from "../controllers/DetentorController"
 import { ResponsavelController } from "../controllers/ResponsavelController"
 import { EspecieController } from "../controllers/EspecieController"
-import multer from 'multer'
+
 import { CategoriaEspecieController } from "../controllers/CategoriaEspecieController"
 import { UmfController } from "../controllers/UmfController"
 import { EstadoController } from "../controllers/EstadoController"
@@ -50,6 +52,10 @@ routes.get('/auth/google', new AuthController().googleAuth)
 routes.get('/auth/me', Authentication(), new AuthController().getUserByToken)
 routes.post('/auth/refresh', new AuthController().refreshToken)
 routes.get('/auth/callback/github', new AuthController().signInCallback)
+
+routes.get('/status', function(request: Request, response: Response){
+    return response.status(200).json()
+})
 
 //Detentor
 routes.post('/detentor', Authentication(), new DetentorController().store)
@@ -138,9 +144,9 @@ routes.get('/planejo/uts/', Authentication(), new PlanejoController().utsByPoa)
 //Ut
 routes.post('/ut/', Authentication(), new UtController().store)
 routes.post('/ut/create-auto/', Authentication(), new UtController().createAuto)
+routes.get('/ut/:id', Authentication(), new UtController().findOne)
 routes.get('/ut/', Authentication(), new UtController().findAll)
 routes.get('/ut/get-by-upa/', Authentication(), new UtController().getUtsByUpa)
-routes.get('/ut/:id', Authentication(), new UtController().findOne)
 routes.get('/ut/search/q', Authentication(), new UtController().search)
 routes.put('/ut/:id', Authentication(), new UtController().update)
 routes.delete('/ut/single/:id', Authentication(), new UtController().delete)

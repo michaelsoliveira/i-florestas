@@ -74,7 +74,7 @@ export class EstadoController {
                 count,
                 message: null
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: false,
                 estados: [],
@@ -109,7 +109,7 @@ export class EstadoController {
             const estado = await estadoService.findById(id)
 
             return response.json(estado)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }

@@ -69,7 +69,7 @@ export class ResponsavelController {
                 data,
                 message: null
             })
-        } catch(error) {
+        } catch(error: any) {
             return response.json({
                 error: true,
                 data: [],
@@ -84,7 +84,7 @@ export class ResponsavelController {
             const responsavel = await responsavelService.findOne(id)
 
             return response.json(responsavel)
-        } catch(error) {
+        } catch(error: any) {
             return response.json(error.message)
         }
     }
