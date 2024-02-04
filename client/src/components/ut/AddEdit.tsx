@@ -1,7 +1,7 @@
 'use client'
 
 import { FormInput } from '@/components/utils/FormInput'
-import { useContext, useEffect, useState, useCallback, useMemo } from 'react'
+import { useContext, useEffect, useState, useCallback, useMemo, useRef, createRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import alertService from '@/services/alert'
@@ -15,6 +15,9 @@ import { setUt } from "@/redux/features/utSlice"
 import Map from '../maps/MapUt'
 import { Libraries, useLoadScript } from '@react-google-maps/api'
 import shp from "shpjs";
+import { FormInputMask } from '../utils/FormInputMask'
+import RadioGroup from '../form/RadioGroup'
+import Option from '../form/Option'
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
@@ -28,12 +31,13 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const upa = useAppSelector((state: RootState) => state.upa)
     const [arvores, setArvores] = useState<any>([])
     const { data: session } = useSession()
-    // const [utLocation, setUtLocation] = useState<google.maps.LatLngLiteral | null>(null)
+    const [tipoCoordenada, setTipoCoordenada] = useState<number>(0)
     const router = useRouter()
     const dispatch = useAppDispatch()
     const isAddMode = !id
     const [polygonPath, setPolygonPath] = useState<any>([])
     const libraries: Libraries = useMemo(() =>['places', 'geometry', 'drawing'], [])
+    const inputRef = createRef<HTMLInputElement>();
 
     const { isLoaded } = useLoadScript({
         id: 'script-loader',
@@ -90,12 +94,18 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         }
     }, [session, isAddMode, client, id, setValue, setArvores, setUtLocation])
 
-    useEffect(() => {        
+    useEffect(() => {    
         loadUt()
+        if (document.activeElement === inputRef.current) {
+            console.log('element has focus');
+          } else {
+            console.log('element does NOT have focus');
+          }
     }, [loadUt])
 
     async function onSubmit(data: any) {
         try {
+            console.log(data)
             if (upa?.tipo === 1 && !utLocation) {
                 alertService.error('É necessário indicar a origem da UT...')
                 return;
@@ -138,16 +148,6 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         } else {
             reader.readAsText(file)
         }
-
-        // reader.readAsArrayBuffer(file);
-        // reader.onload = function(buffer: any) {
-        //     console.log(buffer.target.result)
-        //     shpjs?.parseShape(buffer.target.result).then((geojson: any) => {
-        //         console.log(geojson)
-        //     })
-        //     // topojson.feature(buffer)
-        //     // setPolygonPath(buffer.target.result);
-        // }
       }
 
     async function createUt(data: any) {
@@ -155,19 +155,52 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             id_upa: upa.id,
             ...data
         })
-            .then((response: any) => {
-                const { error, message, ut } = response.data
-                if (!error) {
-                    dispatch(setUt({
-                        id: ut.id,
-                        numero_ut: ut.numero_ut,
-                    }))
-                    alertService.success(message);
-                    router.push('/ut')
-                } else {
-                    alertService.error(message)
-                }
-            }) 
+        .then((response: any) => {
+            const { error, message, ut } = response.data
+            if (!error) {
+                dispatch(setUt({
+                    id: ut.id,
+                    numero_ut: ut.numero_ut,
+                }))
+                alertService.success(message);
+                router.push('/ut')
+            } else {
+                alertService.error(message)
+            }
+        }) 
+    }
+
+    function selectTipoCoordenada(index?: any) {
+        console.log(index)
+        const { latidude, longitude, latitude_gms, longitude_gms } = getValues()
+        // setValue('tipo_coordenada', index === 0 ? 'gms' : 'decimal')
+        // setTipoCoordenada(index)
+        
+        const latFinal = latitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
+        const lngFinal = longitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
+        
+        if (index === 0) {
+            if (latFinal.length === 10) {
+                const grauLt = parseInt(latFinal.slice(0, 2))
+                const minLt = parseInt(latFinal.slice(2, 4))
+                const segLt = parseFloat(latFinal.slice(4).replaceAll(",", "."))
+                console.log(grauLt, minLt, segLt)
+    
+                if (grauLt < -90 || grauLt > 90) alertService.error('Graus - Verique se o grau da Latitude está preenchido corretamente!')
+                if (minLt >= 60 || minLt < 0) alertService.error('Minutos - Verique se os minutos da Latitude está preenchido corretamente!')
+                if (segLt >= 60 || segLt < 0) alertService.error('Minutos - Verique se os segundos da Latitude está preenchido corretamente!')
+            }
+
+            if (lngFinal.length === 9) {
+                const grauLg = parseInt(lngFinal.slice(0, 1))
+                const minLg = parseInt(lngFinal.slice(2, 3))
+                const segLg = parseFloat(lngFinal.slice(4).replaceAll(",", "."))
+    
+                if (grauLg < -90 || grauLg > 90) alertService.error('Graus - Verique se o grau da Longitude está preenchido corretamente!')
+                if (minLg >= 60 || minLg < 0) alertService.error('Minutos - Verique se os minutos da Longitude está preenchido corretamente!')
+                if (segLg >= 60 || segLg < 0) alertService.error('Minutos - Verique se os segundos da Longitude está preenchido corretamente!')
+            }
+        }
     }
 
     async function setLocation(location: any) {
@@ -306,30 +339,73 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="border border-gray-400 p-4 mt-4 rounded-md">
+                                    <div className="border border-gray-400 p-4 mt-4 rounded-md col-span-2">
                                         <span className="text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2">Coordenadas</span>
-                                        <div className="flex flex-col">
-                                            <FormInput
-                                                id="latitude"
-                                                name="latitude"
-                                                label="Latitude"
-                                                type="number"
-                                                register={register}
-                                                errors={errors}
-                                                className="pb-4"
-                                                step="any"
-                                            />
                                         
-                                            <FormInput
-                                                id="longitude"
-                                                name="longitude"
-                                                label="Longitude"
-                                                type="number"
-                                                register={register}
-                                                errors={errors}
-                                                className="pb-4"
-                                                step="any"
-                                            />
+                                            <div className='w-full pb-2'>
+                                                <RadioGroup labelText="Tipo">
+                                                    {["Graus, minutos e segundos", "Grau Decimal"].map((el, index) => (
+                                                        <Option
+                                                            key={index}
+                                                            index={index}
+                                                            selectedIndex={tipoCoordenada}
+                                                            onSelect={selectTipoCoordenada}
+                                                        >
+                                                            {el}
+                                                        </Option> 
+                                                    ))}
+                                                </RadioGroup>
+                                            </div>
+                                        
+                                        <div className="flex flex-col md:flex-row md:space-x-2">    
+                                        { tipoCoordenada === 0 ? (
+                                            <>
+                                                <FormInputMask 
+                                                    id='latitude_gms'
+                                                    name='latitude_gms'
+                                                    label='Latitude'
+                                                    errors={errors}
+                                                    innerRef={inputRef}
+                                                    placeholder="00º 00' 00,000''"
+                                                    maskFormat="99º 99' 99,999''" 
+                                                    register={register}
+                                                />
+                                                <FormInputMask 
+                                                    id='longitude_gms'
+                                                    name='longitude_gms'
+                                                    label='Longitude'
+                                                    errors={errors}
+                                                    placeholder="00º 00' 00,000''"
+                                                    maskFormat="99º 99' 99,999''" 
+                                                    register={register}
+                                                />
+                                            </>
+                                            ) : (
+                                                <>
+                                                    <FormInput
+                                                    id="latitude"
+                                                    name="latitude"
+                                                    label="Latitude"
+                                                    type="number"
+                                                    register={register}
+                                                    errors={errors}
+                                                    className="pb-4"
+                                                    step="any"
+                                                />
+                                            
+                                                <FormInput
+                                                    id="longitude"
+                                                    name="longitude"
+                                                    label="Longitude"
+                                                    type="number"
+                                                    register={register}
+                                                    errors={errors}
+                                                    className="pb-4"
+                                                    step="any"
+                                                />
+                                                </>
+                                            ) }  
+                                            
                                             <div className='w-full lg:w-1/3'>
                                                 <FormInput
                                                     name="azimute"

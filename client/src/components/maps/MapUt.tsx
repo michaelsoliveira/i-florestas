@@ -187,7 +187,7 @@ const onLoadPolygon = useCallback(
   }
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 w-full">
       <div className="pb-2">
         <div className="flex flex-row items-center justify-between w-full">
           <div className="flex flex-row items-center w-64">
@@ -207,7 +207,7 @@ const onLoadPolygon = useCallback(
           </div>
         </div>
       </div>
-      <div className="map">
+      <div className="map w-full">
           <GoogleMap
             zoom={7.5}
             center={center}

@@ -6,6 +6,7 @@ import React, {
     Ref
 } from 'react';
 import classNames from 'classnames';
+import ReactInputMask from 'react-input-mask';
 
 export type InputSize = 'small' | 'medium' | 'large';
 export type InputType = 'text' | 'email' | 'password' | 'number' | 'radio' | 'checkbox';
@@ -35,19 +36,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ) {
     return (
       <input
-        id={id}
-        ref={ref}
-        name={name}
-        type={type}
-        aria-label={label}
-        placeholder={placeholder}
-        className={classNames([
-          'relative inline-flex w-full rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30',
-        sizeMap[size],
-        className,
-        ])}
-        {...rest}
-      />
+          id={id}
+          ref={ref}
+          name={name}
+          type={type}
+          aria-label={label}
+          placeholder={placeholder}
+          className={classNames([
+            'relative inline-flex w-full rounded leading-none transition-colors ease-in-out placeholder-gray-500 text-gray-700 border border-gray-300 hover:border-blue-400 focus:outline-none focus:border-blue-400 focus:ring-blue-400 focus:ring-4 focus:ring-opacity-30',
+          sizeMap[size],
+          className,
+          ])}
+          {...rest}
+        />
     )
   }
 )
