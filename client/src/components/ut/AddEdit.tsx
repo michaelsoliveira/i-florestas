@@ -20,6 +20,7 @@ import RadioGroup from '../form/RadioGroup'
 import Option from '../form/Option'
 import { decimalParaGms, gmsParaDecimal } from '../utils/ConvertCoords'
 import { OptionType, Select } from '../utils/Select'
+import { number } from 'prop-types'
 
 type LatLngLiteral = google.maps.LatLngLiteral
 
@@ -42,8 +43,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const isAddMode = !id
     const [polygonPath, setPolygonPath] = useState<any>([])
     const libraries: Libraries = useMemo(() =>['places', 'geometry', 'drawing'], [])
-    const [directionLat, setDirectionLat] = useState<OptionType>({label: 'Sul', value: 'S'})
-    const [directionLng, setDirectionLng] = useState<OptionType>({label: 'Oeste', value: 'O'})
+    const [directionLat, setDirectionLat] = useState<OptionType>({label: 'Norte', value: 'N'})
+    const [directionLng, setDirectionLng] = useState<OptionType>({label: 'Leste', value: 'L'})
 
     const { isLoaded } = useLoadScript({
         id: 'script-loader',
@@ -52,11 +53,28 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         libraries
     })
 
+    const dirNorte = directionLatOptions.find((dir: OptionType) => dir.value === 'N') as OptionType
+    const dirSul = directionLatOptions.find((dir: OptionType) => dir.value === 'S') as OptionType
+    const dirLeste = directionLngOptions.find((dir: OptionType) => dir.value === 'L') as OptionType
+    const dirOeste = directionLngOptions.find((dir: OptionType) => dir.value === 'O') as OptionType
+
+    const { latitude, longitude, latitude_gms, longitude_gms } = getValues()        
+
+    const latFinal = latitude_gms && latitude_gms?.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")    
+    const lngFinal = longitude_gms && longitude_gms?.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
+    const grauLt = latFinal && parseInt(latFinal.slice(0, 2))
+    const minLt = latFinal && parseInt(latFinal.slice(2, 4))
+    const segLt = latFinal && parseFloat(latFinal.slice(4).replaceAll(",", "."))    
+    const grauLng = lngFinal && parseInt(lngFinal.slice(0, 2))
+    const minLng = lngFinal && parseInt(lngFinal.slice(2, 4))
+    const segLng = lngFinal && parseFloat(lngFinal.slice(4).replaceAll(",", "."))
+
     const loadUt = useCallback(async () => {
         if (!isAddMode && typeof session !== typeof undefined) {
                 
             const { data: ut } = await client.get(`/ut/${id}`)
-
+            const { latitude: lat, longitude: lng } = ut
+            
             const polygon_path = ut.polygon_path?.length > 0 ? JSON.parse(ut.polygon_path)?.coordinates[0].map((polygon: any) => {
                 return {
                     lat: polygon[1],
@@ -70,10 +88,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                 polygonValues.push({ lat: poly.lat, lng: poly.lng })
             })
 
-            setUtLocation({
-                lat: ut?.latitude,
-                lng: ut?.longitude
-            })
+            loadGms(lat, lng)
 
             for (const [key, value] of Object.entries(ut)) {
                 switch(key) {
@@ -104,24 +119,48 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         loadUt()
     }, [loadUt])
 
+    function loadGms(lat: number, lng: number) {
+        setUtLocation({
+            lat,
+            lng
+        })
+        setValue('latitude_gms', decimalParaGms(lat))
+        setValue('longitude_gms', decimalParaGms(lng))
+
+        const dirLat = (lat < 0) ? dirSul : dirNorte
+        const dirLng = (lng < 0) ? dirOeste : dirLeste
+
+        setDirectionLat(dirLat)
+        setDirectionLng(dirLng)
+    }
+
     function changeDirectionLat(data: any) {
         setDirectionLat(data)
-        const latitude = getValues('latitude')        
-        if (tipoCoordenada === 0 && latitude && data?.value === 'S') {
+        const {latitude, longitude} = getValues()        
+        if ((typeof latitude !== undefined || latitude !== 0) && tipoCoordenada === 0 && data?.value === 'S') {
             setValue('latitude', -latitude)
+            setUtLocation({
+                lat: -latitude,
+                lng: longitude
+            })
         } else {
             setValue('latitude', Math.abs(latitude))
+            setUtLocation({
+                lat: Math.abs(latitude),
+                lng: longitude
+            })
         }
     }
 
     function changeDirectionLng(data: any) {
         setDirectionLng(data)
         const longitude = getValues('longitude')        
-        if (tipoCoordenada === 0 && longitude && data?.value === 'O') {
+        if ((typeof longitude !== undefined || longitude !== 0) && tipoCoordenada === 0 && data?.value === 'O') {
             setValue('longitude', -longitude)
         } else {
             setValue('longitude', Math.abs(longitude))
         }
+        handleChangeCoordenadas()
     }
 
     async function onSubmit(data: any) {
@@ -190,65 +229,69 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         }) 
     }
 
-    function handleChangeCoordenadas(e?: any) {
-        const { latitude, longitude, latitude_gms, longitude_gms } = getValues()
-        const dirNorte = directionLatOptions.find((dir: OptionType) => dir.value === 'N') as OptionType
-        const dirSul = directionLatOptions.find((dir: OptionType) => dir.value === 'S') as OptionType
-        const dirLeste = directionLngOptions.find((dir: OptionType) => dir.value === 'L') as OptionType
-        const dirOeste = directionLngOptions.find((dir: OptionType) => dir.value === 'O') as OptionType
-        
-        if (latitude && latitude < 0.0) { setDirectionLat(dirSul) } else { setDirectionLat(dirNorte) }
-        if (longitude && longitude < 0.0) { setDirectionLng(dirOeste) } else { setDirectionLng(dirLeste) }
-
-        const latFinal = latitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")    
-        const lngFinal = longitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
-        const grauLt = parseInt(latFinal.slice(0, 2))
-        const minLt = parseInt(latFinal.slice(2, 4))
-        const segLt = parseFloat(latFinal.slice(4).replaceAll(",", "."))    
-        const grauLng = parseInt(lngFinal.slice(0, 2))
-        const minLng = parseInt(lngFinal.slice(2, 4))
-        const segLng = parseFloat(lngFinal.slice(4).replaceAll(",", "."))
-
-        if (tipoCoordenada === 0) {
-            const latDecimal = latFinal ? gmsParaDecimal(grauLt, minLt, segLt, String(directionLat?.value)) : 0
-            const lngDecimal = lngFinal ? gmsParaDecimal(grauLng, minLng, segLng, "O") : 0
+    function handleChangeCoordenadas(mapData?: any) {
+        if (mapData) {
+            const decimalGmsLat = decimalParaGms(mapData?.lat)
+            const decimalGmsLng = decimalParaGms(mapData?.lng)
             
-            if (latFinal.length === 10) {
-                if (grauLt < -90 || grauLt > 90) alertService.error('Graus - Verique se o grau da Latitude está preenchido corretamente!')
-                if (minLt >= 60 || minLt < 0) alertService.error('Minutos - Verique se os minutos da Latitude está preenchido corretamente!')
-                if (segLt >= 60 || segLt < 0) alertService.error('Segundos - Verique se os segundos da Latitude está preenchido corretamente!')
-            }
-
-            if (lngFinal.length === 10) {
-                if (grauLng < -90 || grauLng > 90) alertService.error('Graus - Verique se o grau da Longitude está preenchido corretamente!')
-                if (minLng >= 60 || minLng < 0) alertService.error('Minutos - Verique se os minutos da Longitude está preenchido corretamente!')
-                if (segLng >= 60 || segLng < 0) alertService.error('Segundos - Verique se os segundos da Longitude está preenchido corretamente!')
-            }
-
-            setValue('latitude', latDecimal)
-            setValue('longitude', lngDecimal)
-            setUtLocation({
-                lat: latDecimal,
-                lng: lngDecimal
-            })
-
-        } else {
-            const decimalGmsLat = latitude ? decimalParaGms(latitude) : "00º 00' 00,000''"
-            const decimalGmsLng = longitude ? decimalParaGms(longitude) : "00º 00' 00,000''"
-            
+            setValue('latitude', mapData?.lat)
+            setValue('longitude', mapData?.lng)
             setValue('latitude_gms', decimalGmsLat)
             setValue('longitude_gms', decimalGmsLng)
-            setUtLocation({
-                lat: parseFloat(latitude),
-                lng: parseFloat(longitude)
-            })
+        } else {
+            if (tipoCoordenada === 0) {
+                const latDecimal = latFinal && gmsParaDecimal(grauLt, minLt, segLt, String(directionLat?.value))
+                const lngDecimal = lngFinal && gmsParaDecimal(grauLng, minLng, segLng, String(directionLng?.value))
+                
+                if (latFinal.length === 10) {
+                    if (grauLt < -90 || grauLt > 90) alertService.error('Graus - Verique se o grau da Latitude está preenchido corretamente!')
+                    if (minLt >= 60 || minLt < 0) alertService.error('Minutos - Verique se os minutos da Latitude está preenchido corretamente!')
+                    if (segLt >= 60 || segLt < 0) alertService.error('Segundos - Verique se os segundos da Latitude está preenchido corretamente!')
+                }
+    
+                if (lngFinal.length === 10) {
+                    if (grauLng < -90 || grauLng > 90) alertService.error('Graus - Verique se o grau da Longitude está preenchido corretamente!')
+                    if (minLng >= 60 || minLng < 0) alertService.error('Minutos - Verique se os minutos da Longitude está preenchido corretamente!')
+                    if (segLng >= 60 || segLng < 0) alertService.error('Segundos - Verique se os segundos da Longitude está preenchido corretamente!')
+                }
+    
+                setValue('latitude', latDecimal)
+                setValue('longitude', lngDecimal)
+                setUtLocation({
+                    lat: latDecimal,
+                    lng: lngDecimal
+                })
+    
+            } else {
+    
+                if (typeof latitude !== undefined && latitude !== 0 && latitude < 0.0) { setDirectionLat(dirSul) } else { setDirectionLat(dirNorte) }
+                if (typeof longitude !== undefined && longitude !== 0 && longitude < 0.0) { setDirectionLng(dirOeste) } else { setDirectionLng(dirLeste) }
+                
+                const decimalGmsLat = latitude ? decimalParaGms(latitude) : "00º 00' 00,000''"
+                const decimalGmsLng = longitude ? decimalParaGms(longitude) : "00º 00' 00,000''"
+                
+                setValue('latitude_gms', decimalGmsLat)
+                setValue('longitude_gms', decimalGmsLng)
+                setUtLocation({
+                    lat: parseFloat(latitude),
+                    lng: parseFloat(longitude)
+                })
+            }
         }
     }
 
     async function setLocation(location: any) {
+        const { lat, lng } = location
+        const latDir = lat < 0 ? dirSul : dirNorte
+        const lngDir = lng < 0 ? dirOeste : dirLeste
+
+        setDirectionLat(latDir)
+        setDirectionLng(lngDir)
+
         setUtLocation(location)
-        setValue('latitude', location.lat)
-        setValue('longitude', location.lng)
+        // setValue('latitude', location.lat)
+        // setValue('longitude', location.lng)
+        handleChangeCoordenadas(location)
     }
 
     const loadDirectionLatOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
@@ -496,8 +539,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                                     <Select
                                                         initialData={
                                                             {
-                                                                label: 'Oeste',
-                                                                value: 'O'
+                                                                label: 'Leste',
+                                                                value: 'L'
                                                             }
                                                         }
                                                         selectedValue={directionLng}
@@ -544,8 +587,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                             <>
                                             <div className="flex flex-col md:flex-row md:space-x-2">   
                                                 <FormInput
-                                                    id="norte"
-                                                    name="norte"
+                                                    id="latitude"
+                                                    name="latitude"
                                                     label="Norte"
                                                     type="number"
                                                     register={register}
@@ -555,8 +598,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                                     focusOut={handleChangeCoordenadas}
                                                 />
                                                     <FormInput
-                                                    id="este"
-                                                    name="este"
+                                                    id="longitude"
+                                                    name="longitude"
                                                     label="Este"
                                                     type="number"
                                                     register={register}
