@@ -25,7 +25,7 @@ export type InputProps = {
   className?: string;
   maskFormat?: string;
   register?: any;
-  onFocus?: any;
+  focusOut?: any;
 } & Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
   'size'
@@ -39,7 +39,7 @@ const sizeMap: { [key in InputSize]: string } = {
 
 export const InputMask = forwardRef<HTMLInputElement, InputProps>(
   function Input(
-    { id, name, type = 'text', label, placeholder, size = 'small', rules, maskFormat = "", onFocus, className, register, ...rest}, 
+    { id, name, type = 'text', label, placeholder, size = 'small', rules, maskFormat = "", focusOut, className, register, ...rest}, 
     ref
   ) {
     return (
@@ -57,6 +57,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputProps>(
                 sizeMap[size],
                 className,
             ])} 
+            onBlur={focusOut}
             {...rest}
         />
     )

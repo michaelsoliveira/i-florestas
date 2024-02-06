@@ -98,13 +98,15 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                     dispatch(setUpa({
                         id: data?.umf?.upa[0].id,
                         descricao: data?.umf?.upa[0].descricao,
-                        tipo: data?.umf?.upa[0].tipo
+                        tipo: data?.umf?.upa[0].tipo,
+                        srid: Number.parseInt(data?.umf?.upa[0].srid)
                     }))
                 } else {
                     dispatch(setUpa({
                         id: '',
                         descricao: 'NEHUMA UPA CADASTRADA',
-                        tipo: 0
+                        tipo: 0,
+                        srid: 0
                     }))
                 }
 

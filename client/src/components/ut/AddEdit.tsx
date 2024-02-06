@@ -18,9 +18,14 @@ import shp from "shpjs";
 import { FormInputMask } from '../utils/FormInputMask'
 import RadioGroup from '../form/RadioGroup'
 import Option from '../form/Option'
+import { decimalParaGms, gmsParaDecimal } from '../utils/ConvertCoords'
+import { OptionType, Select } from '../utils/Select'
 
-type LatLngLiteral = google.maps.LatLngLiteral;
+type LatLngLiteral = google.maps.LatLngLiteral
 
+
+const directionLngOptions: Array<OptionType> = [{label: 'Leste', value: 'L'}, {label: 'Oeste', value: 'O'}]
+const directionLatOptions: Array<OptionType> = [{label: 'Norte', value: 'N'}, {label: 'Sul', value: 'S'}]
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string
 
 const AddEdit = ({ params } : { params: { id: string } }) => {
@@ -37,7 +42,8 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
     const isAddMode = !id
     const [polygonPath, setPolygonPath] = useState<any>([])
     const libraries: Libraries = useMemo(() =>['places', 'geometry', 'drawing'], [])
-    const inputRef = createRef<HTMLInputElement>();
+    const [directionLat, setDirectionLat] = useState<OptionType>({label: 'Sul', value: 'S'})
+    const [directionLng, setDirectionLng] = useState<OptionType>({label: 'Oeste', value: 'O'})
 
     const { isLoaded } = useLoadScript({
         id: 'script-loader',
@@ -96,16 +102,30 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
 
     useEffect(() => {    
         loadUt()
-        if (document.activeElement === inputRef.current) {
-            console.log('element has focus');
-          } else {
-            console.log('element does NOT have focus');
-          }
     }, [loadUt])
+
+    function changeDirectionLat(data: any) {
+        setDirectionLat(data)
+        const latitude = getValues('latitude')        
+        if (tipoCoordenada === 0 && latitude && data?.value === 'S') {
+            setValue('latitude', -latitude)
+        } else {
+            setValue('latitude', Math.abs(latitude))
+        }
+    }
+
+    function changeDirectionLng(data: any) {
+        setDirectionLng(data)
+        const longitude = getValues('longitude')        
+        if (tipoCoordenada === 0 && longitude && data?.value === 'O') {
+            setValue('longitude', -longitude)
+        } else {
+            setValue('longitude', Math.abs(longitude))
+        }
+    }
 
     async function onSubmit(data: any) {
         try {
-            console.log(data)
             if (upa?.tipo === 1 && !utLocation) {
                 alertService.error('É necessário indicar a origem da UT...')
                 return;
@@ -170,36 +190,58 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         }) 
     }
 
-    function selectTipoCoordenada(index?: any) {
-        console.log(index)
-        const { latidude, longitude, latitude_gms, longitude_gms } = getValues()
-        // setValue('tipo_coordenada', index === 0 ? 'gms' : 'decimal')
-        // setTipoCoordenada(index)
+    function handleChangeCoordenadas(e?: any) {
+        const { latitude, longitude, latitude_gms, longitude_gms } = getValues()
+        const dirNorte = directionLatOptions.find((dir: OptionType) => dir.value === 'N') as OptionType
+        const dirSul = directionLatOptions.find((dir: OptionType) => dir.value === 'S') as OptionType
+        const dirLeste = directionLngOptions.find((dir: OptionType) => dir.value === 'L') as OptionType
+        const dirOeste = directionLngOptions.find((dir: OptionType) => dir.value === 'O') as OptionType
         
-        const latFinal = latitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
+        if (latitude && latitude < 0.0) { setDirectionLat(dirSul) } else { setDirectionLat(dirNorte) }
+        if (longitude && longitude < 0.0) { setDirectionLng(dirOeste) } else { setDirectionLng(dirLeste) }
+
+        const latFinal = latitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")    
         const lngFinal = longitude_gms.toString().trim().replaceAll(/[`~!@º#$%^*()_|+\-=?;:'"<>\s\{\}\[\]\\\/]/gi, "")
-        
-        if (index === 0) {
+        const grauLt = parseInt(latFinal.slice(0, 2))
+        const minLt = parseInt(latFinal.slice(2, 4))
+        const segLt = parseFloat(latFinal.slice(4).replaceAll(",", "."))    
+        const grauLng = parseInt(lngFinal.slice(0, 2))
+        const minLng = parseInt(lngFinal.slice(2, 4))
+        const segLng = parseFloat(lngFinal.slice(4).replaceAll(",", "."))
+
+        if (tipoCoordenada === 0) {
+            const latDecimal = latFinal ? gmsParaDecimal(grauLt, minLt, segLt, String(directionLat?.value)) : 0
+            const lngDecimal = lngFinal ? gmsParaDecimal(grauLng, minLng, segLng, "O") : 0
+            
             if (latFinal.length === 10) {
-                const grauLt = parseInt(latFinal.slice(0, 2))
-                const minLt = parseInt(latFinal.slice(2, 4))
-                const segLt = parseFloat(latFinal.slice(4).replaceAll(",", "."))
-                console.log(grauLt, minLt, segLt)
-    
                 if (grauLt < -90 || grauLt > 90) alertService.error('Graus - Verique se o grau da Latitude está preenchido corretamente!')
                 if (minLt >= 60 || minLt < 0) alertService.error('Minutos - Verique se os minutos da Latitude está preenchido corretamente!')
-                if (segLt >= 60 || segLt < 0) alertService.error('Minutos - Verique se os segundos da Latitude está preenchido corretamente!')
+                if (segLt >= 60 || segLt < 0) alertService.error('Segundos - Verique se os segundos da Latitude está preenchido corretamente!')
             }
 
-            if (lngFinal.length === 9) {
-                const grauLg = parseInt(lngFinal.slice(0, 1))
-                const minLg = parseInt(lngFinal.slice(2, 3))
-                const segLg = parseFloat(lngFinal.slice(4).replaceAll(",", "."))
-    
-                if (grauLg < -90 || grauLg > 90) alertService.error('Graus - Verique se o grau da Longitude está preenchido corretamente!')
-                if (minLg >= 60 || minLg < 0) alertService.error('Minutos - Verique se os minutos da Longitude está preenchido corretamente!')
-                if (segLg >= 60 || segLg < 0) alertService.error('Minutos - Verique se os segundos da Longitude está preenchido corretamente!')
+            if (lngFinal.length === 10) {
+                if (grauLng < -90 || grauLng > 90) alertService.error('Graus - Verique se o grau da Longitude está preenchido corretamente!')
+                if (minLng >= 60 || minLng < 0) alertService.error('Minutos - Verique se os minutos da Longitude está preenchido corretamente!')
+                if (segLng >= 60 || segLng < 0) alertService.error('Segundos - Verique se os segundos da Longitude está preenchido corretamente!')
             }
+
+            setValue('latitude', latDecimal)
+            setValue('longitude', lngDecimal)
+            setUtLocation({
+                lat: latDecimal,
+                lng: lngDecimal
+            })
+
+        } else {
+            const decimalGmsLat = latitude ? decimalParaGms(latitude) : "00º 00' 00,000''"
+            const decimalGmsLng = longitude ? decimalParaGms(longitude) : "00º 00' 00,000''"
+            
+            setValue('latitude_gms', decimalGmsLat)
+            setValue('longitude_gms', decimalGmsLng)
+            setUtLocation({
+                lat: parseFloat(latitude),
+                lng: parseFloat(longitude)
+            })
         }
     }
 
@@ -208,6 +250,24 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
         setValue('latitude', location.lat)
         setValue('longitude', location.lng)
     }
+
+    const loadDirectionLatOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const data = directionLatOptions.filter((direction: any) => direction.label.toLowerCase().includes(inputValue.toLocaleLowerCase()))
+        
+        callback(data?.map((direction: any) => ({
+            value: direction.value,
+            label: direction.label
+        })))
+    };
+
+    const loadDirectionLngOptions = async (inputValue: string, callback: (options: OptionType[]) => void) => {
+        const data = directionLngOptions.filter((direction: any) => direction.label.toLowerCase().includes(inputValue.toLocaleLowerCase()))
+        
+        callback(data?.map((direction: any) => ({
+            value: direction.value,
+            label: direction.label
+        })))
+    };
 
     async function updateUt(id: string, data: any) {
         
@@ -228,6 +288,35 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                     alertService.error(message)
                 }
             })
+    }
+
+    const partialAzimute = () => {
+        return (
+            <>
+                <div className='w-full lg:w-32'>
+                    <FormInput
+                        name="azimute"
+                        label="Azimute"
+                        type="number"
+                        register={register}
+                        errors={errors}
+                        id="azimute"
+                        className="pb-4"
+                    />
+                </div>
+                <div className='w-full lg:w-32'>
+                    <FormInput
+                        name="quadrante"
+                        label="Quadrante"
+                        type="number"
+                        register={register}
+                        errors={errors}
+                        id="quadrante"
+                        className="pb-4"
+                    />
+                </div>
+            </>
+        )
     }
 
     return (
@@ -341,15 +430,20 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                     </div>
                                     <div className="border border-gray-400 p-4 mt-4 rounded-md col-span-2">
                                         <span className="text-gray-700 block -mt-7 bg-white w-[7.5em] pb-1 px-2">Coordenadas</span>
-                                        
-                                            <div className='w-full pb-2'>
+                                        { (upa.srid === 4326) || (upa.srid === 4674) ? (
+                                            <>
+                                                <div className='w-full pb-2'>
                                                 <RadioGroup labelText="Tipo">
                                                     {["Graus, minutos e segundos", "Grau Decimal"].map((el, index) => (
                                                         <Option
                                                             key={index}
                                                             index={index}
                                                             selectedIndex={tipoCoordenada}
-                                                            onSelect={selectTipoCoordenada}
+                                                            onSelect={(index: any) => {
+                                                                setValue('tipo_coordenada', index === 0 ? 'gms' : 'decimal')
+                                                                setTipoCoordenada(index)
+                                                                handleChangeCoordenadas()
+                                                            }}
                                                         >
                                                             {el}
                                                         </Option> 
@@ -365,70 +459,116 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
                                                     name='latitude_gms'
                                                     label='Latitude'
                                                     errors={errors}
-                                                    innerRef={inputRef}
+                                                    focusOut={handleChangeCoordenadas}
                                                     placeholder="00º 00' 00,000''"
                                                     maskFormat="99º 99' 99,999''" 
                                                     register={register}
                                                 />
-                                                <FormInputMask 
-                                                    id='longitude_gms'
-                                                    name='longitude_gms'
-                                                    label='Longitude'
-                                                    errors={errors}
-                                                    placeholder="00º 00' 00,000''"
-                                                    maskFormat="99º 99' 99,999''" 
-                                                    register={register}
-                                                />
+                                                <div className='mt-2 w-36'>
+                                                    <Select
+                                                        initialData={
+                                                            {
+                                                                label: 'Sul',
+                                                                value: 'S'
+                                                            }
+                                                        }
+                                                        selectedValue={directionLat}
+                                                        defaultOptions={directionLatOptions}
+                                                        options={loadDirectionLatOptions}
+                                                        label="Direção Lat"
+                                                        callback={changeDirectionLat}
+                                                        selectStyle='py-[2.5px] w-full'
+                                                    />
+                                                </div>
+                                                    
+                                                    <FormInputMask 
+                                                        id='longitude_gms'
+                                                        name='longitude_gms'
+                                                        label='Longitude'
+                                                        errors={errors}
+                                                        focusOut={handleChangeCoordenadas}
+                                                        placeholder="00º 00' 00,000''"
+                                                        maskFormat="99º 99' 99,999''" 
+                                                        register={register}
+                                                    />
+                                                    
+                                                    <div className='mt-2 w-36'>
+                                                    <Select
+                                                        initialData={
+                                                            {
+                                                                label: 'Oeste',
+                                                                value: 'O'
+                                                            }
+                                                        }
+                                                        selectedValue={directionLng}
+                                                        defaultOptions={directionLngOptions}
+                                                        options={loadDirectionLngOptions}
+                                                        label="Direção Lng"
+                                                        callback={changeDirectionLng}
+                                                        selectStyle='py-[2.5px] w-full'
+                                                    />
+                                                </div>
                                             </>
                                             ) : (
                                                 <>
                                                     <FormInput
-                                                    id="latitude"
-                                                    name="latitude"
-                                                    label="Latitude"
-                                                    type="number"
-                                                    register={register}
-                                                    errors={errors}
-                                                    className="pb-4"
-                                                    step="any"
-                                                />
+                                                        id="latitude"
+                                                        name="latitude"
+                                                        label="Latitude"
+                                                        type="number"
+                                                        register={register}
+                                                        errors={errors}
+                                                        className="pb-4"
+                                                        step="any"
+                                                        focusOut={handleChangeCoordenadas}
+                                                    />
                                             
-                                                <FormInput
-                                                    id="longitude"
-                                                    name="longitude"
-                                                    label="Longitude"
-                                                    type="number"
-                                                    register={register}
-                                                    errors={errors}
-                                                    className="pb-4"
-                                                    step="any"
-                                                />
+                                                    <FormInput
+                                                        id="longitude"
+                                                        name="longitude"
+                                                        label="Longitude"
+                                                        type="number"
+                                                        register={register}
+                                                        errors={errors}
+                                                        className="pb-4"
+                                                        step="any"
+                                                        focusOut={handleChangeCoordenadas}
+                                                    />
                                                 </>
                                             ) }  
-                                            
-                                            <div className='w-full lg:w-1/3'>
+
+                                            { partialAzimute() }
+                                        </div> 
+                                            </>
+                                        ) : (
+                                            <>
+                                            <div className="flex flex-col md:flex-row md:space-x-2">   
                                                 <FormInput
-                                                    name="azimute"
-                                                    label="Azimute"
+                                                    id="norte"
+                                                    name="norte"
+                                                    label="Norte"
                                                     type="number"
                                                     register={register}
                                                     errors={errors}
-                                                    id="azimute"
                                                     className="pb-4"
+                                                    step="any"
+                                                    focusOut={handleChangeCoordenadas}
                                                 />
-                                            </div>
-                                            <div className='w-full lg:w-1/3'>
-                                                <FormInput
-                                                    name="quadrante"
-                                                    label="Quadrante"
+                                                    <FormInput
+                                                    id="este"
+                                                    name="este"
+                                                    label="Este"
                                                     type="number"
                                                     register={register}
                                                     errors={errors}
-                                                    id="quadrante"
                                                     className="pb-4"
+                                                    step="any"
+                                                    focusOut={handleChangeCoordenadas}
                                                 />
-                                            </div>
-                                        </div>
+                                                { partialAzimute() }
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 </>)
                             }

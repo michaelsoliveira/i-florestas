@@ -26,7 +26,7 @@ export type FormInputProps<TFormValues extends FieldValues> = {
     layout?: 'default' | 'floatLabel',
     errors?: Partial<DeepMap<TFormValues, FieldError>>;
     maskFormat?: string;
-    onFocus?: any;
+    focusOut?: any;
 } & Omit<InputProps, 'name'>;
 
 export const FormInputMask = 
@@ -36,12 +36,12 @@ export const FormInputMask =
     register,
     rules,
     errors,
-    onFocus,
+    focusOut,
     innerRef,
     className,
     layout = 'default',
     maskFormat,    
-    ...props
+    ...rest
   }: FormInputProps<TFormValues>): JSX.Element => {
   // If the name is in a FieldArray, it will be 'fields.index.fieldName' and errors[name] won't return anything, so we are using lodash get
   const errorMessages = lodash.get(errors, name) as any;
@@ -64,12 +64,12 @@ export const FormInputMask =
               maskFormat={maskFormat}
               register={register}
               ref={innerRef}
-              onFocus={onFocus}
+              focusOut={focusOut}
               className={classNames([{
               'transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 border-red-600 hover:border-red-600 focus:border-red-600 focus:ring-red-600':
                   hasError
               }])}
-              {...props}
+              {...rest}
           />
           {errors && (
             <ErrorMessage

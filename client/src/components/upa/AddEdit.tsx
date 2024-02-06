@@ -166,7 +166,8 @@ const AddEdit = ({ params }: UpaProps) => {
                     dispatch(setUpa({
                         id: upa.id,
                         descricao: upa.descricao,
-                        tipo: upa.tipo
+                        tipo: upa.tipo,
+                        srid: upa.srid
                     }))
                     alertService.success(message);
                     router.push('/upa')
@@ -188,7 +189,8 @@ const AddEdit = ({ params }: UpaProps) => {
                     dispatch(setUpa({
                         id: upa.id,
                         descricao: upa.descricao,
-                        tipo: upa.tipo
+                        tipo: upa.tipo,
+                        srid: upa.srid
                     }))
                     alertService.success(message);
                     router.push('/upa')

@@ -1,9 +1,5 @@
-export function gmsParaDecimal(grau: string, min: string, seg: string, direct: string): number {
-    const grauC = parseFloat(grau);
-    const minC = parseFloat(min);
-    const segC = parseFloat(seg);
-    
-    let dd = (grauC + ((minC == 0) ? 0 : minC / 60)) + ((segC == 0) ? 0 : segC / 3600);
+export function gmsParaDecimal(grau: number, min: number, seg: number, direct?: string): number {
+    let dd = (grau + ((min == 0) ? 0 : min / 60)) + ((seg == 0) ? 0 : seg / 3600);
     
     if(direct === "S" || direct === "O")
         dd = -dd;
@@ -11,14 +7,15 @@ export function gmsParaDecimal(grau: string, min: string, seg: string, direct: s
     return dd;
 }
 
-export function parteInteira (valor: number): number {
+function parteInteira (valor: number) {
     if (valor >= 0.0) {
         return Math.floor (valor);
     } else {
         return Math.ceil (valor);
     }
 }
-export function parteFracionaria (valor: number): number {
+
+function parteFracionaria (valor: number) {
     if (valor >= 0.0) {
         return valor - Math.floor (valor);
     } else {
@@ -26,14 +23,18 @@ export function parteFracionaria (valor: number): number {
     }
 }
 
+
 export function decimalParaGms(grau: number): string{
-    
+    const grauI = Math.abs(Math.trunc(grau))
     const grauF = parteFracionaria(grau);
-    const min = parteInteira(Math.abs(grauF * 60)) ;
-    const minF = parteFracionaria(grauF * 60);
-    const seg = parteFracionaria(minF) * 60;
-    //double result = grauI + min + seg;
-    const decimal = Math.abs(grau) + "º " + min + "\' " + Math.abs(seg) + "\""
+    const min = parteInteira(Math.abs(grauF * 60));
+    const minF = parteFracionaria(Math.abs(grauF) * 60);
+    const seg = (Math.abs(grau) - grauI - min/60) * 3600;
+    
+    const strGrau = Math.abs(grauI) < 10 ? '0' + Math.abs(grauI) : Math.abs(grauI)
+    const strMin = min < 10 ?  '0' + min : min
+    const strSeg = seg < 10 ? '0' + String(Math.abs(seg).toFixed(3)) : Math.abs(seg).toFixed(3)
+    const decimal = strGrau + "º " + strMin + "\' " + strSeg + "\""
 
     return decimal;
 }

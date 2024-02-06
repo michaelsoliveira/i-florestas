@@ -140,7 +140,8 @@ const Index = ({ currentUts, onPageChanged, changeItemsPerPage, orderBy, order, 
         dispatch(setUpa({
             id: upaSelected.id,
             descricao: upaSelected.descricao,
-            tipo: Number.parseInt(upaSelected.tipo)
+            tipo: Number.parseInt(upaSelected.tipo),
+            srid: Number.parseInt(upaSelected.srid),
         }))
         setSelectedUpa(upa)
         

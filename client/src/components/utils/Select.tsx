@@ -9,7 +9,7 @@ interface State {
 
 export interface OptionType {
     readonly label: string;
-    readonly value: string | Number;
+    readonly value: string | Number | undefined;
 }
 
 export type SelectType = {
@@ -22,16 +22,17 @@ export type SelectType = {
   isMulti?: boolean;
   initialData?: any;
   styleLabel?: string;
+  selectStyle?: string;
 }
 
-export const Select = ({ label, callback, options, defaultOptions, placeholder, styleLabel, selectedValue, isMulti = false , initialData }: SelectType) => {
+export const Select = ({ label, callback, options, defaultOptions, placeholder, styleLabel, selectedValue, selectStyle, isMulti = false , initialData, ...props }: SelectType) => {
     return (
       <div>
         <label className={classNames("text-sm", styleLabel)} htmlFor="">{ label }</label>
         <AsyncSelect
             isMulti={isMulti}
             loadOptions={options}
-            className="text-sm origin-top-right absolute right-0"
+            className={classNames("text-sm origin-top-right absolute right-0", selectStyle)}
             defaultOptions={defaultOptions}
             placeholder={placeholder}
             value={typeof selectedValue !== typeof undefined ? (selectedValue?.length > 1 ? selectedValue?.map((data: any) => {
@@ -58,6 +59,7 @@ export const Select = ({ label, callback, options, defaultOptions, placeholder, 
                     },
                 })
             }
+            {...props}
         />
       </div>
     )
