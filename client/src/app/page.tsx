@@ -25,9 +25,9 @@ export default function Dashboard() {
       <div className="mx-auto relative flex flex-row lg:flex-col lg:overflow-hidden">
         <div className="w-full mt-10 px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-12">
           <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:pb-16">
-            <div className="flex flex-col lg:flex-row border shadow-lg h-72 md:h-[26em] object-cover object-center items-center justify-center" 
+            <div className="flex flex-col lg:flex-row w-full border shadow-lg h-72 md:h-[26em] object-cover object-center items-center justify-center" 
               style={{
-                backgroundImage: `url("/imgs/hero_bomanejo.jpeg")`,
+                backgroundImage: `url("/imgs/hero.jpg")`,
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: `${windowWidth > 800 ? '100%' : '140%'} `,
                 backgroundPosition: 'center'             
