@@ -113,7 +113,7 @@ const AddEdit = ({ params } : { params: { id: string } }) => {
             })
             setArvores(arvores)
         }
-    }, [session, isAddMode, client, id, setValue, setArvores, setUtLocation])
+    }, [session, isAddMode, client, id, setValue, setArvores, setUtLocation, loadGms])
 
     useEffect(() => {    
         loadUt()

@@ -3,7 +3,7 @@ const withPWA = require("next-pwa")({
     dest: "public",
     register: true,
     skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development'
+    disable: process.env.ENVIRONMENT === 'development'
 })
 const nextConfig = withPWA({
   rewrites: async () => {
@@ -11,7 +11,7 @@ const nextConfig = withPWA({
       {
         source: "/ia/:path*",
         destination:
-          process.env.NODE_ENV === "development"
+          process.env.ENVIRONMENT === "development"
             ? "http://127.0.0.1:8000/ia/:path*"
             : "/ia/",
       },

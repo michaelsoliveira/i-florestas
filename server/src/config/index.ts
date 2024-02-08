@@ -3,14 +3,14 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-const envfile = `.env.${process.env.NODE_ENV}`;
+const envfile = `.env.${process.env.ENVIRONMENT}`;
 const envdir = process.cwd();
 
 config({ path: `${envdir}/${envfile}` });
 
 export const server = {
     port: process.env.PORT,
-    env: process.env.NODE_ENV,
+    env: process.env.ENVIRONMENT,
     JWT_SECRET: process.env.ACCESS_TOKEN_SECRET,
     JWT_REFRESH: process.env.REFRESH_TOKEN_SECRET,
     jwtExpiration: 3600,           // 1 hour
