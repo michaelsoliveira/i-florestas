@@ -1,5 +1,5 @@
 import { useModalContext } from "@/context/ModalContext"
-import { createRef } from "react"
+import { useRef } from "react"
 import { ChangeActive as ChangeActiveProjeto } from '../projeto/ChangeActive'
 import { ChangeActive as ChangeActivePoa } from '../poa/ChangeActive'
 import { styles } from "./styles"
@@ -7,8 +7,8 @@ import { styles } from "./styles"
 
 const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
     const { showModal } = useModalContext()
-    const formRefProjeto = createRef<any>()
-    const formRefPoa = createRef<any>()
+    const formRefProjeto = useRef<any>(null)
+    const formRefPoa = useRef<any>(null)
 
     const changeProjetoAtivo = async () => {
         formRefProjeto.current.handleSubmit()
@@ -33,7 +33,7 @@ const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
             return (<>
                 <div
                     className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
-                    onClick={changeProjetoModal}
+                    onClick={() => changeProjetoModal()}
                 >
                     {/* <div>
                         {subMenu?.icon && (
@@ -50,7 +50,7 @@ const SubMenuNavigation = ( { subMenu }: { subMenu: any} ) => {
             return (<>
                 <div
                     className='flex flex-row space-x-4 font-bold text-custom-green hover:cursor-pointer'
-                    onClick={changePoaModal}
+                    onClick={() => changePoaModal()}
                 >
                     {/* <div>
                         {subMenu?.icon && (

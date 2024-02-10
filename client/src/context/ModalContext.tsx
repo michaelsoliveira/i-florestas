@@ -11,7 +11,7 @@ type ContextType = {
 const initialState: ContextType = {
   showModal: () => {},
   hideModal: () => {},
-  store: {}
+  store: []
 }
 
 type Props = {
@@ -33,7 +33,7 @@ const ModalProvider = ({ children }: Props) => {
     });
   }
 
-  const hideModal = () => setStore({ modalProps: {}, onConfirm: () => {}, visible: false });
+  const hideModal = () => setStore({ modalProps: [], onConfirm: () => {}, visible: false });
 
   return (
     <ModalContext.Provider value={{ store, showModal, hideModal }}>

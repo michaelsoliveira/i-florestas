@@ -74,8 +74,8 @@ export default function Modal(props: ModaType) {
             classNames("fixed z-40 inset-0 overflow-y-auto text-sm",
                     className
             )}
-        initialFocus={cancelButtonRef} 
-        onClose={hideModal}>
+        // initialFocus={cancelButtonRef} 
+        onClose={() => hideModal()}>
         <div className="flex items-center justify-center min-h-screen pt-4 px-4 text-center sm:block sm:p-0 w-full">
           <Transition.Child
             as={Fragment}
@@ -127,7 +127,7 @@ export default function Modal(props: ModaType) {
                           {(type && type === 'submit') && (
                             <div className={classNames('absolute -right-1 hover:cursor-pointer',
                               !title && 'top-1'
-                            )} onClick={hideModal}>
+                            )} onClick={() => hideModal()}>
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                               </svg>
@@ -160,7 +160,7 @@ export default function Modal(props: ModaType) {
                         ref={cancelButtonRef}
                         type="button"
                         className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                        onClick={hideModal}
+                        onClick={() => hideModal()}
                       >
                         { cancelName ? cancelName : 'Cancelar' }
                       </button>
