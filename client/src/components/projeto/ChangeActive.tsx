@@ -108,32 +108,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                         tipo: 0,
                         srid: 0
                     }))
-                }
-
-                if (data?.poa_ativo) {
-                    dispatch(setPoa({
-                        id: data?.poa_ativo?.id,
-                        descricao: data?.poa_ativo?.descricao,
-                        data_ultimo_plan: data?.poa_ativo?.data_ultimo_plan,
-                        pmfs: data?.poa_ativo?.pmfs,
-                        situacao_poa: {
-                            id: data?.poa_ativo?.situacao_poa?.id,
-                            nome: data?.poa_ativo?.situacao_poa?.nome
-                        }
-                    }))
-                } else {
-                    dispatch(setPoa({
-                        id: '',
-                        descricao: 'Padrão',
-                        data_ultimo_plan: new Date(),
-                        pmfs: '',
-                        situacao_poa: {
-                            id: '',
-                            nome: ''
-                        }
-                    }))
-                }
-                    
+                }   
                 setProjeto(projeto)
                 hideModal()
                 })

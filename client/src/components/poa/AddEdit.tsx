@@ -469,16 +469,6 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
             .then((response: any) => {
                 const { error, message, poa } = response.data
                 if (!error) {
-                    dispatch(setPoa({
-                        id: poa.id,
-                        descricao: poa.descricao,
-                        data_ultimo_plan:poa.data_ultimo_plan,
-                        pmfs: poa.pmfs,
-                        situacao_poa: {
-                            id: poa.situacao_poa?.id,
-                            nome: poa.situacao_poa?.nome
-                        }
-                    }))
                     alertService.success(message);
                     router.push('/poa')
                 } else {
@@ -493,18 +483,8 @@ const AddEdit = ({ params }: { params: { id: string } }) => {
             ...data
         })
             .then((response: any) => {
-                const { error, message, poa } = response.data
+                const { error, message } = response.data
                 if (!error) {
-                    dispatch(setPoa({
-                        id: poa.id,
-                        descricao: poa.descricao,
-                        data_ultimo_plan: poa.data_ultimo_plan,
-                        pmfs: poa.pmfs,
-                        situacao_poa: {
-                            id: poa.situacao_poa?.id,
-                            nome: poa.situacao_poa?.nome
-                        }
-                    }))
                     alertService.success(message);
                     router.push('/poa')
                 } else {

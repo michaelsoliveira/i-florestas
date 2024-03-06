@@ -61,17 +61,6 @@ export const AddEdit = ({reloadData, data}: AddEditType) => {
                     alertService.success(message);
                     hideModal()
                     reloadData()
-                    
-                    dispatch(setPoa({
-                        id: '',
-                        descricao: 'Padrão',
-                        data_ultimo_plan: new Date(),
-                        pmfs: '',
-                        situacao_poa: {
-                            id: '',
-                            nome: ''
-                        }
-                    }))
                 } else {
                     alertService.error(message)
                 }
