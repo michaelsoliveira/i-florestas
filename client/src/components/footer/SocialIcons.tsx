@@ -2,7 +2,7 @@ const SocialIcons = () => {
     return (
         <div className="md:flex md:justify-between md:items-center">
             <div className="lg:flex lg:flex-wrap gap-2">
-                <a className="pr-1" href="">
+                <a className="pr-1" href="#">
                     <button
                         className="bg-gray-300 hover:bg-white hover:text-black  p-2 font-semibold text-gray-00 inline-flex items-center space-x-2 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const SocialIcons = () => {
                         </svg>
                     </button>
                 </a>
-                <a className="pr-1" href="">
+                <a className="pr-1" href="#">
                     <button
                         className="bg-blue-400 p-2 hover:bg-white hover:text-black font-semibold  text-white inline-flex items-center space-x-2 rounded">
                         <svg className="w-5 h-5 fill-current" role="img"
@@ -27,7 +27,7 @@ const SocialIcons = () => {
                         </svg>
                     </button>
                 </a>
-                <a className="pr-1" href="">
+                <a className="pr-1" href="#">
                     <button
                         className="bg-red-500 p-2 hover:bg-white hover:text-black font-semibold text-white inline-flex items-center space-x-2 rounded">
                         <svg className="w-5 h-5 fill-current" role="img" viewBox="0 0 24 24"
@@ -37,7 +37,7 @@ const SocialIcons = () => {
                         </svg>
                     </button>
                 </a>
-                <a href="">
+                <a href="#">
                     <button
                         className="bg-blue-600 p-2 hover:bg-white hover:text-black font-semibold text-white inline-flex items-center space-x-2 rounded">
                         <svg className="w-5 h-5 fill-current" role="img" viewBox="0 0 256 256"
