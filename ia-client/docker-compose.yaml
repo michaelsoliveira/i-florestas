@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/${ENVIRONMENT}/Dockerfile
+      args:
+        ENVIRONMENT: ${ENVIRONMENT}
+        VERSION: ${IO_VERSION}
+        DEBUG: ${DEBUG}
+    environment:
+      STAGE: ${IO_STAGE}
+      SENTRY_DSN: ${SENTRY_DSN}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      BACKEND_URL: ${BACKEND_URL}
+    restart: unless-stopped
+    ports:
+      - ${PORT}:8501
+    networks:
+      - stack
+    extends:
+      file: ./docker/app.yml
+      service: ${ENVIRONMENT}
+    healthcheck:
+      test: exit 0
+      interval: 20s
+      timeout: 10s
+      start_period: 10s
+      retries: 5
+
+networks:
+  stack:
+    external: true
+    name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}

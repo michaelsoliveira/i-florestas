@@ -1,0 +1,6 @@
+.env
+.env.ci
+.env.cli
+node_modules
+.DS_Store
+.venv
