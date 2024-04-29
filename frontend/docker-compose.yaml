@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/${ENVIRONMENT}/app/Dockerfile
+      args:
+        PORT: ${PORT}
+        IO_SERVER: ${IO_SERVER}
+        IO_PROJECT: ${IO_PROJECT}
+        IO_APP: ${IO_APP}
+        IO_STAGE: ${IO_STAGE}
+        IO_VERSION: ${IO_VERSION}
+        IO_DEPLOYER: ${IO_DEPLOYER}
+        NEXT_PUBLIC_SENTRY_DSN: ${SENTRY_DSN}
+        NEXT_PUBLIC_MATOMO_ID: ${MATOMO_ID}
+        NEXT_PUBLIC_MATOMO_URL: ${MATOMO_URL}
+        NEXT_PUBLIC_MATOMO_TOKEN: ${MATOMO_TOKEN}
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL} #${NEXTAUTH_URL}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      MATOMO_URL: ${MATOMO_URL}
+      MATOMO_ID: ${MATOMO_ID}
+      SENTRY_DSN: ${SENTRY_DSN}
+      KC_CLIENT_ID: ${KC_CLIENT_ID}
+      KC_CLIENT_SECRET: ${KC_CLIENT_SECRET}
+      KC_BASE_URL: ${KC_BASE_URL}
+    extends:
+      file: ./docker/app.yml
+      service: ${ENVIRONMENT}
+    networks:
+      - stack
+    restart: unless-stopped
+    # volumes:
+    #   - data_next:/app
+    #  - /app/node_modules
+    #  - /app/.next
+    healthcheck:
+      test: curl --fail -s http://${IO_SERVER}:${PORT} || exit 1
+      interval: 60s
+      timeout: 10s
+      start_period: 30s
+      retries: 4
+
+  nginx:
+    build: 
+      context: ./docker/nginx
+    environment:
+      PORT: ${PORT}
+    links:
+      - app
+    ports:
+      - ${PORT}:80
+    restart: always
+    networks:
+      - stack
+  
+# volumes:
+#   data_next:
+#     name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}_app
+#     external: true
+    # name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}_nextjs
+
+networks:
+  stack:
+    external: true
+    name: ${IO_PROJECT}_${IO_APP}_${IO_STAGE}
