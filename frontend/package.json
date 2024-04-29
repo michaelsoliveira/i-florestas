@@ -1,6 +1,6 @@
 {
   "name": "@bomanejo/frontend",
-  "version": "1.24.4-alpha.9",
+  "version": "1.24.4-alpha.12",
   "description": "BOManejo - Frontend",
   "main": "./src/app.ts",
   "scripts": {

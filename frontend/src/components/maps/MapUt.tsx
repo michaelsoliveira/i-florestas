@@ -6,6 +6,8 @@ import {
   MarkerClustererF,
   MarkerF,
   PolygonF,
+  OverlayViewF,
+  OverlayView
 } from "@react-google-maps/api";
 
 import { RootState } from "@/redux/store";
@@ -50,8 +52,11 @@ export default function MapUt({ setLocation, arvores, polygonPath, point, utLoca
     }
 
     if (e.domEvent?.ctrlKey) {
-      const paths = polygonRef.current?.getPath().getArray().filter((path: any, key: any) => e.vertex !== key)
-      point(paths)
+      const path = polygonRef.current?.getPath()
+      .getArray()
+      .filter((path: any, key: any) => e.vertex !== key)
+      .map((latLng: any) => { return { lat: latLng.lat(), lng: latLng.lng() } })
+      point(path)
     }
   }, [point]);
 
@@ -213,7 +218,6 @@ export default function MapUt({ setLocation, arvores, polygonPath, point, utLoca
           onUnmount={onUnmount}
           onClick={handleClick}
         >
-
           <DrawingManagerF
             drawingMode={drawingMode}
             options={options}

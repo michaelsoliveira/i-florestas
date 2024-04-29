@@ -14,7 +14,7 @@ import Script from 'next/script'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { Menu, Transition } from "@headlessui/react"
-import classNames from "./classNames"
+import classNames from "../utils/classNames"
 import alertService from "@/services/alert"
 import { init } from "@socialgouv/matomo-next"
 import { PoaContext, initialPoa } from "@/context/PoaContext"

@@ -7,9 +7,9 @@ import { useModalContext } from '@/context/ModalContext'
 import { OptionType, Select } from '@/components/ui/Select'
 import { useSession } from 'next-auth/react'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import * as Yup from 'yup'
-import { setPoa } from '@/redux/features/poaSlice';
-import { RootState } from '@/redux/store';
+// import * as Yup from 'yup'
+// import { setPoa } from '@/redux/features/poaSlice';
+// import { RootState } from '@/redux/store';
 import { PoaContext } from '@/context/PoaContext';
 
 type ChangeActiveType = {
@@ -23,8 +23,8 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
         const { data: session } = useSession()
         const [selectedPoa, setSelectedPoa] = useState<any>()
         const [poas, setPoas] = useState<any>()
-        const dispath = useAppDispatch()
-        const { poa } = useContext(PoaContext)
+        // const dispath = useAppDispatch()
+        const { poa, setPoa } = useContext(PoaContext)
 
         const loadPoas = useCallback(async () => {
             if (typeof session !== typeof undefined){
@@ -35,7 +35,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 const { data: { poa } } = await client.get('/poa/active/get')
 
                 if (poa) {
-                    dispath(
+                    // dispath(
                         setPoa({
                             id: poa?.id,
                             descricao: poa?.descricao,
@@ -46,9 +46,9 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                                 nome: poa?.situacao_poa?.nome
                             }
                         })
-                    )
+                    // )
                 } else {
-                    dispath(
+                    // dispath(
                         setPoa({
                             id: '',
                             descricao: 'Padrão',
@@ -59,7 +59,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                                 nome: ''
                             }
                         })
-                    )
+                    // )
                 }
 
                 setPoas([{ descricao: 'Padrão', id: '' }, ...poas])
@@ -80,7 +80,7 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                 }
                 
             }
-        }, [session, client, dispath])
+        }, [session, client, setPoa])
 
         useEffect(() => {
             let isLoaded = false
@@ -120,7 +120,8 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
             const { data } = await client.post(`/poa/active`, { poaId: dataRequest?.poa.value })
             const { poa } = data
             if (poa) {
-                dispath(setPoa({
+                // dispath(
+                    setPoa({
                     id: poa?.id,
                     descricao: poa?.descricao,
                     data_ultimo_plan: poa?.data_ultimo_plan,
@@ -129,9 +130,11 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                         id: poa?.situacao_poa?.id,
                         nome: poa?.situacao_poa?.nome
                     }
-                }))
+                })
+            // )
             } else {
-                dispath(setPoa({
+                // dispath(
+                    setPoa({
                     id: '',
                     descricao: 'Padrão',
                     data_ultimo_plan: null,
@@ -140,7 +143,8 @@ export const ChangeActive = forwardRef<any, ChangeActiveType>(
                         id: '',
                         nome: ''
                     }
-                }))
+                })
+            // )
             }
 
             hideModal()

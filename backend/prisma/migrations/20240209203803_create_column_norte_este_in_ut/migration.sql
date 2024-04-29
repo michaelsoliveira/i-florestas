@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "ut" ADD COLUMN     "este" DOUBLE PRECISION,
+ADD COLUMN     "norte" DOUBLE PRECISION;
